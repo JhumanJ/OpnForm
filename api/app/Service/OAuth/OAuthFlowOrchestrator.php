@@ -23,14 +23,19 @@ class OAuthFlowOrchestrator
         private OAuthUserDataService $userDataService,
         private OAuthUserService $oauthUserService,
         private OAuthProviderServiceClass $oauthProviderService
-    ) {}
+    ) {
+    }
 
     /**
      * Process OAuth redirect request
      */
     public function processRedirect(string $provider, array $params): array
     {
-        $providerService = OAuthProviderService::from($provider);
+        try {
+            $providerService = OAuthProviderService::from($provider);
+        } catch (\ValueError $e) {
+            abort(400, "Invalid OAuth provider: {$provider}");
+        }
         $intent = $params['intent'];
         $inviteToken = $params['invite_token'] ?? null;
 
@@ -79,7 +84,11 @@ class OAuthFlowOrchestrator
      */
     public function processCallback(string $provider, array $params): array
     {
-        $providerService = OAuthProviderService::from($provider);
+        try {
+            $providerService = OAuthProviderService::from($provider);
+        } catch (\ValueError $e) {
+            abort(400, "Invalid OAuth provider: {$provider}");
+        }
 
         // Get user data from OAuth provider
         $userData = $this->userDataService->extractFromRedirect($providerService);
@@ -107,7 +116,11 @@ class OAuthFlowOrchestrator
      */
     public function processWidgetCallback(string $service, Request $request): array
     {
-        $providerService = OAuthProviderService::from($service);
+        try {
+            $providerService = OAuthProviderService::from($service);
+        } catch (\ValueError $e) {
+            abort(400, "Invalid OAuth provider: {$service}");
+        }
         $intent = $request->input('intent');
         $inviteToken = $request->input('invite_token');
 

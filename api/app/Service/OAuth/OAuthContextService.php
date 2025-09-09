@@ -2,7 +2,6 @@
 
 namespace App\Service\OAuth;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 
 class OAuthContextService
