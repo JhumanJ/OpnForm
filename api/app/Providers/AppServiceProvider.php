@@ -77,5 +77,11 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('local', 'testing') && class_exists(DuskServiceProvider::class)) {
             $this->app->register(DuskServiceProvider::class);
         }
+
+        // OAuth Services
+        $this->app->singleton(\App\Service\OAuth\OAuthContextService::class);
+        $this->app->singleton(\App\Service\OAuth\OAuthInviteService::class);
+        $this->app->singleton(\App\Service\OAuth\OAuthUserDataService::class);
+        $this->app->singleton(\App\Service\OAuth\OAuthFlowOrchestrator::class);
     }
 }

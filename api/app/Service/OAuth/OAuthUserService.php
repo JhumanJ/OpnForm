@@ -4,13 +4,13 @@ namespace App\Service\OAuth;
 
 use App\Integrations\OAuth\OAuthProviderService;
 use App\Models\User;
-use App\Models\Workspace;
+use App\Service\WorkspaceInviteService;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
 class OAuthUserService
 {
-    public function findOrCreateUser(array $userData, OAuthProviderService $providerService): User
+    public function findOrCreateUser(array $userData, OAuthProviderService $providerService, ?string $inviteToken = null): User
     {
         $email = strtolower($userData['email']);
         $user = User::whereEmail($email)->first();
@@ -59,15 +59,16 @@ class OAuthUserService
             ],
         ]);
 
-        // Create and sync workspace
-        $workspace = Workspace::create([
-            'name' => 'My Workspace',
-            'icon' => '🧪',
+        // Get workspace and role using WorkspaceInviteService
+        $workspaceInviteService = app(WorkspaceInviteService::class);
+        [$workspace, $role] = $workspaceInviteService->getWorkspaceAndRole([
+            'email' => $email,
+            'invite_token' => $inviteToken
         ]);
 
         $user->workspaces()->sync([
             $workspace->id => [
-                'role' => User::ROLE_ADMIN,
+                'role' => $role,
             ],
         ], false);
 
