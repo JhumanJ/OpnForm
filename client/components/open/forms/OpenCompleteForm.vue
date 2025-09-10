@@ -227,7 +227,7 @@ const darkModeRef = toRef(props, 'darkMode')
 // Create a reactive reference for the mode prop
 const modeRef = toRef(props, 'mode')
 
-// Add back the local theme computation
+// Add back the local theme computation  
 const theme = computed(() => {
   return new ThemeBuilder(props.form.theme, {
     size: props.form.size,
@@ -235,6 +235,11 @@ const theme = computed(() => {
   }).getAllComponents()
 })
 provide('theme', theme)
+
+// Also provide individual theme props for new tailwind-variants approach
+provide('formThemeName', computed(() => props.form.theme || 'default'))
+provide('formSize', computed(() => props.form.size || 'md'))  
+provide('formBorderRadius', computed(() => props.form.border_radius || 'small'))
 
 let formManager = null
 if (props.form) {
