@@ -92,24 +92,18 @@ const emit = defineEmits(["close"])
 const alert = useAlert()
 
 const updateForm = () => {
-  updateSubmissionMutation.mutate(
-    {
-      formId: props.form.id,
-      submissionId: props.submission.id,
-      data: formManager.form.data()
-    },
-    {
-      onSuccess: (res) => {
-        alert.success(res.message)
-        emit("close")
-      },
-      onError: (error) => {
-        console.error(error)
-        if (error?.data) {
-          alert.formValidationError(error.data)
-        }
-      }
+  updateSubmissionMutation.mutateAsync({
+    formId: props.form.id,
+    submissionId: props.submission.id,
+    data: formManager.form.data()
+  }).then((res) => {
+    alert.success(res.message)
+    emit("close")
+  }).catch((error) => {
+    console.error(error)
+    if (error?.data) {
+      alert.formValidationError(error.data)
     }
-  )
+  })
 }
 </script>

@@ -101,23 +101,17 @@ const onDeleteClick = () => {
 }
 
 const deleteRecord = () => {
-  deleteSubmissionMutation.mutate(
-    { 
-      formId: props.form.id, 
-      submissionId: submission.value.id 
-    },
-    {
-      onSuccess: (data) => {
-        if (data.type === "success") {
-          alert.success(data.message)
-        } else {
-          alert.error("Something went wrong!")
-        }
-      },
-      onError: (error) => {
-        alert.error(error.data?.message || "Something went wrong!")
-      }
+  deleteSubmissionMutation.mutateAsync({ 
+    formId: props.form.id, 
+    submissionId: submission.value.id 
+  }).then((data) => {
+    if (data.type === "success") {
+      alert.success(data.message)
+    } else {
+      alert.error("Something went wrong!")
     }
-  )
+  }).catch((error) => {
+    alert.error(error.data?.message || "Something went wrong!")
+  })
 }
 </script>

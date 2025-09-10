@@ -275,26 +275,20 @@ const onDeleteMultiClick = () => {
   alert.confirm(`Do you really want to delete selected ${selectedIds.value.length} record${selectedIds.value.length > 1 ? 's' : ''}?`, deleteMultiRecord)
 }
 const deleteMultiRecord = () => {
-  deleteMultiSubmissionsMutation.mutate(
-    { 
-      formId: props.form.id, 
-      submissionIds: selectedIds.value 
-    },
-    {
-      onSuccess: (data) => {
-        clearSelection()
-        if (data.type === "success") {
-          alert.success(data.message)
-        } else {
-          alert.error("Something went wrong!")
-        }
-      },
-      onError: (error) => {
-        clearSelection()
-        alert.error(error.data?.message || "Something went wrong!")
-      }
+  deleteMultiSubmissionsMutation.mutateAsync({ 
+    formId: props.form.id, 
+    submissionIds: selectedIds.value 
+  }).then((data) => {
+    clearSelection()
+    if (data.type === "success") {
+      alert.success(data.message)
+    } else {
+      alert.error("Something went wrong!")
     }
-  )
+  }).catch((error) => {
+    clearSelection()
+    alert.error(error.data?.message || "Something went wrong!")
+  })
 }
 
 
