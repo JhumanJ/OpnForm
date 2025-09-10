@@ -43,6 +43,10 @@ class FormSpamService
             return false;
         }
 
+        if ($form->creator->created_at->diffInMonths(now()) > 3) {
+            return false;
+        }
+
         if ($this->containsKeywords($form)) {
             return true;
         }
