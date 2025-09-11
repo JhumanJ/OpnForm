@@ -11,9 +11,6 @@
         @search="handleSearch"
         @filter="handleFilter"
         @page-change="handlePageChange"
-        @deleted="onDeleteRecord"
-        @updated="onUpdateRecord"
-        @multi-delete="onDeleteMultiRecord"
       />
 
       <!-- Submissions Table Skeleton -->
@@ -43,7 +40,6 @@
 </template>
 
 <script setup>
-import { useQueryClient } from '@tanstack/vue-query'
 import OpenTable from '~/components/open/tables/OpenTable.vue'
 import { useFormSubmissions } from '~/composables/query/forms/useFormSubmissions'
 
@@ -51,7 +47,6 @@ const props = defineProps({
   form: { type: Object, required: true },
 })
 
-const queryClient = useQueryClient()
 const table = ref(null)
 
 // Replace all the recordStore logic with this:
@@ -81,24 +76,4 @@ const handlePageChange = (page) => {
   setPage(page)
 }
 
-const onUpdateRecord = (_submission) => {
-  // Invalidate to refetch current page
-  queryClient.invalidateQueries({
-    queryKey: ['forms', props.form.id, 'submissions', 'paginated']
-  })
-}
-
-const onDeleteRecord = (_submission) => {
-  // Invalidate to refetch current page
-  queryClient.invalidateQueries({
-    queryKey: ['forms', props.form.id, 'submissions', 'paginated']
-  })
-}
-
-const onDeleteMultiRecord = (_submissionIds) => {
-  // Invalidate to refetch current page
-  queryClient.invalidateQueries({
-    queryKey: ['forms', props.form.id, 'submissions', 'paginated']
-  })
-}
 </script>

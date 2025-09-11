@@ -152,6 +152,9 @@ class PublicFormController extends Controller
 
     public function answer(AnswerFormRequest $request, Form $form, FormSubmissionProcessor $formSubmissionProcessor)
     {
+        // Check if user can answer this form
+        $this->authorize('answer', $form);
+
         $isFirstSubmission = ($form->submissions_count === 0);
 
         // Handle partial submissions
