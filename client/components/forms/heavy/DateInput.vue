@@ -12,8 +12,7 @@
     >
       <button
         ref="datepicker"
-        class="cursor-pointer overflow-hidden"
-        :class="inputClasses"
+        :class="variantSlots.input()"
         :disabled="props.disabled"
       >
         <div class="flex items-stretch min-w-0">
@@ -125,6 +124,8 @@ const props = defineProps({
   isDark: { type: Boolean, default: false }
 })
 
+import { tv } from 'tailwind-variants'
+import { dateInputTheme } from '~/lib/forms/themes/date-input.theme.js'
 const input = useFormInput(props, getCurrentInstance())
 const fromDate = ref(null)
 const toDate = ref(null)
@@ -166,19 +167,15 @@ const updateModelValue = () => {
   }
 }
 
-const inputClasses = computed(() => {
-  const classes = [props.theme.DateInput.input, props.theme.DateInput.borderRadius]
-  if (props.disabled) {
-    classes.push('!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!')
-  }
-  if (input.hasError.value) {
-    classes.push('ring-red-500! ring-2! border-transparent!')
-  }
-  if (!props.disabled && !input.hasError.value && pickerOpen.value) {
-    classes.push('ring-2 ring-form/100 border-transparent')
-  }
-  return classes.join(' ')
-})
+const dateInputVariants = computed(() => tv(dateInputTheme, props.ui))
+const variantSlots = computed(() => dateInputVariants.value({
+  themeName: input.resolvedThemeName.value,
+  size: input.resolvedSize.value,
+  borderRadius: input.resolvedBorderRadius.value,
+  hasError: input.hasError.value,
+  disabled: props.disabled,
+  focused: pickerOpen.value
+}))
 
 const minDate = computed(() => {
   if (props.disablePastDates) {

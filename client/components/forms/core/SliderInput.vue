@@ -27,7 +27,7 @@
           <div
             v-for="i in sliderLabelsList"
             :key="i"
-            :class="[theme.SliderInput.stepLabel, i.style]"
+            :class="[variantSlots.stepLabel(), i.style]"
           >
             {{ i.label }}
           </div>
@@ -45,7 +45,10 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import { inputProps, useFormInput } from "../useFormInput.js"
+import { tv } from "tailwind-variants"
+import { sliderInputTheme } from "~/lib/forms/themes/slider-input.theme.js"
 
 export default {
   name: "SliderInput",
@@ -59,8 +62,14 @@ export default {
   },
 
   setup(props, context) {
+    const formInput = useFormInput(props, context)
+    const sliderVariants = computed(() => tv(sliderInputTheme, props.ui))
+    const variantSlots = computed(() => sliderVariants.value({
+      size: formInput.resolvedSize.value
+    }))
     return {
-      ...useFormInput(props, context),
+      ...formInput,
+      variantSlots
     }
   },
   computed: {

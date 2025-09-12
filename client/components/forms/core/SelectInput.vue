@@ -19,7 +19,6 @@
       :color="color"
       :placeholder="placeholder"
       :uppercase-labels="uppercaseLabels"
-      :theme="theme"
       :has-error="hasError"
       :allow-creation="allowCreation"
       :disabled="disabled"
@@ -35,12 +34,7 @@
       <template #selected="{ option }">
         <template v-if="multiple">
           <div class="flex items-center truncate mr-6">
-            <span
-              class="truncate"
-              :class="[
-                theme.SelectInput.fontSize,
-              ]"
-            >
+            <span class="truncate">
               {{ getOptionNames(selectedValues).join(', ') }}
             </span>
           </div>
@@ -52,11 +46,7 @@
             :option-name="getOptionName(option)"
           >
             <div class="flex items-center truncate mr-6">
-              <div
-                :class="[
-                  theme.SelectInput.fontSize,
-                ]"
-              >
+              <div>
                 {{ getOptionName(option) }}
               </div>
             </div>
@@ -70,12 +60,7 @@
           :selected="selected"
         >
           <span class="flex">
-            <p
-              class="flex-grow"
-              :class="[
-                theme.SelectInput.fontSize,
-              ]"
-            >
+            <p class="flex-grow">
               {{ getOptionName(option) }}
             </p>
             <span
@@ -100,7 +85,7 @@
       v-if="multiple && (minSelection || maxSelection) && selectedCount > 0"
       #bottom_after_help
     >
-      <small :class="theme.default.help">
+      <small class="text-neutral-500">
         <span v-if="minSelection && maxSelection">
           {{ selectedCount }} of {{ minSelection }}-{{ maxSelection }}
         </span>

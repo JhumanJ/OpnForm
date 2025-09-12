@@ -2,7 +2,7 @@
   <div
     class="overflow-hidden"
     :class="[
-      theme.fileInput.uploadedFile, 
+      'border border-neutral-300 dark:border-neutral-600 dark:bg-notion-dark-light rounded-lg shadow-xs max-w-10',
       { 'bg-white': !disabled, 'bg-gray-300': disabled }
     ]"
     :title="file.file.name"
@@ -68,7 +68,6 @@
 </template>
 
 <script>
-import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 
 export default {
   name: "UploadedFile",
@@ -77,15 +76,6 @@ export default {
     file: { type: Object, default: null },
     disabled: { type: Boolean, default: false },
     showRemove: { type: Boolean, default: true },
-    theme: {
-      type: Object, default: () => {
-        const theme = inject("theme", null)
-        if (theme) {
-          return theme.value
-        }
-        return CachedDefaultTheme.getInstance()
-      }
-    },
   },
   emits: ['remove'],
   data: () => ({

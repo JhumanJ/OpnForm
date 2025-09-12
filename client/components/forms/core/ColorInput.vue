@@ -15,9 +15,7 @@
       >
       <slot name="label">
         <span
-          :class="[
-            theme.SelectInput.fontSize,
-          ]"
+          :class="variantSlots.label()"
         >{{ label }}
           <span
             v-if="required"
@@ -37,7 +35,10 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import { inputProps, useFormInput } from "../useFormInput.js"
+import { tv } from "tailwind-variants"
+import { colorInputTheme } from "~/lib/forms/themes/color-input.theme.js"
 
 const props = defineProps({
   ...inputProps,
@@ -45,5 +46,12 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
-const { compVal, inputWrapperProps} = useFormInput(props, { emit })
+const formInput = useFormInput(props, { emit })
+
+const colorInputVariants = computed(() => tv(colorInputTheme, props.ui))
+const variantSlots = computed(() => colorInputVariants.value({
+  size: formInput.resolvedSize.value
+}))
+
+const { compVal, inputWrapperProps} = formInput
 </script>

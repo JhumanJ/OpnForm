@@ -11,15 +11,7 @@
     />
     <div
       v-else
-      class="relative overflow-hidden"
-      :class="[
-        theme.default.input,
-        theme.default.borderRadius,
-        {
-          '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disabled,
-        },
-      ]"
+      :class="variantSlots.container()"
     >
       <template
         v-if="options && options.length"
@@ -31,9 +23,7 @@
           :aria-checked="isSelected(option[optionKey])"
           class="relative"
           :class="[
-            theme.FlatSelectInput.spacing.vertical,
-            theme.FlatSelectInput.fontSize,
-            theme.FlatSelectInput.option,
+            variantSlots.option(),
             {
               '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disableOptions.includes(option[optionKey]),
             },
@@ -73,13 +63,7 @@
       </template>
       <div
         v-else
-        :class="[
-          theme.FlatSelectInput.spacing.horizontal,
-          theme.FlatSelectInput.spacing.vertical,
-          theme.FlatSelectInput.fontSize,
-          theme.FlatSelectInput.option,
-          '!text-neutral-500 !cursor-not-allowed'
-        ]"
+        :class="variantSlots.empty()"
       >
         {{ $t('forms.select.noOptionAvailable') }}
       </div>
@@ -113,7 +97,10 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import {inputProps, useFormInput} from "../useFormInput.js"
+import { tv } from "tailwind-variants"
+import { flatSelectInputTheme } from "~/lib/forms/themes/flat-select-input.theme.js"
 import RadioButtonIcon from "./components/RadioButtonIcon.vue"
 import CheckboxIcon from "./components/CheckboxIcon.vue"
 
@@ -139,8 +126,18 @@ export default {
     maxSelection: { type: Number, default: null }
   },
   setup(props, context) {
+    const formInput = useFormInput(props, context)
+    const flatSelectVariants = computed(() => tv(flatSelectInputTheme, props.ui))
+    const variantSlots = computed(() => flatSelectVariants.value({
+      themeName: formInput.resolvedThemeName.value,
+      size: formInput.resolvedSize.value,
+      borderRadius: formInput.resolvedBorderRadius.value,
+      hasError: formInput.hasError.value,
+      disabled: props.disabled
+    }))
     return {
-      ...useFormInput(props, context),
+      ...formInput,
+      variantSlots
     }
   },
   data() {
