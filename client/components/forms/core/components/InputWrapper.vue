@@ -1,6 +1,6 @@
 <template>
   <div
-    :class="[ twMerge(theme.default.wrapper,wrapperClass)]"
+    :class="wrapperClasses"
     :style="inputStyle"
   >
     <slot name="label">
@@ -8,10 +8,10 @@
       <InputLabel
         v-if="label && !hideFieldName"
         :label="label"
-        :theme="theme"
         :required="required"
         :native-for="id ? id : name"
         :uppercase-labels="uppercaseLabels"
+        :ui="ui?.label"
       />
       </VTransition>
     </slot>
@@ -23,7 +23,7 @@
     <VTransition name="fadeHeight">
       <InputHelp
         :help="help"
-        :help-classes="theme.default.help"
+        :help-classes="helpClasses"
       >
         <template #after-help>
           <slot name="bottom_after_help" />
@@ -40,7 +40,7 @@
     <VTransition name="fadeHeightDown">
       <InputHelp
         :help="help"
-        :help-classes="theme.default.help"
+        :help-classes="helpClasses"
       >
         <template #after-help>
           <slot name="bottom_after_help" />
@@ -65,22 +65,14 @@
 import InputLabel from './InputLabel.vue'
 import InputHelp from './InputHelp.vue'
 import {twMerge} from "tailwind-merge"
-import CachedDefaultTheme from '~/lib/forms/themes/CachedDefaultTheme.js'
+import { tv } from "tailwind-variants"
+import { inputWrapperTheme } from "~/lib/forms/themes/input-wrapper.theme.js"
 
-defineProps({
+const props = defineProps({
   id: { type: String, required: false },
   name: { type: String, required: false },
   label: { type: String, required: false },
   form: { type: Object, required: false },
-  theme: {
-      type: Object, default: () => {
-        const theme = inject('theme', null)
-        if (theme) {
-          return theme.value
-        }
-        return CachedDefaultTheme.getInstance()
-      }
-    },
   wrapperClass: { type: String, required: false },
   inputStyle: { type: Object, required: false },
   help: { type: String, required: false },
@@ -89,5 +81,31 @@ defineProps({
   hideFieldName: { type: Boolean, default: true },
   required: { type: Boolean, default: false },
   hasValidation: { type: Boolean, default: true },
+  // Theme configuration as strings for tailwind-variants
+  size: {type: String, default: null}, 
+  ui: {type: Object, default: () => ({})}
 })
+
+// Inject theme values for centralized resolution
+const injectedSize = inject('formSize', null)
+
+// Resolve size with proper reactivity
+const resolvedSize = computed(() => {
+  return props.size || injectedSize?.value || 'md'
+})
+
+// Create input wrapper variants with UI prop merging
+const inputWrapperVariants = computed(() => tv(inputWrapperTheme, props.ui))
+
+// Single variant computation
+const variantSlots = computed(() => {
+  return inputWrapperVariants.value({
+    size: resolvedSize.value
+  })
+})
+
+// Use variant slots
+const baseWrapperClasses = computed(() => variantSlots.value.wrapper())
+const wrapperClasses = computed(() => twMerge(baseWrapperClasses.value, props.wrapperClass))
+const helpClasses = computed(() => variantSlots.value.help())
 </script>

@@ -1,41 +1,45 @@
 <template>
   <label
     :for="nativeFor"
-    class="input-label"
-    :class="[
-      theme.default.label,
-      { 'uppercase text-xs': uppercaseLabels, 'text-sm/none': !uppercaseLabels },
-    ]"
+    :class="labelClasses"
   >
     <slot>
       {{ label }}
       <span
         v-if="required"
-        class="text-red-500 required-dot"
+        :class="requiredDotClasses"
       >*</span>
     </slot>
   </label>
 </template>
 
-<script>
-import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
-export default {
-  name: "InputLabel",
+<script setup>
+import { tv } from "tailwind-variants"
+import { inputLabelTheme } from "~/lib/forms/themes/input-label.theme.js"
 
-  props: {
-    nativeFor: { type: String, default: null },
-    theme: {
-      type: Object, default: () => {
-        const theme = inject("theme", null)
-        if (theme) {
-          return theme.value
-        }
-        return CachedDefaultTheme.getInstance()
-      }
-    },
-    uppercaseLabels: { type: Boolean, default: false },
-    required: { type: Boolean, default: false },
-    label: { type: String, required: true },
-  },
-}
+defineOptions({
+  name: "InputLabel"
+})
+
+const props = defineProps({
+  nativeFor: { type: String, default: null },
+  uppercaseLabels: { type: Boolean, default: false },
+  required: { type: Boolean, default: false },
+  label: { type: String, required: true },
+  ui: {type: Object, default: () => ({})}
+})
+
+// Create input label variants with UI prop merging
+const inputLabelVariants = computed(() => tv(inputLabelTheme, props.ui))
+
+// Single variant computation
+const variantSlots = computed(() => {
+  return inputLabelVariants.value({
+    uppercaseLabels: props.uppercaseLabels
+  })
+})
+
+// Use variant slots
+const labelClasses = computed(() => variantSlots.value.label())
+const requiredDotClasses = computed(() => variantSlots.value.requiredDot())
 </script>
