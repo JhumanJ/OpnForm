@@ -1,8 +1,7 @@
 <template>
   <div
     ref="select"
-    class="v-select relative"
-    :class="[{ 'w-0': multiple, 'min-w-full': multiple }]"
+    :class="variantSlots.container()"
   >
     <UPopover
       v-model:open="isOpen"
@@ -12,44 +11,26 @@
         sideOffset: 4
       }"
       :ui="{
-        content: 'w-(--reka-popper-anchor-width) bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + [theme.SelectInput.borderRadius].join(' ')
+        content: 'w-(--reka-popper-anchor-width) bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + borderRadiusClass
       }"
     >
       <template #anchor>
         <div
-          class="w-full flex overflow-hidden"
           :style="inputStyle"
-          :class="[
-            theme.SelectInput.input,
-            theme.SelectInput.borderRadius,
-            { 
-              'ring-red-500! ring-2! border-transparent!': hasError, 
-              '!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!': disabled,
-              'focus-within:ring-2 focus-within:ring-form/100 focus-within:border-transparent': !hasError && !disabled
-            },
-            inputClass
-          ]"
+          :class="[variantSlots.anchor(), inputClass]"
         >
         <button
           type="button"
           aria-haspopup="listbox"
           :aria-expanded="isOpen"
           aria-labelledby="listbox-label"
-          class="cursor-pointer w-full grow relative focus:outline-hidden min-w-0 truncate"
-          :class="[
-            theme.SelectInput.spacing.horizontal,
-            theme.SelectInput.spacing.vertical
-          ]"
+          :class="variantSlots.button()"
           @click.stop="toggleDropdown"
           @focus="onFocus"
           @blur="onBlur"
         >
           <div
-            class="flex items-center"
-            :class="[
-              theme.SelectInput.minHeight,
-              'ltr:pr-8 rtl:pl-8'
-            ]"
+            :class="variantSlots.buttonInner()"
           >
             <transition
               name="fade"
@@ -77,10 +58,9 @@
               >
                 <slot name="placeholder">
                   <div
-                    class="text-neutral-400 dark:text-neutral-500 w-full ltr:text-left rtl:text-right! truncate ltr:pr-3 rtl:pl-3 rtl:pr-0!"
                     :class="[
-                      { 'py-1': multiple && !loading },
-                      theme.SelectInput.fontSize
+                      variantSlots.placeholder(),
+                      { 'py-1': multiple && !loading }
                     ]"
                   >
                     {{ placeholder }}
@@ -90,28 +70,25 @@
             </transition>
           </div>
           <div
-            class="absolute inset-y-0 ltr:right-6 rtl:left-6 w-10 pointer-events-none -z-1"
-            :class="[disabled ? 'bg-linear-to-r from-transparent to-neutral-200 dark:to-neutral-800' : theme.SelectInput.chevronGradient]"
+            :class="variantSlots.chevronGradient()"
           />
           <span
-            class="absolute inset-y-0 ltr:right-0 rtl:left-0 rtl:right-auto! flex items-center ltr:pr-2 rtl:pl-2 rtl:pr-0! pointer-events-none"
-            :class="[disabled ? 'bg-neutral-200 dark:bg-neutral-800' : theme.SelectInput.background]"
+            :class="variantSlots.chevronContainer()"
           >
             <Icon
               name="heroicons:chevron-up-down-16-solid" 
-              class="h-5 w-5 text-neutral-500"
+              :class="variantSlots.chevronIcon()"
             />
           </span>
         </button>
         <button
           v-if="clearable && showClearButton && !disabled && !isEmpty"
-          class="hover:bg-neutral-50 dark:hover:bg-neutral-900 ltr:border-l rtl:border-l-0! rtl:border-r px-2 flex items-center shrink-0"
-          :class="[theme.SelectInput.spacing.vertical]"
+          :class="variantSlots.clearButton()"
           @click.stop.prevent="clear()"
         >
           <Icon
             name="heroicons:x-mark-20-solid"
-            class="w-5 h-5 text-neutral-500"
+            :class="variantSlots.clearIcon()"
             width="2em"
             dynamic
           />
@@ -123,40 +100,36 @@
         <ul
           tabindex="-1"
           role="listbox"
-          class="leading-6 shadow-xs overflow-auto focus:outline-hidden sm:text-sm sm:leading-5 relative"
-          :class="[
-            { 'max-h-42': !isSearchable, 'max-h-48': isSearchable },
-            theme.SelectInput.fontSize
-          ]"
+          :class="variantSlots.dropdown()"
         >
           <div
             v-if="isSearchable"
-            class="sticky top-0 z-10 flex border-b bg-white dark:!bg-notion-dark-light"
+            :class="variantSlots.searchContainer()"
           >
             <input
               v-model="searchTerm"
               type="text"
-              class="grow ltr:pl-3 ltr:pr-7 rtl:pr-3! rtl:pl-7 py-2 w-full focus:outline-hidden dark:text-white"
+              :class="variantSlots.searchInput()"
               :placeholder="allowCreation ? $t('forms.select.searchOrTypeToCreateNew') : $t('forms.select.search')"
             >
             <div
               v-if="!searchTerm"
-              class="flex absolute ltr:right-0 rtl:left-0 rtl:right-auto! inset-y-0 items-center px-2 justify-center pointer-events-none"
+              :class="variantSlots.searchIconContainer()"
             >
               <Icon
                 name="heroicons:magnifying-glass-solid"
-                class="h-5 w-5 text-neutral-500 dark:text-neutral-400"
+                :class="variantSlots.searchIcon()"
               />
             </div>
             <div
               v-else
               role="button"
-              class="flex absolute ltr:right-0 rtl:right-auto! rtl:left-0 inset-y-0 items-center px-2 justify-center"
+              :class="variantSlots.searchClearContainer()"
               @click.stop="searchTerm = ''"
             >
               <Icon
                 name="heroicons:backspace"
-                class="h-5 w-5 rtl:rotate-180 text-neutral-500 dark:text-neutral-400"
+                :class="variantSlots.searchClearIcon()"
               />
             </div>
           </div>
@@ -168,7 +141,7 @@
           </div>
           <div
             v-if="filteredOptions.length > 0"
-            class="p-1"
+            :class="variantSlots.optionsContainer()"
           >
             <li
               v-for="item in filteredOptions"
@@ -176,17 +149,14 @@
               role="option"
               :style="optionStyle"
               :class="[
+                variantSlots.option(),
                 dropdownClass,
-                theme.SelectInput.option,
-                theme.SelectInput.spacing.horizontal,
-                theme.SelectInput.spacing.vertical,
                 { 'pr-9': multiple},
                 { 
                   'opacity-50 cursor-not-allowed': disabledOptionsMap[item[optionKey]],
                   'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': !disabledOptionsMap[item[optionKey]]
                 }
               ]"
-              class="text-neutral-900 dark:text-neutral-50 select-none relative group rounded-sm focus:outline-hidden"
               @click.stop="select(item)"
             >
               <slot
@@ -201,7 +171,7 @@
             name="empty-placeholder"
           >
             <p
-              class="w-full text-neutral-500 text-center py-2"
+              :class="variantSlots.emptyMessage()"
             >
               {{ (allowCreation ? $t('forms.select.typeSomethingToAddAnOption') : $t('forms.select.noOptionAvailable')) }}.
             </p>
@@ -213,11 +183,14 @@
             <li
               role="option"
               :style="optionStyle"
-              :class="[{ 'px-3 pr-9': multiple, 'px-3': !multiple },dropdownClass,theme.SelectInput.option]"
-              class="text-neutral-900 select-none relative py-2 cursor-pointer group hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-sm focus:outline-hidden"
+              :class="[
+                variantSlots.createOption(),
+                { 'px-3 pr-9': multiple, 'px-3': !multiple },
+                dropdownClass
+              ]"
               @click.stop="createOption(searchTerm)"
             >
-                            {{ $t('forms.select.create') }} <span class="px-2 bg-neutral-100 border border-neutral-300 rounded-sm group-hover-text-black">{{
+                            {{ $t('forms.select.create') }} <span :class="variantSlots.createLabel()">{{
                 searchTerm
               }}</span>
             </li>
@@ -232,7 +205,8 @@
 <script>
 import debounce from 'debounce'
 import Fuse from 'fuse.js'
-import CachedDefaultTheme from '~/lib/forms/themes/CachedDefaultTheme.js'
+import { tv } from "tailwind-variants"
+import { vSelectTheme } from "~/lib/forms/themes/v-select.theme.js"
 
 export default {
   name: 'VSelect',
@@ -257,15 +231,11 @@ export default {
     placeholder: { type: String, default: null },
     uppercaseLabels: { type: Boolean, default: true },
     showClearButton: { type: Boolean, default: true },
-    theme: {
-      type: Object, default: () => {
-        const theme = inject('theme', null)
-        if (theme) {
-          return theme.value
-        }
-        return CachedDefaultTheme.getInstance()
-      }
-    },
+    // Theme configuration as strings for tailwind-variants
+    themeName: {type: String, default: null},
+    size: {type: String, default: null}, 
+    borderRadius: {type: String, default: null},
+    ui: {type: Object, default: () => ({})},
     allowCreation: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     minSelection: { type: Number, default: null },
@@ -281,6 +251,41 @@ export default {
     }
   },
   computed: {
+    // Resolve theme values with proper reactivity
+    resolvedThemeName() {
+      return this.themeName || this.$.appContext.provides.formThemeName?.value || 'default'
+    },
+    resolvedSize() {
+      return this.size || this.$.appContext.provides.formSize?.value || 'md'
+    },
+    resolvedBorderRadius() {
+      return this.borderRadius || this.$.appContext.provides.formBorderRadius?.value || 'small'
+    },
+
+    // Create select variants with UI prop merging
+    vSelectVariants() {
+      return tv(vSelectTheme, this.ui)
+    },
+
+    // Single variant computation
+    variantSlots() {
+      return this.vSelectVariants({
+        themeName: this.resolvedThemeName,
+        size: this.resolvedSize,
+        borderRadius: this.resolvedBorderRadius,
+        hasError: this.hasError,
+        disabled: this.disabled,
+        focused: this.isFocused,
+        multiple: this.multiple,
+        searchable: this.isSearchable
+      })
+    },
+
+    // Use variantSlots directly in the template for classes
+    borderRadiusClass() {
+      return this.variantSlots.anchor().match(/rounded-\S+/)?.[0] || 'rounded-lg'
+    },
+
     optionStyle () {
       return {
         '--bg-form-color': this.color
