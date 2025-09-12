@@ -45,7 +45,7 @@
 - `client/components/forms/heavy/components/MentionDropdown.vue`
 - `client/components/forms/heavy/components/QuillyEditor.vue`
 - `client/components/forms/heavy/components/RecaptchaV2.vue`
-- `client/components/forms/heavy/components/UploadedFile.vue`
+- [x] `client/components/forms/heavy/components/UploadedFile.vue`
 
 Notes:
 - Use one computed `variantSlots` per component and call `variantSlots.slot()` directly in templates.
