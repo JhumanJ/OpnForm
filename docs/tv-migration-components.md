@@ -24,6 +24,8 @@
 - `client/components/forms/heavy/BarcodeInput.vue`
 - `client/components/forms/heavy/CodeInput.client.vue`
 - `client/components/forms/heavy/DateInput.vue`
+  - [x] `client/lib/forms/themes/date-input.theme.js`
+  - [x] `client/components/forms/heavy/DateInput.vue`
 - `client/components/forms/heavy/FileInput.vue`
 - `client/components/forms/heavy/ImageInput.vue`
 - `client/components/forms/heavy/LogicConfirmationModal.vue`
