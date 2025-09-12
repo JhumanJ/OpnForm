@@ -2,6 +2,7 @@
 
 ### Files to CREATE (themes)
 - `client/lib/forms/themes/text-area-input.theme.js`
+- `client/lib/forms/themes/checkbox-input.theme.js`
 - `client/lib/forms/themes/color-input.theme.js`
 - `client/lib/forms/themes/slider-input.theme.js`
 - `client/lib/forms/themes/toggle-switch-input.theme.js`
@@ -11,6 +12,7 @@
 
 ### Files to UPDATE (core)
 - `client/components/forms/core/TextAreaInput.vue`
+- `client/components/forms/core/CheckboxInput.vue`
 - `client/components/forms/core/ColorInput.vue`
 - `client/components/forms/core/SliderInput.vue`
 - `client/components/forms/core/ToggleSwitchInput.vue`
