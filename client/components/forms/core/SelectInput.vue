@@ -19,7 +19,6 @@
       :color="color"
       :placeholder="placeholder"
       :uppercase-labels="uppercaseLabels"
-      :theme="theme"
       :has-error="hasError"
       :allow-creation="allowCreation"
       :disabled="disabled"
@@ -52,11 +51,7 @@
             :option-name="getOptionName(option)"
           >
             <div class="flex items-center truncate mr-6">
-              <div
-                :class="[
-                  theme.SelectInput.fontSize,
-                ]"
-              >
+              <div>
                 {{ getOptionName(option) }}
               </div>
             </div>

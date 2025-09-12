@@ -4,18 +4,14 @@
       <slot name="label" />
     </template>
 
-    <div class="rectangle-outer grid grid-cols-5 gap-2">
+    <div :class="variantSlots.wrapper()">
       <div
         v-for="i in scaleList"
         :key="i"
         :class="[
           { 'font-semibold': compVal === i },
-          theme.ScaleInput.button,
-          theme.ScaleInput.borderRadius,
-          theme.ScaleInput.spacing.horizontal,
-          theme.ScaleInput.spacing.vertical,
-          theme.ScaleInput.fontSize,
-          compVal !== i ? unselectedButtonClass : '',
+          variantSlots.button(),
+          compVal !== i ? variantSlots.unselectedButton() : '',
         ]"
         :style="btnStyle(i === compVal)"
         role="button"
@@ -36,6 +32,8 @@
 
 <script>
 import { inputProps, useFormInput } from "../useFormInput.js"
+import { tv } from "tailwind-variants"
+import { scaleInputTheme } from "~/lib/forms/themes/scale-input.theme.js"
 
 export default {
   name: "ScaleInput",
@@ -49,8 +47,15 @@ export default {
   },
 
   setup(props, context) {
+    const formInput = useFormInput(props, context)
+    const scaleVariants = computed(() => tv(scaleInputTheme, props.ui))
+    const variantSlots = computed(() => scaleVariants.value({
+      size: formInput.resolvedSize.value,
+      borderRadius: formInput.resolvedBorderRadius.value,
+    }))
     return {
-      ...useFormInput(props, context),
+      ...formInput,
+      variantSlots
     }
   },
 
@@ -70,9 +75,7 @@ export default {
       }
       return list
     },
-    unselectedButtonClass() {
-      return this.theme.ScaleInput.unselectedButton
-    },
+    // removed theme-based class, using variantSlots
     textColor() {
       const color =
         this.color.charAt(0) === "#" ? this.color.substring(1, 7) : this.color
