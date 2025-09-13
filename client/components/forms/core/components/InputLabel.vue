@@ -1,13 +1,13 @@
 <template>
   <label
     :for="nativeFor"
-    :class="labelClasses"
+    :class="variantSlots.label()"
   >
     <slot>
       {{ label }}
       <span
         v-if="required"
-        :class="requiredDotClasses"
+        :class="variantSlots.requiredDot()"
       >*</span>
     </slot>
   </label>
@@ -39,7 +39,4 @@ const variantSlots = computed(() => {
   })
 })
 
-// Use variant slots
-const labelClasses = computed(() => variantSlots.value.label())
-const requiredDotClasses = computed(() => variantSlots.value.requiredDot())
 </script>

@@ -3,12 +3,12 @@
     <Icon
       v-show="isChecked"
       name="ic:round-radio-button-checked"
-      :class="checkedIconClasses"
+      :class="variantSlots.checkedIcon()"
     />
     <Icon
       v-show="!isChecked"
       name="ic:round-radio-button-unchecked"
-      :class="uncheckedIconClasses"
+      :class="variantSlots.uncheckedIcon()"
     />
   </div>
 </template>
@@ -54,7 +54,4 @@ const variantSlots = computed(() => {
   })
 })
 
-// Use variant slots
-const checkedIconClasses = computed(() => variantSlots.value.checkedIcon())
-const uncheckedIconClasses = computed(() => variantSlots.value.uncheckedIcon())
 </script>

@@ -12,7 +12,7 @@
       :autocomplete="autocomplete"
       :pattern="pattern"
       :style="inputStyle"
-      :class="inputClasses"
+      :class="variantSlots.input()"
       :name="name"
       :accept="accept"
       :placeholder="placeholder"
@@ -36,7 +36,7 @@
       v-if="maxCharLimit && showCharLimit"
       #bottom_after_help
     >
-      <small :class="helpClasses">
+      <small :class="variantSlots.help()">
         {{ charCount }}/{{ maxCharLimit }}
       </small>
     </template>
@@ -106,16 +106,11 @@ export default {
       })
     })
 
-    // Reuse the single variant computation for different slots
-    const inputClasses = computed(() => variantSlots.value.input())
-    const helpClasses = computed(() => variantSlots.value.help())
-
     return {
       ...formInput,
       onEnterPress,
       onChange,
-      inputClasses,
-      helpClasses
+      variantSlots
     }
   },
   computed: {

@@ -23,7 +23,7 @@
     <VTransition name="fadeHeight">
       <InputHelp
         :help="help"
-        :help-classes="helpClasses"
+        :help-classes="variantSlots.help()"
       >
         <template #after-help>
           <slot name="bottom_after_help" />
@@ -40,7 +40,7 @@
     <VTransition name="fadeHeightDown">
       <InputHelp
         :help="help"
-        :help-classes="helpClasses"
+        :help-classes="variantSlots.help()"
       >
         <template #after-help>
           <slot name="bottom_after_help" />
@@ -104,8 +104,7 @@ const variantSlots = computed(() => {
   })
 })
 
-// Use variant slots
-const baseWrapperClasses = computed(() => variantSlots.value.wrapper())
-const wrapperClasses = computed(() => twMerge(baseWrapperClasses.value, props.wrapperClass))
-const helpClasses = computed(() => variantSlots.value.help())
+// Wrapper classes with twMerge operation - makes sense as computed property
+const wrapperClasses = computed(() => twMerge(variantSlots.value.wrapper(), props.wrapperClass))
+
 </script>

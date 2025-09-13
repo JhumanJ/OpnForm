@@ -3,12 +3,12 @@
     <Icon
       v-show="isChecked"
       name="i-material-symbols-check-box"
-      :class="checkedIconClasses"
+      :class="variantSlots.checkedIcon()"
     />
     <Icon
       v-show="!isChecked"
       name="i-material-symbols-check-box-outline-blank"
-      :class="uncheckedIconClasses"
+      :class="variantSlots.uncheckedIcon()"
     />
   </div>
 </template>
@@ -54,7 +54,4 @@ const variantSlots = computed(() => {
   })
 })
 
-// Use variant slots
-const checkedIconClasses = computed(() => variantSlots.value.checkedIcon())
-const uncheckedIconClasses = computed(() => variantSlots.value.uncheckedIcon())
 </script>
