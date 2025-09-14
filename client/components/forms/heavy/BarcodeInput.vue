@@ -41,18 +41,8 @@
     <div
       v-else
       :style="inputStyle"
-      class="flex flex-col w-full items-center justify-center transition-colors duration-40"
-      :class="[
-        {'!cursor-not-allowed':disabled, 'cursor-pointer':!disabled},
-        theme.fileInput.input,
-        theme.fileInput.borderRadius,
-        theme.fileInput.spacing.horizontal,
-        theme.fileInput.spacing.vertical,
-        theme.fileInput.fontSize,
-        theme.fileInput.minHeight,
-        {'border-red-500 border-2':hasError},
-        'focus:outline-hidden focus:ring-2'
-      ]"
+      class="cursor-pointer"
+      :class="variantSlots.container()"
       tabindex="0"
       role="button"
       aria-label="Click to open a camera"
@@ -86,6 +76,8 @@
 <script>
 import { inputProps, useFormInput } from '../useFormInput.js'
 import CameraUpload from './components/CameraUpload.vue'
+import { tv } from 'tailwind-variants'
+import { fileInputTheme } from '~/lib/forms/themes/file-input.theme.js'
 
 export default {
   name: 'BarcodeInput',
@@ -100,8 +92,18 @@ export default {
   },
 
   setup(props, context) {
+    const formInput = useFormInput(props, context)
+    const fileVariants = computed(() => tv(fileInputTheme, props.ui))
+    const variantSlots = computed(() => fileVariants.value({
+      themeName: formInput.resolvedTheme.value,
+      size: formInput.resolvedSize.value,
+      borderRadius: formInput.resolvedBorderRadius.value,
+      hasError: formInput.hasError.value,
+      disabled: props.disabled
+    }))
     return {
-      ...useFormInput(props, context),
+      ...formInput,
+      variantSlots
     }
   },
 

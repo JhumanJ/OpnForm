@@ -23,15 +23,15 @@
           :max="maxSlider"
           :step="stepSlider"
         >
-        <div class="grid grid-cols-3 gap-2 -mt-1">
-          <div
-            v-for="i in sliderLabelsList"
-            :key="i"
-            :class="[theme.SliderInput.stepLabel, i.style]"
-          >
-            {{ i.label }}
+          <div class="grid grid-cols-3 gap-2 -mt-1">
+            <div
+              v-for="i in sliderLabelsList"
+              :key="i"
+              :class="[variantSlots.stepLabel(), i.style]"
+            >
+              {{ i.label }}
+            </div>
           </div>
-        </div>
       </div>
     </div>
 
@@ -46,6 +46,8 @@
 
 <script>
 import { inputProps, useFormInput } from "../useFormInput.js"
+import { tv } from "tailwind-variants"
+import { sliderInputTheme } from "~/lib/forms/themes/slider-input.theme.js"
 
 export default {
   name: "SliderInput",
@@ -59,8 +61,16 @@ export default {
   },
 
   setup(props, context) {
+    const sliderVariants = computed(() => tv(sliderInputTheme, props.ui))
+    const formInput = useFormInput(props, context)
+
+    const variantSlots = computed(() => sliderVariants.value({
+      size: formInput.resolvedSize.value
+    }))
+
     return {
-      ...useFormInput(props, context),
+      ...formInput,
+      variantSlots,
     }
   },
   computed: {

@@ -21,35 +21,11 @@
         :key="option[optionKey]"
         :text="option.tooltip"
         :disabled="!option.tooltip"
-        :class="[
-          'w-full border transition-colors shadow-xs',
-          {
-            // Background colors
-            'bg-form/10': isSelected(option),
-            'hover:bg-neutral-100': !isSelected(option),
-            // Border colors
-            'border-form': isSelected(option),
-            'border-neutral-300': !isSelected(option),
-            // Border radius for seamless mode
-            'rounded-lg': !seamless,
-            'first:rounded-l-lg': seamless,
-            'last:rounded-r-lg': seamless,
-            'not-first:not-last:rounded-none': seamless,
-            // Z-index
-            'relative focus-within:z-10': seamless,
-            'relative z-10': seamless && isSelected(option),
-          }
-        ]"
+        :class="optionClasses(isSelected(option))"
       >
         <button
-          class="flex flex-col items-center justify-center p-1.5 transition-colors text-neutral-500 focus:outline-hidden w-full h-full"
-          :class="[
-            option.class ? (typeof option.class === 'function' ? option.class(isSelected(option)) : option.class) : {},
-            {
-              'text-form-color': isSelected(option),
-              'opacity-50 pointer-events-none': disabled || option.disabled,
-            }
-          ]"
+          class="flex flex-col items-center justify-center transition-colors focus:outline-hidden w-full h-full"
+          :class="[buttonClasses(disabled || option.disabled), option.class ? (typeof option.class === 'function' ? option.class(isSelected(option)) : option.class) : {}, isSelected(option) ? 'text-form-color' : 'text-inherit']"
           :aria-selected="isSelected(option) ? 'true' : 'false'"
           :tabindex="disabled || option.disabled ? -1 : 0"
           :disabled="disabled || option.disabled"
@@ -72,11 +48,7 @@
           </slot>
           <span
             v-if="option.label || !option.icon"
-            class="text-xs"
-            :class="{
-              'text-form-color': isSelected(option),
-              'text-inherit': !isSelected(option),
-            }"
+            :class="[labelClasses(), isSelected(option) ? 'text-form-color' : 'text-inherit']"
           >{{ isSelected(option) ? option.selectedLabel ?? option.label : option.label }}</span>
         </button>
       </UTooltip>
@@ -95,6 +67,8 @@
 <script setup>
 import { ref, computed, watch, nextTick } from 'vue'
 import { inputProps, useFormInput } from '../useFormInput.js'
+import { tv } from 'tailwind-variants'
+import { optionSelectorInputTheme } from '~/lib/forms/themes/option-selector-input.theme.js'
 
 /**
  * OptionSelectorInput.vue
@@ -132,7 +106,9 @@ const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 // Use form input composable
 const {
   compVal,
-  inputWrapperProps
+  inputWrapperProps,
+  resolvedTheme,
+  resolvedSize
 } = useFormInput(props, { emit })
 
 // Local state
@@ -145,6 +121,20 @@ const gridClass = computed(() => `grid-cols-${props.columns}`)
 const optionStyle = computed(() => ({
   '--bg-form-color': props.color
 }))
+
+const variants = computed(() => tv(optionSelectorInputTheme, props.ui))
+const optionClasses = (selected) => variants.value({
+  themeName: resolvedTheme.value,
+  size: resolvedSize.value,
+  seamless: props.seamless,
+  selected
+}).option()
+const buttonClasses = (isDisabled) => variants.value({
+  themeName: resolvedTheme.value,
+  size: resolvedSize.value,
+  disabled: isDisabled
+}).button()
+const labelClasses = () => variants.value({ size: resolvedSize.value }).label()
 
 // Methods
 function isSelected(option) {

@@ -6,14 +6,11 @@
     <div
       v-if="cameraUpload && isInWebcam"
       class="hidden sm:block w-full"
-      :class="[
-        theme.fileInput.minHeight
-      ]"
+      :class="variantSlots.container()"
     >
       <ClientOnly>
       <CameraUpload
         v-if="cameraUpload"
-        :theme="theme"
         @upload-image="cameraFileUpload"
         @stop-webcam="isInWebcam=false"
       />
@@ -22,21 +19,8 @@
     <div
       v-else
       :style="inputStyle"
-      class="flex flex-col w-full items-center justify-center transition-colors duration-40"
-      :class="[
-        {'!cursor-not-allowed':disabled, 'cursor-pointer':!disabled,
-         '!bg-neutral-200 dark:!bg-neutral-800': disabled,
-         [theme.fileInput.inputHover.light + ' dark:'+theme.fileInput.inputHover.dark]: uploadDragoverEvent,
-         ['hover:'+theme.fileInput.inputHover.light +' dark:hover:'+theme.fileInput.inputHover.dark]: !loading},
-        theme.fileInput.input,
-        theme.fileInput.borderRadius,
-        theme.fileInput.spacing.horizontal,
-        theme.fileInput.spacing.vertical,
-        theme.fileInput.fontSize,
-        theme.fileInput.minHeight,
-        {'border-red-500 border-2':hasError},
-        'focus:outline-hidden focus:ring-2'
-      ]"
+      class="cursor-pointer"
+      :class="variantSlots.container()"
       tabindex="0"
       role="button"
       :aria-label="multiple ? 'Choose files or drag here' : 'Choose a file or drag here'"
@@ -75,7 +59,6 @@
                 v-for="file in files"
                 :key="file.url"
                 :file="file"
-                :theme="theme"
                 :disabled="disabled"
                 @remove="clearFile(file)"
               />
@@ -136,6 +119,8 @@ import UploadedFile from './components/UploadedFile.vue'
 import CameraUpload from './components/CameraUpload.vue'
 import {storeFile} from "~/lib/file-uploads.js"
 import { formsApi } from '~/api'
+import { tv } from 'tailwind-variants'
+import { fileInputTheme } from '~/lib/forms/themes/file-input.theme.js'
 
 export default {
   name: 'FileInput',
@@ -151,8 +136,18 @@ export default {
   },
 
   setup(props, context) {
+    const formInput = useFormInput(props, context)
+    const fileVariants = computed(() => tv(fileInputTheme, props.ui))
+    const variantSlots = computed(() => fileVariants.value({
+      themeName: formInput.resolvedTheme.value,
+      size: formInput.resolvedSize.value,
+      borderRadius: formInput.resolvedBorderRadius.value,
+      hasError: formInput.hasError.value,
+      disabled: props.disabled
+    }))
     return {
-      ...useFormInput(props, context)
+      ...formInput,
+      variantSlots
     }
   },
 

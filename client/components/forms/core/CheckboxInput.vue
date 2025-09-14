@@ -12,7 +12,6 @@
         :disabled="disabled ? true : null"
         :name="name"
         :color="color"
-        :theme="theme"
       />
       <div>
         <slot
@@ -21,7 +20,7 @@
         >
           <InputHelp
             :help="help"
-            :help-classes="theme.default.help"
+            :help-classes="variantSlots.help()"
           >
             <template #after-help>
               <slot name="bottom_after_help" />
@@ -32,7 +31,7 @@
           <label
             :aria-label="id ? id : name"
             :for="id ? id : name"
-            :class="theme.default.fontSize"
+            :class="variantSlots.label()"
           >
             {{ label }}
             <span
@@ -47,7 +46,7 @@
         >
           <InputHelp
             :help="help"
-            :help-classes="theme.default.help"
+            :help-classes="variantSlots.help()"
           >
             <template #after-help>
               <slot name="bottom_after_help" />
@@ -70,6 +69,8 @@
 <script>
 import { inputProps, useFormInput } from '../useFormInput.js'
 import VCheckbox from './components/VCheckbox.vue'
+import { tv } from "tailwind-variants"
+import { checkboxInputTheme } from "~/lib/forms/themes/checkbox-input.theme.js"
 
 export default {
   name: 'CheckboxInput',
@@ -81,8 +82,14 @@ export default {
   },
 
   setup(props, context) {
+    const checkboxVariants = computed(() => tv(checkboxInputTheme, props.ui))
+    const formInput = useFormInput(props, context)
+    const variantSlots = computed(() => checkboxVariants.value({
+      size: formInput.resolvedSize.value
+    }))
     return {
-      ...useFormInput(props, context),
+      ...formInput,
+      variantSlots
     }
   },
 

@@ -252,7 +252,7 @@ export default {
   },
   computed: {
     // Resolve theme values with proper reactivity
-    resolvedThemeName() {
+    resolvedTheme() {
       return this.themeName || this.$.appContext.provides.formThemeName?.value || 'default'
     },
     resolvedSize() {
@@ -270,7 +270,7 @@ export default {
     // Single variant computation
     variantSlots() {
       return this.vSelectVariants({
-        themeName: this.resolvedThemeName,
+        themeName: this.resolvedTheme,
         size: this.resolvedSize,
         borderRadius: this.resolvedBorderRadius,
         hasError: this.hasError,

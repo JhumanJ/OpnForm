@@ -19,11 +19,7 @@
         <div class="flex items-stretch min-w-0">
           <div
             class="grow min-w-0 flex items-center gap-x-2"
-            :class="[
-              props.theme.DateInput.spacing.horizontal,
-              props.theme.DateInput.spacing.vertical,
-              props.theme.DateInput.fontSize,
-            ]"
+            :class="variantSlots.inner()"
           >
             <Icon
               name="heroicons:calendar-20-solid"
@@ -112,6 +108,8 @@ import { DatePicker } from 'v-calendar'
 import 'v-calendar/dist/style.css'
 import { format, startOfDay, endOfDay } from 'date-fns'
 import { tailwindcssPaletteGenerator } from '~/lib/colors.js'
+import { tv } from 'tailwind-variants'
+import { dateInputTheme } from '~/lib/forms/themes/date-input.theme.js'
 
 const props = defineProps({
   ...inputProps,
@@ -166,18 +164,17 @@ const updateModelValue = () => {
   }
 }
 
+const dateVariants = computed(() => tv(dateInputTheme, props.ui))
+const variantSlots = computed(() => dateVariants.value({
+  themeName: input.resolvedTheme.value,
+  size: input.resolvedSize.value,
+  borderRadius: input.resolvedBorderRadius.value,
+  hasError: input.hasError.value,
+  disabled: props.disabled,
+  focused: pickerOpen.value && !props.disabled && !input.hasError.value
+}))
 const inputClasses = computed(() => {
-  const classes = [props.theme.DateInput.input, props.theme.DateInput.borderRadius]
-  if (props.disabled) {
-    classes.push('!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!')
-  }
-  if (input.hasError.value) {
-    classes.push('ring-red-500! ring-2! border-transparent!')
-  }
-  if (!props.disabled && !input.hasError.value && pickerOpen.value) {
-    classes.push('ring-2 ring-form/100 border-transparent')
-  }
-  return classes.join(' ')
+  return variantSlots.value.input()
 })
 
 const minDate = computed(() => {

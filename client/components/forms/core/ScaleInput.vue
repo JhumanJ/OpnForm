@@ -10,12 +10,8 @@
         :key="i"
         :class="[
           { 'font-semibold': compVal === i },
-          theme.ScaleInput.button,
-          theme.ScaleInput.borderRadius,
-          theme.ScaleInput.spacing.horizontal,
-          theme.ScaleInput.spacing.vertical,
-          theme.ScaleInput.fontSize,
-          compVal !== i ? unselectedButtonClass : '',
+          variantSlots.button(),
+          compVal !== i ? variantSlots.buttonUnselected() : ''
         ]"
         :style="btnStyle(i === compVal)"
         role="button"
@@ -36,6 +32,8 @@
 
 <script>
 import { inputProps, useFormInput } from "../useFormInput.js"
+import { tv } from "tailwind-variants"
+import { scaleInputTheme } from "~/lib/forms/themes/scale-input.theme.js"
 
 export default {
   name: "ScaleInput",
@@ -49,8 +47,16 @@ export default {
   },
 
   setup(props, context) {
+    const scaleVariants = computed(() => tv(scaleInputTheme, props.ui))
+    const formInput = useFormInput(props, context)
+    const variantSlots = computed(() => scaleVariants.value({
+      themeName: formInput.resolvedTheme.value,
+      size: formInput.resolvedSize.value,
+      borderRadius: formInput.resolvedBorderRadius.value,
+    }))
     return {
-      ...useFormInput(props, context),
+      ...formInput,
+      variantSlots
     }
   },
 
@@ -70,9 +76,7 @@ export default {
       }
       return list
     },
-    unselectedButtonClass() {
-      return this.theme.ScaleInput.unselectedButton
-    },
+    // No longer used; kept for compatibility if referenced elsewhere
     textColor() {
       const color =
         this.color.charAt(0) === "#" ? this.color.substring(1, 7) : this.color

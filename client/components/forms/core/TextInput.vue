@@ -98,7 +98,7 @@ export default {
     // Single variant computation - fully reactive
     const variantSlots = computed(() => {
       return textInputVariants.value({
-        themeName: formInput.resolvedThemeName.value,
+        themeName: formInput.resolvedTheme.value,
         size: formInput.resolvedSize.value,
         borderRadius: formInput.resolvedBorderRadius.value,
         hasError: formInput.hasError.value,

@@ -2,24 +2,14 @@ import {ref, computed, watch, inject} from "vue"
 import {default as _get} from "lodash/get"
 import {default as _set} from "lodash/set"
 import {default as _has} from "lodash/has"
-import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 
 export const inputProps = {
   id: {type: String, default: null},
   name: {type: String, required: true},
   label: {type: String, required: false},
   form: {type: Object, required: false},
-  theme: {
-    type: Object, default: () => {
-      const theme = inject("theme", null)
-      if (theme) {
-        return theme.value
-      }
-      return CachedDefaultTheme.getInstance()
-    }
-  },
   // Theme configuration as strings for tailwind-variants
-  themeName: {type: String, default: null},
+  theme: {type: String, default: null},
   size: {type: String, default: null}, 
   borderRadius: {type: String, default: null},
   ui: {type: Object, default: () => ({})},
@@ -47,13 +37,13 @@ export function useFormInput(props, context, options = {}) {
   const content = ref(props.modelValue)
 
   // Inject theme values at composable level - centralized for all form inputs
-  const injectedThemeName = inject('formThemeName', null)
+  const injectedTheme = inject('formTheme', null)
   const injectedSize = inject('formSize', null)
   const injectedBorderRadius = inject('formBorderRadius', null)
 
   // Resolve theme values with proper reactivity
-  const resolvedThemeName = computed(() => {
-    return props.themeName || injectedThemeName?.value || 'default'
+  const resolvedTheme = computed(() => {
+    return props.theme || injectedTheme?.value || 'default'
   })
 
   const resolvedSize = computed(() => {
@@ -107,7 +97,7 @@ export function useFormInput(props, context, options = {}) {
   const inputWrapperProps = computed(() => {
     const wrapperProps = {}
     Object.keys(inputProps).forEach((key) => {
-      if (!["modelValue", "disabled", "placeholder", "color", "themeName", "size", "borderRadius", "ui"].includes(key)) {
+      if (!["modelValue", "disabled", "placeholder", "color", "theme", "size", "borderRadius", "ui"].includes(key)) {
         wrapperProps[key] = props[key]
       }
     })
@@ -141,7 +131,7 @@ export function useFormInput(props, context, options = {}) {
     onFocus,
     onBlur,
     // Resolved theme values - available to all form input components
-    resolvedThemeName,
+    resolvedTheme,
     resolvedSize,
     resolvedBorderRadius,
   }

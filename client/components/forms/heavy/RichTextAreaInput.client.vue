@@ -9,20 +9,8 @@
 
     <div
       class="rich-editor resize-y notranslate relative"
-      :class="[
-        {
-          'ring-red-500! ring-2! border-transparent!': hasError,
-          '!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!': disabled,
-          'focus-within:ring-2 focus-within:ring-form/100 focus-within:border-transparent': !hasError && !disabled
-        },
-        theme.RichTextAreaInput.input,
-        theme.RichTextAreaInput.borderRadius,
-        theme.default.fontSize,
-      ]"
-      :style="{
-        '--font-size': theme.default.fontSize,
-        ...inputStyle
-      }"
+      :class="variantSlots.container()"
+      :style="inputStyle"
     >
       <MentionDropdown
         v-if="enableMentions && mentionState"
@@ -111,7 +99,7 @@
       v-if="maxCharLimit && showCharLimit"
       #bottom_after_help
     >
-      <small :class="theme.default.help">
+      <small :class="variantSlots.help()">
         {{ charCount }}/{{ maxCharLimit }}
       </small>
     </template>
@@ -131,6 +119,8 @@ import { inputProps, useFormInput } from '../useFormInput.js'
 import QuillyEditor from './components/QuillyEditor.vue'
 import MentionDropdown from './components/MentionDropdown.vue'
 import registerMentionExtension from '~/lib/quill/quillMentionExtension.js'
+import { tv } from 'tailwind-variants'
+import { richTextAreaInputTheme } from '~/lib/forms/themes/rich-text-area-input.theme.js'
 
 // Global icon registration - only happens once
 if (import.meta.client) {
@@ -164,7 +154,17 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 
-const { compVal, inputStyle, hasError, inputWrapperProps } = useFormInput(props, { emit })
+const { compVal, inputStyle, hasError, inputWrapperProps, resolvedTheme, resolvedSize, resolvedBorderRadius } = useFormInput(props, { emit })
+
+const richVariants = computed(() => tv(richTextAreaInputTheme, props.ui))
+const variantSlots = computed(() => richVariants.value({
+  themeName: resolvedTheme.value,
+  size: resolvedSize.value,
+  borderRadius: resolvedBorderRadius.value,
+  hasError: hasError.value,
+  disabled: props.disabled,
+  focused: true // focus style is handled via focus-within by CSS, but we keep variant available
+}))
 const editor = ref(null)
 const mentionState = ref(null)
 

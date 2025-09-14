@@ -3,17 +3,7 @@
     <template #label>
       <slot name="label" />
     </template>
-    <div
-      class="border overflow-x-auto"
-      :class="[
-        theme.default.borderRadius,
-        theme.MatrixInput.cell,
-        theme.MatrixInput.table,
-        {
-          '!ring-red-500 !ring-2 !border-transparent': hasError,
-        },
-      ]"
-    >
+    <div :class="variantSlots.container()">
       <table class="w-full table-auto">
         <thead class="">
           <tr>
@@ -22,7 +12,7 @@
               v-for="column in columns"
               :key="column"
               class="ltr:border-l rtl:border-r rtl:!border-l-0 max-w-24 overflow-hidden"
-              :class="theme.MatrixInput.cell"
+              :class="variantSlots.cell()"
             >
               <div class="p-2 w-full flex items-center justify-center text-sm">
                 {{ column }}
@@ -46,11 +36,9 @@
               :key="row + column"
               class="ltr:border-l rtl:border-r rtl:!border-l-0"
               :class="[
-                theme.MatrixInput.cell,
-                theme.MatrixInput.cellHover,
-                {
-                  '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800 hover:!bg-neutral-200 dark:hover:!bg-neutral-800': disabled,
-                },
+                variantSlots.cell(),
+                variantSlots.cellHover(),
+                { '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800 hover:!bg-neutral-200 dark:hover:!bg-neutral-800': disabled }
               ]"
             >
               <div
@@ -59,12 +47,8 @@
                 role="radio"
                 :aria-checked="compVal[row] === column"
                 :class="[
-                  theme.FlatSelectInput.spacing.vertical,
-                  theme.FlatSelectInput.fontSize,
-                  theme.FlatSelectInput.option,
-                  {
-                    '!cursor-not-allowed !bg-transparent hover:!bg-transparent dark:hover:!bg-transparent': disabled,
-                  }
+                  variantSlots.option(),
+                  { '!cursor-not-allowed !bg-transparent hover:!bg-transparent dark:hover:!bg-transparent': disabled }
                 ]"
                 @click="onSelect(row, column)"
               >
@@ -72,7 +56,6 @@
                   :key="row+column"
                   :is-checked="compVal[row] === column"
                   :color="color"
-                  :theme="theme"
                 />
               </div>
             </td>
@@ -92,6 +75,8 @@
 import { watch } from "vue"
 import { inputProps, useFormInput } from "../useFormInput.js"
 import RadioButtonIcon from "../core/components/RadioButtonIcon.vue"
+import { tv } from 'tailwind-variants'
+import { matrixInputTheme } from '~/lib/forms/themes/matrix-input.theme.js'
 
 const props = defineProps({
   ...inputProps,
@@ -101,7 +86,13 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
-const { compVal, inputWrapperProps, hasError } = useFormInput(props, { emit })
+const { compVal, inputWrapperProps, hasError, resolvedTheme, resolvedBorderRadius } = useFormInput(props, { emit })
+
+const matrixVariants = computed(() => tv(matrixInputTheme, props.ui))
+const variantSlots = computed(() => matrixVariants.value({
+  themeName: resolvedTheme.value,
+  borderRadius: resolvedBorderRadius.value
+}))
 
 const onSelect = (row, column) => {
   if (props.disabled) {

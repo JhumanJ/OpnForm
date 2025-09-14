@@ -12,14 +12,7 @@
     <div
       v-else
       class="relative overflow-hidden"
-      :class="[
-        theme.default.input,
-        theme.default.borderRadius,
-        {
-          '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disabled,
-        },
-      ]"
+      :class="variantSlots.container()"
     >
       <template
         v-if="options && options.length"
@@ -31,12 +24,8 @@
           :aria-checked="isSelected(option[optionKey])"
           class="relative"
           :class="[
-            theme.FlatSelectInput.spacing.vertical,
-            theme.FlatSelectInput.fontSize,
-            theme.FlatSelectInput.option,
-            {
-              '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disableOptions.includes(option[optionKey]),
-            },
+            variantSlots.option(),
+            { '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disableOptions.includes(option[optionKey]) }
           ]"
           @click="onSelect(option[optionKey])"
         >
@@ -44,14 +33,12 @@
             <CheckboxIcon
               :is-checked="isSelected(option[optionKey])"
               :color="color"
-              :theme="theme"
             />
           </template>
           <template v-else>
             <RadioButtonIcon
               :is-checked="isSelected(option[optionKey])"
               :color="color"
-              :theme="theme"
             />
           </template>
           <UTooltip
@@ -73,13 +60,7 @@
       </template>
       <div
         v-else
-        :class="[
-          theme.FlatSelectInput.spacing.horizontal,
-          theme.FlatSelectInput.spacing.vertical,
-          theme.FlatSelectInput.fontSize,
-          theme.FlatSelectInput.option,
-          '!text-neutral-500 !cursor-not-allowed'
-        ]"
+        :class="[variantSlots.option(), '!text-neutral-500 !cursor-not-allowed']"
       >
         {{ $t('forms.select.noOptionAvailable') }}
       </div>
@@ -93,7 +74,7 @@
       v-if="multiple && (minSelection || maxSelection) && selectedCount > 0"
       #bottom_after_help
     >
-      <small :class="theme.default.help">
+      <small :class="variantSlots.help()">
         <span v-if="minSelection && maxSelection">
           {{ selectedCount }} of {{ minSelection }}-{{ maxSelection }}
         </span>
@@ -116,6 +97,8 @@
 import {inputProps, useFormInput} from "../useFormInput.js"
 import RadioButtonIcon from "./components/RadioButtonIcon.vue"
 import CheckboxIcon from "./components/CheckboxIcon.vue"
+import { tv } from "tailwind-variants"
+import { flatSelectInputTheme } from "~/lib/forms/themes/flat-select-input.theme.js"
 
 /**
  * Options: {name,value} objects
@@ -139,8 +122,18 @@ export default {
     maxSelection: { type: Number, default: null }
   },
   setup(props, context) {
+    const selectVariants = computed(() => tv(flatSelectInputTheme, props.ui))
+    const formInput = useFormInput(props, context)
+    const variantSlots = computed(() => selectVariants.value({
+      themeName: formInput.resolvedTheme.value,
+      size: formInput.resolvedSize.value,
+      borderRadius: formInput.resolvedBorderRadius.value,
+      hasError: formInput.hasError.value,
+      disabled: props.disabled
+    }))
     return {
-      ...useFormInput(props, context),
+      ...formInput,
+      variantSlots
     }
   },
   data() {

@@ -8,17 +8,7 @@
       <slot name="help" />
     </template>
 
-    <div
-      :class="[
-        'h-40 max-h-96 overflow-y-auto relative',
-        theme.CodeInput.input,
-        theme.CodeInput.borderRadius,
-        {
-          '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disabled,
-        },
-      ]"
-    >
+    <div :class="variantSlots.container()">
       <!-- Fullscreen button -->
       <UTooltip text="Open in fullscreen" :popper="{ placement: 'left' }">
         <UButton
@@ -102,6 +92,8 @@
 import { Codemirror } from "vue-codemirror"
 import { html } from "@codemirror/lang-html"
 import { inputProps, useFormInput } from "../useFormInput.js"
+import { tv } from 'tailwind-variants'
+import { codeInputTheme } from '~/lib/forms/themes/code-input.theme.js'
 
 const props = defineProps({
   ...inputProps,
@@ -137,7 +129,16 @@ defineShortcuts({
 })
 
 // Get form input composable
-const { compVal, inputWrapperProps, hasError, disabled, inputStyle, id, name } = useFormInput(props, { emit })
+const { compVal, inputWrapperProps, hasError, inputStyle, id, name, resolvedTheme, resolvedSize, resolvedBorderRadius } = useFormInput(props, { emit })
+
+const codeVariants = computed(() => tv(codeInputTheme, props.ui))
+const variantSlots = computed(() => codeVariants.value({
+  themeName: resolvedTheme.value,
+  size: resolvedSize.value,
+  borderRadius: resolvedBorderRadius.value,
+  hasError: hasError.value,
+  disabled: props.disabled
+}))
 </script>
 
 <style>

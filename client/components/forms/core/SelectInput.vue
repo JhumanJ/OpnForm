@@ -26,7 +26,7 @@
       :dropdown-class="dropdownClass"
       :min-selection="minSelection"
       :max-selection="maxSelection"
-      :theme-name="resolvedThemeName"
+      :theme-name="resolvedTheme"
       :size="resolvedSize"
       :border-radius="resolvedBorderRadius"
       :ui="ui"
