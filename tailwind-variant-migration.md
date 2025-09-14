@@ -7,7 +7,7 @@
 -   [x] **TextInput.vue** - ✅ COMPLETED
 -   [ ] **TextAreaInput.vue** - Pending
 -   [ ] **ToggleSwitchInput.vue** - Pending
--   [ ] **SelectInput.vue** - Pending
+-   [x] **SelectInput.vue** - ✅ COMPLETED
 -   [ ] **SliderInput.vue** - Pending
 -   [ ] **FlatSelectInput.vue** - Pending
 -   [ ] **ScaleInput.vue** - Pending
@@ -232,14 +232,14 @@ These core components don't use legacy themes and are already using utility clas
 
 ### Migration Progress
 
-**Core Components:** 6/17 completed (35%)
+**Core Components:** 10/17 completed (59%)
 
 -   Sub-components: 6/6 ✅ COMPLETED
--   Main components: 1/9 completed (11%)
+-   Main components: 2/9 completed (22%)
 
 **Heavy Components:** 0/21 completed (0%)
 
 -   Sub-components: 0/8 completed
 -   Main components: 0/13 completed
 
-**Overall Progress:** 7/38 components completed (18%)
+**Overall Progress:** 10/38 components completed (26%)

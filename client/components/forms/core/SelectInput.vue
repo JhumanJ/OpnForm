@@ -19,16 +19,17 @@
       :color="color"
       :placeholder="placeholder"
       :uppercase-labels="uppercaseLabels"
-      :theme="theme"
       :has-error="hasError"
       :allow-creation="allowCreation"
       :disabled="disabled"
-      :help="help"
-      :help-position="helpPosition"
       :remote="remote"
       :dropdown-class="dropdownClass"
       :min-selection="minSelection"
       :max-selection="maxSelection"
+      :theme-name="resolvedThemeName"
+      :size="resolvedSize"
+      :border-radius="resolvedBorderRadius"
+      :ui="ui"
       @update-options="updateOptions"
       @update:model-value="updateModelValue"
     >
@@ -37,9 +38,7 @@
           <div class="flex items-center truncate mr-6">
             <span
               class="truncate"
-              :class="[
-                theme.SelectInput.fontSize,
-              ]"
+              :class="variantSlots.selected()"
             >
               {{ getOptionNames(selectedValues).join(', ') }}
             </span>
@@ -52,11 +51,7 @@
             :option-name="getOptionName(option)"
           >
             <div class="flex items-center truncate mr-6">
-              <div
-                :class="[
-                  theme.SelectInput.fontSize,
-                ]"
-              >
+              <div :class="variantSlots.selected()">
                 {{ getOptionName(option) }}
               </div>
             </div>
@@ -72,9 +67,7 @@
           <span class="flex">
             <p
               class="flex-grow"
-              :class="[
-                theme.SelectInput.fontSize,
-              ]"
+              :class="variantSlots.option()"
             >
               {{ getOptionName(option) }}
             </p>
@@ -100,7 +93,7 @@
       v-if="multiple && (minSelection || maxSelection) && selectedCount > 0"
       #bottom_after_help
     >
-      <small :class="theme.default.help">
+      <small :class="variantSlots.help()">
         <span v-if="minSelection && maxSelection">
           {{ selectedCount }} of {{ minSelection }}-{{ maxSelection }}
         </span>
@@ -120,7 +113,10 @@
 </template>
 
 <script>
+import { computed } from 'vue'
+import { tv } from 'tailwind-variants'
 import { inputProps, useFormInput } from '../useFormInput.js'
+import { selectInputTheme } from '~/lib/forms/themes/select-input.theme.js'
 
 /**
  * Options: {name,value} objects
@@ -146,8 +142,20 @@ export default {
     maxSelection: { type: Number, default: null }
   },
   setup(props, context) {
+    const formInput = useFormInput(props, context)
+
+    const selectInputVariants = computed(() => tv(selectInputTheme, props.ui))
+
+    const variantSlots = computed(() => {
+      return selectInputVariants.value({
+        size: formInput.resolvedSize.value,
+      })
+    })
+
     return {
-      ...useFormInput(props, context)
+      ...formInput,
+      variantSlots,
+      ui: props.ui
     }
   },
   data() {
