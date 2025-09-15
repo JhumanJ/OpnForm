@@ -37,11 +37,17 @@
 </template>
 
 <script>
+import { defineAsyncComponent } from 'vue'
 import OpenFilters from "../../../../../data/open_filters.json"
 import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 
 export default {
-  components: {},
+  components: {
+    DateInput: defineAsyncComponent(() => import('~/components/forms/heavy/DateInput.vue')),
+    FileInput: defineAsyncComponent(() => import('~/components/forms/heavy/FileInput.vue')),
+    MatrixInput: defineAsyncComponent(() => import('~/components/forms/heavy/MatrixInput.vue')),
+    PhoneInput: defineAsyncComponent(() => import('~/components/forms/heavy/PhoneInput.vue'))
+  },
   props: {
     modelValue: { type: Object, required: false, default: null },
     customValidation: { type: Boolean, default: false },
@@ -106,6 +112,10 @@ export default {
           },
         )
       } else if (this.property.type === "date") {
+        // For x_days_before and x_days_after, use number input instead of date input
+        if (["x_days_before", "x_days_after"].includes(this.content.operator)) {
+          componentData.component = "TextInput"
+        }
         // componentData.withTime = true
       } else if (this.property.type === "checkbox") {
         componentData.label = this.property.name

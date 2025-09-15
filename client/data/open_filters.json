@@ -719,6 +719,18 @@
           "type": "date"
         }
       },
+      "x_days_before": {
+        "expected_type": "string",
+        "format": {
+          "type": "date"
+        }
+      },
+      "x_days_after": {
+        "expected_type": "string",
+        "format": {
+          "type": "date"
+        }
+      },
       "is_empty": {
         "expected_type": "boolean",
         "format": {
