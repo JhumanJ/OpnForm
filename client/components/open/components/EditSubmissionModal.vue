@@ -2,8 +2,23 @@
   <UModal
     v-model:open="isModalOpen"
     :ui="{ content: 'sm:max-w-2xl' }"
-    title="Edit Submission"
   >
+    <template #header>
+      <div class="flex items-center justify-between w-full">
+        <h2 class="font-semibold">
+          Edit Submission
+        </h2>
+        <UButton
+          v-if="props.form?.editable_submissions ?? false"
+          variant="outline"
+          :color="copySuccess ? 'success' : 'primary'"
+          :icon="copySuccess ? 'i-heroicons-check' : 'i-heroicons-clipboard-document'"
+          @click.prevent="copyToClipboard"
+        >
+          <span class="hidden md:inline">{{ copySuccess ? 'Copied!' : 'Copy Public Link' }}</span>
+        </UButton>
+      </div>
+    </template>
     <template #body>
       <OpenForm
         v-if="form"
@@ -102,5 +117,22 @@ const updateForm = () => {
       }
       loading.value = false
     })
+}
+
+const copySuccess = ref(false)
+const { copy } = useClipboard()
+const copyToClipboard = () => {
+  if (import.meta.server) return
+
+  const url = props.form.share_url + "?submission_id=" + props.submission.submission_id
+  copy(url)
+  
+  // Show success state
+  copySuccess.value = true
+  
+  // Reset after 2 seconds
+  setTimeout(() => {
+    copySuccess.value = false
+  }, 2000)
 }
 </script>
