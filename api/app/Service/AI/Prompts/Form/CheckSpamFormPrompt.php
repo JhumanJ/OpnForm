@@ -112,7 +112,7 @@ class CheckSpamFormPrompt extends Prompt
             // Check if user was recently manually unblocked
             if ($lastBlock && !is_null($lastBlock['unblocked_by']) && !is_null($lastBlock['unblocked_at'])) {
                 $daysSinceUnblock = \Carbon\Carbon::parse($lastBlock['unblocked_at'])->diffInDays(now());
-                
+
                 if ($daysSinceUnblock <= 30) {
                     $recentUnblockInfo = "
 **⚠️ RECENT MANUAL UNBLOCK ALERT:**
