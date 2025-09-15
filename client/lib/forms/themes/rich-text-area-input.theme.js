@@ -16,6 +16,12 @@ export const richTextAreaInputTheme = {
           'bg-white text-neutral-700 dark:bg-notion-dark-light dark:text-neutral-300'
         ]
       },
+      simple: {
+        container: [
+          'border border-neutral-300 dark:border-neutral-600',
+          'bg-white text-neutral-700 dark:bg-notion-dark-light dark:text-neutral-300'
+        ]
+      },
       notion: {
         container: [
           'border border-notion-input-border dark:border-notion-input-borderDark',
@@ -36,10 +42,10 @@ export const richTextAreaInputTheme = {
       full: { container: 'rounded-[20px]' }
     },
     hasError: {
-      true: { container: 'ring-red-500! ring-2! border-transparent!' }
+      true: { container: '!ring-red-500 !ring-2 !border-transparent' }
     },
     disabled: {
-      true: { container: '!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!' }
+      true: { container: '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800' }
     },
     focused: {
       true: { container: 'focus-within:ring-2 focus-within:ring-form/100 focus-within:border-transparent' }

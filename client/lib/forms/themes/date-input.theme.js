@@ -13,6 +13,7 @@ export const dateInputTheme = {
   variants: {
     theme: {
       default: { input: 'border-neutral-300 dark:border-neutral-600' },
+      simple: { input: 'border-neutral-300 dark:border-neutral-600' },
       notion: {
         input: 'border-notion-input-border dark:border-notion-input-borderDark bg-notion-input-background dark:bg-notion-dark-light text-neutral-900 dark:text-neutral-100'
       }
@@ -29,10 +30,10 @@ export const dateInputTheme = {
       full: { input: 'rounded-[20px]' }
     },
     hasError: {
-      true: { input: 'ring-red-500! ring-2! border-transparent!' }
+      true: { input: '!ring-red-500 !ring-2 !border-transparent' }
     },
     disabled: {
-      true: { input: '!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!' }
+      true: { input: '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800' }
     },
     focused: {
       true: { input: 'ring-2 ring-form/100 border-transparent' }

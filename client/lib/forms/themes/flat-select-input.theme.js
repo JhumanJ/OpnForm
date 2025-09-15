@@ -24,6 +24,17 @@ export const flatSelectInputTheme = {
         ],
         option: [
           'cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-900',
+          'border-neutral-300 dark:border-neutral-600',
+          'gap-x-2'
+        ]
+      },
+      simple: {
+        container: [
+          'border-neutral-300 dark:border-neutral-600'
+        ],
+        option: [
+          'cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-900',
+          'border-neutral-300 dark:border-neutral-600',
           'gap-x-2'
         ]
       },
@@ -35,8 +46,8 @@ export const flatSelectInputTheme = {
         ],
         option: [
           'cursor-pointer hover:backdrop-brightness-95',
-          'space-x-2',
-          'border-neutral-300'
+          'border-notion-input-border dark:border-notion-input-borderDark',
+          'space-x-2'
         ]
       }
     },

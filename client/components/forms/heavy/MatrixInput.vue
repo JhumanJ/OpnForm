@@ -7,14 +7,14 @@
       <table class="w-full table-auto">
         <thead class="">
           <tr>
-            <th class="ltr:text-left rtl:text-right p-2 w-auto max-w-xs" />
+            <th class="ltr:text-left rtl:text-right w-auto max-w-xs" :class="ui.headerCell()" />
             <td
               v-for="column in columns"
               :key="column"
               class="ltr:border-l rtl:border-r rtl:!border-l-0 max-w-24 overflow-hidden"
               :class="ui.cell()"
             >
-              <div class="p-2 w-full flex items-center justify-center text-sm">
+              <div :class="ui.headerCell()">
                 {{ column }}
               </div>
             </td>
@@ -27,7 +27,7 @@
             class="border-t border-neutral-300"
           >
             <td class="ltr:text-left rtl:text-right w-auto max-w-24 overflow-hidden">
-              <div class="w-full p-2 text-sm">
+              <div :class="ui.rowCell()">
                 {{ row }}
               </div>
             </td>
@@ -37,19 +37,15 @@
               class="ltr:border-l rtl:border-r rtl:!border-l-0"
               :class="[
                 ui.cell(),
-                ui.cellHover(),
-                { '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800 hover:!bg-neutral-200 dark:hover:!bg-neutral-800': disabled }
+                ui.cellHover()
               ]"
             >
               <div
                 v-if="compVal"
-                class="w-full flex items-center justify-center relative"
+                class="w-full"
                 role="radio"
                 :aria-checked="compVal[row] === column"
-                :class="[
-                  ui.option(),
-                  { '!cursor-not-allowed !bg-transparent hover:!bg-transparent dark:hover:!bg-transparent': disabled }
-                ]"
+                :class="ui.option()"
                 @click="onSelect(row, column)"
               >
                 <RadioButtonIcon
@@ -85,7 +81,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
-const { compVal, inputWrapperProps, hasError, ui } = useFormInput(props, { emit }, {
+const { compVal, inputWrapperProps, ui } = useFormInput(props, { emit }, {
   variants: matrixInputTheme
 })
 

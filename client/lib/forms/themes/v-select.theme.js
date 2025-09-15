@@ -129,12 +129,12 @@ export const vSelectTheme = {
     },
     hasError: {
       true: {
-        anchor: '!ring-red-500! !ring-2! !border-transparent!'
+        anchor: '!ring-red-500 !ring-2 !border-transparent'
       }
     },
     disabled: {
       true: {
-        anchor: '!cursor-not-allowed !bg-neutral-200! dark:!bg-neutral-800!',
+        anchor: '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800',
         chevronGradient: '!bg-gradient-to-r !from-transparent !to-neutral-200 dark:!to-neutral-800',
         chevronContainer: '!bg-neutral-200 dark:!bg-neutral-800'
       }
@@ -158,16 +158,6 @@ export const vSelectTheme = {
       }
     }
   },
-  compoundVariants: [
-    // Notion theme uses rounded-xs for small border radius
-    {
-      theme: 'notion',
-      borderRadius: 'small',
-      class: {
-        anchor: '!rounded-xs'
-      }
-    }
-  ],
   defaultVariants: {
     theme: 'default',
     size: 'md',

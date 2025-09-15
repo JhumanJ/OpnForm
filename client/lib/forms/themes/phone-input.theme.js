@@ -7,18 +7,36 @@ export const phoneInputTheme = {
     selectedMaxHeight: '',
     flag: '',
     input: [
-      'inline-flex-grow',
+      'grow',
       'border',
       'bg-white dark:bg-notion-dark-light',
       'text-neutral-700 dark:text-neutral-300',
-      'focus:outline-hidden'
+      'focus:outline-hidden',
+      'placeholder-neutral-400 dark:placeholder-neutral-500'
     ]
   },
   variants: {
     theme: {
-      default: { input: 'border-neutral-300 dark:border-neutral-600' },
+      default: { 
+        input: [
+          'border-neutral-300 dark:border-neutral-600',
+          'shadow-xs',
+          'focus:ring-2 focus:ring-form/100 focus:border-transparent'
+        ]
+      },
+      simple: {
+        input: [
+          'border-neutral-300 dark:border-neutral-600',
+          'focus:ring-2 focus:ring-form/100 focus:border-transparent'
+        ]
+      },
       notion: {
-        input: 'border-notion-input-border dark:border-notion-input-borderDark bg-notion-input-background dark:bg-notion-dark-light text-neutral-900 dark:text-neutral-100'
+        input: [
+          'border-notion-input-border dark:border-notion-input-borderDark',
+          'bg-notion-input-background dark:bg-notion-dark-light',
+          'text-neutral-900 dark:text-neutral-100',
+          'focus:ring-2 focus:ring-form/40 focus:border-transparent'
+        ]
       }
     },
     size: {
@@ -35,13 +53,13 @@ export const phoneInputTheme = {
         flag: '-mt-[14px]!'
       },
       md: { 
-        input: 'px-3 py-2 text-base',
+        input: 'px-4 py-2 text-base',
         countrySelectWidth: 'w-[120px]',
         selectedMaxHeight: 'max-h-[24px]',
         flag: '-mt-[9px]! rounded-xs'
       },
       lg: { 
-        input: 'px-4 py-3 text-lg',
+        input: 'px-5 py-3 text-lg',
         countrySelectWidth: 'w-[120px]',
         selectedMaxHeight: 'max-h-[28px]',
         flag: '-mt-[9px]! rounded-xs'
@@ -53,10 +71,10 @@ export const phoneInputTheme = {
       full: { input: 'rounded-[20px]' }
     },
     hasError: {
-      true: { input: 'ring-red-500! ring-2! border-transparent!' }
+      true: { input: '!ring-red-500 !ring-2 !border-transparent' }
     },
     disabled: {
-      true: { input: '!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!' }
+      true: { input: '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800' }
     }
   },
   defaultVariants: {

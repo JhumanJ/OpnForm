@@ -57,9 +57,6 @@ export const textAreaInputTheme = {
       true: { input: '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800' }
     }
   },
-  compoundVariants: [
-    { theme: 'notion', borderRadius: 'small', class: { input: '!rounded-xs' } }
-  ],
   defaultVariants: {
     theme: 'default',
     size: 'md',

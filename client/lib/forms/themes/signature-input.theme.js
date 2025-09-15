@@ -17,6 +17,12 @@ export const signatureInputTheme = {
           'bg-white text-neutral-700 dark:bg-notion-dark-light dark:text-neutral-300'
         ]
       },
+      simple: {
+        container: [
+          'border border-neutral-300 dark:border-neutral-600',
+          'bg-white text-neutral-700 dark:bg-notion-dark-light dark:text-neutral-300'
+        ]
+      },
       notion: {
         container: [
           'border border-notion-input-border dark:border-notion-input-borderDark',

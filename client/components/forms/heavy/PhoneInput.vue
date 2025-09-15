@@ -14,16 +14,19 @@
     >
       <v-select
         v-model="selectedCountryCode"
-        :class="ui.countrySelectWidth()"
         dropdown-class="max-w-[300px]"
         input-class="ltr-only:rounded-r-none rtl:rounded-l-none!"
         :data="countries"
-        :disabled="(disabled || countries.length===1)?true:null"
+        :disabled="disabled || countries.length===1"
         :searchable="true"
         :search-keys="['name']"
         :option-key="'code'"
         :color="color"
         :has-error="hasError"
+        :theme="resolvedTheme"
+        :size="resolvedSize"
+        :border-radius="resolvedBorderRadius"
+        :ui="{ container: ui.countrySelectWidth() }"
         :placeholder="'Select a country'"
         :uppercase-labels="true"
         @update:model-value="onChangeCountryCode"
@@ -59,9 +62,7 @@
         type="text"
         class="inline-flex-grow ltr-only:border-l-0 ltr-only:!rounded-l-none rtl:border-r-0 rtl:rounded-r-none"
         :disabled="disabled?true:null"
-        :class="[
-          ui.input(),
-          { 'ring-red-500! ring-2! border-transparent!': hasError, '!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!': disabled }]"
+        :class="ui.input()"
         :placeholder="placeholder"
         :style="inputStyle"
         @input="onInput"

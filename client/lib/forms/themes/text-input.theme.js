@@ -76,16 +76,6 @@ export const textInputTheme = {
       }
     }
   },
-  compoundVariants: [
-    // Notion theme uses rounded-xs for small border radius
-    {
-      theme: 'notion',
-      borderRadius: 'small',
-      class: {
-        input: '!rounded-xs'
-      }
-    }
-  ],
   defaultVariants: {
     theme: 'default',
     size: 'md',
