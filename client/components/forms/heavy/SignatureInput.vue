@@ -6,7 +6,7 @@
 
     <div
       v-if="loading || file"
-      :class="variantSlots.container()"
+      :class="ui.container()"
     >
       <div
         v-if="loading"
@@ -31,7 +31,7 @@
       v-else
       ref="signaturePad"
       class="not-draggable"
-      :class="variantSlots.container()"
+      :class="ui.container()"
       height="150px"
       :name="name"
       :options="{ onEnd, penColor }"
@@ -40,7 +40,7 @@
     <template #bottom_after_help>
       <small
         v-if="!file"
-        :class="variantSlots.help()"
+        :class="ui.help()"
         class="flex-auto"
       >
         <input
@@ -52,15 +52,15 @@
           @change="manualFileUpload"
         >
         <a
-          :class="variantSlots.help()"
+          :class="ui.help()"
           href="#"
           @click.prevent="openFileUpload"
         >{{ $t('forms.signatureInput.uploadFileInstead') }}</a>
       </small>
 
-      <small :class="variantSlots.help()">
+      <small :class="ui.help()">
         <a
-          :class="variantSlots.help()"
+          :class="ui.help()"
           href="#"
           @click.prevent="clear"
         >{{ $t('forms.signatureInput.clear') }}</a>
@@ -77,7 +77,6 @@
 import { VueSignaturePad } from 'vue-signature-pad'
 import { inputProps, useFormInput } from '../useFormInput.js'
 import { storeFile } from '~/lib/file-uploads.js'
-import { tv } from 'tailwind-variants'
 import { signatureInputTheme } from '~/lib/forms/themes/signature-input.theme.js'
 
 export default {
@@ -89,18 +88,11 @@ export default {
   },
 
   setup(props, context) {
-    const formInput = useFormInput(props, context)
-    const sigVariants = computed(() => tv(signatureInputTheme, props.ui))
-    const variantSlots = computed(() => sigVariants.value({
-      themeName: formInput.resolvedTheme.value,
-      size: formInput.resolvedSize.value,
-      borderRadius: formInput.resolvedBorderRadius.value,
-      hasError: formInput.hasError.value,
-      disabled: props.disabled
-    }))
+    const formInput = useFormInput(props, context, {
+      variants: signatureInputTheme
+    })
     return {
-      ...formInput,
-      variantSlots
+      ...formInput
     }
   },
 

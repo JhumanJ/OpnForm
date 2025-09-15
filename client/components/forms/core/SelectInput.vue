@@ -38,7 +38,7 @@
           <div class="flex items-center truncate mr-6">
             <span
               class="truncate"
-              :class="variantSlots.selected()"
+              :class="ui.selected()"
             >
               {{ getOptionNames(selectedValues).join(', ') }}
             </span>
@@ -51,7 +51,7 @@
             :option-name="getOptionName(option)"
           >
             <div class="flex items-center truncate mr-6">
-              <div :class="variantSlots.selected()">
+              <div :class="ui.selected()">
                 {{ getOptionName(option) }}
               </div>
             </div>
@@ -67,7 +67,7 @@
           <span class="flex">
             <p
               class="flex-grow"
-              :class="variantSlots.option()"
+              :class="ui.option()"
             >
               {{ getOptionName(option) }}
             </p>
@@ -93,7 +93,7 @@
       v-if="multiple && (minSelection || maxSelection) && selectedCount > 0"
       #bottom_after_help
     >
-      <small :class="variantSlots.help()">
+      <small :class="ui.help()">
         <span v-if="minSelection && maxSelection">
           {{ selectedCount }} of {{ minSelection }}-{{ maxSelection }}
         </span>
@@ -114,7 +114,6 @@
 
 <script>
 import { computed } from 'vue'
-import { tv } from 'tailwind-variants'
 import { inputProps, useFormInput } from '../useFormInput.js'
 import { selectInputTheme } from '~/lib/forms/themes/select-input.theme.js'
 
@@ -142,20 +141,18 @@ export default {
     maxSelection: { type: Number, default: null }
   },
   setup(props, context) {
-    const formInput = useFormInput(props, context)
-
-    const selectInputVariants = computed(() => tv(selectInputTheme, props.ui))
-
-    const variantSlots = computed(() => {
-      return selectInputVariants.value({
-        size: formInput.resolvedSize.value,
-      })
+    const formInput = useFormInput(props, context, {
+      variants: selectInputTheme,
+      additionalVariants: {
+        loading: props.loading,
+        multiple: props.multiple,
+        searchable: props.searchable,
+        clearable: props.clearable
+      }
     })
 
     return {
-      ...formInput,
-      variantSlots,
-      ui: props.ui
+      ...formInput
     }
   },
   data() {

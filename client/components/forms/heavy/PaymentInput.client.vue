@@ -4,7 +4,7 @@
       <slot name="label" />
     </template>
 
-    <div :class="variantSlots.container()">
+    <div :class="ui.container()">
       <div v-if="!oauthProviderId">
         <div class="space-y-4 mt-3">
           <div class="animate-pulse flex flex-col gap-3">
@@ -59,7 +59,7 @@
           v-else-if="stripeState && stripeState.stripeAccountId && isStripeJsLoaded && publishableKey"
           class="my-2"
         >
-          <div :class="variantSlots.amountBar()">
+          <div :class="ui.amountBar()">
             <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">{{ $t('forms.payment.amount_to_pay') }}</span>
             <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">{{ currencySymbol }}{{ amount }}</span>
           </div>
@@ -74,7 +74,7 @@
           >
             <template #default="{ elements }">
               <div class="space-y-4">
-                <div :class="[variantSlots.container(), isCardFocused && !hasError ? 'ring-2 ring-form border-transparent' : '']">
+                <div :class="[ui.container(), isCardFocused && !hasError ? 'ring-2 ring-form border-transparent' : '']">
                   <StripeElement
                     v-if="elements"
                     ref="card"
@@ -141,7 +141,6 @@ import { StripeElements, StripeElement } from 'vue-stripe-js'
 import stripeCurrencies from "~/data/stripe_currencies.json"
 import { useAlert } from '~/composables/useAlert'
 import { useFeatureFlag } from '~/composables/useFeatureFlag'
-import { tv } from 'tailwind-variants'
 import { paymentInputTheme } from '~/lib/forms/themes/payment-input.theme.js'
 
 const props = defineProps({
@@ -157,16 +156,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits([])
-const { compVal, hasError, inputWrapperProps, resolvedTheme, resolvedSize, resolvedBorderRadius } = useFormInput(props, { emit })
-
-const payVariants = computed(() => tv(paymentInputTheme, props.ui))
-const variantSlots = computed(() => payVariants.value({
-  themeName: resolvedTheme.value,
-  size: resolvedSize.value,
-  borderRadius: resolvedBorderRadius.value,
-  hasError: hasError.value,
-  disabled: props.disabled
-}))
+const { compVal, hasError, inputWrapperProps, ui } = useFormInput(props, { emit }, {
+  variants: paymentInputTheme
+})
 
 const route = useRoute()
 const alert = useAlert()

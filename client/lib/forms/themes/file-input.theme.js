@@ -12,7 +12,7 @@ export const fileInputTheme = {
     ]
   },
   variants: {
-    themeName: {
+    theme: {
       default: { container: 'border-neutral-300 dark:border-neutral-600' },
       notion: {
         container: 'border-notion-input-border dark:border-notion-input-borderDark bg-notion-input-background dark:bg-notion-dark-light text-neutral-900 dark:text-neutral-100'
@@ -37,7 +37,7 @@ export const fileInputTheme = {
     }
   },
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     size: 'md',
     borderRadius: 'small',
     hasError: false,

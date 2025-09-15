@@ -22,7 +22,7 @@
       >
         <Icon
           name="heroicons:star-20-solid"
-          :class="variantSlots.icon()"
+          :class="ui.icon()"
         />
       </div>
     </div>
@@ -38,7 +38,6 @@
 
 <script>
 import { inputProps, useFormInput } from "../useFormInput.js"
-import { tv } from "tailwind-variants"
 import { ratingInputTheme } from "~/lib/forms/themes/rating-input.theme.js"
 
 export default {
@@ -51,14 +50,11 @@ export default {
   },
 
   setup(props, context) {
-    const ratingVariants = computed(() => tv(ratingInputTheme, props.ui))
-    const formInput = useFormInput(props, context)
-    const variantSlots = computed(() => ratingVariants.value({
-      size: formInput.resolvedSize.value
-    }))
+    const formInput = useFormInput(props, context, {
+      variants: ratingInputTheme
+    })
     return {
-      ...formInput,
-      variantSlots
+      ...formInput
     }
   },
 

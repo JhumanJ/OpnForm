@@ -8,7 +8,7 @@
       <slot name="help" />
     </template>
 
-    <div :class="variantSlots.container()">
+    <div :class="ui.container()">
       <!-- Fullscreen button -->
       <UTooltip text="Open in fullscreen" :popper="{ placement: 'left' }">
         <UButton
@@ -92,7 +92,6 @@
 import { Codemirror } from "vue-codemirror"
 import { html } from "@codemirror/lang-html"
 import { inputProps, useFormInput } from "../useFormInput.js"
-import { tv } from 'tailwind-variants'
 import { codeInputTheme } from '~/lib/forms/themes/code-input.theme.js'
 
 const props = defineProps({
@@ -128,17 +127,13 @@ defineShortcuts({
   }
 })
 
-// Get form input composable
-const { compVal, inputWrapperProps, hasError, inputStyle, id, name, resolvedTheme, resolvedSize, resolvedBorderRadius } = useFormInput(props, { emit })
-
-const codeVariants = computed(() => tv(codeInputTheme, props.ui))
-const variantSlots = computed(() => codeVariants.value({
-  themeName: resolvedTheme.value,
-  size: resolvedSize.value,
-  borderRadius: resolvedBorderRadius.value,
-  hasError: hasError.value,
-  disabled: props.disabled
-}))
+// Get form input composable  
+const { compVal, inputWrapperProps, hasError, inputStyle, id, name, ui } = useFormInput(props, { emit }, {
+  variants: codeInputTheme,
+  additionalVariants: {
+    fullscreen: false  // Could be extended for fullscreen mode
+  }
+})
 </script>
 
 <style>

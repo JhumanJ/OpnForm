@@ -14,7 +14,7 @@
     >
       <v-select
         v-model="selectedCountryCode"
-        :class="variantSlots.countrySelectWidth()"
+        :class="ui.countrySelectWidth()"
         dropdown-class="max-w-[300px]"
         input-class="ltr-only:rounded-r-none rtl:rounded-l-none!"
         :data="countries"
@@ -42,12 +42,12 @@
         <template #selected="props">
           <div
             class="flex items-center gap-2 justify-center overflow-hidden"
-            :class="variantSlots.selectedMaxHeight()"
+            :class="ui.selectedMaxHeight()"
           >
             <country-flag
               :size="countryFlagSize"
               class="rounded-lg!"
-              :class="variantSlots.flag()"
+              :class="ui.flag()"
               :country="props.option.code"
             />
             <span class="text-sm">{{ props.option.dial_code }}</span>
@@ -60,7 +60,7 @@
         class="inline-flex-grow ltr-only:border-l-0 ltr-only:!rounded-l-none rtl:border-r-0 rtl:rounded-r-none"
         :disabled="disabled?true:null"
         :class="[
-          variantSlots.input(),
+          ui.input(),
           { 'ring-red-500! ring-2! border-transparent!': hasError, '!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!': disabled }]"
         :placeholder="placeholder"
         :style="inputStyle"
@@ -83,7 +83,6 @@ import { inputProps, useFormInput } from '../useFormInput.js'
 import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 import parsePhoneNumber from 'libphonenumber-js'
-import { tv } from 'tailwind-variants'
 import { phoneInputTheme } from '~/lib/forms/themes/phone-input.theme.js'
 
 export default {
@@ -96,22 +95,15 @@ export default {
   },
 
   setup (props, context) {
-    const phoneVariants = computed(() => tv(phoneInputTheme, props.ui))
-    const formInput = useFormInput(props, context)
-    const variantSlots = computed(() => phoneVariants.value({
-      themeName: formInput.resolvedTheme.value,
-      size: formInput.resolvedSize.value,
-      borderRadius: formInput.resolvedBorderRadius.value,
-      hasError: formInput.hasError.value,
-      disabled: props.disabled
-    }))
+    const formInput = useFormInput(props, context, {
+      variants: phoneInputTheme
+    })
     const countryFlagSize = computed(() => {
       const size = formInput.resolvedSize.value
       return (size === 'xs' || size === 'sm') ? 'small' : 'normal'
     })
     return {
       ...formInput,
-      variantSlots,
       countryFlagSize
     }
   },

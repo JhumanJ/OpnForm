@@ -3,12 +3,12 @@
     <Icon
       v-show="isChecked"
       name="ic:round-radio-button-checked"
-      :class="variantSlots.checkedIcon()"
+      :class="ui.checkedIcon()"
     />
     <Icon
       v-show="!isChecked"
       name="ic:round-radio-button-unchecked"
-      :class="variantSlots.uncheckedIcon()"
+      :class="ui.uncheckedIcon()"
     />
   </div>
 </template>
@@ -44,12 +44,9 @@ const colorStyle = computed(() => ({
   '--form-color': props.color
 }))
 
-// Create radio button icon variants with UI prop merging
-const radioButtonIconVariants = computed(() => tv(radioButtonIconTheme, props.ui))
-
-// Single variant computation
-const variantSlots = computed(() => {
-  return radioButtonIconVariants.value({
+// OPTIMIZED: Single computed following Nuxt UI pattern
+const ui = computed(() => {
+  return tv(radioButtonIconTheme, props.ui)({
     size: resolvedSize.value
   })
 })

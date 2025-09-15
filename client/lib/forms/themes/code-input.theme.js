@@ -8,7 +8,7 @@ export const codeInputTheme = {
     ]
   },
   variants: {
-    themeName: {
+    theme: {
       default: { container: 'border border-neutral-300 dark:border-neutral-600' },
       notion: { container: 'border border-notion-input-border dark:border-notion-input-borderDark' }
     },
@@ -31,7 +31,7 @@ export const codeInputTheme = {
     }
   },
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     size: 'md',
     borderRadius: 'small',
     hasError: false,

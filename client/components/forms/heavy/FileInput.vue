@@ -6,7 +6,7 @@
     <div
       v-if="cameraUpload && isInWebcam"
       class="hidden sm:block w-full"
-      :class="variantSlots.container()"
+      :class="ui.container()"
     >
       <ClientOnly>
       <CameraUpload
@@ -20,7 +20,7 @@
       v-else
       :style="inputStyle"
       class="cursor-pointer"
-      :class="variantSlots.container()"
+      :class="ui.container()"
       tabindex="0"
       role="button"
       :aria-label="multiple ? 'Choose files or drag here' : 'Choose a file or drag here'"
@@ -119,7 +119,6 @@ import UploadedFile from './components/UploadedFile.vue'
 import CameraUpload from './components/CameraUpload.vue'
 import {storeFile} from "~/lib/file-uploads.js"
 import { formsApi } from '~/api'
-import { tv } from 'tailwind-variants'
 import { fileInputTheme } from '~/lib/forms/themes/file-input.theme.js'
 
 export default {
@@ -136,18 +135,11 @@ export default {
   },
 
   setup(props, context) {
-    const formInput = useFormInput(props, context)
-    const fileVariants = computed(() => tv(fileInputTheme, props.ui))
-    const variantSlots = computed(() => fileVariants.value({
-      themeName: formInput.resolvedTheme.value,
-      size: formInput.resolvedSize.value,
-      borderRadius: formInput.resolvedBorderRadius.value,
-      hasError: formInput.hasError.value,
-      disabled: props.disabled
-    }))
+    const formInput = useFormInput(props, context, {
+      variants: fileInputTheme
+    })
     return {
-      ...formInput,
-      variantSlots
+      ...formInput
     }
   },
 

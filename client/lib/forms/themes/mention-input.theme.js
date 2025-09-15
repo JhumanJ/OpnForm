@@ -11,7 +11,7 @@ export const mentionInputTheme = {
     ]
   },
   variants: {
-    themeName: {
+    theme: {
       default: {
         input: 'border-neutral-300 dark:border-neutral-600 bg-white text-neutral-700 dark:bg-notion-dark-light dark:text-neutral-300'
       },
@@ -38,7 +38,7 @@ export const mentionInputTheme = {
     }
   },
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     size: 'md',
     borderRadius: 'small',
     hasError: false,

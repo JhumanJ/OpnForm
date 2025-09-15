@@ -9,7 +9,7 @@ export const matrixInputTheme = {
     option: 'flex items-center justify-center relative'
   },
   variants: {
-    themeName: {
+    theme: {
       default: {
         container: 'bg-white dark:bg-notion-dark-light shadow-xs',
         cell: 'border-neutral-300 dark:border-neutral-600',
@@ -30,7 +30,7 @@ export const matrixInputTheme = {
     }
   },
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     borderRadius: 'small'
   }
 }

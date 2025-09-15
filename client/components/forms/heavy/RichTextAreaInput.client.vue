@@ -9,7 +9,7 @@
 
     <div
       class="rich-editor resize-y notranslate relative"
-      :class="variantSlots.container()"
+      :class="ui.container()"
       :style="inputStyle"
     >
       <MentionDropdown
@@ -99,7 +99,7 @@
       v-if="maxCharLimit && showCharLimit"
       #bottom_after_help
     >
-      <small :class="variantSlots.help()">
+      <small :class="ui.help()">
         {{ charCount }}/{{ maxCharLimit }}
       </small>
     </template>
@@ -119,7 +119,6 @@ import { inputProps, useFormInput } from '../useFormInput.js'
 import QuillyEditor from './components/QuillyEditor.vue'
 import MentionDropdown from './components/MentionDropdown.vue'
 import registerMentionExtension from '~/lib/quill/quillMentionExtension.js'
-import { tv } from 'tailwind-variants'
 import { richTextAreaInputTheme } from '~/lib/forms/themes/rich-text-area-input.theme.js'
 
 // Global icon registration - only happens once
@@ -154,17 +153,12 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue'])
 
-const { compVal, inputStyle, hasError, inputWrapperProps, resolvedTheme, resolvedSize, resolvedBorderRadius } = useFormInput(props, { emit })
-
-const richVariants = computed(() => tv(richTextAreaInputTheme, props.ui))
-const variantSlots = computed(() => richVariants.value({
-  themeName: resolvedTheme.value,
-  size: resolvedSize.value,
-  borderRadius: resolvedBorderRadius.value,
-  hasError: hasError.value,
-  disabled: props.disabled,
-  focused: true // focus style is handled via focus-within by CSS, but we keep variant available
-}))
+const { compVal, inputStyle, inputWrapperProps, ui } = useFormInput(props, { emit }, {
+  variants: richTextAreaInputTheme,
+  additionalVariants: {
+    focused: true // focus style is handled via focus-within by CSS
+  }
+})
 const editor = ref(null)
 const mentionState = ref(null)
 

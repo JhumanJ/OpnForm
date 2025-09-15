@@ -8,7 +8,7 @@
       :id="id ? id : name"
       v-model="compVal"
       :disabled="disabled ? true : null"
-      :class="variantSlots.input()"
+      :class="ui.input()"
       :name="name"
       :style="inputStyle"
       :placeholder="placeholder"
@@ -26,7 +26,7 @@
       v-if="maxCharLimit && showCharLimit"
       #bottom_after_help
     >
-      <small :class="variantSlots.help()">
+      <small :class="ui.help()">
         {{ charCount }}/{{ maxCharLimit }}
       </small>
     </template>
@@ -42,7 +42,6 @@
 
 <script>
 import {inputProps, useFormInput} from "../useFormInput.js"
-import { tv } from "tailwind-variants"
 import { textAreaInputTheme } from "~/lib/forms/themes/text-area-input.theme.js"
 
 export default {
@@ -56,21 +55,12 @@ export default {
   },
 
   setup(props, context) {
-    const textAreaVariants = computed(() => tv(textAreaInputTheme, props.ui))
-
-    const formInput = useFormInput(props, context)
-
-    const variantSlots = computed(() => textAreaVariants.value({
-      themeName: formInput.resolvedTheme.value,
-      size: formInput.resolvedSize.value,
-      borderRadius: formInput.resolvedBorderRadius.value,
-      hasError: formInput.hasError.value,
-      disabled: props.disabled
-    }))
+    const formInput = useFormInput(props, context, {
+      variants: textAreaInputTheme
+    })
 
     return {
-      ...formInput,
-      variantSlots
+      ...formInput
     }
   },
 

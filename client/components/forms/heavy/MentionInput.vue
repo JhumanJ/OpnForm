@@ -10,7 +10,7 @@
         :contenteditable="!disabled"
         class="mention-input"
         :style="inputStyle"
-        :class="variantSlots.input()"
+        :class="ui.input()"
         :placeholder="placeholder"
         @input="onInput"
       />
@@ -61,7 +61,6 @@
 import { ref, onMounted, watch, reactive } from 'vue'
 import { inputProps, useFormInput } from '../useFormInput.js'
 import MentionDropdown from './components/MentionDropdown.vue'
-import { tv } from 'tailwind-variants'
 import { mentionInputTheme } from '~/lib/forms/themes/mention-input.theme.js'
 
 const props = defineProps({
@@ -72,16 +71,9 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const { compVal, inputStyle, hasError, inputWrapperProps, resolvedTheme, resolvedSize, resolvedBorderRadius } = useFormInput(props, { emit })
-
-const mVariants = computed(() => tv(mentionInputTheme, props.ui))
-const variantSlots = computed(() => mVariants.value({
-  themeName: resolvedTheme.value,
-  size: resolvedSize.value,
-  borderRadius: resolvedBorderRadius.value,
-  hasError: hasError.value,
-  disabled: props.disabled
-}))
+const { compVal, inputStyle, hasError, inputWrapperProps, ui } = useFormInput(props, { emit }, {
+  variants: mentionInputTheme
+})
 const editableDiv = ref(null)
 const savedRange = ref(null)
 const { openSubscriptionModal } = useAppModals()

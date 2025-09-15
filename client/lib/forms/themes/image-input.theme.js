@@ -11,7 +11,7 @@ export const imageInputTheme = {
     help: 'text-neutral-500'
   },
   variants: {
-    themeName: {
+    theme: {
       default: {
         button: [
           'border border-neutral-300 dark:border-neutral-600',
@@ -43,7 +43,7 @@ export const imageInputTheme = {
     }
   },
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     size: 'md',
     borderRadius: 'small',
     hasError: false

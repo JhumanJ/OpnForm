@@ -1,13 +1,13 @@
 <template>
   <label
     :for="nativeFor"
-    :class="variantSlots.label()"
+    :class="ui.label()"
   >
     <slot>
       {{ label }}
       <span
         v-if="required"
-        :class="variantSlots.requiredDot()"
+        :class="ui.requiredDot()"
       >*</span>
     </slot>
   </label>
@@ -29,12 +29,9 @@ const props = defineProps({
   ui: {type: Object, default: () => ({})}
 })
 
-// Create input label variants with UI prop merging
-const inputLabelVariants = computed(() => tv(inputLabelTheme, props.ui))
-
-// Single variant computation
-const variantSlots = computed(() => {
-  return inputLabelVariants.value({
+// OPTIMIZED: Single computed following Nuxt UI pattern
+const ui = computed(() => {
+  return tv(inputLabelTheme, props.ui)({
     uppercaseLabels: props.uppercaseLabels
   })
 })

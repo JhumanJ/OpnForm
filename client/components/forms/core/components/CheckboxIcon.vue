@@ -3,12 +3,12 @@
     <Icon
       v-show="isChecked"
       name="i-material-symbols-check-box"
-      :class="variantSlots.checkedIcon()"
+      :class="ui.checkedIcon()"
     />
     <Icon
       v-show="!isChecked"
       name="i-material-symbols-check-box-outline-blank"
-      :class="variantSlots.uncheckedIcon()"
+      :class="ui.uncheckedIcon()"
     />
   </div>
 </template>
@@ -44,12 +44,9 @@ const colorStyle = computed(() => ({
   '--form-color': props.color
 }))
 
-// Create checkbox icon variants with UI prop merging
-const checkboxIconVariants = computed(() => tv(checkboxIconTheme, props.ui))
-
-// Single variant computation
-const variantSlots = computed(() => {
-  return checkboxIconVariants.value({
+// OPTIMIZED: Single computed following Nuxt UI pattern
+const ui = computed(() => {
+  return tv(checkboxIconTheme, props.ui)({
     size: resolvedSize.value
   })
 })

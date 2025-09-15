@@ -81,10 +81,10 @@ export default {
     isImageHide: false,
   }),
   setup(props) {
-    const injectedThemeName = inject('formThemeName', null)
-    const resolvedTheme = computed(() => injectedThemeName?.value || 'default')
+    const injectedTheme = inject('formTheme', null)
+    const resolvedTheme = computed(() => injectedTheme?.value || 'default')
     const uploadedVariants = computed(() => tv(uploadedFileTheme, {}))
-    const variantSlots = computed(() => uploadedVariants.value({ themeName: resolvedTheme.value }))
+    const variantSlots = computed(() => uploadedVariants.value({ theme: resolvedTheme.value }))
     return { variantSlots }
   },
 }

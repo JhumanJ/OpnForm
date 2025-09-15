@@ -14,7 +14,7 @@ export const optionSelectorInputTheme = {
     label: ''
   },
   variants: {
-    themeName: {
+    theme: {
       default: {
         option: ['border-neutral-300', 'hover:bg-neutral-100']
       },
@@ -40,7 +40,7 @@ export const optionSelectorInputTheme = {
     }
   },
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     size: 'sm',
     seamless: false,
     selected: false,

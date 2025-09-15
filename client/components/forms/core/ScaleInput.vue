@@ -10,8 +10,8 @@
         :key="i"
         :class="[
           { 'font-semibold': compVal === i },
-          variantSlots.button(),
-          compVal !== i ? variantSlots.buttonUnselected() : ''
+          ui.button(),
+          compVal !== i ? ui.buttonUnselected() : ''
         ]"
         :style="btnStyle(i === compVal)"
         role="button"
@@ -32,7 +32,6 @@
 
 <script>
 import { inputProps, useFormInput } from "../useFormInput.js"
-import { tv } from "tailwind-variants"
 import { scaleInputTheme } from "~/lib/forms/themes/scale-input.theme.js"
 
 export default {
@@ -47,16 +46,11 @@ export default {
   },
 
   setup(props, context) {
-    const scaleVariants = computed(() => tv(scaleInputTheme, props.ui))
-    const formInput = useFormInput(props, context)
-    const variantSlots = computed(() => scaleVariants.value({
-      themeName: formInput.resolvedTheme.value,
-      size: formInput.resolvedSize.value,
-      borderRadius: formInput.resolvedBorderRadius.value,
-    }))
+    const formInput = useFormInput(props, context, {
+      variants: scaleInputTheme
+    })
     return {
-      ...formInput,
-      variantSlots
+      ...formInput
     }
   },
 

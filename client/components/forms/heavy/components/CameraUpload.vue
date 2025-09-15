@@ -171,7 +171,7 @@ export default {
     mediaStream: null
   }),
   setup() {
-    const themeName = inject('formThemeName', null)
+    const themeName = inject('formTheme', null)
     const size = inject('formSize', null)
     const borderRadius = inject('formBorderRadius', null)
     const resolvedTheme = computed(() => themeName?.value || 'default')
@@ -179,7 +179,7 @@ export default {
     const resolvedBorderRadius = computed(() => borderRadius?.value || 'small')
     const variants = computed(() => tv(fileInputTheme, {}))
     const variantSlots = computed(() => variants.value({
-      themeName: resolvedTheme.value,
+      theme: resolvedTheme.value,
       size: resolvedSize.value,
       borderRadius: resolvedBorderRadius.value
     }))

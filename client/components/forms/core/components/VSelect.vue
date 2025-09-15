@@ -232,7 +232,7 @@ export default {
     uppercaseLabels: { type: Boolean, default: true },
     showClearButton: { type: Boolean, default: true },
     // Theme configuration as strings for tailwind-variants
-    themeName: {type: String, default: null},
+    theme: {type: String, default: null},
     size: {type: String, default: null}, 
     borderRadius: {type: String, default: null},
     ui: {type: Object, default: () => ({})},
@@ -253,13 +253,13 @@ export default {
   computed: {
     // Resolve theme values with proper reactivity
     resolvedTheme() {
-      return this.themeName || this.$.appContext.provides.formThemeName?.value || 'default'
+      return this.theme || 'default'
     },
     resolvedSize() {
-      return this.size || this.$.appContext.provides.formSize?.value || 'md'
+      return this.size || 'md'
     },
     resolvedBorderRadius() {
-      return this.borderRadius || this.$.appContext.provides.formBorderRadius?.value || 'small'
+      return this.borderRadius || 'small'
     },
 
     // Create select variants with UI prop merging
@@ -270,7 +270,7 @@ export default {
     // Single variant computation
     variantSlots() {
       return this.vSelectVariants({
-        themeName: this.resolvedTheme,
+        theme: this.resolvedTheme,
         size: this.resolvedSize,
         borderRadius: this.resolvedBorderRadius,
         hasError: this.hasError,

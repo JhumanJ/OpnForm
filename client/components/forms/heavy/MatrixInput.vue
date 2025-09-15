@@ -3,7 +3,7 @@
     <template #label>
       <slot name="label" />
     </template>
-    <div :class="variantSlots.container()">
+    <div :class="ui.container()">
       <table class="w-full table-auto">
         <thead class="">
           <tr>
@@ -12,7 +12,7 @@
               v-for="column in columns"
               :key="column"
               class="ltr:border-l rtl:border-r rtl:!border-l-0 max-w-24 overflow-hidden"
-              :class="variantSlots.cell()"
+              :class="ui.cell()"
             >
               <div class="p-2 w-full flex items-center justify-center text-sm">
                 {{ column }}
@@ -36,8 +36,8 @@
               :key="row + column"
               class="ltr:border-l rtl:border-r rtl:!border-l-0"
               :class="[
-                variantSlots.cell(),
-                variantSlots.cellHover(),
+                ui.cell(),
+                ui.cellHover(),
                 { '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800 hover:!bg-neutral-200 dark:hover:!bg-neutral-800': disabled }
               ]"
             >
@@ -47,7 +47,7 @@
                 role="radio"
                 :aria-checked="compVal[row] === column"
                 :class="[
-                  variantSlots.option(),
+                  ui.option(),
                   { '!cursor-not-allowed !bg-transparent hover:!bg-transparent dark:hover:!bg-transparent': disabled }
                 ]"
                 @click="onSelect(row, column)"
@@ -75,7 +75,6 @@
 import { watch } from "vue"
 import { inputProps, useFormInput } from "../useFormInput.js"
 import RadioButtonIcon from "../core/components/RadioButtonIcon.vue"
-import { tv } from 'tailwind-variants'
 import { matrixInputTheme } from '~/lib/forms/themes/matrix-input.theme.js'
 
 const props = defineProps({
@@ -86,13 +85,9 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
-const { compVal, inputWrapperProps, hasError, resolvedTheme, resolvedBorderRadius } = useFormInput(props, { emit })
-
-const matrixVariants = computed(() => tv(matrixInputTheme, props.ui))
-const variantSlots = computed(() => matrixVariants.value({
-  themeName: resolvedTheme.value,
-  borderRadius: resolvedBorderRadius.value
-}))
+const { compVal, inputWrapperProps, hasError, ui } = useFormInput(props, { emit }, {
+  variants: matrixInputTheme
+})
 
 const onSelect = (row, column) => {
   if (props.disabled) {

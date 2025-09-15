@@ -16,7 +16,7 @@ export const textAreaInputTheme = {
     help: 'text-neutral-500'
   },
   variants: {
-    themeName: {
+    theme: {
       default: {
         input: [
           'border-neutral-300 dark:border-neutral-600',
@@ -58,10 +58,10 @@ export const textAreaInputTheme = {
     }
   },
   compoundVariants: [
-    { themeName: 'notion', borderRadius: 'small', class: { input: '!rounded-xs' } }
+    { theme: 'notion', borderRadius: 'small', class: { input: '!rounded-xs' } }
   ],
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     size: 'md',
     borderRadius: 'small',
     hasError: false,

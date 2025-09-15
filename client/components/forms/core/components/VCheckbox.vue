@@ -1,18 +1,18 @@
 <template>
-  <div :class="variantSlots.container()">
+  <div :class="ui.container()">
     <input
       :id="id || name"
       v-model="internalValue"
       :value="value"
       :name="name"
       type="checkbox"
-      :class="variantSlots.input()"
+      :class="ui.input()"
       :style="colorStyle"
       :disabled="disabled ? true : null"
     >
     <label
       :for="id || name"
-      :class="variantSlots.label()"
+      :class="ui.label()"
     >
       <slot />
     </label>
@@ -66,12 +66,9 @@ const colorStyle = computed(() => ({
   '--accent-color': props.color
 }))
 
-// Create checkbox variants with UI prop merging
-const vCheckboxVariants = computed(() => tv(vCheckboxTheme, props.ui))
-
-// Single variant computation
-const variantSlots = computed(() => {
-  return vCheckboxVariants.value({
+// OPTIMIZED: Single computed following Nuxt UI pattern
+const ui = computed(() => {
+  return tv(vCheckboxTheme, props.ui)({
     size: resolvedSize.value,
     disabled: props.disabled
   })

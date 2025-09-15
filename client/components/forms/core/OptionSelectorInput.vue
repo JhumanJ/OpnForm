@@ -124,13 +124,13 @@ const optionStyle = computed(() => ({
 
 const variants = computed(() => tv(optionSelectorInputTheme, props.ui))
 const optionClasses = (selected) => variants.value({
-  themeName: resolvedTheme.value,
+  theme: resolvedTheme.value,
   size: resolvedSize.value,
   seamless: props.seamless,
   selected
 }).option()
 const buttonClasses = (isDisabled) => variants.value({
-  themeName: resolvedTheme.value,
+  theme: resolvedTheme.value,
   size: resolvedSize.value,
   disabled: isDisabled
 }).button()

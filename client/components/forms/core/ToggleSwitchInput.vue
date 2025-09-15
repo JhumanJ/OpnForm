@@ -22,7 +22,7 @@
         >
           <InputHelp
             :help="help"
-            :help-classes="variantSlots.help()"
+            :help-classes="ui.help()"
           >
             <template #after-help>
               <slot name="bottom_after_help" />
@@ -33,7 +33,7 @@
           <label
             :aria-label="id ? id : name"
             :for="id ? id : name"
-            :class="variantSlots.label()"
+            :class="ui.label()"
           >
             {{ label }}
             <span
@@ -48,7 +48,7 @@
         >
           <InputHelp
             :help="help"
-            :help-classes="variantSlots.help()"
+            :help-classes="ui.help()"
           >
             <template #after-help>
               <slot name="bottom_after_help" />
@@ -71,7 +71,6 @@
 <script>
 import {inputProps, useFormInput} from "../useFormInput.js"
 import InputHelp from "~/components/forms/core/components/InputHelp.vue"
-import { tv } from "tailwind-variants"
 import { toggleSwitchInputTheme } from "~/lib/forms/themes/toggle-switch-input.theme.js"
 
 export default {
@@ -83,14 +82,11 @@ export default {
   },
 
   setup(props, context) {
-    const toggleVariants = computed(() => tv(toggleSwitchInputTheme, props.ui))
-    const formInput = useFormInput(props, context)
-    const variantSlots = computed(() => toggleVariants.value({
-      size: formInput.resolvedSize.value
-    }))
+    const formInput = useFormInput(props, context, {
+      variants: toggleSwitchInputTheme
+    })
     return {
-      ...formInput,
-      variantSlots
+      ...formInput
     }
   },
 

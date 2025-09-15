@@ -7,7 +7,7 @@ export const paymentInputTheme = {
     amountBar: ['mb-4 flex items-center justify-between']
   },
   variants: {
-    themeName: {
+    theme: {
       default: {
         container: [
           'border border-neutral-300 dark:border-neutral-600',
@@ -50,7 +50,7 @@ export const paymentInputTheme = {
     }
   },
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     size: 'md',
     borderRadius: 'small',
     hasError: false,

@@ -11,7 +11,7 @@
         aria-expanded="true"
         aria-labelledby="listbox-label"
         class="cursor-pointer relative w-full"
-        :class="variantSlots.button()"
+        :class="ui.button()"
         :style="inputStyle"
         @click.prevent="showUploadModal = true"
       >
@@ -133,7 +133,6 @@
 import { inputProps, useFormInput } from "../useFormInput.js"
 import { storeFile } from "~/lib/file-uploads.js"
 import { formsApi } from '~/api'
-import { tv } from 'tailwind-variants'
 import { imageInputTheme } from '~/lib/forms/themes/image-input.theme.js'
 
 export default {
@@ -144,17 +143,11 @@ export default {
   },
 
   setup(props, context) {
-    const formInput = useFormInput(props, context)
-    const imageVariants = computed(() => tv(imageInputTheme, props.ui))
-    const variantSlots = computed(() => imageVariants.value({
-      themeName: formInput.resolvedTheme.value,
-      size: formInput.resolvedSize.value,
-      borderRadius: formInput.resolvedBorderRadius.value,
-      hasError: formInput.hasError.value
-    }))
+    const formInput = useFormInput(props, context, {
+      variants: imageInputTheme
+    })
     return {
-      ...formInput,
-      variantSlots
+      ...formInput
     }
   },
 

@@ -15,7 +15,7 @@ export const phoneInputTheme = {
     ]
   },
   variants: {
-    themeName: {
+    theme: {
       default: { input: 'border-neutral-300 dark:border-neutral-600' },
       notion: {
         input: 'border-notion-input-border dark:border-notion-input-borderDark bg-notion-input-background dark:bg-notion-dark-light text-neutral-900 dark:text-neutral-100'
@@ -60,7 +60,7 @@ export const phoneInputTheme = {
     }
   },
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     size: 'md',
     borderRadius: 'small',
     hasError: false,

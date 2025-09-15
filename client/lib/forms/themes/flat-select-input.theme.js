@@ -8,7 +8,7 @@ export const flatSelectInputTheme = {
       'text-neutral-700 dark:text-neutral-300',
       'focus-within:outline-hidden'
     ],
-    // Keep base minimal; themeName variants add interaction + spacing
+    // Keep base minimal; theme variants add interaction + spacing
     option: [
       'flex items-center',
       'border-t first:border-t-0 px-2'
@@ -16,7 +16,7 @@ export const flatSelectInputTheme = {
     help: 'text-neutral-500'
   },
   variants: {
-    themeName: {
+    theme: {
       default: {
         container: [
           'border-neutral-300 dark:border-neutral-600',
@@ -59,7 +59,7 @@ export const flatSelectInputTheme = {
     }
   },
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     size: 'md',
     borderRadius: 'small',
     hasError: false,

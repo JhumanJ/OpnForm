@@ -55,7 +55,7 @@ export const vSelectTheme = {
     createLabel: 'px-2 bg-neutral-100 border border-neutral-300 rounded-sm group-hover-text-black'
   },
   variants: {
-    themeName: {
+    theme: {
       default: {
         anchor: [
           'border border-neutral-300 dark:border-neutral-600',
@@ -161,7 +161,7 @@ export const vSelectTheme = {
   compoundVariants: [
     // Notion theme uses rounded-xs for small border radius
     {
-      themeName: 'notion',
+      theme: 'notion',
       borderRadius: 'small',
       class: {
         anchor: '!rounded-xs'
@@ -169,7 +169,7 @@ export const vSelectTheme = {
     }
   ],
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     size: 'md',
     borderRadius: 'small',
     hasError: false,

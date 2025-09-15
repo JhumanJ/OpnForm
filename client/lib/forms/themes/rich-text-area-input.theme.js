@@ -9,7 +9,7 @@ export const richTextAreaInputTheme = {
     help: 'text-neutral-500'
   },
   variants: {
-    themeName: {
+    theme: {
       default: {
         container: [
           'border border-neutral-300 dark:border-neutral-600',
@@ -46,7 +46,7 @@ export const richTextAreaInputTheme = {
     }
   },
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     size: 'md',
     borderRadius: 'small',
     hasError: false,

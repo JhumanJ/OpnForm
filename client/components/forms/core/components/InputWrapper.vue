@@ -23,7 +23,7 @@
     <VTransition name="fadeHeight">
       <InputHelp
         :help="help"
-        :help-classes="variantSlots.help()"
+        :help-classes="ui.help()"
       >
         <template #after-help>
           <slot name="bottom_after_help" />
@@ -40,7 +40,7 @@
     <VTransition name="fadeHeightDown">
       <InputHelp
         :help="help"
-        :help-classes="variantSlots.help()"
+        :help-classes="ui.help()"
       >
         <template #after-help>
           <slot name="bottom_after_help" />
@@ -94,17 +94,14 @@ const resolvedSize = computed(() => {
   return props.size || injectedSize?.value || 'md'
 })
 
-// Create input wrapper variants with UI prop merging
-const inputWrapperVariants = computed(() => tv(inputWrapperTheme, props.ui))
-
-// Single variant computation
-const variantSlots = computed(() => {
-  return inputWrapperVariants.value({
+// OPTIMIZED: Single computed following Nuxt UI pattern
+const ui = computed(() => {
+  return tv(inputWrapperTheme, props.ui)({
     size: resolvedSize.value
   })
 })
 
 // Wrapper classes with twMerge operation - makes sense as computed property
-const wrapperClasses = computed(() => twMerge(variantSlots.value.wrapper(), props.wrapperClass))
+const wrapperClasses = computed(() => twMerge(ui.value.wrapper(), props.wrapperClass))
 
 </script>

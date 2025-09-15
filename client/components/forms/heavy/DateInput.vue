@@ -1,5 +1,5 @@
 <template>
-  <InputWrapper v-bind="props">
+  <InputWrapper v-bind="inputWrapperProps">
     <template #label>
       <slot name="label" />
     </template>
@@ -13,13 +13,13 @@
       <button
         ref="datepicker"
         class="cursor-pointer overflow-hidden"
-        :class="inputClasses"
+        :class="ui.input()"
         :disabled="props.disabled"
       >
         <div class="flex items-stretch min-w-0">
           <div
             class="grow min-w-0 flex items-center gap-x-2"
-            :class="variantSlots.inner()"
+            :class="ui.inner()"
           >
             <Icon
               name="heroicons:calendar-20-solid"
@@ -108,7 +108,6 @@ import { DatePicker } from 'v-calendar'
 import 'v-calendar/dist/style.css'
 import { format, startOfDay, endOfDay } from 'date-fns'
 import { tailwindcssPaletteGenerator } from '~/lib/colors.js'
-import { tv } from 'tailwind-variants'
 import { dateInputTheme } from '~/lib/forms/themes/date-input.theme.js'
 
 const props = defineProps({
@@ -123,7 +122,13 @@ const props = defineProps({
   isDark: { type: Boolean, default: false }
 })
 
-const input = useFormInput(props, getCurrentInstance())
+const {
+  ui,
+  compVal,
+  inputWrapperProps
+} = useFormInput(props, getCurrentInstance(), {
+  variants: dateInputTheme
+})
 const fromDate = ref(null)
 const toDate = ref(null)
 const datepicker = ref(null)
@@ -164,18 +169,6 @@ const updateModelValue = () => {
   }
 }
 
-const dateVariants = computed(() => tv(dateInputTheme, props.ui))
-const variantSlots = computed(() => dateVariants.value({
-  themeName: input.resolvedTheme.value,
-  size: input.resolvedSize.value,
-  borderRadius: input.resolvedBorderRadius.value,
-  hasError: input.hasError.value,
-  disabled: props.disabled,
-  focused: pickerOpen.value && !props.disabled && !input.hasError.value
-}))
-const inputClasses = computed(() => {
-  return variantSlots.value.input()
-})
 
 const minDate = computed(() => {
   if (props.disablePastDates) {
@@ -190,12 +183,12 @@ const maxDate = computed(() => {
   return undefined
 })
 const handleCompValChange = () => {
-  if (input.compVal.value) {
-    if (Array.isArray(input.compVal.value)) {
-      fromDate.value = input.compVal.value[0] ?? null
-      toDate.value = input.compVal.value[1] ?? null
+  if (compVal.value) {
+    if (Array.isArray(compVal.value)) {
+      fromDate.value = compVal.value[0] ?? null
+      toDate.value = compVal.value[1] ?? null
     } else {
-      fromDate.value = input.compVal.value
+      fromDate.value = compVal.value
     }
   }
 }
@@ -248,23 +241,23 @@ watch(() => props.dateRange, () => {
 
 watch(() => fromDate.value, (val) => {
   if (props.dateRange) {
-    if (!Array.isArray(input.compVal.value)) input.compVal.value = []
-    input.compVal.value[0] = val
+    if (!Array.isArray(compVal.value)) compVal.value = []
+    compVal.value[0] = val
   } else {
-    input.compVal.value = val
+    compVal.value = val
   }
 }, { immediate: false })
 
 watch(() => toDate.value, (val) => {
   if (props.dateRange) {
-    if (!Array.isArray(input.compVal.value)) input.compVal.value = [null]
-    input.compVal.value[1] = val
+    if (!Array.isArray(compVal.value)) compVal.value = [null]
+    compVal.value[1] = val
   } else {
-    input.compVal.value = null
+    compVal.value = null
   }
 }, { immediate: false })
 
-watch(() => input.compVal.value, (val, oldVal) => {
+watch(() => compVal.value, (val, oldVal) => {
   if (!oldVal) handleCompValChange()
 }, { immediate: false })
 

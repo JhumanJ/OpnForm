@@ -12,7 +12,7 @@
     <div
       v-else
       class="relative overflow-hidden"
-      :class="variantSlots.container()"
+      :class="ui.container()"
     >
       <template
         v-if="options && options.length"
@@ -24,7 +24,7 @@
           :aria-checked="isSelected(option[optionKey])"
           class="relative"
           :class="[
-            variantSlots.option(),
+            ui.option(),
             { '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disableOptions.includes(option[optionKey]) }
           ]"
           @click="onSelect(option[optionKey])"
@@ -60,7 +60,7 @@
       </template>
       <div
         v-else
-        :class="[variantSlots.option(), '!text-neutral-500 !cursor-not-allowed']"
+        :class="[ui.option(), '!text-neutral-500 !cursor-not-allowed']"
       >
         {{ $t('forms.select.noOptionAvailable') }}
       </div>
@@ -74,7 +74,7 @@
       v-if="multiple && (minSelection || maxSelection) && selectedCount > 0"
       #bottom_after_help
     >
-      <small :class="variantSlots.help()">
+      <small :class="ui.help()">
         <span v-if="minSelection && maxSelection">
           {{ selectedCount }} of {{ minSelection }}-{{ maxSelection }}
         </span>
@@ -97,7 +97,6 @@
 import {inputProps, useFormInput} from "../useFormInput.js"
 import RadioButtonIcon from "./components/RadioButtonIcon.vue"
 import CheckboxIcon from "./components/CheckboxIcon.vue"
-import { tv } from "tailwind-variants"
 import { flatSelectInputTheme } from "~/lib/forms/themes/flat-select-input.theme.js"
 
 /**
@@ -122,18 +121,15 @@ export default {
     maxSelection: { type: Number, default: null }
   },
   setup(props, context) {
-    const selectVariants = computed(() => tv(flatSelectInputTheme, props.ui))
-    const formInput = useFormInput(props, context)
-    const variantSlots = computed(() => selectVariants.value({
-      themeName: formInput.resolvedTheme.value,
-      size: formInput.resolvedSize.value,
-      borderRadius: formInput.resolvedBorderRadius.value,
-      hasError: formInput.hasError.value,
-      disabled: props.disabled
-    }))
+    const formInput = useFormInput(props, context, {
+      variants: flatSelectInputTheme,
+      additionalVariants: {
+        loading: props.loading,
+        multiple: props.multiple
+      }
+    })
     return {
-      ...formInput,
-      variantSlots
+      ...formInput
     }
   },
   data() {

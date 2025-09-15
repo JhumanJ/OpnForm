@@ -13,7 +13,7 @@ export const scaleInputTheme = {
     ]
   },
   variants: {
-    themeName: {
+    theme: {
       default: {
         button: [
           'border-neutral-300 dark:border-neutral-600',
@@ -40,7 +40,7 @@ export const scaleInputTheme = {
     }
   },
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     size: 'md',
     borderRadius: 'small'
   }
