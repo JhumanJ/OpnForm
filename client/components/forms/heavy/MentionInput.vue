@@ -71,7 +71,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue'])
 
-const { compVal, inputStyle, hasError, inputWrapperProps, ui } = useFormInput(props, { emit }, {
+const { compVal, inputStyle, inputWrapperProps, ui } = useFormInput(props, { emit }, {
   variants: mentionInputTheme
 })
 const editableDiv = ref(null)

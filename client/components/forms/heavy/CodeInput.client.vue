@@ -128,7 +128,7 @@ defineShortcuts({
 })
 
 // Get form input composable  
-const { compVal, inputWrapperProps, hasError, inputStyle, id, name, ui } = useFormInput(props, { emit }, {
+const { compVal, inputWrapperProps, inputStyle, id, name, ui } = useFormInput(props, { emit }, {
   variants: codeInputTheme,
   additionalVariants: {
     fullscreen: false  // Could be extended for fullscreen mode

@@ -80,7 +80,7 @@ export default {
   data: () => ({
     isImageHide: false,
   }),
-  setup(props) {
+  setup() {
     const injectedTheme = inject('formTheme', null)
     const resolvedTheme = computed(() => injectedTheme?.value || 'default')
     const uploadedVariants = computed(() => tv(uploadedFileTheme, {}))

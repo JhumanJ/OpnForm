@@ -113,7 +113,6 @@
 </template>
 
 <script>
-import { computed } from 'vue'
 import { inputProps, useFormInput } from '../useFormInput.js'
 import { selectInputTheme } from '~/lib/forms/themes/select-input.theme.js'
 
