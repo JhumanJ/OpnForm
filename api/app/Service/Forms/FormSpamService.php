@@ -47,6 +47,12 @@ class FormSpamService
             return false;
         }
 
+        // Skip checking users who were manually unblocked by admin in the past 7 days
+        // This saves AI costs and prevents immediate re-blocking of reviewed users
+        if ($this->wasRecentlyManuallyUnblocked($form->creator, 7)) {
+            return false;
+        }
+
         if ($this->containsKeywords($form)) {
             return true;
         }
@@ -73,6 +79,32 @@ class FormSpamService
 
         foreach ($keywords as $keyword) {
             if (str_contains($content, strtolower($keyword))) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Check if user was manually unblocked by admin within the specified days
+     */
+    private function wasRecentlyManuallyUnblocked(User $user, int $days = 7): bool
+    {
+        $history = $user->meta['blocking_history'] ?? [];
+        if (empty($history)) {
+            return false;
+        }
+
+        $recentDate = now()->subDays($days);
+
+        foreach (array_reverse($history) as $block) {
+            // Check if this block was manually unblocked
+            if (
+                !is_null($block['unblocked_by']) &&
+                !is_null($block['unblocked_at']) &&
+                \Carbon\Carbon::parse($block['unblocked_at'])->isAfter($recentDate)
+            ) {
                 return true;
             }
         }

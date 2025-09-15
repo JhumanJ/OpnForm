@@ -48,8 +48,9 @@ class UserActionService
         $user->forms()->get()->each(function ($form) use (&$restoredFormsCount) {
             $wasModified = $this->restorePreviousFormStatus($form);
             // Save the form if it was modified (either restored or cleaned up)
+            // Use saveQuietly() to avoid triggering spam checks - forms are already admin-approved
             if ($wasModified || $form->isDirty()) {
-                $form->save();
+                $form->saveQuietly();
                 if ($wasModified) {
                     $restoredFormsCount++;
                 }
