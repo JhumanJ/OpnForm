@@ -12,7 +12,7 @@
       :autocomplete="autocomplete"
       :pattern="pattern"
       :style="inputStyle"
-      :class="variantSlots.input()"
+      :class="ui.input()"
       :name="name"
       :accept="accept"
       :placeholder="placeholder"
@@ -36,7 +36,7 @@
       v-if="maxCharLimit && showCharLimit"
       #bottom_after_help
     >
-      <small :class="variantSlots.help()">
+      <small :class="ui.help()">
         {{ charCount }}/{{ maxCharLimit }}
       </small>
     </template>
@@ -52,7 +52,6 @@
 
 <script>
 import {inputProps, useFormInput} from "../useFormInput.js"
-import { tv } from "tailwind-variants"
 import { textInputTheme } from "~/lib/forms/themes/text-input.theme.js"
 
 export default {
@@ -71,14 +70,12 @@ export default {
   },
 
   setup(props, context) {
-    // Create textInput variants with UI prop merging as computed property
-    const textInputVariants = computed(() => tv(textInputTheme, props.ui))
-
     const formInput = useFormInput(
       props,
       context,
       {
-        formPrefixKey: props.nativeType === "file" ? "file-" : null
+        formPrefixKey: props.nativeType === "file" ? "file-" : null,
+        variants: textInputTheme
       },
     )
 
@@ -95,22 +92,10 @@ export default {
       return false
     }
 
-    // Single variant computation - fully reactive
-    const variantSlots = computed(() => {
-      return textInputVariants.value({
-        themeName: formInput.resolvedTheme.value,
-        size: formInput.resolvedSize.value,
-        borderRadius: formInput.resolvedBorderRadius.value,
-        hasError: formInput.hasError.value,
-        disabled: props.disabled
-      })
-    })
-
     return {
       ...formInput,
       onEnterPress,
-      onChange,
-      variantSlots
+      onChange
     }
   },
   computed: {

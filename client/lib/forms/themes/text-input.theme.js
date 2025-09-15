@@ -17,7 +17,7 @@ export const textInputTheme = {
     help: 'text-neutral-500'
   },
   variants: {
-    themeName: {
+    theme: {
       default: {
         input: [
           'border-neutral-300 dark:border-neutral-600',
@@ -79,7 +79,7 @@ export const textInputTheme = {
   compoundVariants: [
     // Notion theme uses rounded-xs for small border radius
     {
-      themeName: 'notion',
+      theme: 'notion',
       borderRadius: 'small',
       class: {
         input: '!rounded-xs'
@@ -87,7 +87,7 @@ export const textInputTheme = {
     }
   ],
   defaultVariants: {
-    themeName: 'default',
+    theme: 'default',
     size: 'md',
     borderRadius: 'small',
     hasError: false,

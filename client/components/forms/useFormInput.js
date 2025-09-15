@@ -2,6 +2,7 @@ import {ref, computed, watch, inject} from "vue"
 import {default as _get} from "lodash/get"
 import {default as _set} from "lodash/set"
 import {default as _has} from "lodash/has"
+import { tv } from "tailwind-variants"
 
 export const inputProps = {
   id: {type: String, default: null},
@@ -32,6 +33,8 @@ export const inputProps = {
 export function useFormInput(props, context, options = {}) {
   const composableOptions = {
     formPrefixKey: null,
+    variants: null, // Tailwind-variants configuration object
+    additionalVariants: {}, // Component-specific variants
     ...options
   }
   const content = ref(props.modelValue)
@@ -104,6 +107,22 @@ export function useFormInput(props, context, options = {}) {
     return wrapperProps
   })
 
+  // CENTRALIZED VARIANTS: Single computed property for all tailwind-variants
+  // Following Nuxt UI pattern - only computed when variants config is provided
+  const ui = computed(() => {
+    if (!composableOptions.variants) return {}
+    
+    return tv(composableOptions.variants, props.ui)({
+      theme: resolvedTheme.value,        // props.theme resolved with injection
+      size: resolvedSize.value,
+      borderRadius: resolvedBorderRadius.value,
+      hasError: hasError.value,
+      disabled: props.disabled,
+      // Component-specific variants (e.g., loading, multiple, etc.)
+      ...composableOptions.additionalVariants
+    })
+  })
+
   const onFocus = (event) => {
     context.emit('focus', event)
   }
@@ -134,5 +153,8 @@ export function useFormInput(props, context, options = {}) {
     resolvedTheme,
     resolvedSize,
     resolvedBorderRadius,
+    // Centralized UI variants - ready to use in templates
+    ui,
   }
 }
+
