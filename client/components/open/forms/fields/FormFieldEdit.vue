@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="p-2 border-b sticky top-0 z-10 bg-white">
+    <div class="p-2 border-b sticky top-0 z-20 bg-white">
       <UButton
         v-if="!field"
         size="sm"
