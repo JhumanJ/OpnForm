@@ -13,7 +13,8 @@ export const phoneInputTheme = {
       'text-neutral-700 dark:text-neutral-300',
       'focus:outline-hidden',
       'placeholder-neutral-400 dark:placeholder-neutral-500'
-    ]
+    ],
+    separator: ''
   },
   variants: {
     theme: {
@@ -37,6 +38,15 @@ export const phoneInputTheme = {
           'text-neutral-900 dark:text-neutral-100',
           'focus:ring-2 focus:ring-form/40 focus:border-transparent'
         ]
+      },
+      minimal: {
+        input: [
+          'border-2 border-transparent',
+          'bg-neutral-100 dark:bg-notion-dark-light',
+          'text-neutral-700 dark:text-neutral-300',
+          'focus:ring-0 focus:border-form'
+        ],
+        separator: 'ltr:border-l rtl:border-r border-neutral-200 dark:border-neutral-700'
       }
     },
     size: {

@@ -28,6 +28,13 @@ export const richTextAreaInputTheme = {
           'bg-notion-input-background dark:bg-notion-dark-light',
           'text-neutral-900 dark:text-neutral-100'
         ]
+      },
+      minimal: {
+        container: [
+          'border-2 border-transparent',
+          'bg-neutral-100 dark:bg-notion-dark-light',
+          'text-neutral-700 dark:text-neutral-300',
+        ]
       }
     },
     size: {

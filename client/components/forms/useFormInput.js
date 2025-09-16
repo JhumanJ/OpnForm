@@ -100,10 +100,12 @@ export function useFormInput(props, context, options = {}) {
   const inputWrapperProps = computed(() => {
     const wrapperProps = {}
     Object.keys(inputProps).forEach((key) => {
-      if (!["modelValue", "disabled", "placeholder", "color", "theme", "size", "borderRadius", "ui"].includes(key)) {
+      if (!["modelValue", "disabled", "placeholder", "color", "size", "borderRadius", "ui"].includes(key)) {
         wrapperProps[key] = props[key]
       }
     })
+    // Add resolved theme to wrapper props
+    wrapperProps.theme = resolvedTheme.value
     return wrapperProps
   })
 
