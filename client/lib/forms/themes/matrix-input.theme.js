@@ -8,8 +8,8 @@ export const matrixInputTheme = {
     cellHover: '',
     option: 'relative cursor-pointer',
     iconWrapper: 'flex items-center justify-center h-full w-full',
-    headerCell: 'w-full flex items-center justify-center',
-    rowCell: 'w-full'
+    headerCell: 'w-full flex items-center justify-center text-neutral-900 dark:text-neutral-100',
+    rowCell: 'w-full text-neutral-900 dark:text-neutral-100'
   },
   variants: {
     theme: {
@@ -44,23 +44,23 @@ export const matrixInputTheme = {
     },
     size: {
       xs: {
-        headerCell: 'p-1 text-xs',
-        rowCell: 'p-1 text-xs',
+        headerCell: 'p-1 text-xs text-neutral-900 dark:text-neutral-100',
+        rowCell: 'p-1 text-xs text-neutral-900 dark:text-neutral-100',
         option: 'p-1'
       },
       sm: {
-        headerCell: 'p-1.5 text-sm',
-        rowCell: 'p-1.5 text-sm',
+        headerCell: 'p-1.5 text-sm text-neutral-900 dark:text-neutral-100',
+        rowCell: 'p-1.5 text-sm text-neutral-900 dark:text-neutral-100',
         option: 'p-1.5'
       },
       md: {
-        headerCell: 'p-2 text-base',
-        rowCell: 'p-2 text-base',
+        headerCell: 'p-2 text-base text-neutral-900 dark:text-neutral-100',
+        rowCell: 'p-2 text-base text-neutral-900 dark:text-neutral-100',
         option: 'p-2'
       },
       lg: {
-        headerCell: 'p-3 text-lg',
-        rowCell: 'p-3 text-lg',
+        headerCell: 'p-3 text-lg text-neutral-900 dark:text-neutral-100',
+        rowCell: 'p-3 text-lg text-neutral-900 dark:text-neutral-100',
         option: 'p-3'
       }
     },

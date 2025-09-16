@@ -24,7 +24,7 @@
           <tr
             v-for="(row, rowIndex) in rows"
             :key="rowIndex"
-            class="border-t border-neutral-300"
+            class="border-t border-neutral-300 dark:border-neutral-600"
             role="radiogroup"
             :aria-label="`${row} options`"
           >

@@ -15,13 +15,11 @@
       <div
         v-for="i in starsCount"
         :key="i"
-        :class="{
-          '!text-yellow-400 active-star': i <= compVal,
-          '!text-yellow-200 !dark:text-yellow-800 hover-star':
-            i > compVal && i <= hoverRating,
-          '!cursor-not-allowed': disabled,
-        }"
-        class="cursor-pointer inline-block text-neutral-200 dark:text-neutral-800 focus-visible:ring-2 focus-visible:ring-form/100 focus-visible:rounded-full focus-visible:outline-none"
+        :class="ui.star({
+          disabled: disabled,
+          isActive: i <= compVal,
+          isHover: i > compVal && i <= hoverRating
+        })"
         role="button"
         :tabindex="getStarTabIndex(i)"
         :aria-label="`${i} star${i > 1 ? 's' : ''}`"

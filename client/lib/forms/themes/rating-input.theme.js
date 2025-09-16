@@ -3,7 +3,8 @@
  */
 export const ratingInputTheme = {
   slots: {
-    icon: ''
+    icon: '',
+    star: 'cursor-pointer inline-block text-neutral-200 dark:text-neutral-700 focus-visible:ring-2 focus-visible:ring-form/100 focus-visible:rounded-full focus-visible:outline-none'
   },
   variants: {
     size: {
@@ -11,9 +12,27 @@ export const ratingInputTheme = {
       sm: { icon: 'w-6 h-6' },
       md: { icon: 'w-8 h-8' },
       lg: { icon: 'w-10 h-10' }
+    },
+    disabled: {
+      true: {
+        star: '!cursor-not-allowed'
+      }
+    },
+    isActive: {
+      true: {
+        star: '!text-yellow-400'
+      }
+    },
+    isHover: {
+      true: {
+        star: '!text-yellow-200 !dark:text-yellow-800'
+      }
     }
   },
   defaultVariants: {
-    size: 'md'
+    size: 'md',
+    disabled: false,
+    isActive: false,
+    isHover: false
   }
 }
