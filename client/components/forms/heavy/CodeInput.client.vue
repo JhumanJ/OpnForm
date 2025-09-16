@@ -8,17 +8,7 @@
       <slot name="help" />
     </template>
 
-    <div
-      :class="[
-        'h-40 max-h-96 overflow-y-auto relative',
-        theme.CodeInput.input,
-        theme.CodeInput.borderRadius,
-        {
-          '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disabled,
-        },
-      ]"
-    >
+    <div :class="ui.container()">
       <!-- Fullscreen button -->
       <UTooltip text="Open in fullscreen" :popper="{ placement: 'left' }">
         <UButton
@@ -102,6 +92,7 @@
 import { Codemirror } from "vue-codemirror"
 import { html } from "@codemirror/lang-html"
 import { inputProps, useFormInput } from "../useFormInput.js"
+import { codeInputTheme } from '~/lib/forms/themes/code-input.theme.js'
 
 const props = defineProps({
   ...inputProps,
@@ -136,8 +127,13 @@ defineShortcuts({
   }
 })
 
-// Get form input composable
-const { compVal, inputWrapperProps, hasError, disabled, inputStyle, id, name } = useFormInput(props, { emit })
+// Get form input composable  
+const { compVal, inputWrapperProps, inputStyle, id, name, ui } = useFormInput(props, { emit }, {
+  variants: codeInputTheme,
+  additionalVariants: {
+    fullscreen: false  // Could be extended for fullscreen mode
+  }
+})
 </script>
 
 <style>

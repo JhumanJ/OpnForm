@@ -14,19 +14,21 @@
     >
       <v-select
         v-model="selectedCountryCode"
-        :class="theme.PhoneInput.countrySelectWidth"
         dropdown-class="max-w-[300px]"
         input-class="ltr-only:rounded-r-none rtl:rounded-l-none!"
         :data="countries"
-        :disabled="(disabled || countries.length===1)?true:null"
+        :disabled="disabled || countries.length===1"
         :searchable="true"
         :search-keys="['name']"
         :option-key="'code'"
         :color="color"
         :has-error="hasError"
+        :theme="resolvedTheme"
+        :size="resolvedSize"
+        :border-radius="resolvedBorderRadius"
+        :ui="{ container: ui.countrySelectWidth() }"
         :placeholder="'Select a country'"
         :uppercase-labels="true"
-        :theme="theme"
         @update:model-value="onChangeCountryCode"
       >
         <template #option="props">
@@ -43,12 +45,12 @@
         <template #selected="props">
           <div
             class="flex items-center gap-2 justify-center overflow-hidden"
-            :class="theme.PhoneInput.maxHeight"
+            :class="ui.selectedMaxHeight()"
           >
             <country-flag
-              :size="theme.PhoneInput.flagSize"
+              :size="countryFlagSize"
               class="rounded-lg!"
-              :class="theme.PhoneInput.flag"
+              :class="ui.flag()"
               :country="props.option.code"
             />
             <span class="text-sm">{{ props.option.dial_code }}</span>
@@ -60,13 +62,7 @@
         type="text"
         class="inline-flex-grow ltr-only:border-l-0 ltr-only:!rounded-l-none rtl:border-r-0 rtl:rounded-r-none"
         :disabled="disabled?true:null"
-        :class="[
-          theme.PhoneInput.input,
-          theme.PhoneInput.spacing.horizontal,
-          theme.PhoneInput.spacing.vertical,
-          theme.PhoneInput.fontSize,
-          theme.PhoneInput.borderRadius,
-          { 'ring-red-500! ring-2! border-transparent!': hasError, '!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!': disabled }]"
+        :class="ui.input()"
         :placeholder="placeholder"
         :style="inputStyle"
         @input="onInput"
@@ -88,6 +84,7 @@ import { inputProps, useFormInput } from '../useFormInput.js'
 import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 import parsePhoneNumber from 'libphonenumber-js'
+import { phoneInputTheme } from '~/lib/forms/themes/phone-input.theme.js'
 
 export default {
   phone: 'PhoneInput',
@@ -99,8 +96,16 @@ export default {
   },
 
   setup (props, context) {
+    const formInput = useFormInput(props, context, {
+      variants: phoneInputTheme
+    })
+    const countryFlagSize = computed(() => {
+      const size = formInput.resolvedSize.value
+      return (size === 'xs' || size === 'sm') ? 'small' : 'normal'
+    })
     return {
-      ...useFormInput(props, context)
+      ...formInput,
+      countryFlagSize
     }
   },
 

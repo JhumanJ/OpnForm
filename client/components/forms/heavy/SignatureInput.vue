@@ -6,19 +6,7 @@
 
     <div
       v-if="loading || file"
-      :class="[
-        theme.default.input,
-        theme.SignatureInput.input,
-        theme.SignatureInput.spacing.horizontal,
-        theme.SignatureInput.spacing.vertical,
-        theme.SignatureInput.fontSize,
-        theme.SignatureInput.borderRadius,
-        {
-          '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disabled,
-        },
-      ]"
-      class="flex flex-wrap items-center justify-center gap-4"
+      :class="ui.container()"
     >
       <div
         v-if="loading"
@@ -34,7 +22,6 @@
         v-else
         :key="file.url"
         :file="file"
-        :theme="theme"
         :show-remove="false"
         :disabled="disabled"
       />
@@ -44,18 +31,7 @@
       v-else
       ref="signaturePad"
       class="not-draggable"
-      :class="[
-        theme.default.input,
-        theme.SignatureInput.input,
-        theme.SignatureInput.spacing.horizontal,
-        theme.SignatureInput.spacing.vertical,
-        theme.SignatureInput.fontSize,
-        theme.SignatureInput.borderRadius,
-        {
-          '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disabled,
-        },
-      ]"
+      :class="ui.container()"
       height="150px"
       :name="name"
       :options="{ onEnd, penColor }"
@@ -64,7 +40,7 @@
     <template #bottom_after_help>
       <small
         v-if="!file"
-        :class="theme.default.help"
+        :class="ui.help()"
         class="flex-auto"
       >
         <input
@@ -76,15 +52,15 @@
           @change="manualFileUpload"
         >
         <a
-          :class="theme.default.help"
+          :class="ui.help()"
           href="#"
           @click.prevent="openFileUpload"
         >{{ $t('forms.signatureInput.uploadFileInstead') }}</a>
       </small>
 
-      <small :class="theme.default.help">
+      <small :class="ui.help()">
         <a
-          :class="theme.default.help"
+          :class="ui.help()"
           href="#"
           @click.prevent="clear"
         >{{ $t('forms.signatureInput.clear') }}</a>
@@ -101,6 +77,7 @@
 import { VueSignaturePad } from 'vue-signature-pad'
 import { inputProps, useFormInput } from '../useFormInput.js'
 import { storeFile } from '~/lib/file-uploads.js'
+import { signatureInputTheme } from '~/lib/forms/themes/signature-input.theme.js'
 
 export default {
   name: 'SignatureInput',
@@ -111,8 +88,11 @@ export default {
   },
 
   setup(props, context) {
+    const formInput = useFormInput(props, context, {
+      variants: signatureInputTheme
+    })
     return {
-      ...useFormInput(props, context),
+      ...formInput
     }
   },
 
