@@ -21,7 +21,7 @@ export const matrixInputTheme = {
         ],
         cell: 'border-neutral-300 dark:border-neutral-600',
         cellHover: 'hover:bg-neutral-50 dark:hover:bg-neutral-900',
-        option: 'hover:bg-neutral-50 dark:hover:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-form/100 focus:ring-inset'
+        option: 'hover:bg-neutral-50 dark:hover:bg-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-form/100 focus-visible:ring-inset'
       },
       simple: {
         container: [
@@ -30,7 +30,7 @@ export const matrixInputTheme = {
         ],
         cell: 'border-neutral-300 dark:border-neutral-600',
         cellHover: 'hover:bg-neutral-50 dark:hover:bg-neutral-900',
-        option: 'hover:bg-neutral-50 dark:hover:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-form/100 focus:ring-inset'
+        option: 'hover:bg-neutral-50 dark:hover:bg-neutral-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-form/100 focus-visible:ring-inset'
       },
       notion: {
         container: [
@@ -39,7 +39,7 @@ export const matrixInputTheme = {
         ],
         cell: 'border-notion-input-border dark:border-notion-input-borderDark',
         cellHover: 'hover:backdrop-brightness-95',
-        option: 'hover:backdrop-brightness-95 focus:outline-none focus:ring-2 focus:ring-form/40 focus:ring-inset'
+        option: 'hover:backdrop-brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-form/40 focus-visible:ring-inset'
       }
     },
     size: {
@@ -79,7 +79,7 @@ export const matrixInputTheme = {
       true: { 
         container: '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800',
         cellHover: '!hover:bg-neutral-200 dark:!hover:bg-neutral-800',
-        option: '!cursor-not-allowed !hover:bg-neutral-200 dark:!hover:bg-neutral-800 !focus:ring-0'
+        option: '!cursor-not-allowed !hover:bg-neutral-200 dark:!hover:bg-neutral-800 !focus-visible:ring-0'
       }
     }
   },

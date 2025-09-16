@@ -4,21 +4,31 @@
       <slot name="label" />
     </template>
 
-    <div class="stars-outer">
+    <div 
+      class="stars-outer"
+      role="slider"
+      :aria-valuemin="0"
+      :aria-valuemax="starsCount"
+      :aria-valuenow="compVal"
+      :aria-label="`Rating: ${compVal} out of ${starsCount} stars`"
+    >
       <div
         v-for="i in starsCount"
         :key="i"
-        class="cursor-pointer inline-block text-neutral-200 dark:text-neutral-800"
         :class="{
           '!text-yellow-400 active-star': i <= compVal,
           '!text-yellow-200 !dark:text-yellow-800 hover-star':
             i > compVal && i <= hoverRating,
           '!cursor-not-allowed': disabled,
         }"
+        class="cursor-pointer inline-block text-neutral-200 dark:text-neutral-800 focus-visible:ring-2 focus-visible:ring-form/100 focus-visible:rounded-full focus-visible:outline-none"
         role="button"
+        :tabindex="getStarTabIndex(i)"
+        :aria-label="`${i} star${i > 1 ? 's' : ''}`"
         @click="setRating(i)"
         @mouseenter="onMouseHover(i)"
         @mouseleave="hoverRating = -1"
+        @keydown="handleKeydown($event, i)"
       >
         <Icon
           name="heroicons:star-20-solid"
@@ -96,6 +106,75 @@ export default {
       } else {
         this.compVal = val
       }
+    },
+    handleKeydown(event, currentStar) {
+      if (this.disabled) return
+
+      let nextStar = currentStar
+
+      switch (event.key) {
+        case 'ArrowRight':
+        case 'ArrowUp':
+          event.preventDefault()
+          nextStar = Math.min(currentStar + 1, this.starsCount)
+          break
+        case 'ArrowLeft':
+        case 'ArrowDown':
+          event.preventDefault()
+          nextStar = Math.max(currentStar - 1, 1)
+          break
+        case 'Enter':
+        case ' ':
+          event.preventDefault()
+          this.setRating(currentStar)
+          return
+        case 'Home':
+          event.preventDefault()
+          nextStar = 1
+          break
+        case 'End':
+          event.preventDefault()
+          nextStar = this.starsCount
+          break
+        case '0':
+        case 'Backspace':
+        case 'Delete':
+          event.preventDefault()
+          this.setRating(0)
+          return
+        default: {
+          // Handle number keys 1-9
+          const num = parseInt(event.key)
+          if (num >= 1 && num <= this.starsCount) {
+            event.preventDefault()
+            this.setRating(num)
+            nextStar = num
+          } else {
+            return
+          }
+          break
+        }
+      }
+
+      // Move focus to the next star
+      if (nextStar !== currentStar) {
+        this.focusOnStar(nextStar)
+      }
+    },
+    focusOnStar(starNumber) {
+      // Find the star element and focus it
+      this.$nextTick(() => {
+        const starElements = this.$el.querySelectorAll('[role="button"]')
+        const starElement = starElements[starNumber - 1]
+        if (starElement) {
+          starElement.focus()
+        }
+      })
+    },
+    getStarTabIndex(starNumber) {
+      // Make the current value focusable, or first star if no value
+      const targetStar = this.compVal || 1
+      return starNumber === targetStar ? '0' : '-1'
     },
   },
 }

@@ -9,6 +9,7 @@
       :class="ui.input()"
       :style="colorStyle"
       :disabled="disabled ? true : null"
+      @keydown="handleKeydown"
     >
     <label
       :for="id || name"
@@ -53,7 +54,8 @@ const resolvedSize = computed(() => {
 
 // Color style for CSS custom property
 const colorStyle = computed(() => ({
-  '--accent-color': props.color
+  '--accent-color': props.color,
+  '--form-color': props.color
 }))
 
 // OPTIMIZED: Single computed following Nuxt UI pattern
@@ -83,6 +85,15 @@ watch(
       emit('update:modelValue', val)
   },
 )
+
+const handleKeydown = (event) => {
+  if (props.disabled) return
+
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+    internalValue.value = !internalValue.value
+  }
+}
 
 onMounted(() => {
   if (internalValue.value === null)

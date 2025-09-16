@@ -16,7 +16,7 @@
         <input
           v-model="compVal"
           type="range"
-          class="w-full mt-3 slider"
+          :class="[ui.slider(), 'slider']"
           :style="{ '--thumb-color': color }"
           :disabled="disabled"
           :min="minSlider"
@@ -61,7 +61,10 @@ export default {
 
   setup(props, context) {
     const formInput = useFormInput(props, context, {
-      variants: sliderInputTheme
+      variants: sliderInputTheme,
+      additionalVariants: {
+        disabled: props.disabled
+      }
     })
 
     return {

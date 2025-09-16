@@ -243,10 +243,8 @@ const buildQuillOptions = (includeFullscreen = false) => {
       keyboard: {
         bindings: {
           tab: {
-            key: 9,
-            handler (range) {
-              this.quill.insertText(range.index, '    ', 'user')
-            }
+            key: 'Tab',
+            handler: () => true // Allow Tab to navigate out of editor for accessibility
           }
         }
       }

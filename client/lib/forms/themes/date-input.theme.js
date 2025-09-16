@@ -6,16 +6,31 @@ export const dateInputTheme = {
     input: [
       'w-full border bg-white dark:bg-notion-dark-light',
       'text-neutral-700 dark:text-neutral-300',
-      'focus:outline-hidden'
+      'focus-visible:outline-none focus-visible:ring-2 focus-visible:border-transparent'
     ],
     inner: ''
   },
   variants: {
     theme: {
-      default: { input: 'border-neutral-300 dark:border-neutral-600' },
-      simple: { input: 'border-neutral-300 dark:border-neutral-600' },
+      default: { 
+        input: [
+          'border-neutral-300 dark:border-neutral-600',
+          'focus-visible:ring-form/100'
+        ]
+      },
+      simple: { 
+        input: [
+          'border-neutral-300 dark:border-neutral-600',
+          'focus-visible:ring-form/100'
+        ]
+      },
       notion: {
-        input: 'border-notion-input-border dark:border-notion-input-borderDark bg-notion-input-background dark:bg-notion-dark-light text-neutral-900 dark:text-neutral-100'
+        input: [
+          'border-notion-input-border dark:border-notion-input-borderDark',
+          'bg-notion-input-background dark:bg-notion-dark-light',
+          'text-neutral-900 dark:text-neutral-100',
+          'focus-visible:ring-form/40'
+        ]
       }
     },
     size: {
@@ -33,10 +48,12 @@ export const dateInputTheme = {
       true: { input: '!ring-red-500 !ring-2 !border-transparent' }
     },
     disabled: {
-      true: { input: '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800' }
-    },
-    focused: {
-      true: { input: 'ring-2 ring-form/100 border-transparent' }
+      true: { 
+        input: [
+          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800',
+          '!focus-visible:ring-0'
+        ]
+      }
     }
   },
   defaultVariants: {
@@ -44,7 +61,6 @@ export const dateInputTheme = {
     size: 'md',
     borderRadius: 'small',
     hasError: false,
-    disabled: false,
-    focused: false
+    disabled: false
   }
 }

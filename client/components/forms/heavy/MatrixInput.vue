@@ -36,11 +36,11 @@
             <td
               v-for="column in columns"
               :key="row + column"
-              class="ltr:border-l rtl:border-r rtl:!border-l-0"
               role="radio"
               :tabindex="props.disabled ? -1 : 0"
               :aria-checked="compVal && compVal[row] === column"
               :class="[
+                'ltr:border-l rtl:border-r rtl:!border-l-0',
                 ui.cell(),
                 ui.cellHover(),
                 ui.option()

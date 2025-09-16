@@ -11,10 +11,14 @@
       :content="{ side: 'bottom', align: 'center' }"
     >
       <button
-        ref="datepicker"
+        ref="triggerButton"
         class="cursor-pointer overflow-hidden"
         :class="ui.input()"
         :disabled="props.disabled"
+        :aria-expanded="pickerOpen"
+        :aria-haspopup="true"
+        :aria-label="formattedDatePreview ? `Selected date: ${formattedDatePreview}` : 'Select date'"
+        @keydown="handleTriggerKeydown"
       >
         <div class="flex items-stretch min-w-0">
           <div
@@ -43,8 +47,10 @@
           </div>
           <button
             v-if="fromDate && !props.disabled"
-            class="hover:bg-neutral-50 dark:hover:bg-neutral-900 ltr:border-l rtl:border-r px-2 flex items-center"
+            class="hover:bg-neutral-50 dark:hover:bg-neutral-900 ltr:border-l rtl:border-r px-2 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-form/100 focus-visible:ring-inset"
+            :aria-label="'Clear date'"
             @click.prevent="clear()"
+            @keydown="handleClearKeydown"
           >
             <Icon
               name="heroicons:x-mark-20-solid"
@@ -58,6 +64,7 @@
 
       <template #content>
         <DatePicker
+          ref="datePicker"
           class="rounded-md"
           v-if="props.dateRange"
           v-model.range="modeledValue"
@@ -74,6 +81,7 @@
           :style="datePickerStyles"
         />
         <DatePicker
+          ref="datePicker"
           class="rounded-md"
           v-else
           v-model="modeledValue"
@@ -103,7 +111,7 @@
 
 <script setup>
 import { inputProps, useFormInput } from '../useFormInput.js'
-import { getCurrentInstance } from 'vue'
+import { getCurrentInstance, nextTick } from 'vue'
 import { DatePicker } from 'v-calendar'
 import 'v-calendar/dist/style.css'
 import { format, startOfDay, endOfDay } from 'date-fns'
@@ -127,11 +135,15 @@ const {
   compVal,
   inputWrapperProps
 } = useFormInput(props, getCurrentInstance(), {
-  variants: dateInputTheme
+  variants: dateInputTheme,
+  additionalVariants: {
+    disabled: props.disabled
+  }
 })
 const fromDate = ref(null)
 const toDate = ref(null)
-const datepicker = ref(null)
+const triggerButton = ref(null)
+const datePicker = ref(null)
 const pickerOpen = ref(false)
 
 const twColors = computed(() => {
@@ -166,6 +178,8 @@ const modeledValue = computed({
 const updateModelValue = () => {
   if (!props.withTime && !props.dateRange && modeledValue.value) {
     pickerOpen.value = false
+    // Return focus to trigger button after selection
+    returnFocusToTrigger()
   }
 }
 
@@ -194,8 +208,8 @@ const handleCompValChange = () => {
 }
 
 const setInputColor = () => {
-  if (datepicker.value) {
-    datepicker.value.style.setProperty('--tw-ring-color', props.color)
+  if (triggerButton.value) {
+    triggerButton.value.style.setProperty('--tw-ring-color', props.color)
   }
 }
 
@@ -203,6 +217,81 @@ const clear = () => {
   fromDate.value = null
   toDate.value = null
   pickerOpen.value = false
+  // Return focus to trigger button after clearing
+  returnFocusToTrigger()
+}
+
+// Focus management helpers
+const returnFocusToTrigger = () => {
+  nextTick(() => {
+    triggerButton.value?.focus()
+  })
+}
+
+const focusDatePicker = () => {
+  // Give v-calendar a moment to render before focusing
+  setTimeout(() => {
+    // Look for the date picker in the DOM using a more generic approach
+    const popoverElement = document.querySelector('[data-headlessui-state], .vc-container')
+    if (popoverElement) {
+      // Look for the first focusable element within the date picker
+      const focusable = popoverElement.querySelector('button:not([disabled]), .vc-day:not([disabled]), .vc-nav-arrow, [tabindex="0"]')
+      if (focusable) {
+        focusable.focus()
+      }
+    }
+  }, 50)
+}
+
+const handleTriggerKeydown = (event) => {
+  if (props.disabled) return
+
+  switch (event.key) {
+    case 'Escape':
+      if (pickerOpen.value) {
+        event.preventDefault()
+        pickerOpen.value = false
+      }
+      break
+    case 'Enter':
+    case ' ':
+      if (!pickerOpen.value) {
+        event.preventDefault()
+        pickerOpen.value = true
+      }
+      break
+    case 'Backspace':
+    case 'Delete':
+      if (fromDate.value && !pickerOpen.value) {
+        event.preventDefault()
+        clear()
+      }
+      break
+  }
+}
+
+const handleClearKeydown = (event) => {
+  if (props.disabled) return
+
+  switch (event.key) {
+    case 'Enter':
+    case ' ':
+      event.preventDefault()
+      clear()
+      break
+  }
+}
+
+// Global keydown handler for when picker is open
+const handleGlobalKeydown = (event) => {
+  if (!pickerOpen.value || props.disabled) return
+
+  if (event.key === 'Escape') {
+    event.preventDefault()
+    pickerOpen.value = false
+    returnFocusToTrigger()
+  }
+  // Let v-calendar handle Tab and other keys naturally
 }
 
 const formattedDate = (value) => {
@@ -261,8 +350,35 @@ watch(() => compVal.value, (val, oldVal) => {
   if (!oldVal) handleCompValChange()
 }, { immediate: false })
 
+// Watch picker open state to manage global event listeners and focus
+watch(pickerOpen, (isOpen) => {
+  if (isOpen) {
+    document.addEventListener('keydown', handleGlobalKeydown)
+    // Focus the date picker when it opens
+    focusDatePicker()
+  } else {
+    document.removeEventListener('keydown', handleGlobalKeydown)
+  }
+})
+
 onMounted(() => {
   handleCompValChange()
   setInputColor()
 })
+
+onUnmounted(() => {
+  // Clean up global event listener
+  document.removeEventListener('keydown', handleGlobalKeydown)
+})
 </script>
+
+<style>
+.vc-title {
+  padding: 0px 4px;
+  border-radius: 4px;
+}
+
+.vc-title:focus, .vc-title:hover {
+  background: var(--vc-header-arrow-hover-bg) !important;
+}
+</style>

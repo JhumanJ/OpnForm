@@ -4,9 +4,13 @@
       <slot name="label" />
     </template>
 
-    <div class="rectangle-outer grid grid-cols-5 gap-2">
+    <div 
+      class="rectangle-outer grid grid-cols-5 gap-2"
+      role="radiogroup"
+      :aria-label="`Scale from ${minScale} to ${maxScale}`"
+    >
       <div
-        v-for="i in scaleList"
+        v-for="(i, index) in scaleList"
         :key="i"
         :class="[
           { 'font-semibold': compVal === i },
@@ -14,9 +18,14 @@
           compVal !== i ? ui.buttonUnselected() : '',
           compVal !== i ? ui.buttonHover() : ''
         ]"
+        class="focus-visible:ring-2 focus-visible:ring-form/100 focus-visible:outline-none"
         :style="btnStyle(i === compVal)"
-        role="button"
+        role="radio"
+        :tabindex="getScaleTabIndex(i)"
+        :aria-checked="compVal === i"
+        :aria-label="`Scale value ${formatNumber(i)}`"
         @click="setScale(i)"
+        @keydown="handleKeydown($event, index)"
       >
         {{ formatNumber(i) }}
       </div>
@@ -122,6 +131,75 @@ export default {
       } else {
         this.compVal = val
       }
+    },
+    handleKeydown(event, currentIndex) {
+      if (this.disabled) return
+
+      const maxIndex = this.scaleList.length - 1
+      let nextIndex = currentIndex
+
+      switch (event.key) {
+        case 'ArrowRight':
+        case 'ArrowUp':
+          event.preventDefault()
+          nextIndex = Math.min(currentIndex + 1, maxIndex)
+          break
+        case 'ArrowLeft':
+        case 'ArrowDown':
+          event.preventDefault()
+          nextIndex = Math.max(currentIndex - 1, 0)
+          break
+        case 'Enter':
+        case ' ':
+          event.preventDefault()
+          this.setScale(this.scaleList[currentIndex])
+          return
+        case 'Home':
+          event.preventDefault()
+          nextIndex = 0
+          break
+        case 'End':
+          event.preventDefault()
+          nextIndex = maxIndex
+          break
+        default: {
+          // Handle direct number input
+          const inputNum = parseFloat(event.key)
+          const scaleIndex = this.scaleList.findIndex(scale => scale === inputNum)
+          if (scaleIndex >= 0) {
+            event.preventDefault()
+            this.setScale(inputNum)
+            nextIndex = scaleIndex
+          } else {
+            return
+          }
+          break
+        }
+      }
+
+      // Move focus to the next scale button
+      if (nextIndex !== currentIndex) {
+        this.focusOnScale(nextIndex)
+      }
+    },
+    focusOnScale(index) {
+      // Find the scale element and focus it
+      this.$nextTick(() => {
+        const scaleElements = this.$el.querySelectorAll('[role="radio"]')
+        const scaleElement = scaleElements[index]
+        if (scaleElement) {
+          scaleElement.focus()
+        }
+      })
+    },
+    getScaleTabIndex(scaleValue) {
+      // Make the current value focusable, or first scale if no value
+      const currentIndex = this.compVal !== null && this.compVal !== undefined 
+        ? this.scaleList.findIndex(scale => scale === this.compVal)
+        : 0
+      const targetIndex = currentIndex >= 0 ? currentIndex : 0
+      const thisIndex = this.scaleList.findIndex(scale => scale === scaleValue)
+      return thisIndex === targetIndex ? '0' : '-1'
     },
   },
 }

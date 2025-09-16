@@ -9,10 +9,11 @@
         :id="id ? id : name"
         v-model="compVal"
         :disabled="disabled ? true : null"
+        :style="colorStyle"
         :ui="{
-          active: 'bg-[var(--form-color,#3B82F6)]',
-          ring: 'focus:ring-[var(--form-color,#3B82F6)]/50'
+          base: 'data-[state=checked]:bg-[var(--form-color,#3B82F6)] focus-visible:outline-[var(--form-color,#3B82F6)]'
         }"
+        @keydown="handleKeydown"
       />
   
       <div>
@@ -85,8 +86,24 @@ export default {
     const formInput = useFormInput(props, context, {
       variants: toggleSwitchInputTheme
     })
+
+    const colorStyle = computed(() => ({
+      '--form-color': props.color
+    }))
+
+    const handleKeydown = (event) => {
+      if (props.disabled) return
+
+      if (event.key === 'Enter' || event.key === ' ') {
+        event.preventDefault()
+        formInput.compVal.value = !formInput.compVal.value
+      }
+    }
+
     return {
-      ...formInput
+      ...formInput,
+      colorStyle,
+      handleKeydown
     }
   },
 
