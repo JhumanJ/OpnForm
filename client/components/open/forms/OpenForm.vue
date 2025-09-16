@@ -5,7 +5,6 @@
   >
     <FormProgressbar
       :form-manager="formManager"
-      :theme="theme"
     />
     <transition
       name="fade"
@@ -34,7 +33,6 @@
               <open-form-field
                 :field="element"
                 :form-manager="formManager"
-                :theme="theme"
               />
             </VTransition>
           </template>
@@ -46,7 +44,6 @@
     <CaptchaWrapper
       v-if="form.use_captcha"
       :form-manager="formManager"
-      :theme="theme"
     />
 
     <!--  Submit, Next and previous buttons  -->
@@ -100,8 +97,7 @@ import FormProgressbar from './FormProgressbar.vue'
 import { useWorkingFormStore } from '~/stores/working_form'
 
 const props = defineProps({
-  formManager: { type: Object, required: true },
-  theme: { type: Object, required: true }
+  formManager: { type: Object, required: true }
 })
 
 const workingFormStore = useWorkingFormStore()
@@ -112,6 +108,11 @@ const form = computed(() => props.formManager.config.value)
 const formPageIndex = computed(() => props.formManager.state.currentPage)
 const strategy = computed(() => props.formManager.strategy.value)
 const structure = computed(() => props.formManager.structure)
+
+// Provide theme context for all child form components
+provide('formTheme', computed(() => form.value?.theme || 'default'))
+provide('formSize', computed(() => form.value?.size || 'md'))  
+provide('formBorderRadius', computed(() => form.value?.border_radius || 'small'))
 
 const hasPaymentBlock = computed(() => {
   return structure.value?.currentPageHasPaymentBlock.value ?? false

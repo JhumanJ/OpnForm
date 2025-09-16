@@ -33,7 +33,6 @@
       <OpenForm
         v-if="form"
         :form-manager="formManager"
-        :theme="theme"
         @submit="isModalOpen = false"
       >
         <template #submit-btn="{ loading }">
@@ -52,7 +51,6 @@
 
 <script setup>
 import OpenForm from "../forms/OpenForm.vue"
-import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import { useFormManager } from '~/lib/forms/composables/useFormManager'
 
@@ -66,16 +64,7 @@ const props = defineProps({
     default: () => [],
   },
   show: { type: Boolean, required: true },
-  form: { type: Object, required: true },
-  theme: {
-    type: Object, default: () => {
-      const theme = inject("theme", null)
-      if (theme) {
-        return theme.value
-      }
-      return CachedDefaultTheme.getInstance()
-    }
-  }
+  form: { type: Object, required: true }
 })
 
 const emit = defineEmits(["close"])

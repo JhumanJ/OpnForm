@@ -58,7 +58,6 @@
           <div class="rounded-lg p-5 bg-neutral-100 dark:bg-neutral-900 mt-4">
             <OpenForm
               v-if="formManager"
-              :theme="theme"
               :form-manager="formManager"
               @submit="generateUrl"
             >
@@ -88,7 +87,6 @@
 </template>
 
 <script setup>
-import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder"
 import FormUrlPrefill from "~/components/open/forms/components/FormUrlPrefill.vue"
 import OpenForm from "~/components/open/forms/OpenForm.vue"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
@@ -115,14 +113,6 @@ const isModalOpen = computed({
   set(value) {
     showUrlFormPrefillModal.value = value
   }
-})
-
-// Theme computation
-const theme = computed(() => {
-  return new ThemeBuilder(props.form.theme, {
-    size: props.form.size,
-    borderRadius: props.form.border_radius
-  }).getAllComponents()
 })
 
 // Set up form manager with proper mode

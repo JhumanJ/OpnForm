@@ -15,9 +15,7 @@
       >
       <slot name="label">
         <span
-          :class="[
-            theme.SelectInput.fontSize,
-          ]"
+          :class="ui.label()"
         >{{ label }}
           <span
             v-if="required"
@@ -38,6 +36,7 @@
 
 <script setup>
 import { inputProps, useFormInput } from "../useFormInput.js"
+import { colorInputTheme } from "~/lib/forms/themes/color-input.theme.js"
 
 const props = defineProps({
   ...inputProps,
@@ -45,5 +44,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
-const { compVal, inputWrapperProps} = useFormInput(props, { emit })
+const { compVal, inputWrapperProps, ui } = useFormInput(props, { emit }, {
+  variants: colorInputTheme
+})
 </script>
