@@ -75,12 +75,15 @@ class FormSubmissionController extends Controller
         $form = $request->form;
         $this->authorize('update', $form);
 
+        // Ensure the submission belongs to the given form
+        $submission = $form->submissions()->where('id', $submissionId)->firstOrFail();
+
         $submissionData = $request->validated();
-        $submissionData['submission_id'] = $submissionId;
-        $job = new StoreFormSubmissionJob($request->form, $submissionData);
+        $submissionData['submission_id'] = $submission->id;
+        $job = new StoreFormSubmissionJob($form, $submissionData);
         $job->handle();
 
-        $data = new FormSubmissionResource(FormSubmission::findOrFail($submissionId));
+        $data = new FormSubmissionResource($submission->fresh());
 
         return $this->success([
             'message' => 'Record successfully updated.',
