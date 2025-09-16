@@ -141,11 +141,14 @@
           </div>
           <div
             v-if="filteredOptions.length > 0"
+            ref="dropdownRef"
             :class="variantSlots.optionsContainer()"
+             
           >
             <li
-              v-for="item in filteredOptions"
-              :key="item[optionKey]"
+              v-if="virtualizer"
+              v-for="virtualItem in virtualizer.getVirtualItems()"
+              :key="filteredOptions[virtualItem.index] ? filteredOptions[virtualItem.index][optionKey] : virtualItem.index"
               role="option"
               :style="optionStyle"
               :class="[
@@ -153,16 +156,17 @@
                 dropdownClass,
                 { 'pr-9': multiple},
                 { 
-                  'opacity-50 cursor-not-allowed': disabledOptionsMap[item[optionKey]],
-                  'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': !disabledOptionsMap[item[optionKey]]
+                  'opacity-50 cursor-not-allowed': filteredOptions[virtualItem.index] && disabledOptionsMap[filteredOptions[virtualItem.index][optionKey]],
+                  'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': filteredOptions[virtualItem.index] && !disabledOptionsMap[filteredOptions[virtualItem.index][optionKey]]
                 }
               ]"
-              @click.stop="select(item)"
+              @click.stop="filteredOptions[virtualItem.index] && select(filteredOptions[virtualItem.index])"
             >
               <slot
+                v-if="filteredOptions[virtualItem.index]"
                 name="option"
-                :option="item"
-                :selected="isSelected(item)"
+                :option="filteredOptions[virtualItem.index]"
+                :selected="isSelected(filteredOptions[virtualItem.index])"
               />
             </li>
           </div>
@@ -207,6 +211,7 @@ import debounce from 'debounce'
 import Fuse from 'fuse.js'
 import { tv } from "tailwind-variants"
 import { vSelectTheme } from "~/lib/forms/themes/v-select.theme.js"
+import { useVirtualizer } from '@tanstack/vue-virtual'
 
 export default {
   name: 'VSelect',
@@ -247,7 +252,8 @@ export default {
       isOpen: false,
       searchTerm: '',
       defaultValue: this.modelValue ?? null,
-      isFocused: false
+      isFocused: false,
+      virtualizer: null
     }
   },
   computed: {
@@ -348,9 +354,50 @@ export default {
       if ((this.remote && val) || (val === '' && !this.modelValue) || (val === '' && this.isOpen)) {
         return this.debouncedRemote(val)
       }
+    },
+    isOpen (val) {
+      if (val) {
+        this.$nextTick(() => {
+          this.setupVirtualizer()
+        })
+      }
+    },
+    filteredOptions () {
+      if (this.isOpen) {
+        this.$nextTick(() => {
+          this.setupVirtualizer()
+        })
+      }
+    }
+  },
+  mounted () {
+    // dropdownRef will be handled by the template ref
+  },
+  beforeUnmount () {
+    // Clean up virtualizer if it exists
+    if (this.virtualizer) {
+      this.virtualizer = null
     }
   },
   methods: {
+    setupVirtualizer () {
+      if (!this.$refs.dropdownRef || !this.filteredOptions || this.filteredOptions.length === 0) {
+        this.virtualizer = null
+        return
+      }
+      
+      // Clean up existing virtualizer
+      if (this.virtualizer) {
+        this.virtualizer = null
+      }
+      
+      this.virtualizer = useVirtualizer({
+        count: this.filteredOptions.length,
+        getScrollElement: () => this.$refs.dropdownRef,
+        estimateSize: () => 40,
+        overscan: 5
+      })
+    },
     isSelected (value) {
       if (!this.modelValue) return false
 
