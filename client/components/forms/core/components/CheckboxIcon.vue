@@ -28,15 +28,21 @@ const props = defineProps({
   },
   // Theme configuration as strings for tailwind-variants
   size: {type: String, default: null}, 
+  theme: {type: String, default: null},
   ui: {type: Object, default: () => ({})}
 })
 
 // Inject theme values for centralized resolution
 const injectedSize = inject('formSize', null)
+const injectedTheme = inject('formTheme', null)
 
-// Resolve size with proper reactivity
+// Resolve size and theme with proper reactivity
 const resolvedSize = computed(() => {
   return props.size || injectedSize?.value || 'md'
+})
+
+const resolvedTheme = computed(() => {
+  return props.theme || injectedTheme?.value || 'default'
 })
 
 // Color style for CSS custom property
@@ -47,7 +53,8 @@ const colorStyle = computed(() => ({
 // OPTIMIZED: Single computed following Nuxt UI pattern
 const ui = computed(() => {
   return tv(checkboxIconTheme, props.ui)({
-    size: resolvedSize.value
+    size: resolvedSize.value,
+    theme: resolvedTheme.value
   })
 })
 

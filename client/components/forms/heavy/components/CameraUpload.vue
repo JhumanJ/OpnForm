@@ -10,7 +10,6 @@
       muted
       :class="[
         { hidden: !isCapturing }, 
-        variantSlots.container(),
         'w-full h-full object-cover bg-neutral-500'
       ]"
       webkit-playsinline
@@ -19,7 +18,6 @@
       ref="canvasRef"
       :class="[
         { hidden: !capturedImage },
-        variantSlots.container(),
         'w-full h-full object-cover'
       ]"
     />

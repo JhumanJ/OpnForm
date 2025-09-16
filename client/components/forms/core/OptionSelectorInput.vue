@@ -65,7 +65,6 @@
 </template>
 
 <script setup>
-import { ref, computed, watch, nextTick } from 'vue'
 import { inputProps, useFormInput } from '../useFormInput.js'
 import { tv } from 'tailwind-variants'
 import { optionSelectorInputTheme } from '~/lib/forms/themes/option-selector-input.theme.js'

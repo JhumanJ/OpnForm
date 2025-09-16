@@ -113,6 +113,7 @@
 </template>
 
 <script>
+import { computed } from 'vue'
 import { inputProps, useFormInput } from '../useFormInput.js'
 import { selectInputTheme } from '~/lib/forms/themes/select-input.theme.js'
 
@@ -140,14 +141,16 @@ export default {
     maxSelection: { type: Number, default: null }
   },
   setup(props, context) {
+    const additionalVariants = computed(() => ({
+      loading: props.loading,
+      multiple: props.multiple,
+      searchable: props.searchable,
+      clearable: props.clearable
+    }))
+
     const formInput = useFormInput(props, context, {
       variants: selectInputTheme,
-      additionalVariants: {
-        loading: props.loading,
-        multiple: props.multiple,
-        searchable: props.searchable,
-        clearable: props.clearable
-      }
+      additionalVariants
     })
 
     return {

@@ -13,6 +13,7 @@ export const flatSelectInputTheme = {
       'flex items-center',
       'border-t first:border-t-0 px-2'
     ],
+    hover: '',
     help: 'text-neutral-500'
   },
   variants: {
@@ -23,20 +24,22 @@ export const flatSelectInputTheme = {
           'shadow-xs'
         ],
         option: [
-          'cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-900',
+          'cursor-pointer',
           'border-neutral-300 dark:border-neutral-600',
           'gap-x-2'
-        ]
+        ],
+        hover: 'hover:bg-neutral-50 dark:hover:bg-neutral-900'
       },
       simple: {
         container: [
           'border-neutral-300 dark:border-neutral-600'
         ],
         option: [
-          'cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-900',
+          'cursor-pointer',
           'border-neutral-300 dark:border-neutral-600',
           'gap-x-2'
-        ]
+        ],
+        hover: 'hover:bg-neutral-50 dark:hover:bg-neutral-900'
       },
       notion: {
         container: [
@@ -45,10 +48,11 @@ export const flatSelectInputTheme = {
           'text-neutral-900 dark:text-neutral-100'
         ],
         option: [
-          'cursor-pointer hover:backdrop-brightness-95',
+          'cursor-pointer',
           'border-notion-input-border dark:border-notion-input-borderDark',
           'space-x-2'
-        ]
+        ],
+        hover: 'hover:backdrop-brightness-95'
       }
     },
     size: {

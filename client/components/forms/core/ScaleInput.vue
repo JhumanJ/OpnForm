@@ -11,7 +11,8 @@
         :class="[
           { 'font-semibold': compVal === i },
           ui.button(),
-          compVal !== i ? ui.buttonUnselected() : ''
+          compVal !== i ? ui.buttonUnselected() : '',
+          compVal !== i ? ui.buttonHover() : ''
         ]"
         :style="btnStyle(i === compVal)"
         role="button"

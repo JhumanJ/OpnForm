@@ -52,7 +52,7 @@ export const vSelectTheme = {
       'text-neutral-900 select-none relative py-2 cursor-pointer group hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-sm focus:outline-hidden'
     ],
     emptyMessage: 'w-full text-neutral-500 text-center py-2',
-    createLabel: 'px-2 bg-neutral-100 border border-neutral-300 rounded-sm group-hover-text-black'
+    createLabel: 'px-2 bg-neutral-100 border border-neutral-300 rounded-sm group-hover:text-black'
   },
   variants: {
     theme: {

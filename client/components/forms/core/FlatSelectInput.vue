@@ -13,6 +13,8 @@
       v-else
       class="relative overflow-hidden"
       :class="ui.container()"
+      :role="multiple ? 'group' : 'radiogroup'"
+      :aria-label="label || `Select ${multiple ? 'options' : 'option'}`"
     >
       <template
         v-if="options && options.length"
@@ -25,6 +27,7 @@
           class="relative"
           :class="[
             ui.option(),
+            ui.hover(),
             { '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disableOptions.includes(option[optionKey]) }
           ]"
           @click="onSelect(option[optionKey])"
@@ -33,12 +36,14 @@
             <CheckboxIcon
               :is-checked="isSelected(option[optionKey])"
               :color="color"
+              :theme="resolvedTheme"
             />
           </template>
           <template v-else>
             <RadioButtonIcon
               :is-checked="isSelected(option[optionKey])"
               :color="color"
+              :theme="resolvedTheme"
             />
           </template>
           <UTooltip

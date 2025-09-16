@@ -9,7 +9,8 @@ export const scaleInputTheme = {
     ],
     buttonUnselected: [
       'bg-white dark:bg-notion-dark-light'
-    ]
+    ],
+    buttonHover: ''
   },
   variants: {
     theme: {
@@ -19,7 +20,17 @@ export const scaleInputTheme = {
         ],
         buttonUnselected: [
           'bg-white dark:bg-notion-dark-light'
-        ]
+        ],
+        buttonHover: 'hover:bg-neutral-50 dark:hover:bg-neutral-900'
+      },
+      simple: {
+        button: [
+          'border-neutral-300 dark:border-neutral-600'
+        ],
+        buttonUnselected: [
+          'bg-white dark:bg-notion-dark-light'
+        ],
+        buttonHover: 'hover:bg-neutral-50 dark:hover:bg-neutral-900'
       },
       notion: {
         button: [
@@ -28,7 +39,8 @@ export const scaleInputTheme = {
         ],
         buttonUnselected: [
           'bg-notion-input-background dark:bg-notion-dark-light'
-        ]
+        ],
+        buttonHover: 'hover:brightness-95'
       }
     },
     size: {

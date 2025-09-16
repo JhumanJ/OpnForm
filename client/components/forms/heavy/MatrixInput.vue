@@ -54,6 +54,7 @@
                   :key="row+column"
                   :is-checked="compVal[row] === column"
                   :color="color"
+                  :theme="resolvedTheme"
                 />
               </div>
             </td>
@@ -83,7 +84,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
-const { compVal, inputWrapperProps, ui } = useFormInput(props, { emit }, {
+const { compVal, inputWrapperProps, ui, resolvedTheme } = useFormInput(props, { emit }, {
   variants: matrixInputTheme
 })
 

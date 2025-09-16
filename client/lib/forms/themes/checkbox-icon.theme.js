@@ -1,19 +1,30 @@
 /**
  * CheckboxIcon tailwind-variants configuration
  * Used for checkbox icons in FlatSelectInput and similar components
+ * Colors match text input border colors for consistency
  */
 export const checkboxIconTheme = {
   slots: {
     checkedIcon: [
       'block',
-      'bg-[var(--form-color,#3B82F6)]'
+      'text-[var(--form-color,#3B82F6)]'
     ],
     uncheckedIcon: [
-      'block',
-      'text-neutral-300 dark:text-neutral-600'
+      'block'
     ]
   },
   variants: {
+    theme: {
+      default: {
+        uncheckedIcon: 'text-neutral-300 dark:text-neutral-600'
+      },
+      simple: {
+        uncheckedIcon: 'text-neutral-300 dark:text-neutral-600'
+      },
+      notion: {
+        uncheckedIcon: 'text-notion-input-border dark:text-notion-input-borderDark'
+      }
+    },
     size: {
       xs: {
         checkedIcon: 'size-3',
@@ -34,6 +45,7 @@ export const checkboxIconTheme = {
     }
   },
   defaultVariants: {
+    theme: 'default',
     size: 'md'
   }
 }
