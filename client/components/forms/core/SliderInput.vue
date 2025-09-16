@@ -25,8 +25,8 @@
         >
           <div class="grid grid-cols-3 gap-2 -mt-1">
             <div
-              v-for="i in sliderLabelsList"
-              :key="i"
+              v-for="(i, idx) in sliderLabelsList"
+              :key="i.label ?? idx"
               :class="[ui.stepLabel(), i.style]"
             >
               {{ i.label }}

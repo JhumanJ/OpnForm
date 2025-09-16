@@ -20,16 +20,6 @@
 </template>
 
 <script setup>
-import {
-  defineEmits,
-  defineOptions,
-  defineProps,
-  onMounted,
-  ref,
-  watch,
-  inject,
-  computed
-} from 'vue'
 import { tv } from "tailwind-variants"
 import { vCheckboxTheme } from "~/lib/forms/themes/v-checkbox.theme.js"
 
@@ -76,13 +66,6 @@ const ui = computed(() => {
 
 watch(
   () => props.modelValue,
-  (val) => {
-    internalValue.value = val
-  },
-)
-
-watch(
-  () => props.checked,
   (val) => {
     internalValue.value = val
   },

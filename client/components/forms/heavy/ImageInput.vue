@@ -225,21 +225,16 @@ export default {
               response.extension,
           })
             .then((moveFileResponseData) => {
-              if (!this.multiple) {
-                this.files = []
-              }
               this.compVal = moveFileResponseData.url
-              this.showUploadModal = false
-              this.loading = false
             })
             .catch(() => {
               this.compVal = null
-              this.showUploadModal = false
-              this.loading = false
             })
         })
         .catch(() => {
           this.compVal = null
+        })
+        .finally(() => {
           this.showUploadModal = false
           this.loading = false
         })

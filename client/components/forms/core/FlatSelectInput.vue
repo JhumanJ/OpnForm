@@ -165,7 +165,9 @@ export default {
 
         // Already in value, remove it only if clearable or not the last item
         if (this.isSelected(value)) {
-          if (this.clearable || emitValue.length > 1) {
+          const nextLen = emitValue.length - 1
+          if (this.minSelection && nextLen < this.minSelection) return
+          if (this.clearable || nextLen >= 1) {
             this.compVal = emitValue.filter((item) => item !== value)
           }
           return

@@ -56,11 +56,11 @@
               class="flex flex-wrap items-center justify-center gap-4"
             >
               <uploaded-file
-                v-for="file in files"
+                v-for="(file, index) in files"
                 :key="file.url"
                 :file="file"
                 :disabled="disabled"
-                @remove="clearFile(file)"
+                @remove="clearFile(index)"
               />
             </div>
             <template v-else>
@@ -216,9 +216,19 @@ export default {
       this.loading = false
     },
     clearAll() {
+      // Revoke object URLs to prevent memory leaks
+      this.files.forEach(f => {
+        if (f && f.src) {
+          URL.revokeObjectURL(f.src)
+        }
+      })
       this.files = []
     },
     clearFile(index) {
+      const f = this.files[index]
+      if (f && f.src) {
+        URL.revokeObjectURL(f.src)
+      }
       this.files.splice(index, 1)
     },
     onUploadDropEvent(e) {

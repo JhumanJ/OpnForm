@@ -6,7 +6,8 @@ export const matrixInputTheme = {
     container: 'border overflow-x-auto',
     cell: '',
     cellHover: '',
-    option: 'flex items-center justify-center relative',
+    option: 'relative cursor-pointer',
+    iconWrapper: 'flex items-center justify-center h-full w-full',
     headerCell: 'w-full flex items-center justify-center',
     rowCell: 'w-full'
   },
@@ -20,7 +21,7 @@ export const matrixInputTheme = {
         ],
         cell: 'border-neutral-300 dark:border-neutral-600',
         cellHover: 'hover:bg-neutral-50 dark:hover:bg-neutral-900',
-        option: 'cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-900'
+        option: 'hover:bg-neutral-50 dark:hover:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-form/100 focus:ring-inset'
       },
       simple: {
         container: [
@@ -29,7 +30,7 @@ export const matrixInputTheme = {
         ],
         cell: 'border-neutral-300 dark:border-neutral-600',
         cellHover: 'hover:bg-neutral-50 dark:hover:bg-neutral-900',
-        option: 'cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-900'
+        option: 'hover:bg-neutral-50 dark:hover:bg-neutral-900 focus:outline-none focus:ring-2 focus:ring-form/100 focus:ring-inset'
       },
       notion: {
         container: [
@@ -38,7 +39,7 @@ export const matrixInputTheme = {
         ],
         cell: 'border-notion-input-border dark:border-notion-input-borderDark',
         cellHover: 'hover:backdrop-brightness-95',
-        option: 'cursor-pointer hover:backdrop-brightness-95'
+        option: 'hover:backdrop-brightness-95 focus:outline-none focus:ring-2 focus:ring-form/40 focus:ring-inset'
       }
     },
     size: {
@@ -78,7 +79,7 @@ export const matrixInputTheme = {
       true: { 
         container: '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800',
         cellHover: '!hover:bg-neutral-200 dark:!hover:bg-neutral-800',
-        option: '!cursor-not-allowed !hover:bg-neutral-200 dark:!hover:bg-neutral-800'
+        option: '!cursor-not-allowed !hover:bg-neutral-200 dark:!hover:bg-neutral-800 !focus:ring-0'
       }
     }
   },

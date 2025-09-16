@@ -22,9 +22,11 @@
         </thead>
         <tbody>
           <tr
-            v-for="row, rowIndex in rows"
+            v-for="(row, rowIndex) in rows"
             :key="rowIndex"
             class="border-t border-neutral-300"
+            role="radiogroup"
+            :aria-label="`${row} options`"
           >
             <td class="ltr:text-left rtl:text-right w-auto max-w-24 overflow-hidden">
               <div :class="ui.rowCell()">
@@ -35,20 +37,20 @@
               v-for="column in columns"
               :key="row + column"
               class="ltr:border-l rtl:border-r rtl:!border-l-0"
+              role="radio"
+              :tabindex="props.disabled ? -1 : 0"
+              :aria-checked="compVal && compVal[row] === column"
               :class="[
                 ui.cell(),
-                ui.cellHover()
+                ui.cellHover(),
+                ui.option()
               ]"
+              @click="onSelect(row, column)"
+              @keydown="onKeyDown($event, row, column)"
             >
-              <div
-                v-if="compVal"
-                class="w-full"
-                role="radio"
-                :aria-checked="compVal[row] === column"
-                :class="ui.option()"
-                @click="onSelect(row, column)"
-              >
+              <div :class="ui.iconWrapper()">
                 <RadioButtonIcon
+                  v-if="compVal"
                   :key="row+column"
                   :is-checked="compVal[row] === column"
                   :color="color"
@@ -102,6 +104,13 @@ const onSelect = (row, column) => {
   
   // Assigning a new object to compVal.value will trigger the setter in useFormInput
   compVal.value = newValue
+}
+
+const onKeyDown = (event, row, column) => {
+  if (event.key === 'Enter' || event.key === ' ') {
+    event.preventDefault()
+    onSelect(row, column)
+  }
 }
 
 watch(compVal, (val) => {
