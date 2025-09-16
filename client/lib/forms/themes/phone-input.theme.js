@@ -13,7 +13,8 @@ export const phoneInputTheme = {
       'text-neutral-700 dark:text-neutral-300',
       'focus:outline-hidden',
       'placeholder-neutral-400 dark:placeholder-neutral-500'
-    ],
+    ]
+    ,
     separator: ''
   },
   variants: {
