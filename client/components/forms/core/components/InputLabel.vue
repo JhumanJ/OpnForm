@@ -1,41 +1,39 @@
 <template>
   <label
     :for="nativeFor"
-    class="input-label"
-    :class="[
-      theme.default.label,
-      { 'uppercase text-xs': uppercaseLabels, 'text-sm/none': !uppercaseLabels },
-    ]"
+    :class="ui.label()"
   >
     <slot>
       {{ label }}
       <span
         v-if="required"
-        class="text-red-500 required-dot"
+        :class="ui.requiredDot()"
       >*</span>
     </slot>
   </label>
 </template>
 
-<script>
-import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
-export default {
-  name: "InputLabel",
+<script setup>
+import { tv } from "tailwind-variants"
+import { inputLabelTheme } from "~/lib/forms/themes/input-label.theme.js"
 
-  props: {
-    nativeFor: { type: String, default: null },
-    theme: {
-      type: Object, default: () => {
-        const theme = inject("theme", null)
-        if (theme) {
-          return theme.value
-        }
-        return CachedDefaultTheme.getInstance()
-      }
-    },
-    uppercaseLabels: { type: Boolean, default: false },
-    required: { type: Boolean, default: false },
-    label: { type: String, required: true },
-  },
-}
+defineOptions({
+  name: "InputLabel"
+})
+
+const props = defineProps({
+  nativeFor: { type: String, default: null },
+  uppercaseLabels: { type: Boolean, default: false },
+  required: { type: Boolean, default: false },
+  label: { type: String, required: true },
+  ui: {type: Object, default: () => ({})}
+})
+
+// OPTIMIZED: Single computed following Nuxt UI pattern
+const ui = computed(() => {
+  return tv(inputLabelTheme, props.ui)({
+    uppercaseLabels: props.uppercaseLabels
+  })
+})
+
 </script>

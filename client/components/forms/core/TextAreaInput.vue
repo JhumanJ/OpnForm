@@ -8,18 +8,7 @@
       :id="id ? id : name"
       v-model="compVal"
       :disabled="disabled ? true : null"
-      :class="[
-        theme.default.input,
-        theme.default.borderRadius,
-        theme.default.spacing.horizontal,
-        theme.default.spacing.vertical,
-        theme.default.fontSize,
-        {
-          '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disabled,
-        },
-      ]"
-      class="resize-y block"
+      :class="ui.input()"
       :name="name"
       :style="inputStyle"
       :placeholder="placeholder"
@@ -37,7 +26,7 @@
       v-if="maxCharLimit && showCharLimit"
       #bottom_after_help
     >
-      <small :class="theme.default.help">
+      <small :class="ui.help()">
         {{ charCount }}/{{ maxCharLimit }}
       </small>
     </template>
@@ -53,6 +42,7 @@
 
 <script>
 import {inputProps, useFormInput} from "../useFormInput.js"
+import { textAreaInputTheme } from "~/lib/forms/themes/text-area-input.theme.js"
 
 export default {
   name: "TextAreaInput",
@@ -65,8 +55,12 @@ export default {
   },
 
   setup(props, context) {
+    const formInput = useFormInput(props, context, {
+      variants: textAreaInputTheme
+    })
+
     return {
-      ...useFormInput(props, context),
+      ...formInput
     }
   },
 

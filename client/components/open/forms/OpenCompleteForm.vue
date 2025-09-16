@@ -31,7 +31,6 @@
           <div class="form-group flex flex-wrap w-full">
             <div class="relative w-full px-2">
               <text-input
-                :theme="theme"
                 :form="passwordForm"
                 name="password"
                 native-type="password"
@@ -110,7 +109,6 @@
             <open-form
               v-if="formManager && form && shouldDisplayForm"
               :form-manager="formManager"
-              :theme="theme"
               @submit="triggerSubmit"
             >
               <template #submit-btn="{loading}">
@@ -140,26 +138,24 @@
               :form="form"
               :form-data="submittedData"
             />
-            <open-form-button
-              v-if="form.re_fillable"
-              :form="form"
-              class="my-4"
-              @click="restart"
-            >
-              {{ form.re_fill_button_text || t('forms.buttons.re_fill') }}
-            </open-form-button>
-            <p
-              v-if="form.editable_submissions && submissionId"
-              class="mt-5"
-            >
-              <a
-                target="_parent"
-                :href="form.share_url+'?submission_id='+submissionId"
-                class="text-blue-500 hover:underline"
+            <div class="flex w-full gap-2 items-center mt-4">
+
+                          <open-form-button
+                v-if="form.re_fillable"
+                :form="form"
+                icon="i-lucide-rotate-ccw"
+                @click="restart"
               >
-                {{ form.editable_submissions_button_text }}
-              </a>
-            </p>
+                {{ form.re_fill_button_text || t('forms.buttons.re_fill') }}
+              </open-form-button>
+            <open-form-button
+              v-if="form.editable_submissions && submissionId"
+              :form="form"
+              @click="editSubmission"
+            >
+              {{ form.editable_submissions_button_text }}
+            </open-form-button>
+            </div>
             <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
           </div>
         </v-transition>
@@ -176,7 +172,6 @@
 <script setup>
 import { useFormManager } from '~/lib/forms/composables/useFormManager'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
-import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import OpenForm from './OpenForm.vue'
 import OpenFormButton from './OpenFormButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
@@ -229,14 +224,10 @@ const darkModeRef = toRef(props, 'darkMode')
 // Create a reactive reference for the mode prop
 const modeRef = toRef(props, 'mode')
 
-// Add back the local theme computation
-const theme = computed(() => {
-  return new ThemeBuilder(props.form.theme, {
-    size: props.form.size,
-    borderRadius: props.form.border_radius
-  }).getAllComponents()
-})
-provide('theme', theme)
+// Provide theme context for components outside OpenForm (password input, TextBlock)
+provide('formTheme', computed(() => props.form.theme || 'default'))
+provide('formSize', computed(() => props.form.size || 'md'))  
+provide('formBorderRadius', computed(() => props.form.border_radius || 'small'))
 
 let formManager = null
 if (props.form) {
@@ -403,6 +394,11 @@ const restart = () => {
     submissionId.value = null
     emit('restarted', true)
   })
+}
+
+const editSubmission = () => {
+  const editUrl = props.form.share_url + '?submission_id=' + submissionId.value
+  window.parent.location.href = editUrl
 }
 
 const passwordEntered = () => {

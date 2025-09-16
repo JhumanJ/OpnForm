@@ -89,7 +89,9 @@
             "group": "Submissions",
             "pages": [
               "api-reference/submissions/list-submissions",
+              "api-reference/submissions/create-submission",
               "api-reference/submissions/export-submissions-csv",
+              "api-reference/submissions/export-status",
               "api-reference/submissions/update-submission",
               "api-reference/submissions/delete-submission"
             ]

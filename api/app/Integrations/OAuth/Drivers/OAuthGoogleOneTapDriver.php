@@ -2,13 +2,12 @@
 
 namespace App\Integrations\OAuth\Drivers;
 
-use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
 use App\Integrations\OAuth\Drivers\Contracts\WidgetOAuthDriver;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Http;
 use Laravel\Socialite\Contracts\User;
 
-class OAuthGoogleOneTapDriver implements OAuthDriver, WidgetOAuthDriver
+class OAuthGoogleOneTapDriver implements WidgetOAuthDriver
 {
     public function getRedirectUrl(): string
     {
@@ -22,6 +21,12 @@ class OAuthGoogleOneTapDriver implements OAuthDriver, WidgetOAuthDriver
 
     public function setScopes(array $scopes): self
     {
+        return $this;
+    }
+
+    public function setState(string $state): self
+    {
+        // Widget-based auth doesn't use state, but interface requires it
         return $this;
     }
 

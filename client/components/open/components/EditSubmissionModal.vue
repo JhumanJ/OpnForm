@@ -8,7 +8,6 @@
       <OpenForm
         v-if="form"
         :form-manager="formManager"
-        :theme="theme"
         @submit="updateForm"
       >
         <template #submit-btn="{ isProcessing }">
@@ -27,22 +26,12 @@
 <script setup>
 import { ref, defineProps, defineEmits, computed } from "vue"
 import OpenForm from "../forms/OpenForm.vue"
-import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import { useFormManager } from '~/lib/forms/composables/useFormManager'
 
 const props = defineProps({
   show: { type: Boolean, required: true },
   form: { type: Object, required: true },
-  theme: {
-      type: Object, default: () => {
-        const theme = inject("theme", null)
-        if (theme) {
-          return theme.value
-        }
-        return CachedDefaultTheme.getInstance()
-      }
-    },
   submission: { type: Object },
 })
 

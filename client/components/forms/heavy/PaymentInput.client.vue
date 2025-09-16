@@ -4,20 +4,7 @@
       <slot name="label" />
     </template>
 
-    <div
-      :class="[
-        theme.default.input,
-        theme.default.borderRadius,
-        theme.default.spacing.horizontal,
-        theme.default.spacing.vertical,
-        theme.default.fontSize,
-        {
-          '!ring-red-500 !ring-2 !border-transparent': hasError,
-          '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disabled,
-        },
-        'dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-200'
-      ]"
-    >
+    <div :class="ui.container()">
       <div v-if="!oauthProviderId">
         <div class="space-y-4 mt-3">
           <div class="animate-pulse flex flex-col gap-3">
@@ -72,15 +59,7 @@
           v-else-if="stripeState && stripeState.stripeAccountId && isStripeJsLoaded && publishableKey"
           class="my-2"
         >
-          <div
-            :class="[
-              theme.default.borderRadius,
-              theme.default.spacing.horizontal,
-              theme.default.spacing.vertical,
-              theme.default.fontSize,
-            ]"
-            class="mb-4 flex border border-neutral-300 dark:border-neutral-600 items-center justify-between bg-neutral-50 dark:bg-neutral-800"
-          >
+          <div :class="ui.amountBar()">
             <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">{{ $t('forms.payment.amount_to_pay') }}</span>
             <span class="text-sm font-medium text-neutral-900 dark:text-neutral-100">{{ currencySymbol }}{{ amount }}</span>
           </div>
@@ -95,21 +74,7 @@
           >
             <template #default="{ elements }">
               <div class="space-y-4">
-                <div
-                  :class="[
-                    theme.default.input,
-                    theme.default.borderRadius,
-                    theme.default.spacing.horizontal,
-                    theme.default.spacing.vertical,
-                    theme.default.fontSize,
-                    theme.PaymentInput?.cardContainer || '',
-                    {
-                      [theme.PaymentInput?.focusRing || 'ring-2 ring-form border-transparent']: isCardFocused && !hasError,
-                      '!ring-red-500 !ring-2 !border-transparent': hasError
-                    },
-                    'dark:bg-neutral-800 dark:border-neutral-700'
-                  ]"
-                >
+                <div :class="[ui.container(), isCardFocused && !hasError ? 'ring-2 ring-form border-transparent' : '']">
                   <StripeElement
                     v-if="elements"
                     ref="card"
@@ -126,7 +91,6 @@
                   name="cardholder_name"
                   :placeholder="$t('forms.payment.name_on_card')"
                   class="w-full"
-                  :theme="theme"
                   :disabled="disabled"
                 />
                 <TextInput
@@ -134,7 +98,6 @@
                   name="billing_email"
                   :placeholder="$t('forms.payment.billing_email')"
                   class="w-full"
-                  :theme="theme"
                   :disabled="disabled"
                 />
               </div>
@@ -178,6 +141,7 @@ import { StripeElements, StripeElement } from 'vue-stripe-js'
 import stripeCurrencies from "~/data/stripe_currencies.json"
 import { useAlert } from '~/composables/useAlert'
 import { useFeatureFlag } from '~/composables/useFeatureFlag'
+import { paymentInputTheme } from '~/lib/forms/themes/payment-input.theme.js'
 
 const props = defineProps({
   ...inputProps,
@@ -192,7 +156,9 @@ const props = defineProps({
 })
 
 const emit = defineEmits([])
-const { compVal, hasError, inputWrapperProps } = useFormInput(props, { emit })
+const { compVal, hasError, inputWrapperProps, ui } = useFormInput(props, { emit }, {
+  variants: paymentInputTheme
+})
 
 const route = useRoute()
 const alert = useAlert()
@@ -414,8 +380,8 @@ const currencySymbol = computed(() => {
 })
 
 const cardOptions = computed(() => {
-  const darkPlaceholderColor = props.theme.default?.input?.includes('dark:placeholder-neutral-500') ? '#6B7280' : '#9CA3AF'
-  const lightPlaceholderColor = props.theme.default?.input?.includes('placeholder-neutral-400') ? '#9CA3AF' : '#A0AEC0'
+  const darkPlaceholderColor = '#6B7280'
+  const lightPlaceholderColor = '#9CA3AF'
   
   return {
     hidePostalCode: true,
