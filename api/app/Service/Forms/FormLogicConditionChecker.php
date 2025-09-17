@@ -285,6 +285,46 @@ class FormLogicConditionChecker
         return $fieldDate >= now()->toDateString() && $fieldDate <= now()->addYears(1)->toDateString();
     }
 
+    private function checkXDaysBefore($condition, $fieldValue): bool
+    {
+        if (!$fieldValue || !$condition['value']) {
+            return false;
+        }
+
+        $fieldDate = date('Y-m-d', strtotime($fieldValue));
+        $daysBefore = (int) $condition['value'];
+
+        if ($daysBefore < 0) {
+            return false;
+        }
+
+        // Create target date by subtracting days from today
+        $targetDate = now()->subDays($daysBefore)->toDateString();
+
+        // Return true if fieldDate is on or before the target date (X days before today)
+        return $fieldDate <= $targetDate;
+    }
+
+    private function checkXDaysAfter($condition, $fieldValue): bool
+    {
+        if (!$fieldValue || !$condition['value']) {
+            return false;
+        }
+
+        $fieldDate = date('Y-m-d', strtotime($fieldValue));
+        $daysAfter = (int) $condition['value'];
+
+        if ($daysAfter < 0) {
+            return false;
+        }
+
+        // Create target date by adding days to today
+        $targetDate = now()->addDays($daysAfter)->toDateString();
+
+        // Return true if fieldDate is on or after the target date (X days after today)
+        return $fieldDate >= $targetDate;
+    }
+
     private function checkLength($condition, $fieldValue, $operator = '==='): bool
     {
         if (!$fieldValue || strlen($fieldValue) === 0) {
@@ -494,6 +534,10 @@ class FormLogicConditionChecker
                 return $this->checkOnOrBefore($propertyCondition, $value);
             case 'on_or_after':
                 return $this->checkOnOrAfter($propertyCondition, $value);
+            case 'x_days_before':
+                return $this->checkXDaysBefore($propertyCondition, $value);
+            case 'x_days_after':
+                return $this->checkXDaysAfter($propertyCondition, $value);
             case 'is_empty':
                 return $this->checkIsEmpty($propertyCondition, $value);
             case 'past_week':

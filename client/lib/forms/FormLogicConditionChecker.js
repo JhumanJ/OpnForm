@@ -238,6 +238,32 @@ function checkNextYear(condition, fieldValue) {
   )
 }
 
+function checkXDaysBefore(condition, fieldValue) {
+  if (!fieldValue || !condition.value) return false
+  const fieldDate = new Date(fieldValue)
+  if (Number.isNaN(fieldDate.getTime())) return false
+  const today = new Date()
+  const daysBefore = parseInt(condition.value, 10)
+  if (isNaN(daysBefore) || daysBefore < 0) return false
+  // Create target date by setting the date properly to avoid timezone issues
+  const targetDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - daysBefore)
+  // Return true if fieldDate is on or before the target date (X days before today)
+  return fieldDate <= targetDate
+}
+
+function checkXDaysAfter(condition, fieldValue) {
+  if (!fieldValue || !condition.value) return false
+  const fieldDate = new Date(fieldValue)
+  if (Number.isNaN(fieldDate.getTime())) return false
+  const today = new Date()
+  const daysAfter = parseInt(condition.value, 10)
+  if (isNaN(daysAfter) || daysAfter < 0) return false
+  // Create target date by setting the date properly to avoid timezone issues
+  const targetDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + daysAfter)
+  // Return true if fieldDate is on or after the target date (X days after today)
+  return fieldDate >= targetDate
+}
+
 function checkLength(condition, fieldValue, operator = "===") {
   if (!fieldValue || fieldValue.length === 0) return false
   switch (operator) {
@@ -380,6 +406,10 @@ function dateConditionMet(propertyCondition, value) {
       return checkOnOrBefore(propertyCondition, value)
     case "on_or_after":
       return checkOnOrAfter(propertyCondition, value)
+    case "x_days_before":
+      return checkXDaysBefore(propertyCondition, value)
+    case "x_days_after":
+      return checkXDaysAfter(propertyCondition, value)
     case "is_empty":
       return checkIsEmpty(propertyCondition, value)
     case "past_week":
