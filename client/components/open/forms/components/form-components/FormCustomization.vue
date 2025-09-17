@@ -6,6 +6,8 @@
       :show-line="false"
     />
 
+    <PresentationStyleSwitch />
+
     <select-input
       name="theme"
       class="mt-4"
@@ -226,6 +228,7 @@ import { useWorkingFormStore } from "../../../../../stores/working_form"
 import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
 import ProTag from "~/components/app/ProTag.vue"
 import { DEFAULT_COLOR } from "@/composables/forms/initForm"
+import PresentationStyleSwitch from "./PresentationStyleSwitch.vue"
 
 
 const workingFormStore = useWorkingFormStore()
