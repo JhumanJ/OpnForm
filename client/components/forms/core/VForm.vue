@@ -8,13 +8,15 @@
 /**
  * Used to pass props to children input components
  */
-import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 
 const props = defineProps({
-  themeName: { type: String, default: 'default' },
+  theme: { type: String, default: 'default' },
   size: { type: String, default: "md" },
+  borderRadius: { type: String, default: "small" }
 })
 
-const theme = computed(() => (new ThemeBuilder(props.themeName, {size: props.size})).getAllComponents())
-provide('theme', theme)
+// Provide individual theme props for tailwind-variants approach
+provide('formTheme', computed(() => props.theme))
+provide('formSize', computed(() => props.size))  
+provide('formBorderRadius', computed(() => props.borderRadius))
 </script>

@@ -5,8 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Models\User;
-use App\Models\UserInvite;
-use App\Models\Workspace;
+use App\Service\WorkspaceInviteService;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
@@ -98,7 +97,7 @@ class RegisterController extends Controller
     protected function create(array $data)
     {
         $this->checkRegistrationAllowed($data);
-        [$workspace, $role] = $this->getWorkspaceAndRole($data);
+        [$workspace, $role] = app(WorkspaceInviteService::class)->getWorkspaceAndRole($data);
 
         $user = User::create([
             'name' => $data['name'],
@@ -135,39 +134,5 @@ class RegisterController extends Controller
             }
             return response()->json(['message' => 'Registration is not allowed.'], 400)->throwResponse();
         }
-    }
-
-    private function getWorkspaceAndRole(array $data)
-    {
-        if (!array_key_exists('invite_token', $data)) {
-            return [
-                Workspace::create([
-                    'name' => 'My Workspace',
-                    'icon' => '🧪',
-                ]),
-                User::ROLE_ADMIN
-            ];
-        }
-
-        $userInvite = UserInvite::where('email', $data['email'])
-            ->where('token', $data['invite_token'])
-            ->first();
-
-        if (!$userInvite) {
-            response()->json(['message' => 'Invite token is invalid.'], 400)->throwResponse();
-        }
-        if ($userInvite->hasExpired()) {
-            response()->json(['message' => 'Invite token has expired.'], 400)->throwResponse();
-        }
-
-        if ($userInvite->status == UserInvite::ACCEPTED_STATUS) {
-            response()->json(['message' => 'Invite is already accepted.'], 400)->throwResponse();
-        }
-
-        $userInvite->markAsAccepted();
-        return [
-            $userInvite->workspace,
-            $userInvite->role,
-        ];
     }
 }
