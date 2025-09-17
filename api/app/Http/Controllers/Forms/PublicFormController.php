@@ -240,22 +240,17 @@ class PublicFormController extends Controller
             ]);
         }
 
-        $submission = FormSubmission::find($submissionId);
+        $submission = $form->submissions()->find($submissionId);
         if (!$submission) {
             return $this->error([
                 'message' => 'Submission not found.',
             ]);
         }
 
-        $submission = new FormSubmissionResource($submission);
-        $submission->publiclyAccessed();
+        $submission->setRelation('form', $form);
+        $resource = new FormSubmissionResource($submission);
+        $resource->publiclyAccessed();
 
-        if ($submission->form_id != $form->id) {
-            return $this->error([
-                'message' => 'Not allowed.',
-            ], 403);
-        }
-
-        return $this->success($submission->toArray($request));
+        return $this->success($resource->toArray($request));
     }
 }
