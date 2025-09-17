@@ -24,10 +24,11 @@
           <div
             class="mx-auto w-full border-neutral-300 transition-colors cursor-grab"
             :class="{
-              'bg-neutral-100 ': element.hidden,
-              'bg-white ': !element.hidden,
+              'bg-neutral-100 ': element.hidden && !isBeingEdited(index),
+              'bg-white ': !element.hidden && !isBeingEdited(index),
               'border-b': index !== form.properties.length - 1,
               ' !border-blue-400 border-b-2': element.type === 'nf-page-break',
+              'bg-blue-50 dark:bg-neutral-700': isBeingEdited(index),
             }"
           >
             <div
@@ -177,6 +178,10 @@ export default {
       field.required = !field.required
       if (field.required)
         field.hidden = false
+    },
+    isBeingEdited (index) {
+      if (!this.workingFormStore?.showEditFieldSidebar) return false
+      return index === this.workingFormStore.selectedFieldIndex
     }
   }
 }
