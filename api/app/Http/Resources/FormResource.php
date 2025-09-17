@@ -51,6 +51,7 @@ class FormResource extends JsonResource
             'form_pending_submission_key' => $this->form_pending_submission_key,
             'max_file_size' => $this->workspace->max_file_size / 1000000,
             'auto_save' => $this->getAutoSave(),
+            'presentation_style' => $this->presentation_style ?? 'classic',
         ]);
     }
 

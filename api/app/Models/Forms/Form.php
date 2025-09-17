@@ -38,6 +38,8 @@ class Form extends Model implements CachableAttributes
 
     public const THEMES = ['default', 'simple', 'notion'];
 
+    public const PRESENTATION_STYLES = ['classic', 'focused'];
+
     public const WIDTHS = ['centered', 'full'];
 
     public const VISIBILITY = ['public', 'draft', 'closed'];
@@ -61,6 +63,7 @@ class Form extends Model implements CachableAttributes
         'size',
         'border_radius',
         'theme',
+        'presentation_style',
         'width',
         'layout_rtl',
         'cover_picture',
@@ -114,6 +117,7 @@ class Form extends Model implements CachableAttributes
             'seo_meta' => 'object',
             'enable_partial_submissions' => 'boolean',
             'auto_save' => 'boolean',
+            'presentation_style' => 'string',
         ];
     }
 
@@ -198,7 +202,7 @@ class Form extends Model implements CachableAttributes
         }
 
         // Fallback to cached calculation for individual access
-        return $this->remember('views_count', 15 * 60, fn () => $this->calculateTotalViews());
+        return $this->remember('views_count', 15 * 60, fn() => $this->calculateTotalViews());
     }
 
     /**
