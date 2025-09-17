@@ -722,13 +722,13 @@
       "x_days_before": {
         "expected_type": "string",
         "format": {
-          "type": "date"
+          "type": "number"
         }
       },
       "x_days_after": {
         "expected_type": "string",
         "format": {
-          "type": "date"
+          "type": "number"
         }
       },
       "is_empty": {

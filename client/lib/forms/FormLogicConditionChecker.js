@@ -241,13 +241,12 @@ function checkNextYear(condition, fieldValue) {
 function checkXDaysBefore(condition, fieldValue) {
   if (!fieldValue || !condition.value) return false
   const fieldDate = new Date(fieldValue)
+  if (Number.isNaN(fieldDate.getTime())) return false
   const today = new Date()
-  const daysBefore = parseInt(condition.value)
-  if (isNaN(daysBefore)) return false
-  
+  const daysBefore = parseInt(condition.value, 10)
+  if (isNaN(daysBefore) || daysBefore < 0) return false
   // Create target date by setting the date properly to avoid timezone issues
   const targetDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() - daysBefore)
-
   // Return true if fieldDate is on or before the target date (X days before today)
   return fieldDate <= targetDate
 }
@@ -255,13 +254,12 @@ function checkXDaysBefore(condition, fieldValue) {
 function checkXDaysAfter(condition, fieldValue) {
   if (!fieldValue || !condition.value) return false
   const fieldDate = new Date(fieldValue)
+  if (Number.isNaN(fieldDate.getTime())) return false
   const today = new Date()
-  const daysAfter = parseInt(condition.value)
-  if (isNaN(daysAfter)) return false
-  
+  const daysAfter = parseInt(condition.value, 10)
+  if (isNaN(daysAfter) || daysAfter < 0) return false
   // Create target date by setting the date properly to avoid timezone issues
   const targetDate = new Date(today.getFullYear(), today.getMonth(), today.getDate() + daysAfter)
-
   // Return true if fieldDate is on or after the target date (X days after today)
   return fieldDate >= targetDate
 }
