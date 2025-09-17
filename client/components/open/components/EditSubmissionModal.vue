@@ -39,7 +39,6 @@
 </template>
 
 <script setup>
-import { defineProps, defineEmits, computed } from "vue"
 import OpenForm from "../forms/OpenForm.vue"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import { useFormManager } from '~/lib/forms/composables/useFormManager'

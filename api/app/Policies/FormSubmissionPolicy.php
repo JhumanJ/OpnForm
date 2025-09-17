@@ -17,7 +17,12 @@ class FormSubmissionPolicy
     {
         $form = $submission->form;
 
-        // Check if user owns the form (through workspace ownership)
-        return $user->ownsForm($form);
+        $ownsAndWritable = $user->ownsForm($form) && !$form->workspace->isReadonlyUser($user);
+
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('forms-write') && $ownsAndWritable;
+        }
+
+        return $ownsAndWritable;
     }
 }
