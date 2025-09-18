@@ -15,6 +15,13 @@ export const mentionInputTheme = {
       default: {
         input: 'border-neutral-300 dark:border-neutral-600 bg-white text-neutral-700 dark:bg-notion-dark-light dark:text-neutral-300'
       },
+      minimal: {
+        input: [
+          'border-2 border-transparent',
+          'bg-neutral-100 dark:bg-notion-dark-light',
+          'text-neutral-700 dark:text-neutral-300'
+        ]
+      },
       notion: {
         input: 'border-notion-input-border dark:border-notion-input-borderDark bg-notion-input-background dark:bg-notion-dark-light text-neutral-900 dark:text-neutral-100'
       }

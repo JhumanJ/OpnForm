@@ -80,6 +80,14 @@ export const vSelectTheme = {
         ],
         chevronGradient: 'bg-gradient-to-r from-transparent to-notion-input-background dark:to-notion-dark-light',
         chevronContainer: 'bg-notion-input-background dark:bg-notion-dark-light'
+      },
+      minimal: {
+        anchor: [
+          'border-2 border-transparent',
+          'bg-neutral-100 dark:bg-notion-dark-light'
+        ],
+        chevronGradient: 'bg-gradient-to-r from-transparent to-neutral-100 dark:to-notion-dark-light',
+        chevronContainer: 'bg-neutral-100 dark:bg-notion-dark-light'
       }
     },
     size: {

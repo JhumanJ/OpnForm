@@ -40,6 +40,15 @@ export const matrixInputTheme = {
         cell: 'border-notion-input-border dark:border-notion-input-borderDark',
         cellHover: 'hover:backdrop-brightness-95',
         option: 'hover:backdrop-brightness-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-form/40 focus-visible:ring-inset'
+      },
+      minimal: {
+        container: [
+          'border-2 border-transparent',
+          'bg-neutral-100 dark:bg-notion-dark-light'
+        ],
+        cell: 'border-transparent',
+        cellHover: 'hover:bg-neutral-200/50 dark:hover:bg-neutral-900',
+        option: 'border-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-form focus-visible:outline-offset-[-2px] focus-visible:ring-0'
       }
     },
     size: {

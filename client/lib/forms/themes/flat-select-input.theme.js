@@ -53,6 +53,19 @@ export const flatSelectInputTheme = {
           'space-x-2'
         ],
         hover: 'hover:backdrop-brightness-95'
+      },
+      minimal: {
+        container: [
+          'border-2 border-transparent',
+          'bg-neutral-100 dark:bg-notion-dark-light',
+          'text-neutral-700 dark:text-neutral-300'
+        ],
+        option: [
+          'cursor-pointer',
+          'border-neutral-200 dark:border-neutral-700',
+          'gap-x-2'
+        ],
+        hover: 'hover:bg-neutral-200/50 dark:hover:bg-neutral-900'
       }
     },
     size: {

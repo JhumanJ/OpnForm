@@ -31,6 +31,14 @@ export const dateInputTheme = {
           'text-neutral-900 dark:text-neutral-100',
           'focus-visible:ring-form/40'
         ]
+      },
+      minimal: {
+        input: [
+          'border-2 border-transparent',
+          'bg-neutral-100 dark:bg-notion-dark-light',
+          'text-neutral-700 dark:text-neutral-300',
+          'focus-visible:ring-0 focus-visible:border-form'
+        ]
       }
     },
     size: {

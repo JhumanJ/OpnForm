@@ -11,8 +11,11 @@
             <td
               v-for="column in columns"
               :key="column"
-              class="ltr:border-l rtl:border-r rtl:!border-l-0 max-w-24 overflow-hidden"
-              :class="ui.cell()"
+              :class="[
+                resolvedTheme === 'minimal' ? '' : 'ltr:border-l rtl:border-r rtl:!border-l-0',
+                'max-w-24 overflow-hidden',
+                ui.cell()
+              ]"
             >
               <div :class="ui.headerCell()">
                 {{ column }}
@@ -40,7 +43,7 @@
               :tabindex="props.disabled ? -1 : 0"
               :aria-checked="compVal && compVal[row] === column"
               :class="[
-                'ltr:border-l rtl:border-r rtl:!border-l-0',
+                resolvedTheme === 'minimal' ? '' : 'ltr:border-l rtl:border-r rtl:!border-l-0',
                 ui.cell(),
                 ui.cellHover(),
                 ui.option()
