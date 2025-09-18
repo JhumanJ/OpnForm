@@ -2,7 +2,7 @@
   <form v-if="form" @submit.prevent="">
     <FormProgressbar :form-manager="formManager" />
 
-    <transition name="fade" mode="out-in">
+    <SlidingTransition direction="vertical" :step="currentIndex">
       <div :key="currentIndex" class="w-full">
         <div class="grid grid-cols-12 gap-2">
           <div v-if="isBackgroundLayout" class="col-span-12 relative">
@@ -39,7 +39,7 @@
           </template>
         </div>
       </div>
-    </transition>
+    </SlidingTransition>
 
     <div class="flex flex-wrap justify-center w-full">
       <open-form-button
@@ -52,7 +52,18 @@
         {{ $t('forms.buttons.previous') }}
       </open-form-button>
 
-      <slot v-if="isLast" name="submit-btn" :loading="isProcessing" />
+      <template v-if="isLast">
+        <slot name="submit-btn" :loading="isProcessing">
+          <open-form-button
+            :form="form"
+            class="mt-2 px-8 mx-1"
+            :loading="isProcessing"
+            @click.prevent="emit('submit')"
+          >
+            {{ form.submit_button_text || $t('forms.buttons.submit') }}
+          </open-form-button>
+        </slot>
+      </template>
 
       <open-form-button
         v-else
@@ -73,10 +84,13 @@ import BlockRenderer from './BlockRenderer.vue'
 import BlockMediaLayout from './components/BlockMediaLayout.vue'
 import FormProgressbar from './FormProgressbar.vue'
 import OpenFormButton from './OpenFormButton.vue'
+import SlidingTransition from '../../global/transitions/SlidingTransition.vue'
 
 const props = defineProps({
   formManager: { type: Object, required: true }
 })
+
+const emit = defineEmits(['submit'])
 
 const form = computed(() => props.formManager.config.value)
 const structure = props.formManager.structure

@@ -1,7 +1,7 @@
 <template>
   <div
     id="public-form"
-    class="flex flex-col"
+    class="flex flex-col grow"
   >
     <div v-if="form && !isIframe && (form.logo_picture || form.cover_picture)">
       <div v-if="form.cover_picture">
@@ -46,7 +46,7 @@
         <OpenCompleteForm
           ref="openCompleteForm"
           :form="form"
-          class="mb-10"
+          class="mb-10 grow"
           :dark-mode="darkMode"
           :mode="FormMode.LIVE"
           @password-entered="passwordEntered"

@@ -111,19 +111,7 @@
               v-if="formManager && form && shouldDisplayForm"
               :form-manager="formManager"
               @submit="triggerSubmit"
-            >
-              <template #submit-btn="{loading}">
-                <open-form-button
-                  :loading="loading || isProcessing"
-                  :form="form"
-                  class="mt-2 px-8 mx-1"
-                  :class="submitButtonClass"
-                  @click.prevent="triggerSubmit"
-                >
-                  {{ form.submit_button_text || t('forms.buttons.submit') }}
-                </open-form-button>
-              </template>
-            </component>
+            />
             <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
           </div>
           <div
@@ -194,7 +182,6 @@ const props = defineProps({
     default: FormMode.LIVE,
     validator: (value) => Object.values(FormMode).includes(value)
   },
-  submitButtonClass: { type: String, default: '' },
   darkMode: {
     type: Boolean,
     default: false

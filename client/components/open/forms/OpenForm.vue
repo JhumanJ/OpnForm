@@ -58,11 +58,18 @@
         {{ previousFieldsPageBreak.previous_btn_text || $t('forms.buttons.previous') }}
       </open-form-button>
 
-      <slot
-        v-if="isLastPage"
-        name="submit-btn"
-        :loading="isProcessing"
-      />
+      <template v-if="isLastPage">
+        <slot name="submit-btn" :loading="isProcessing">
+          <open-form-button
+            :form="form"
+            class="mt-2 px-8 mx-1"
+            :loading="isProcessing"
+            @click.prevent="emit('submit')"
+          >
+            {{ form.submit_button_text || $t('forms.buttons.submit') }}
+          </open-form-button>
+        </slot>
+      </template>
       <open-form-button
         v-else-if="currentFieldsPageBreak"
         native-type="button"
@@ -99,6 +106,8 @@ import { useWorkingFormStore } from '~/stores/working_form'
 const props = defineProps({
   formManager: { type: Object, required: true }
 })
+
+const emit = defineEmits(['submit'])
 
 const workingFormStore = useWorkingFormStore()
 
