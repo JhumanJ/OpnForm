@@ -117,10 +117,14 @@
       />
     </div>
   </div>
+
+  <!-- Focused Mode: Media settings for text blocks -->
+  <BlockMediaOptions v-if="field && field.type==='nf-text'" :model="field" :form="form" />
 </template>
 
 <script setup>
 import HiddenRequiredDisabled from './HiddenRequiredDisabled.vue'
+import BlockMediaOptions from '~/components/open/forms/components/media/BlockMediaOptions.vue'
 
 const props = defineProps({
   field: {

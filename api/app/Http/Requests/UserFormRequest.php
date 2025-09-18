@@ -164,6 +164,23 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'properties.*.allowed_file_types' => 'sometimes|nullable',
             'properties.*.use_toggle_switch' => 'boolean|nullable',
 
+            // Media (Focused mode only)
+            'properties.*.image' => 'sometimes|nullable|array',
+            'properties.*.image.url' => 'sometimes|nullable|url',
+            'properties.*.image.alt' => 'sometimes|nullable|string|max:125',
+            'properties.*.image.layout' => ['sometimes', 'nullable', Rule::in([
+                'between',
+                'left-small',
+                'right-small',
+                'left-split',
+                'right-split',
+                'background'
+            ])],
+            'properties.*.image.focal_point' => 'sometimes|nullable|array',
+            'properties.*.image.focal_point.x' => 'sometimes|nullable|numeric|min:0|max:100',
+            'properties.*.image.focal_point.y' => 'sometimes|nullable|numeric|min:0|max:100',
+            'properties.*.image.brightness' => 'sometimes|nullable|integer|min:-100|max:100',
+
             // Logic
             'properties.*.logic' => ['array', 'nullable', new FormPropertyLogicRule()],
 
