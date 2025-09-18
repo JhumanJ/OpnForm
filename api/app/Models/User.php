@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use App\Models\Forms\Form;
+use App\Models\Traits\CachableAttributes;
+use App\Models\Traits\CachesAttributes;
 use App\Notifications\ResetPassword;
 use App\Notifications\VerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -13,12 +15,13 @@ use Laravel\Cashier\Billable;
 use Laravel\Sanctum\HasApiTokens;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable implements JWTSubject
+class User extends Authenticatable implements JWTSubject, CachableAttributes
 {
     use Billable;
     use HasFactory;
     use Notifiable;
     use HasApiTokens;
+    use CachesAttributes;
 
     public const ROLE_ADMIN = 'admin';
     public const ROLE_USER = 'user';
@@ -82,13 +85,30 @@ class User extends Authenticatable implements JWTSubject
         'is_blocked'
     ];
 
+    protected $cachableAttributes = [
+        'has_forms',
+        'is_subscribed',
+        'is_pro',
+        'active_license',
+    ];
+
     public function ownsForm(Form $form)
     {
+        // Use loaded relationship if available to avoid queries
+        if ($this->relationLoaded('workspaces')) {
+            return $this->workspaces->contains('id', $form->workspace_id);
+        }
+
         return $this->workspaces()->where('workspaces.id', $form->workspace_id)->exists();
     }
 
     public function ownsWorkspace(Workspace $workspace)
     {
+        // Use loaded relationship if available to avoid queries
+        if ($this->relationLoaded('workspaces')) {
+            return $this->workspaces->contains('id', $workspace->id);
+        }
+
         return $this->workspaces()->where('workspaces.id', $workspace->id)->exists();
     }
 
@@ -107,14 +127,30 @@ class User extends Authenticatable implements JWTSubject
 
     public function getHasFormsAttribute()
     {
-        return $this->workspaces()->whereHas('forms')->exists();
+        return $this->remember('has_forms', 10 * 60, function (): bool {
+            // Use loaded relationship if available to avoid queries
+            if ($this->relationLoaded('workspaces')) {
+                return $this->workspaces->some(function ($workspace) {
+                    // If workspace has forms relationship loaded, use it
+                    if ($workspace->relationLoaded('forms')) {
+                        return $workspace->forms->isNotEmpty();
+                    }
+                    // Otherwise fall back to database query for this workspace
+                    return $workspace->forms()->exists();
+                });
+            }
+
+            return $this->workspaces()->whereHas('forms')->exists();
+        });
     }
 
     public function getIsSubscribedAttribute()
     {
-        return $this->subscribed()
-            || in_array($this->email, config('opnform.extra_pro_users_emails'))
-            || !is_null($this->activeLicense());
+        return $this->remember('is_subscribed', 5 * 60, function (): bool {
+            return $this->subscribed()
+                || in_array($this->email, config('opnform.extra_pro_users_emails'))
+                || !is_null($this->activeLicense());
+        });
     }
 
     public function getHasCustomerIdAttribute()
@@ -139,8 +175,17 @@ class User extends Authenticatable implements JWTSubject
 
     public function getIsProAttribute()
     {
-        return $this->workspaces()->get()->some(function ($workspace) {
-            return $workspace->is_pro;
+        return $this->remember('is_pro', 5 * 60, function (): bool {
+            // Use loaded relationship if available to avoid queries
+            if ($this->relationLoaded('workspaces')) {
+                return $this->workspaces->some(function ($workspace) {
+                    return $workspace->is_pro;
+                });
+            }
+
+            return $this->workspaces()->get()->some(function ($workspace) {
+                return $workspace->is_pro;
+            });
         });
     }
 
@@ -247,7 +292,14 @@ class User extends Authenticatable implements JWTSubject
 
     public function activeLicense(): ?License
     {
-        return $this->licenses()->active()->first();
+        return $this->remember('active_license', 10 * 60, function (): ?License {
+            // Use loaded relationship if available - UserController loads only active licenses
+            if ($this->relationLoaded('licenses')) {
+                return $this->licenses->first(); // Already filtered to active in eager load
+            }
+
+            return $this->licenses()->active()->first();
+        });
     }
 
     /**
@@ -296,6 +348,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function flushCache()
     {
+        // Clear user's own cached attributes
+        $this->flush();
+
+        // Clear related workspace caches
         $this->workspaces()->with('forms')->get()->each(function (Workspace $workspace) {
             $workspace->flush();
             $workspace->forms->each(function (Form $form) {

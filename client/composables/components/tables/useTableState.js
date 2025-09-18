@@ -114,7 +114,7 @@ export function useTableState(form, withActions = false) {
   const columnPinning = computed({
     get() {
       const prefs = columnPreferences.preferences.value
-      const pinning = { left: [], right: ['actions'] }
+      const pinning = { left: ['select'], right: ['actions'] }
       const configCols = columnConfigurations.value || []
       configCols.forEach(col => {
         const pref = prefs.columns[col.id] || {}
@@ -125,17 +125,19 @@ export function useTableState(form, withActions = false) {
       return pinning
     },
     set(newPinning) {
-      const { left = [] } = newPinning || {}
+      const { left = ['select'] } = newPinning || {}
       const configCols = columnConfigurations.value || []
 
       // First, clear pinning for all applicable columns (except actions)
       configCols.forEach(col => {
-        if (col.id !== 'actions') setColumnPreference(col.id, { pinned: false })
+        if (['actions', 'select'].includes(col.id)) return
+        setColumnPreference(col.id, { pinned: false })
       })
 
       // Apply new left pinning only
       left.forEach(id => {
-        if (id !== 'actions') setColumnPreference(id, { pinned: 'left' })
+        if (['actions','select'].includes(id)) return
+        setColumnPreference(id, { pinned: 'left' })
       })
       // Note: actions column pinning is handled automatically in the getter
     }
@@ -380,7 +382,7 @@ export function useTableState(form, withActions = false) {
       
       // Clear all existing pins
       configCols.forEach(col => {
-        if (col.id !== 'actions' && col.id !== columnId) {
+        if (['actions', 'select'].includes(col.id) && col.id !== columnId) {
           setColumnPreference(col.id, { pinned: false })
         }
       })

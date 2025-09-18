@@ -36,7 +36,7 @@ it('can export form submissions with selected columns', function () {
 
     // Test export with selected columns
     $response = $this->postJson(route('open.forms.submissions.export', [
-        'id' => $form->id,
+        'form' => $form,
         'columns' => [
             'name_field' => true,
             'email_field' => true,
@@ -63,7 +63,7 @@ it('cannot export form submissions with invalid columns', function () {
     ]);
 
     $response = $this->postJson(route('open.forms.submissions.export', [
-        'id' => $form->id,
+        'form' => $form,
         'columns' => [
             'invalid_field' => true,
             'name_field' => true
@@ -83,7 +83,7 @@ it('cannot export form submissions from another user form', function () {
     $this->actingAsProUser();
 
     $response = $this->postJson(route('open.forms.submissions.export', [
-        'id' => $form->id,
+        'form' => $form,
         'columns' => []
     ]));
 
