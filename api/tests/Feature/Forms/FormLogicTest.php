@@ -169,8 +169,6 @@ it('preserves multi-select values during validation with logic conditions', func
         'multi_select_field' => ['Option 1', 'Option 2']
     ];
 
-    ray($formData)->blue('Original form data');
-
     $response = $this->postJson(route('forms.answer', $form->slug), $formData);
 
     // The validation should fail because text_field is required when Option 1 is selected
@@ -183,7 +181,6 @@ it('preserves multi-select values during validation with logic conditions', func
         ]);
 
     // Check that the multi-select values were preserved in the validation data
-    ray($response->json())->purple('Response data');
     expect($response->json('errors.multi_select_field'))->toBeNull();
 });
 
@@ -248,11 +245,7 @@ it('correctly handles multi-select values with complex form logic', function () 
         '0ca51469-6bda-40f4-831c-084f066643d7' => '10km (Most popular)'
     ];
 
-    ray($formData)->blue('Original form data');
-
     $response = $this->postJson(route('forms.answer', $form->slug), $formData);
-
-    ray($response->json())->purple('Response data');
 
     // Should be successful since all required fields are filled
     $response->assertSuccessful()
@@ -324,11 +317,7 @@ it('preserves multi-select values when building validation rules', function () {
         '93c8ebe9-b1ba-42ce-841c-bf3b9be1ca4b' => ['Jerusalem Marathon (April 4)']
     ];
 
-    ray($formData)->blue('Original form data');
-
     $response = $this->postJson(route('forms.answer', $form->slug), $formData);
-
-    ray($response->json())->purple('Response data');
 
     // Should be successful since Jerusalem Marathon doesn't require Additional Days
     $response->assertSuccessful();

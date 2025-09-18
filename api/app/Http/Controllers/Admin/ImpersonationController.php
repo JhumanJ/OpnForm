@@ -12,14 +12,9 @@ class ImpersonationController extends Controller
         $this->middleware('moderator');
     }
 
-    public function impersonate($userId)
+    public function impersonate(User $user)
     {
-        $user = User::find($userId);
-        if (!$user) {
-            return $this->error([
-                'message' => 'User not found.',
-            ]);
-        } elseif ($user->admin) {
+        if ($user->admin) {
             return $this->error([
                 'message' => 'You cannot impersonate an admin.',
             ]);

@@ -19,7 +19,7 @@ class FormIntegrationsRequest extends FormRequest
 
     public function __construct(Request $request)
     {
-        $this->form = Form::findOrFail(request()->route('id'));
+        $this->form = request()->route('form');
         if ($request->integration_id) {
             // Load integration class, and get rules
             $integration = FormIntegration::getIntegration($request->integration_id);

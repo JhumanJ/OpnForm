@@ -297,10 +297,7 @@ const saveFormEdit = () => {
       form_id: updatedForm.id,
       form_slug: updatedForm.slug,
     })
-    displayFormModificationAlert({
-      form: updatedForm,
-      message: "Form successfully saved.",
-    })
+    displayFormModificationAlert(response)
     } catch (error) {
       console.error("Analytics error", error)
     }
@@ -352,10 +349,7 @@ const saveFormCreate = () => {
     } catch (error) {
       console.error("Analytics error", error)
     }
-    displayFormModificationAlert({
-      form: newForm,
-      message: "Form successfully created.",
-    })
+    displayFormModificationAlert(response)
 
     useRouter().push({
       name: "forms-slug-show-share",

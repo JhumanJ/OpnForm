@@ -20,7 +20,7 @@ test('detaching user from last workspace creates a default one via controller', 
 
     // Act: Admin detaches the user
     $this->actingAs($admin)
-        ->deleteJson(route('open.workspaces.users.remove', ['workspaceId' => $workspace->id, 'userId' => $userToDetach->id]))
+        ->deleteJson(route('open.workspaces.users.remove', ['workspace' => $workspace, 'user' => $userToDetach]))
         ->assertOk();
 
     // Assert: User now has 1 workspace, named 'My Workspace'
@@ -55,7 +55,7 @@ test('detaching user from one workspace when they have others does not create de
 
     // Act: Admin detaches the user from workspace1
     $this->actingAs($admin)
-        ->deleteJson(route('open.workspaces.users.remove', ['workspaceId' => $workspace1->id, 'userId' => $userToDetach->id]))
+        ->deleteJson(route('open.workspaces.users.remove', ['workspace' => $workspace1, 'user' => $userToDetach]))
         ->assertOk();
 
     // Assert: User now has 1 workspace (workspace2), no default created
@@ -77,7 +77,7 @@ test('user leaving last workspace creates a default one', function () {
 
     // Act: User leaves the workspace
     $this->actingAs($user)
-        ->postJson(route('open.workspaces.leave', ['workspaceId' => $workspace->id]))
+        ->postJson(route('open.workspaces.leave', ['workspace' => $workspace]))
         ->assertOk();
 
     // Assert: User now has 1 workspace, named 'My Workspace'
@@ -109,7 +109,7 @@ test('user leaving one workspace when they have others does not create default o
 
     // Act: User leaves workspace1
     $this->actingAs($user)
-        ->postJson(route('open.workspaces.leave', ['workspaceId' => $workspace1->id]))
+        ->postJson(route('open.workspaces.leave', ['workspace' => $workspace1]))
         ->assertOk();
 
     // Assert: User now has 1 workspace (workspace2), no default created

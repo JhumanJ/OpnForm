@@ -152,7 +152,7 @@ class FormSubmissionFormatter
             } elseif ($field['type'] == 'multi_select') {
                 $val = $data[$field['id']];
                 if ($this->outputStringsOnly && is_array($val)) {
-                    $returnArray[$field['name']] = implode(', ', $val);
+                    $returnArray[$field['name']] = $this->implodeCsvSafe($val);
                 } else {
                     $returnArray[$field['name']] = $val;
                 }
@@ -180,7 +180,7 @@ class FormSubmissionFormatter
                 }
             } else {
                 if (is_array($data[$field['id']]) && $this->outputStringsOnly) {
-                    $data[$field['id']] = implode(', ', $data[$field['id']]);
+                    $data[$field['id']] = $this->implodeCsvSafe($data[$field['id']]);
                 }
                 $returnArray[$field['name']] = $data[$field['id']];
             }
@@ -230,7 +230,7 @@ class FormSubmissionFormatter
             } elseif ($field['type'] == 'multi_select') {
                 $val = $data[$field['id']];
                 if ($this->outputStringsOnly) {
-                    $field['value'] = implode(', ', $val);
+                    $field['value'] = $this->implodeCsvSafe($val);
                 } else {
                     $field['value'] = $val;
                 }
@@ -269,7 +269,7 @@ class FormSubmissionFormatter
                 }
             } else {
                 if (is_array($data[$field['id']]) && $this->outputStringsOnly) {
-                    $field['value'] = implode(', ', $data[$field['id']]);
+                    $field['value'] = $this->implodeCsvSafe($data[$field['id']]);
                 } else {
                     $field['value'] = $data[$field['id']];
                 }
@@ -304,5 +304,34 @@ class FormSubmissionFormatter
             throw $e;
             return null;
         }
+    }
+
+    /**
+     * Escape a field value for CSV format
+     * Wraps fields containing commas or quotes in double quotes
+     * Escapes internal quotes by doubling them
+     */
+    private function escapeCsvField($field)
+    {
+        // Convert to string if not already
+        $field = (string) $field;
+
+        // If field contains comma, double quote, or newline, wrap in quotes
+        if (strpos($field, ',') !== false || strpos($field, '"') !== false || strpos($field, "\n") !== false || strpos($field, "\r") !== false) {
+            // Escape any existing double quotes by doubling them
+            $field = str_replace('"', '""', $field);
+            // Wrap the entire field in double quotes
+            $field = '"' . $field . '"';
+        }
+
+        return $field;
+    }
+
+    /**
+     * Join array values with commas, properly escaping CSV fields
+     */
+    private function implodeCsvSafe(array $values): string
+    {
+        return implode(',', array_map([$this, 'escapeCsvField'], $values));
     }
 }

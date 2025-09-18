@@ -48,7 +48,7 @@ const pasteHTML = (instance) => {
   }
   
   try {
-    instance.clipboard.dangerouslyPasteHTML(props.modelValue, 'silent')
+    instance.clipboard.dangerouslyPasteHTML(0, props.modelValue, 'silent')
   } catch (error) {
     console.error('Error pasting HTML:', error)
     // Fallback to setting empty content
@@ -60,7 +60,7 @@ const initializeQuill = () => {
   if (container.value) {
     // Merge default options with user options
     const defaultOptions = {
-      formats: ['bold', 'color', 'font', 'code', 'italic', 'link', 'size', 'strike', 'script', 'underline', 'header', 'list', 'mention']
+      formats: ['bold', 'color', 'italic', 'link', 'size', 'strike', 'underline', 'header', 'list']
     }
     
     const mergedOptions = {
@@ -71,7 +71,7 @@ const initializeQuill = () => {
         ...(props.options.modules || {})
       }
     }
-
+    
     // Initialize Quill with merged options
     quillInstance = new Quill(container.value, mergedOptions)
 
@@ -145,7 +145,7 @@ onBeforeUnmount(() => {
     quillInstance.off('selection-change')
     quillInstance.off('text-change')
     quillInstance.off('editor-change')
-    
+
     // Properly destroy the Quill instance
     if (container.value && container.value.parentNode) {
       // Find the toolbar - it's a sibling of the container

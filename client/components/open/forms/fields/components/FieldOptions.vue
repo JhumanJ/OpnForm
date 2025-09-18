@@ -595,8 +595,16 @@
             'italic',
             'link',
             'underline',
-            'list'
-          ]
+            'list',
+            'strike'
+          ],
+          modules: {
+            toolbar: [
+              ['bold', 'italic', 'underline', 'strike'],
+              ['link'],
+              [{ list: 'ordered' }, { list: 'bullet' }]
+            ]
+          }
         }"
         help="Displayed below/above the field, like this text"
         :help-position="field.help_position"

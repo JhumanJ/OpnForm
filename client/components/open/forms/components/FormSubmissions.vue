@@ -4,11 +4,15 @@
       <OpenTable
         v-if="form"
         ref="table"
-        :data="tableData"
-        :loading="isLoading"
+        :data="submissions"
+        :loading="isLoading || isFetching"
         :form="form"
+        :pagination="pagination"
+        @search="handleSearch"
+        @filter="handleFilter"
+        @page-change="handlePageChange"
         @deleted="onDeleteRecord"
-        @updated="(submission)=>onUpdateRecord(submission)"
+        @updated="onUpdateRecord"
         @multi-delete="onDeleteMultiRecord"
       />
 
@@ -39,88 +43,62 @@
 </template>
 
 <script setup>
+import { useQueryClient } from '@tanstack/vue-query'
 import OpenTable from '~/components/open/tables/OpenTable.vue'
-import { formsApi } from '~/api/forms'
+import { useFormSubmissions } from '~/composables/query/forms/useFormSubmissions'
 
 const props = defineProps({
   form: { type: Object, required: true },
 })
 
-const recordStore = useRecordsStore()
-const tableData = storeToRefs(recordStore).getAll
-const route = useRoute()
-const slug = route.params.slug
-
-const fullyLoaded = ref(false)
+const queryClient = useQueryClient()
 const table = ref(null)
 
-const isLoading = computed(() => {
-  return recordStore.loading
-})
+// Replace all the recordStore logic with this:
+const { paginatedList } = useFormSubmissions()
+const {
+  submissions,
+  pagination,
+  isLoading,
+  isFetching,
+  setSearch,
+  setStatus,
+  setPage
+} = paginatedList(computed(() => props.form?.id))
 
-onMounted(() => {
-  onFormChange()
-})
-
-watch(() => props.form?.id, () => {
-  onFormChange()
-})
-
-const onFormChange = () => {
-  if (props.form === null || props.form.slug !== slug) {
-    return
-  }
-  fullyLoaded.value = false
-  getSubmissionsData()
+// Replace existing event handlers:
+const handleSearch = (searchTerm) => {
+  setSearch(searchTerm)
 }
 
-const getSubmissionsData = () => {
-  if (fullyLoaded.value) {
-    return
+const handleFilter = (filters) => {
+  if (filters.status) {
+    setStatus(filters.status)
   }
+}
 
-  recordStore.startLoading()
-  formsApi.submissions.list(props.form.id, { query: { page: 1 } }).then((firstResponse) => {
-    recordStore.save(firstResponse.data.map((record) => record.data))
-    
-    const lastPage = firstResponse.meta.last_page
-    
-    if (lastPage > 1) {
-      // Create an array of promises for remaining pages
-      const remainingPages = Array.from({ length: lastPage - 1 }, (_, i) => {
-        const page = i + 2 // Start from page 2
-        return formsApi.submissions.list(props.form.id, { query: { page } })
-      })
-      
-      // Fetch all remaining pages in parallel
-      return Promise.all(remainingPages)
-    }
-    return []
-  }).then(responses => {
-    // Save all responses data
-    responses.forEach(response => {
-      recordStore.save(response.data.map((record) => record.data))
-    })
-    
-    fullyLoaded.value = true
-    recordStore.stopLoading()
-  }).catch(() => {
-    recordStore.stopLoading()
+const handlePageChange = (page) => {
+  setPage(page)
+}
+
+const onUpdateRecord = (_submission) => {
+  // Invalidate to refetch current page
+  queryClient.invalidateQueries({
+    queryKey: ['forms', props.form.id, 'submissions', 'paginated']
   })
 }
 
-
-const onUpdateRecord = (submission) => {
-  recordStore.save(submission)
+const onDeleteRecord = (_submission) => {
+  // Invalidate to refetch current page
+  queryClient.invalidateQueries({
+    queryKey: ['forms', props.form.id, 'submissions', 'paginated']
+  })
 }
 
-const onDeleteRecord = (submission) => {
-  recordStore.remove(submission)
-}
-
-const onDeleteMultiRecord = (submissionIds) => {
-  submissionIds.forEach(id => {
-    recordStore.remove(id)
+const onDeleteMultiRecord = (_submissionIds) => {
+  // Invalidate to refetch current page
+  queryClient.invalidateQueries({
+    queryKey: ['forms', props.form.id, 'submissions', 'paginated']
   })
 }
 </script>

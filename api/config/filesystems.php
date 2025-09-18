@@ -48,6 +48,7 @@ return [
             'root' => env('LOCAL_FILESYSTEM_ROOT', storage_path('app')),
             'visibility' => env('LOCAL_FILESYSTEM_VISIBILITY', 'private'),
             'directory_visibility' => env('LOCAL_FILESYSTEM_VISIBILITY', 'private'),
+            'serve' => true,
         ],
 
         'public' => [

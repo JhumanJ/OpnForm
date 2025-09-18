@@ -1,6 +1,9 @@
 import { apiService } from './base'
 
 export const formsApi = {
+  // Form views
+  view: (slug, options) => apiService.get(`/forms/${slug}/view`, options),
+
   // Form operations
   list: (workspaceId, options) => apiService.get(`/open/workspaces/${workspaceId}/forms`, options),
   get: (slug, options) => apiService.get(`/open/forms/${slug}`, options),
@@ -26,6 +29,7 @@ export const formsApi = {
     delete: (formId, submissionId) => apiService.delete(`/open/forms/${formId}/submissions/${submissionId}`),
     deleteMulti: (formId, submissionIds) => apiService.post(`/open/forms/${formId}/submissions/multi`, { submissionIds }),
     export: (formId, data) => apiService.post(`/open/forms/${formId}/submissions/export`, data),
+    exportStatus: (formId, jobId) => apiService.get(`/open/forms/${formId}/submissions/export/status/${jobId}`),
     answer: (slug, data, options) => apiService.post(`/forms/${slug}/answer`, data, options)
   },
 

@@ -68,6 +68,7 @@ import {
   useDarkMode
 } from '~/lib/forms/public-page'
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
+import { formsApi } from '~/api'
 
 const crisp = useCrisp()
 const appStore = useAppStore()
@@ -100,6 +101,8 @@ const passwordEntered = function (password) {
     refetchForm().then(() => {
       if (form.value?.is_password_protected) {
         openCompleteForm.value.addPasswordError(t('forms.invalid_password'))
+      } else {
+        trackFormView()
       }
     })
   })
@@ -163,8 +166,21 @@ onMounted(() => {
       }
       if (!isIframe && form.value?.auto_focus) focusOnFirstFormElement()
     }
+
+    trackFormView()
   }
 })
+
+  // Track form view
+let hasViewedForm = false
+const trackFormView = () => {
+  if (import.meta.client && !form.value?.is_password_protected && !hasViewedForm) {
+    hasViewedForm = true
+    nextTick(() => {
+      formsApi.view(form.value.slug)
+    })
+  }
+}
 
 onBeforeRouteLeave(() => {
   appStore.showFeatureBaseButton()
@@ -234,7 +250,7 @@ useOpnSeoMeta({
   robots: () => {
     return (form.value && form.value?.can_be_indexed) ? null : 'noindex, nofollow'
   }
-})
+}, true)
 
 const getHtmlClass = computed(() => {
   return {

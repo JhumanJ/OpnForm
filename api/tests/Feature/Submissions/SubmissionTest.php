@@ -12,7 +12,7 @@ it('can delete form submission', function () {
             'message' => 'Form submission saved.',
         ]);
     $submission = $form->submissions()->first();
-    $this->deleteJson(route('open.forms.submissions.destroy', ['id' => $form->id,  'submission_id' => $submission->id]))
+    $this->deleteJson(route('open.forms.submissions.destroy', ['form' => $form, 'submission_id' => $submission->id]))
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
@@ -35,7 +35,7 @@ it('can delete multiple form submissions', function () {
     $submissionIds = $form->submissions()->pluck('id')->random(2)->toArray();
 
     // Delete 2 submissions
-    $this->postJson(route('open.forms.submissions.destroy-multi', ['id' => $form->id]), ['submissionIds' => $submissionIds])
+    $this->postJson(route('open.forms.submissions.destroy-multi', ['form' => $form]), ['submissionIds' => $submissionIds])
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
