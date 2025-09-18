@@ -7,21 +7,26 @@ export const inputWrapperTheme = {
     wrapper: [
       'relative'
     ],
-    help: 'text-neutral-500'
+    help: 'text-neutral-500',
+    media: ''
   },
   variants: {
     size: {
       xs: {
-        wrapper: 'my-0.5'
+        wrapper: 'my-0.5',
+        media: 'mb-1'
       },
       sm: {
-        wrapper: 'my-1'
+        wrapper: 'my-1',
+        media: 'mb-1.5'
       },
       md: {
-        wrapper: 'my-1.5'
+        wrapper: 'my-1.5',
+        media: 'mb-2'
       },
       lg: {
-        wrapper: 'my-1.5'
+        wrapper: 'my-1.5',
+        media: 'mb-2.5'
       }
     }
   },

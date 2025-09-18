@@ -31,6 +31,12 @@
       </InputHelp>
     </VTransition>
     </slot>
+    <template v-if="media && media.url">
+      <div :class="ui.media()">
+        <BlockMediaLayout :image="media" />
+      </div>
+    </template>
+
     <slot />
 
     <slot
@@ -67,6 +73,7 @@ import InputHelp from './InputHelp.vue'
 import {twMerge} from "tailwind-merge"
 import { tv } from "tailwind-variants"
 import { inputWrapperTheme } from "~/lib/forms/themes/input-wrapper.theme.js"
+import BlockMediaLayout from '~/components/open/forms/components/BlockMediaLayout.vue'
 
 const props = defineProps({
   id: { type: String, required: false },
@@ -81,6 +88,7 @@ const props = defineProps({
   hideFieldName: { type: Boolean, default: true },
   required: { type: Boolean, default: false },
   hasValidation: { type: Boolean, default: true },
+  media: { type: Object, default: null },
   // Theme configuration as strings for tailwind-variants
   size: {type: String, default: null}, 
   ui: {type: Object, default: () => ({})}
