@@ -73,7 +73,7 @@
       >
         {{ currentFieldsPageBreak.next_btn_text || $t('forms.buttons.next') }}
       </open-form-button>
-      <div v-if="!currentFieldsPageBreak && !isLastPage">
+      <div v-if="structure && !currentFieldsPageBreak && !isLastPage">
         {{ $t('forms.wrong_form_structure') }}
       </div>
       <div
@@ -107,32 +107,30 @@ const state = computed(() => props.formManager.state)
 const form = computed(() => props.formManager.config.value)
 const formPageIndex = computed(() => props.formManager.state.currentPage)
 const strategy = computed(() => props.formManager.strategy.value)
-const structure = computed(() => props.formManager.structure)
+const structure = props.formManager.structure
 
 // Provide theme context for all child form components
 provide('formTheme', computed(() => form.value?.theme || 'default'))
 provide('formSize', computed(() => form.value?.size || 'md'))  
 provide('formBorderRadius', computed(() => form.value?.border_radius || 'small'))
 
-const hasPaymentBlock = computed(() => {
-  return structure.value?.currentPageHasPaymentBlock.value ?? false
-})
+const hasPaymentBlock = computed(() => structure.value?.currentPageHasPaymentBlock?.value ?? false)
 
-const currentFields = computed(() => {
-  return structure.value?.getPageFields(state.value.currentPage) ?? []
-})
+const currentFields = computed(() => structure.value?.getPageFields?.(state.value.currentPage) ?? [])
 
 const isLastPage = computed(() => {
-  const result = structure.value?.isLastPage.value ?? true
-  return result
+  const s = structure.value
+  if (!s) return true
+  if (s.isLastPage && 'value' in s.isLastPage) return s.isLastPage.value
+  if (s.pageCount && 'value' in s.pageCount) {
+    const count = s.pageCount.value || 0
+    return state.value.currentPage >= Math.max(0, count - 1)
+  }
+  return true
 })
 
-const currentFieldsPageBreak = computed(() => 
-  structure.value?.currentPageBreak.value
-)
-const previousFieldsPageBreak = computed(() => 
-  structure.value?.previousPageBreak.value
-)
+const currentFieldsPageBreak = computed(() => structure.value?.currentPageBreak?.value ?? null)
+const previousFieldsPageBreak = computed(() => structure.value?.previousPageBreak?.value ?? null)
 
 const allowDragging = computed(() => strategy.value.admin.allowDragging)
 const draggingNewBlock = computed(() => workingFormStore.draggingNewBlock)

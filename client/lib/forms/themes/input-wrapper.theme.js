@@ -8,9 +8,20 @@ export const inputWrapperTheme = {
       'relative'
     ],
     help: 'text-neutral-500',
-    media: ''
+    media: 'rounded-md overflow-hidden'
   },
   variants: {
+    borderRadius: {
+      none: {
+        media: 'rounded-none overflow-hidden'
+      },
+      small: {
+        media: 'rounded-md overflow-hidden'
+      },
+      full: {
+        media: 'rounded-[20px] overflow-hidden'
+      }
+    },
     size: {
       xs: {
         wrapper: 'my-0.5',
@@ -31,6 +42,7 @@ export const inputWrapperTheme = {
     }
   },
   defaultVariants: {
-    size: 'md'
+    size: 'md',
+    borderRadius: 'small'
   }
 }

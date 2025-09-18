@@ -1,13 +1,24 @@
 <template>
-  <img
-    v-if="image && image.url"
-    :src="image.url"
-    :alt="image.alt || ''"
-    class="w-full h-full object-cover rounded-md"
-    :style="imageStyle"
-    draggable="false"
-    @dragstart.prevent
-  >
+  <div class="relative w-full h-full" :style="wrapperStyle">
+    <VTransition name="fade">
+      <div
+        v-if="image && image.url && !isLoaded"
+        class="absolute inset-0 bg-neutral-500"
+      />
+    </VTransition>
+    <img
+      v-if="image && image.url"
+      :src="image.url"
+      :alt="image.alt || ''"
+      :class="[imgClass, { 'opacity-0': !isLoaded }]"
+      :style="imageStyle"
+      draggable="false"
+      @dragstart.prevent
+      @load="onLoad"
+      @error="onError"
+    >
+  </div>
+  
 </template>
 
 <script setup>
@@ -24,7 +35,25 @@
 */
 
 const props = defineProps({
-  image: { type: Object, required: false }
+  image: { type: Object, required: false },
+  // min-height to reserve space before image loads; accepts number (px) or CSS size string
+  fallbackHeight: { type: [String, Number], default: '12rem' },
+  // classes applied to the <img> element
+  imgClass: { type: String, default: 'w-full h-full object-cover transition-opacity duration-300' }
+})
+
+const isLoaded = ref(false)
+
+const onLoad = () => {
+  isLoaded.value = true
+}
+
+const onError = () => {
+  isLoaded.value = false
+}
+
+watch(() => props.image?.url, () => {
+  isLoaded.value = false
 })
 
 const imageStyle = computed(() => {
@@ -36,6 +65,13 @@ const imageStyle = computed(() => {
     objectPosition: `${x}% ${y}%`,
     filter: `brightness(${brightnessScale})`
   }
+})
+
+const wrapperStyle = computed(() => {
+  const h = props.fallbackHeight
+  if (h === null || h === undefined || h === '') return {}
+  const value = typeof h === 'number' ? `${h}px` : h
+  return { minHeight: value }
 })
 </script>
 

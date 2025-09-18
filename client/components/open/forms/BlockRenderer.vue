@@ -1,5 +1,5 @@
 <template>
-  <ClientOnlyWrapper v-if="hasComponent" :client-only="clientOnlyVal">
+  <ClientOnlyWrapper v-if="block && hasComponent" :client-only="clientOnlyVal" :key="'dyn-' + (block?.id || 'dyn')">
     <Suspense>
       <component
         :is="componentVal"
@@ -13,6 +13,29 @@
       <USkeleton class="w-full h-16 my-1.5" />
     </template>
   </ClientOnlyWrapper>
+  <div v-else-if="block" :key="'static-' + (block?.id || 'static')">
+    <div
+      v-if="block.type === 'nf-text' && block.content"
+      :id="block.id"
+      :key="'text-' + block.id"
+      class="nf-text w-full my-1.5 break-words whitespace-break-spaces"
+      :class="[getFieldAlignClasses(block)]"
+      v-html="block.content"
+    />
+    <div
+      v-else-if="block.type === 'nf-code' && block.content"
+      :id="block.id"
+      :key="'code-' + block.id"
+      class="nf-code w-full px-2 my-1.5"
+      v-html="block.content"
+    />
+    <div
+      v-else-if="block.type === 'nf-divider'"
+      :id="block.id"
+      :key="'divider-' + block.id"
+      class="border-b my-4 w-full mx-2"
+    />
+  </div>
 </template>
 
 <script setup>
@@ -20,7 +43,7 @@ import ClientOnlyWrapper from '~/components/global/ClientOnlyWrapper.vue'
 import { useComponentRegistry } from '~/composables/components/useComponentRegistry'
 
 const props = defineProps({
-  block: { type: Object, required: true },
+  block: { type: Object, required: false, default: null },
   formManager: { type: Object, required: true }
 })
 
@@ -32,6 +55,7 @@ const { getFormComponent } = useComponentRegistry()
 
 const componentInfo = computed(() => {
   const field = props.block
+  if (!field || !field.type) return null
   let componentName
   if (field.type === 'text' && field.multi_lines) componentName = 'TextAreaInput'
   else if (field.type === 'url' && field.file_upload) componentName = 'FileInput'
@@ -64,14 +88,37 @@ const componentInfo = computed(() => {
   return getFormComponent(componentName)
 })
 
-const componentVal = computed(() => componentInfo.value && componentInfo.value.component ? componentInfo.value.component : null)
-const clientOnlyVal = computed(() => (componentInfo.value && componentInfo.value.clientOnly) ? componentInfo.value.clientOnly : false)
+const componentVal = computed(() => {
+  const val = componentInfo.value
+  if (!val) return null
+  // Registry may return a string/async component directly OR an object { component, clientOnly }
+  if (typeof val === 'string' || typeof val === 'function') return val
+  if (typeof val === 'object' && val) {
+    return val.component || val // if it already is a component
+  }
+  return null
+})
+
+const clientOnlyVal = computed(() => {
+  const val = componentInfo.value
+  if (val && typeof val === 'object' && 'clientOnly' in val) return !!val.clientOnly
+  return false
+})
+
 const hasComponent = computed(() => !!componentVal.value)
+
+function getFieldAlignClasses(field) {
+  if (!field.align || field.align === 'left') return 'text-left'
+  else if (field.align === 'right') return 'text-right'
+  else if (field.align === 'center') return 'text-center'
+  else if (field.align === 'justify') return 'text-justify'
+}
 
 const shouldInjectBetweenMedia = computed(() => (props.block?.image && props.block.image.url && (props.block.image.layout === 'between'))) 
 
 const boundProps = computed(() => {
   const field = props.block
+  if (!field) return {}
   const inputProperties = {
     key: field.id,
     name: field.id,

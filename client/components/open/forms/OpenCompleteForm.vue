@@ -106,7 +106,8 @@
             v-if="!isFormSubmitted"
             key="form"
           >
-            <open-form
+            <component
+              :is="FormComponent"
               v-if="formManager && form && shouldDisplayForm"
               :form-manager="formManager"
               @submit="triggerSubmit"
@@ -122,7 +123,7 @@
                   {{ form.submit_button_text || t('forms.buttons.submit') }}
                 </open-form-button>
               </template>
-            </open-form>
+            </component>
             <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
           </div>
           <div
@@ -173,6 +174,7 @@
 import { useFormManager } from '~/lib/forms/composables/useFormManager'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import OpenForm from './OpenForm.vue'
+import OpenFormFocused from './OpenFormFocused.vue'
 import OpenFormButton from './OpenFormButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
@@ -255,12 +257,15 @@ watch(() => props.form, (newForm) => {
   }
 })
 
-// Share the structure service with the working form store only when in admin edit context
-watch(() => formManager?.strategy?.value?.admin?.showAdminControls, (showAdminControls) => {
-  if (workingFormStore && formManager?.structure && showAdminControls) {
-    workingFormStore.setStructureService(formManager.structure)
+// Keep the builder's structureService in sync whenever admin preview is on and the adapter changes
+watch([
+  () => formManager?.strategy?.value?.admin?.showAdminControls,
+  () => formManager?.structure?.value
+], ([showAdminControls, struct]) => {
+  if (workingFormStore && showAdminControls && struct) {
+    workingFormStore.setStructureService(struct)
   }
-}, { immediate: true }) 
+}, { immediate: true })
 
 // Add a watcher to update formManager's darkMode whenever darkModeRef changes
 watch(darkModeRef, (newDarkMode) => {
@@ -319,6 +324,10 @@ const formStyle = computed(() => {
   }
 
   return baseStyle
+})
+
+const FormComponent = computed(() => {
+  return props.form?.presentation_style === 'focused' ? OpenFormFocused : OpenForm
 })
 
 watch(() => props.form.language, (newLanguage) => {
