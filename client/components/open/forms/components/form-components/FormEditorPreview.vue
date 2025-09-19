@@ -28,7 +28,7 @@
         </p>
         <div class="flex-grow" />
         <UButton
-          v-if="previewFormSubmitted || (form && form.presentation_style === 'focused')"
+          v-if="previewFormSubmitted || (form && form.presentation_style === 'focused' && workingFormStore.formPageIndex !== 0)"
           icon="i-heroicons-arrow-path-rounded-square"
           color="neutral"
           variant="outline"
