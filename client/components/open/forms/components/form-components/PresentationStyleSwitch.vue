@@ -10,7 +10,7 @@
       @update:modelValue="onSelectStyle"
     >
       <template #label>
-        <div class="flex items-center justify-between">
+        <div class="flex items-center gap-0.5">
           <span class="text-neutral-700 font-semibold text-sm">Form Style</span>
           <UButton
             color="neutral"

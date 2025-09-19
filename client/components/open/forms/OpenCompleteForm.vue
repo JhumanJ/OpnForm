@@ -1,7 +1,7 @@
 <template>
   <div
     v-if="form"
-    class="open-complete-form"
+    class="open-complete-form flex flex-col min-h-full"
     :dir="form?.layout_rtl ? 'rtl' : 'ltr'"
     :style="formStyle"
   >
@@ -18,143 +18,154 @@
       </Teleport>
     </ClientOnly>
 
+    <template v-if="!isAutoSubmit">
+      <UAlert
+        v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
+        icon="i-heroicons-lock-closed-20-solid"
+        color="warning"
+        variant="subtle"
+        class="m-2 my-4"
+      >
+        <template #description>
+          <div
+            class="break-words whitespace-break-spaces"
+            v-html="form.closed_text"
+          />
+        </template>
+      </UAlert>
+
+      <UAlert
+        v-else-if="isPublicFormPage && form.max_number_of_submissions_reached"
+        icon="i-heroicons-lock-closed-20-solid"
+        color="warning"
+        variant="subtle"
+        class="m-2 my-4"
+      >
+        <template #description>
+          <div
+            class="break-words whitespace-break-spaces"
+            v-html="form.max_submissions_reached_text"
+          />
+        </template>
+      </UAlert>
+
+      <form-cleanings
+        v-if="showFormCleanings"
+        :hideable="true"
+        class="mb-4 mx-2"
+        :form="form"
+        :specify-form-owner="true"
+        :use-cookie-dismissal="true"
+      />
+    </template>
+
     <v-transition name="fade" mode="out-in">
       <div v-if="isAutoSubmit" key="auto-submit" class="text-center p-6">
         <Loader class="h-6 w-6 text-blue-500 mx-auto" />
       </div>
 
-      <div v-else key="form-content">
-        <div v-if="isPublicFormPage && form.is_password_protected">
-          <p class="form-description text-neutral-700 dark:text-neutral-300 px-2">
-            {{ t('forms.password_protected') }}
-          </p>
-          <div class="form-group flex flex-wrap w-full">
-            <div class="relative w-full px-2">
-              <text-input
-                :form="passwordForm"
-                name="password"
-                native-type="password"
-                label="Password"
-              />
-            </div>
-          </div>
-          <div class="flex flex-wrap justify-center w-full text-center">
-            <open-form-button
-              :form="form"
-              class="my-4"
-              @click="passwordEntered"
-            >
-              {{ t('forms.submit') }}
-            </open-form-button>
+      <div v-else-if="isPublicFormPage && form.is_password_protected" key="password">
+        <p class="form-description text-neutral-700 dark:text-neutral-300 px-2">
+          {{ t('forms.password_protected') }}
+        </p>
+        <div class="form-group flex flex-wrap w-full">
+          <div class="relative w-full px-2">
+            <text-input :form="passwordForm" name="password" native-type="password" label="Password" />
           </div>
         </div>
+        <div class="flex flex-wrap justify-center w-full text-center">
+          <open-form-button :form="form" class="my-4" @click="passwordEntered">
+            {{ t('forms.submit') }}
+          </open-form-button>
+        </div>
+      </div>
 
-        <div v-if="!form.is_password_protected && form.password && !hidePasswordDisabledMsg" 
-          class="m-2 my-4">
+      <component
+        v-else-if="form && !form.is_password_protected && !isFormSubmitted &&formManager && form && shouldDisplayForm"
+        :key="'form'+form.presentation_style"
+        :is="FormComponent"
+        :form-manager="formManager"
+        @submit="triggerSubmit"
+        class="flex flex-col grow"
+      >
+        <template #alerts>
           <UAlert
-            :close-button="{ icon: 'i-heroicons-x-mark-20-solid', color: 'neutral', variant: 'link', padded: false }"
+            v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
+            icon="i-heroicons-lock-closed-20-solid"
             color="warning"
             variant="subtle"
-            icon="i-material-symbols-info-outline"
-            @close="hidePasswordDisabledMsg = true"
-            title="Password protection has been disabled since you are the owner of this form."
+            class="m-2 my-4"
+          >
+            <template #description>
+              <div class="break-words whitespace-break-spaces" v-html="form.closed_text" />
+            </template>
+          </UAlert>
+          <UAlert
+            v-else-if="isPublicFormPage && form.max_number_of_submissions_reached"
+            icon="i-heroicons-lock-closed-20-solid"
+            color="warning"
+            variant="subtle"
+            class="m-2 my-4"
+          >
+            <template #description>
+              <div class="break-words whitespace-break-spaces" v-html="form.max_submissions_reached_text" />
+            </template>
+          </UAlert>
+        </template>
+
+        <template #cleanings>
+          <form-cleanings
+            v-if="showFormCleanings"
+            :hideable="true"
+            class="mb-4 mx-2"
+            :form="form"
+            :specify-form-owner="true"
+            :use-cookie-dismissal="true"
           />
+        </template>
+
+        <template #branding>
+          <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
+        </template>
+      </component>
+
+      <div v-else key="submitted" class="px-2">
+        <TextBlock
+          v-if="form.submitted_text"
+          class="form-description text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap"
+          :content="form.submitted_text"
+          :mentions-allowed="true"
+          :form="form"
+          :form-data="submittedData"
+        />
+        <div class="flex w-full gap-2 items-center mt-4">
+          <open-form-button
+            v-if="form.re_fillable"
+            :form="form"
+            icon="i-lucide-rotate-ccw"
+            @click="restart"
+          >
+            {{ form.re_fill_button_text || t('forms.buttons.re_fill') }}
+          </open-form-button>
+          <open-form-button
+            v-if="form.editable_submissions && submissionId"
+            :form="form"
+            @click="editSubmission"
+          >
+            {{ form.editable_submissions_button_text }}
+          </open-form-button>
         </div>
-
-
-        <UAlert
-          v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
-          icon="i-heroicons-lock-closed-20-solid"
-          color="warning"
-          variant="subtle"
-          class="m-2 my-4"
-        >
-          <template #description>
-            <div
-              class="break-words whitespace-break-spaces"
-              v-html="form.closed_text"
-            />
-          </template>
-        </UAlert>
-
-        <UAlert
-          v-else-if="isPublicFormPage && form.max_number_of_submissions_reached"
-          icon="i-heroicons-lock-closed-20-solid"
-          color="warning"
-          variant="subtle"
-          class="m-2 my-4"
-        >
-          <template #description>
-            <div
-              class="break-words whitespace-break-spaces"
-              v-html="form.max_submissions_reached_text"
-            />
-          </template>
-        </UAlert>
-
-        <form-cleanings
-          v-if="showFormCleanings"
-          :hideable="true"
-          class="mb-4 mx-2"
-          :form="form"
-          :specify-form-owner="true"
-          :use-cookie-dismissal="true"
-        />
-
-        <v-transition name="fade" v-if="form && !form.is_password_protected">
-          <div
-            v-if="!isFormSubmitted"
-            key="form"
-          >
-            <component
-              :is="FormComponent"
-              v-if="formManager && form && shouldDisplayForm"
-              :form-manager="formManager"
-              @submit="triggerSubmit"
-            />
-            <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
-          </div>
-          <div
-            v-else
-            key="submitted"
-            class="px-2"
-          >
-            <TextBlock
-              v-if="form.submitted_text"
-              class="form-description text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap"
-              :content="form.submitted_text"
-              :mentions-allowed="true"
-              :form="form"
-              :form-data="submittedData"
-            />
-            <div class="flex w-full gap-2 items-center mt-4">
-
-                          <open-form-button
-                v-if="form.re_fillable"
-                :form="form"
-                icon="i-lucide-rotate-ccw"
-                @click="restart"
-              >
-                {{ form.re_fill_button_text || t('forms.buttons.re_fill') }}
-              </open-form-button>
-            <open-form-button
-              v-if="form.editable_submissions && submissionId"
-              :form="form"
-              @click="editSubmission"
-            >
-              {{ form.editable_submissions_button_text }}
-            </open-form-button>
-            </div>
-            <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
-          </div>
-        </v-transition>
-        <FirstSubmissionModal
-          :show="showFirstSubmissionModal"
-          :form="form"
-          @close="showFirstSubmissionModal=false"
-        />
       </div>
     </v-transition>
+
+    <template v-if="!isAutoSubmit">
+      <PoweredBy v-if="form && !form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
+      <FirstSubmissionModal
+        :show="showFirstSubmissionModal"
+        :form="form"
+        @close="showFirstSubmissionModal=false"
+      />
+    </template>
   </div>
 </template>
 

@@ -2,7 +2,7 @@
   <!-- Backdrop -->
   <div
     v-if="isExpanded"
-            class="fixed inset-0 z-40 bg-white/30 dark:bg-neutral-900/30 backdrop-blur-xs"
+    class="fixed inset-0 z-40 bg-white/30 dark:bg-neutral-900/30 backdrop-blur-xs"
     @click="toggleExpand"
   />
 
@@ -28,7 +28,7 @@
         </p>
         <div class="flex-grow" />
         <UButton
-          v-if="previewFormSubmitted"
+          v-if="previewFormSubmitted || (form && form.presentation_style === 'focused')"
           icon="i-heroicons-arrow-path-rounded-square"
           color="neutral"
           variant="outline"
@@ -53,47 +53,10 @@
         </UTooltip>
       </TrackClick>
       </div>
-      <div class="flex-grow overflow-y-auto">
-        <transition
-          enter-active-class="linear duration-100 overflow-hidden"
-          enter-from-class="max-h-0"
-          enter-to-class="max-h-56"
-          leave-active-class="linear duration-100 overflow-hidden"
-          leave-from-class="max-h-56"
-          leave-to-class="max-h-0"
-        >
-          <div v-if="(form.logo_picture || form.cover_picture)">
-            <div v-if="form.cover_picture">
-              <div
-                id="cover-picture"
-                class="h-[30vh] w-full overflow-hidden flex items-center justify-center"
-              >
-                <img
-                  alt="Form Cover Picture"
-                  :src="coverPictureSrc(form.cover_picture)"
-                  class="object-cover w-full h-[30vh] object-center"
-                >
-              </div>
-            </div>
-            <div
-              v-if="form.logo_picture"
-              class="w-full mx-auto py-5 relative"
-              :class="{'pt-20':!form.cover_picture, 'max-w-lg': form && (form.width === 'centered'),'px-7': !isExpanded, 'px-3': isExpanded}"
-              :style="{ 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
-            >
-              <img
-                alt="Logo Picture"
-                :src="coverPictureSrc(form.logo_picture)"
-                :class="{'top-5':!form.cover_picture, '-top-10':form.cover_picture}"
-                class="max-w-60 h-20 object-contain absolute transition-all"
-              >
-            </div>
-          </div>
-        </transition>
+      <div class="flex-grow overflow-y-auto relative flex flex-col">
         <open-complete-form
           ref="formPreview"
-          class="w-full mx-auto py-5"
-          :class="{'max-w-lg': form && (form.width === 'centered'),'px-7': !isExpanded, 'px-3': isExpanded}"
+          class="w-full grow min-h-0"
           :form="form"
           :dark-mode="darkMode"
           :mode="formMode"
@@ -162,17 +125,6 @@ watch(formMode, () => {
 onMounted(() => {
   handleDarkModeChange()
 })
-
-function coverPictureSrc(val) {
-  try {
-    // Is valid url
-    new URL(val)
-  } catch {
-    // Is file
-    return URL.createObjectURL(val)
-  }
-  return val
-}
 
 function handleDarkModeChange() {
   handleDarkMode(form.value.dark_mode, parent.value)

@@ -1,96 +1,138 @@
 <template>
   <form
     v-if="form"
+    class="pb-8"
     @submit.prevent=""
   >
-    <FormProgressbar
-      :form-manager="formManager"
-    />
-    <transition
-      name="fade"
-      mode="out-in"
-    >
+    <!-- Alerts slot (renderer decides placement) -->
+    <slot name="alerts" />
+
+    <!-- Classic cover/logo rendering -->
+    <div v-if="form && (form.logo_picture || form.cover_picture)" class="mb-2">
+      <div v-if="form.cover_picture">
+        <div id="cover-picture" class="max-h-56 w-full overflow-hidden flex items-center justify-center">
+          <img :src="form.cover_picture" alt="Form Cover Picture" class="w-full">
+        </div>
+      </div>
       <div
-        :key="formPageIndex"
-        class="form-group flex flex-wrap w-full"
+        v-if="form.logo_picture"
+        class="w-full p-5 relative mx-auto"
+        :class="[
+          !form.cover_picture ? 'pt-20' : '',
+          form.width === 'centered' ? (isPreviewMode ? 'max-w-lg' : 'md:w-3/5 lg:w-1/2 md:max-w-2xl') : '',
+          (form.width === 'full' && !isIframe) ? 'max-w-7xl' : ''
+        ]"
+        :style="{ direction: form?.layout_rtl ? 'rtl' : 'ltr' }"
       >
-        <draggable
-          :list="currentFields"
-          group="form-elements"
-          item-key="id"
-          class="grid grid-cols-12 relative transition-all w-full"
-          :class="[
-            draggingNewBlock ? 'rounded-md bg-blue-50 dark:bg-neutral-800' : '',
-          ]"
-          ghost-class="ghost-item"
-          filter=".not-draggable"
-          :animation="200"
-          :disabled="!allowDragging"
-          @change="handleDragDropped"
+        <img
+          :src="form.logo_picture"
+          alt="Logo Picture"
+          :class="{ 'top-5': !form.cover_picture, '-top-10': form.cover_picture }"
+          class="w-20 h-20 object-contain absolute transition-all"
         >
-          <template #item="{element}">
-            <VTransition name="fadeHeight">
-              <open-form-field
-                :field="element"
-                :form-manager="formManager"
-              />
-            </VTransition>
-          </template>
-        </draggable>
       </div>
-    </transition>
+    </div>
 
-    <!-- Replace Captcha with CaptchaWrapper -->
-    <CaptchaWrapper
-      v-if="form.use_captcha"
-      :form-manager="formManager"
-    />
-
-    <!--  Submit, Next and previous buttons  -->
-    <div class="flex flex-wrap justify-center w-full">
-      <open-form-button
-        v-if="formPageIndex>0 && previousFieldsPageBreak"
-        native-type="button"
-        :form="form"
-        class="mt-2 px-8 mx-1"
-        @click.stop="handlePreviousClick"
+    <div
+      class="w-full mx-auto px-4"
+      :class="[
+        (!isIframe && !form.logo_picture) ? 'mt-6' : '',
+        form && form.width === 'centered' ? (isPreviewMode ? 'max-w-lg' : 'md:w-3/5 lg:w-1/2 md:max-w-2xl') : '',
+        (form && form.width === 'full' && !isIframe) ? 'max-w-7xl' : ''
+      ]"
+    >
+      <FormProgressbar :form-manager="formManager" />
+      <transition
+        name="fade"
+        mode="out-in"
       >
-        {{ previousFieldsPageBreak.previous_btn_text || $t('forms.buttons.previous') }}
-      </open-form-button>
+        <div v-if="isPasswordProtected" key="password" class="w-full">
+          <slot name="password" />
+        </div>
 
-      <template v-if="isLastPage">
-        <slot name="submit-btn" :loading="isProcessing">
-          <open-form-button
-            :form="form"
-            class="mt-2 px-8 mx-1"
-            :loading="isProcessing"
-            @click.prevent="emit('submit')"
+        <div v-else-if="isSubmitted" key="submitted" class="px-2 w-full">
+          <slot name="after-submit" :submittedData="submittedData" />
+        </div>
+
+        <div v-else-if="shouldDisplayForm" :key="formPageIndex" class="form-group flex flex-wrap w-full">
+          <draggable
+            :list="currentFields"
+            group="form-elements"
+            item-key="id"
+            class="grid grid-cols-12 relative transition-all w-full"
+            :class="[
+              draggingNewBlock ? 'rounded-md bg-blue-50 dark:bg-neutral-800' : '',
+            ]"
+            ghost-class="ghost-item"
+            filter=".not-draggable"
+            :animation="200"
+            :disabled="!allowDragging"
+            @change="handleDragDropped"
           >
-            {{ form.submit_button_text || $t('forms.buttons.submit') }}
-          </open-form-button>
-        </slot>
-      </template>
-      <open-form-button
-        v-else-if="currentFieldsPageBreak"
-        native-type="button"
-        :form="form"
-        class="mt-2 px-8 mx-1"
-        :loading="isProcessing"
-        @click.stop="handleNextClick"
-      >
-        {{ currentFieldsPageBreak.next_btn_text || $t('forms.buttons.next') }}
-      </open-form-button>
-      <div v-if="structure && !currentFieldsPageBreak && !isLastPage">
-        {{ $t('forms.wrong_form_structure') }}
+            <template #item="{element}">
+              <VTransition name="fadeHeight">
+                <open-form-field
+                  :field="element"
+                  :form-manager="formManager"
+                />
+              </VTransition>
+            </template>
+          </draggable>
+        </div>
+      </transition>
+
+      <!-- Cleanings slot -->
+      <slot name="cleanings" />
+
+      <!-- Captcha -->
+      <CaptchaWrapper v-if="form.use_captcha" :form-manager="formManager" />
+
+      <!--  Submit, Next and previous buttons  -->
+      <div class="flex flex-wrap justify-center w-full">
+        <open-form-button
+          v-if="formPageIndex>0 && previousFieldsPageBreak"
+          native-type="button"
+          :form="form"
+          class="mt-2 px-8 mx-1"
+          @click.stop="handlePreviousClick"
+        >
+          {{ previousFieldsPageBreak.previous_btn_text || $t('forms.buttons.previous') }}
+        </open-form-button>
+
+        <template v-if="isLastPage">
+          <slot name="submit-btn" :loading="isProcessing">
+            <open-form-button
+              :form="form"
+              class="mt-2 px-8 mx-1"
+              :loading="isProcessing"
+              @click.prevent="emit('submit')"
+            >
+              {{ form.submit_button_text || $t('forms.buttons.submit') }}
+            </open-form-button>
+          </slot>
+        </template>
+        <open-form-button
+          v-else-if="currentFieldsPageBreak"
+          native-type="button"
+          :form="form"
+          class="mt-2 px-8 mx-1"
+          :loading="isProcessing"
+          @click.stop="handleNextClick"
+        >
+          {{ currentFieldsPageBreak.next_btn_text || $t('forms.buttons.next') }}
+        </open-form-button>
+        <div v-if="structure && !currentFieldsPageBreak && !isLastPage">
+          {{ $t('forms.wrong_form_structure') }}
+        </div>
+        <div v-if="hasPaymentBlock" class="mt-6 flex justify-center w-full">
+          <p class="text-xs text-neutral-400 dark:text-neutral-500 flex text-center max-w-md">
+            {{ $t('forms.payment.payment_disclaimer') }}
+          </p>
+        </div>
       </div>
-      <div
-        v-if="hasPaymentBlock"
-        class="mt-6 flex justify-center w-full"
-      >
-        <p class="text-xs text-neutral-400 dark:text-neutral-500 flex text-center max-w-md">
-          {{ $t('forms.payment.payment_disclaimer') }}
-        </p>
-      </div>
+
+      <!-- Branding slot (renderer placement) -->
+      <slot name="branding" />
     </div>
   </form>
 </template>
@@ -102,6 +144,8 @@ import CaptchaWrapper from '~/components/forms/heavy/components/CaptchaWrapper.v
 import OpenFormField from './OpenFormField.vue'
 import FormProgressbar from './FormProgressbar.vue'
 import { useWorkingFormStore } from '~/stores/working_form'
+import { FormMode } from '~/lib/forms/FormModeStrategy.js'
+import { useIsIframe } from '~/composables/useIsIframe'
 
 const props = defineProps({
   formManager: { type: Object, required: true }
@@ -110,6 +154,7 @@ const props = defineProps({
 const emit = defineEmits(['submit'])
 
 const workingFormStore = useWorkingFormStore()
+const isIframe = useIsIframe()
 
 // Derive everything from formManager
 const state = computed(() => props.formManager.state)
@@ -174,6 +219,18 @@ const handleDragDropped = (data) => {
 }
 
 const isProcessing = computed(() => props.formManager.state.isProcessing)
+
+// Renderer-level gates
+const isPasswordProtected = computed(() => !!form.value?.is_password_protected)
+const isSubmitted = computed(() => !!props.formManager?.state.isSubmitted)
+const shouldDisplayForm = computed(() => {
+  const showAdminControls = !!props.formManager?.strategy?.value?.admin?.showAdminControls
+  return (!form.value?.is_closed && !form.value?.max_number_of_submissions_reached) || showAdminControls
+})
+const submittedData = computed(() => props.formManager?.form?.data?.() ?? null)
+
+// Preview mode width override (FormEditorPreview uses PREVIEW mode)
+const isPreviewMode = computed(() => props.formManager?.mode?.value === FormMode.PREVIEW)
 </script>
 
 <style lang='scss' scoped>

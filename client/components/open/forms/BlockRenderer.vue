@@ -114,7 +114,12 @@ function getFieldAlignClasses(field) {
   else if (field.align === 'justify') return 'text-justify'
 }
 
-const shouldInjectBetweenMedia = computed(() => (props.block?.image && props.block.image.url && (props.block.image.layout === 'between'))) 
+const shouldInjectBetweenMedia = computed(() => (
+  props.block?.image &&
+  props.block.image.url &&
+  props.block.image.layout === 'between' &&
+  form.value?.presentation_style === 'focused'
+)) 
 
 const boundProps = computed(() => {
   const field = props.block
