@@ -63,6 +63,34 @@
           @restarted="previewFormSubmitted=false"
           @submitted="previewFormSubmitted=true"
         />
+        <!-- Quick actions for focused presentation (only when not expanded) -->
+         
+        <VTransition name="fade">
+          <div
+            v-if="!isExpanded && form && form.presentation_style === 'focused'"
+            class="absolute bottom-4 left-4 z-50 flex items-center gap-2"
+          >
+            <UTooltip text="Add block">
+              <UButton
+                icon="i-heroicons-plus"
+                color="neutral"
+                variant="outline"
+                size="sm"
+                @click.stop="handleAddBlock"
+              />
+            </UTooltip>
+            <UTooltip text="Edit question">
+              <UButton
+                icon="i-heroicons-cog-6-tooth"
+                color="neutral"
+                variant="outline"
+                size="sm"
+                label="Edit question"
+                @click.stop="handleEditCurrent"
+              />
+            </UTooltip>
+          </div>
+        </VTransition>
       </div>
     </div>
   </div>
@@ -146,6 +174,40 @@ function restartForm() {
 
 function toggleExpand() {
   isExpanded.value = !isExpanded.value
+}
+
+// Helpers to get current focused slide index
+const currentSlideIndex = computed(() => {
+  try {
+    // Prefer structure service from store if available
+    const struct = workingFormStore.structureService
+    if (struct && struct.currentPage !== undefined) {
+      const cp = struct.currentPage
+      return (typeof cp === 'number') ? cp : (cp?.value ?? 0)
+    }
+    // Fallback to formPreview's formManager
+    return formPreview.value?.formManager?.state?.currentPage ?? 0
+  } catch {
+    return 0
+  }
+})
+
+function handleAddBlock() {
+  try {
+    workingFormStore.activeTab = 'build'
+    workingFormStore.openAddFieldSidebar(currentSlideIndex.value)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+function handleEditCurrent() {
+  try {
+    workingFormStore.activeTab = 'build'
+    workingFormStore.openSettingsForField(currentSlideIndex.value)
+  } catch (e) {
+    console.error(e)
+  }
 }
 </script>
 

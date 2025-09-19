@@ -27,6 +27,7 @@
           :form="field"
           label="Block Width"
           seamless
+          v-if="!isFocused"
           :options="[
             { name: 'full', label: 'Full' },
             { name: '1/2', label: '1/2' },
@@ -136,6 +137,8 @@ const props = defineProps({
     required: false
   }
 })
+
+const isFocused = computed(() => props.form?.presentation_style === 'focused')
 
 watch(() => props.field?.width, (val) => {
   if (val === undefined || val === null) {

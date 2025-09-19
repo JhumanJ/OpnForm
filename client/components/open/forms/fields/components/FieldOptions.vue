@@ -568,6 +568,7 @@
         :form="field"
         label="Block Width"
         seamless
+        v-if="!isFocused"
         :options="[
           { name: 'full', label: 'Full' },
           { name: '1/2', label: '1/2' },
@@ -725,6 +726,9 @@ export default {
   },
 
   computed: {
+    isFocused() {
+      return this.form?.presentation_style === 'focused'
+    },
     hasPlaceholder() {
       return !this.typesWithoutPlaceholder.includes(this.field.type)
     },
