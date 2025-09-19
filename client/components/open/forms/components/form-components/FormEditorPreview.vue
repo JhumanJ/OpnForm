@@ -2,7 +2,7 @@
   <!-- Backdrop -->
   <div
     v-if="isExpanded"
-            class="fixed inset-0 z-40 bg-white/30 dark:bg-neutral-900/30 backdrop-blur-xs"
+    class="fixed inset-0 z-40 bg-white/30 dark:bg-neutral-900/30 backdrop-blur-xs"
     @click="toggleExpand"
   />
 
@@ -12,11 +12,11 @@
     ref="parent"
     :class="{
       'fixed inset-8 z-50 !flex': isExpanded,
-      'bg-neutral-50 dark:bg-notion-dark-light hidden md:flex flex-grow p-4 flex-col items-center overflow-y-scroll shadow-inner': !isExpanded
+      'bg-neutral-50 dark:bg-notion-dark-light hidden md:flex flex-grow p-4 flex-col items-center shadow-inner': !isExpanded
     }"
   >
     <div 
-      class="border rounded-lg bg-white dark:bg-notion-dark w-full block shadow-xs transition-all flex flex-col"
+      class="border rounded-lg bg-white dark:bg-notion-dark w-full grow shadow-xs transition-all overflow-y-scroll flex flex-col"
       :class="{ 'max-w-5xl': !isExpanded, 'h-full': isExpanded }"
     >
       <div class="w-full bg-white dark:bg-neutral-950 border-b border-neutral-300 dark:border-blue-900 dark:border-neutral-700 rounded-t-lg p-1.5 pl-4 pr-1.5 flex items-center gap-x-1.5">
@@ -28,7 +28,7 @@
         </p>
         <div class="flex-grow" />
         <UButton
-          v-if="previewFormSubmitted"
+          v-if="previewFormSubmitted || (form && form.presentation_style === 'focused' && workingFormStore.formPageIndex !== 0)"
           icon="i-heroicons-arrow-path-rounded-square"
           color="neutral"
           variant="outline"
@@ -53,53 +53,44 @@
         </UTooltip>
       </TrackClick>
       </div>
-      <div class="flex-grow overflow-y-auto">
-        <transition
-          enter-active-class="linear duration-100 overflow-hidden"
-          enter-from-class="max-h-0"
-          enter-to-class="max-h-56"
-          leave-active-class="linear duration-100 overflow-hidden"
-          leave-from-class="max-h-56"
-          leave-to-class="max-h-0"
-        >
-          <div v-if="(form.logo_picture || form.cover_picture)">
-            <div v-if="form.cover_picture">
-              <div
-                id="cover-picture"
-                class="h-[30vh] w-full overflow-hidden flex items-center justify-center"
-              >
-                <img
-                  alt="Form Cover Picture"
-                  :src="coverPictureSrc(form.cover_picture)"
-                  class="object-cover w-full h-[30vh] object-center"
-                >
-              </div>
-            </div>
-            <div
-              v-if="form.logo_picture"
-              class="w-full mx-auto py-5 relative"
-              :class="{'pt-20':!form.cover_picture, 'max-w-lg': form && (form.width === 'centered'),'px-7': !isExpanded, 'px-3': isExpanded}"
-              :style="{ 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
-            >
-              <img
-                alt="Logo Picture"
-                :src="coverPictureSrc(form.logo_picture)"
-                :class="{'top-5':!form.cover_picture, '-top-10':form.cover_picture}"
-                class="max-w-60 h-20 object-contain absolute transition-all"
-              >
-            </div>
-          </div>
-        </transition>
+      <div class="flex-grow overflow-y-auto relative flex flex-col">
         <open-complete-form
           ref="formPreview"
-          class="w-full mx-auto py-5"
-          :class="{'max-w-lg': form && (form.width === 'centered'),'px-7': !isExpanded, 'px-3': isExpanded}"
+          class="w-full grow min-h-0"
           :form="form"
           :dark-mode="darkMode"
           :mode="formMode"
           @restarted="previewFormSubmitted=false"
           @submitted="previewFormSubmitted=true"
         />
+        <!-- Quick actions for focused presentation (only when not expanded) -->
+         
+        <VTransition name="fade">
+          <div
+            v-if="!isExpanded && form && form.presentation_style === 'focused'"
+            class="absolute bottom-4 left-4 z-50 flex items-center gap-2"
+          >
+            <UTooltip text="Add block">
+              <UButton
+                icon="i-heroicons-plus"
+                color="neutral"
+                variant="outline"
+                size="sm"
+                @click.stop="handleAddBlock"
+              />
+            </UTooltip>
+            <UTooltip text="Edit question">
+              <UButton
+                icon="i-heroicons-cog-6-tooth"
+                color="neutral"
+                variant="outline"
+                size="sm"
+                label="Edit question"
+                @click.stop="handleEditCurrent"
+              />
+            </UTooltip>
+          </div>
+        </VTransition>
       </div>
     </div>
   </div>
@@ -163,17 +154,6 @@ onMounted(() => {
   handleDarkModeChange()
 })
 
-function coverPictureSrc(val) {
-  try {
-    // Is valid url
-    new URL(val)
-  } catch {
-    // Is file
-    return URL.createObjectURL(val)
-  }
-  return val
-}
-
 function handleDarkModeChange() {
   handleDarkMode(form.value.dark_mode, parent.value)
 }
@@ -194,6 +174,40 @@ function restartForm() {
 
 function toggleExpand() {
   isExpanded.value = !isExpanded.value
+}
+
+// Helpers to get current focused slide index
+const currentSlideIndex = computed(() => {
+  try {
+    // Prefer structure service from store if available
+    const struct = workingFormStore.structureService
+    if (struct && struct.currentPage !== undefined) {
+      const cp = struct.currentPage
+      return (typeof cp === 'number') ? cp : (cp?.value ?? 0)
+    }
+    // Fallback to formPreview's formManager
+    return formPreview.value?.formManager?.state?.currentPage ?? 0
+  } catch {
+    return 0
+  }
+})
+
+function handleAddBlock() {
+  try {
+    workingFormStore.activeTab = 'build'
+    workingFormStore.openAddFieldSidebar(currentSlideIndex.value)
+  } catch (e) {
+    console.error(e)
+  }
+}
+
+function handleEditCurrent() {
+  try {
+    workingFormStore.activeTab = 'build'
+    workingFormStore.openSettingsForField(currentSlideIndex.value)
+  } catch (e) {
+    console.error(e)
+  }
 }
 </script>
 

@@ -37,7 +37,8 @@ export const useWorkingFormStore = defineStore("working_form", {
     // Current page index from structure service
     formPageIndex() {
       if (!this.structureService) return 0
-      return this.structureService.currentPage
+      const cp = this.structureService.currentPage
+      return (typeof cp === 'number') ? cp : (cp?.value || 0)
     }
   },
   actions: {

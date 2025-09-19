@@ -6,6 +6,8 @@
       :show-line="false"
     />
 
+    <PresentationStyleSwitch />
+
     <select-input
       name="theme"
       class="mt-4"
@@ -140,6 +142,7 @@
       :form="form"
       name="width"
       seamless
+      v-if="!isFocused"
       :options="[
         { name: 'centered', label: 'Centered' },
         { name: 'full', label: 'Full Width' },
@@ -161,12 +164,7 @@
         :required="false"
       />
 
-      <image-input
-        name="cover_picture"
-        :form="form"
-        label="Cover (~1500px)"
-        :required="false"
-      />
+      <CoverImageInput :form="form" />
     </div>
 
     <toggle-switch-input
@@ -226,6 +224,8 @@ import { useWorkingFormStore } from "../../../../../stores/working_form"
 import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
 import ProTag from "~/components/app/ProTag.vue"
 import { DEFAULT_COLOR } from "@/composables/forms/initForm"
+import PresentationStyleSwitch from "./PresentationStyleSwitch.vue"
+import CoverImageInput from "../media/CoverImageInput.vue"
 
 
 const workingFormStore = useWorkingFormStore()
@@ -244,6 +244,8 @@ const isPro = computed(() => {
   if (!user.value || !workspace.value) return false
   return workspace.value.is_pro
 })
+
+const isFocused = computed(() => form.value?.presentation_style === 'focused')
 
 const availableLocales = computed(() => {
   return $i18n.locales?.value.map(locale => ({ name: locale.name, value: locale.code })) ?? []

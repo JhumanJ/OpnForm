@@ -31,6 +31,12 @@
       </InputHelp>
     </VTransition>
     </slot>
+    <template v-if="media && media.url">
+      <div :class="ui.media()">
+        <BlockMediaLayout :image="media" img-class="w-full h-full object-cover transition-opacity duration-300" />
+      </div>
+    </template>
+
     <slot />
 
     <slot
@@ -67,6 +73,7 @@ import InputHelp from './InputHelp.vue'
 import {twMerge} from "tailwind-merge"
 import { tv } from "tailwind-variants"
 import { inputWrapperTheme } from "~/lib/forms/themes/input-wrapper.theme.js"
+import BlockMediaLayout from '~/components/open/forms/components/BlockMediaLayout.vue'
 
 const props = defineProps({
   id: { type: String, required: false },
@@ -81,23 +88,31 @@ const props = defineProps({
   hideFieldName: { type: Boolean, default: true },
   required: { type: Boolean, default: false },
   hasValidation: { type: Boolean, default: true },
+  media: { type: Object, default: null },
   // Theme configuration as strings for tailwind-variants
   size: {type: String, default: null}, 
+  borderRadius: {type: String, default: null},
   ui: {type: Object, default: () => ({})}
 })
 
 // Inject theme values for centralized resolution
 const injectedSize = inject('formSize', null)
+const injectedBorderRadius = inject('formBorderRadius', null)
 
 // Resolve size with proper reactivity
 const resolvedSize = computed(() => {
   return props.size || injectedSize?.value || 'md'
 })
 
+const resolvedBorderRadius = computed(() => {
+  return props.borderRadius || injectedBorderRadius?.value || 'small'
+})
+
 // OPTIMIZED: Single computed following Nuxt UI pattern
 const ui = computed(() => {
   return tv(inputWrapperTheme, props.ui)({
-    size: resolvedSize.value
+    size: resolvedSize.value,
+    borderRadius: resolvedBorderRadius.value
   })
 })
 
