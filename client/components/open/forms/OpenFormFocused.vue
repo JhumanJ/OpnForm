@@ -2,12 +2,12 @@
   <form v-if="form" @submit.prevent="" class="w-full relative overflow-hidden flex flex-col min-h-full">
     <!-- Fixed fullscreen background from form cover -->
     <div v-if="form.cover_picture" class="absolute inset-0 pointer-events-none">
-      <img :src="form.cover_picture" alt="Form Cover Picture" class="w-full h-full object-cover">
+      <BlockMediaLayout :image="coverMedia" alt="Form cover image" />
     </div>
 
     <!-- Fixed logo in top-left -->
     <div v-if="form.logo_picture" class="absolute top-10 left-10 z-10">
-      <img :src="form.logo_picture" alt="Logo" class="size-16 object-contain">
+      <img :src="form.logo_picture" :alt="form.seo_meta?.site_name ? `${form.seo_meta.site_name} logo` : 'Form logo'" class="size-16 object-contain">
     </div>
 
     <!-- Alerts slot (renderer decides placement) -->
@@ -105,6 +105,12 @@ const handleNextClick = () => {
     if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
   })
 }
+
+const coverMedia = computed(() => ({
+  url: form.value?.cover_picture,
+  focal_point: form.value?.cover_settings?.focal_point,
+  brightness: form.value?.cover_settings?.brightness
+}))
 </script>
 
 

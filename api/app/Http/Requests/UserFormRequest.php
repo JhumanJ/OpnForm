@@ -67,7 +67,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
         ];
 
         // Log to both default channel and Slack
-        if (!in_array(\App::environment(), ['testing'])) {
+        if (!in_array(app()->environment(), ['testing'])) {
             Log::channel('slack_errors')->warning(
                 'Frontend validation bypass detected in form submission',
                 $logData
@@ -116,8 +116,6 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'size' => ['required', Rule::in(Form::SIZES)],
             'layout_rtl' => 'boolean',
             'border_radius' => ['required', Rule::in(Form::BORDER_RADIUS)],
-            'cover_picture' => 'url|nullable',
-            'logo_picture' => 'url|nullable',
             'dark_mode' => ['required', Rule::in(Form::DARK_MODE_VALUES)],
             'color' => 'required|string',
             'uppercase_labels' => 'required|boolean',
@@ -125,6 +123,15 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'transparent_background' => 'required|boolean',
             'closes_at' => 'date|nullable',
             'closed_text' => 'string|nullable',
+            'logo_picture' => 'url|nullable',
+            
+            // Cover
+            'cover_picture' => 'url|nullable',
+            'cover_settings' => 'nullable|array',
+            'cover_settings.focal_point' => 'sometimes|nullable|array',
+            'cover_settings.focal_point.x' => 'sometimes|nullable|numeric|min:0|max:100',
+            'cover_settings.focal_point.y' => 'sometimes|nullable|numeric|min:0|max:100',
+            'cover_settings.brightness' => 'sometimes|nullable|integer|min:-100|max:100',
 
             // Custom Code
             'custom_code' => 'string|nullable',

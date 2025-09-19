@@ -32,8 +32,7 @@
       />
 
       <div class="mt-4">
-        <label class="block text-sm font-medium text-neutral-700 mb-1">Focal point</label>
-        <FocalPointPicker v-model="model.image.focal_point" :src="model.image.url" />
+        <FocalPointPicker label="Focal point" v-model="model.image.focal_point" :src="model.image.url" />
       </div>
 
       <div class="mt-4">

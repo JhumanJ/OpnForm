@@ -109,7 +109,13 @@ export default {
     },
   },
   mounted() {
-    this.compVal = parseInt(this.compVal ?? this.minSlider)
+    // Initialize only if no value provided; don't override an existing model value
+    if (this.compVal === undefined || this.compVal === null || isNaN(Number(this.compVal))) {
+      const initial = (this.modelValue !== undefined && this.modelValue !== null && !isNaN(Number(this.modelValue)))
+        ? Number(this.modelValue)
+        : 0
+      this.compVal = initial
+    }
     this.updateInputWidth()
     window.addEventListener('resize', this.updateInputWidth)
   },

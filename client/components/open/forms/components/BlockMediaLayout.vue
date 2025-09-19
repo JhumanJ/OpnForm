@@ -9,10 +9,11 @@
     <img
       v-if="image && image.url"
       :src="image.url"
-      :alt="image.alt || ''"
+      :alt="(image.alt && image.alt.length > 0) ? image.alt : alt"
       :class="[imgClass, { 'opacity-0': !isLoaded }]"
       :style="imageStyle"
       draggable="false"
+      ref="imgEl"
       @dragstart.prevent
       @load="onLoad"
       @error="onError"
@@ -39,10 +40,12 @@ const props = defineProps({
   // min-height to reserve space before image loads; accepts number (px) or CSS size string
   fallbackHeight: { type: [String, Number], default: '12rem' },
   // classes applied to the <img> element
-  imgClass: { type: String, default: 'w-full h-full object-cover transition-opacity duration-300' }
+  imgClass: { type: String, default: 'w-full h-full object-cover transition-opacity duration-300' },
+  alt: { type: String, default: '' }
 })
 
 const isLoaded = ref(false)
+const imgEl = ref(null)
 
 const onLoad = () => {
   isLoaded.value = true
@@ -56,14 +59,31 @@ watch(() => props.image?.url, () => {
   isLoaded.value = false
 })
 
+onMounted(() => {
+  // If SSR rendered and image is already cached/loaded, mark as loaded
+  if (imgEl.value && imgEl.value.complete) {
+    isLoaded.value = true
+  }
+})
+
 const imageStyle = computed(() => {
   const x = props.image?.focal_point?.x ?? 50
   const y = props.image?.focal_point?.y ?? 50
   const b = props.image?.brightness ?? 0 // -100..100
-  const brightnessScale = Math.max(0, Math.min(2, (b + 100) / 100))
+  let filter = ''
+  if (b > 0) {
+    // Positive values: combine brightness (1..2) and contrast (1..0)
+    const brightnessScale = Math.max(1, Math.min(2, 1 + (b / 100)))
+    const contrastScale = Math.max(0, Math.min(1, 1 - (b / 100)))
+    filter = `contrast(${contrastScale}) brightness(${brightnessScale})`
+  } else {
+    // Negative values: brightness only (0..1)
+    const brightnessScale = Math.max(0, Math.min(1, (b + 100) / 100))
+    filter = `brightness(${brightnessScale})`
+  }
   return {
     objectPosition: `${x}% ${y}%`,
-    filter: `brightness(${brightnessScale})`
+    filter
   }
 })
 

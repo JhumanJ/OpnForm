@@ -3,7 +3,7 @@
     id="public-form"
     class="flex flex-col min-h-screen"
   >
-    <div class="w-full mx-auto flex flex-col grow min-h-0">
+    <div class="w-full mx-auto flex flex-col grow h-full">
       <div v-if="!formLoading && !form">
         <NotFoundForm />
       </div>
@@ -16,7 +16,7 @@
         <OpenCompleteForm
           ref="openCompleteForm"
           :form="form"
-          class="mb-10 grow min-h-0"
+          class="grow flex flex-col"
           :dark-mode="darkMode"
           :mode="FormMode.LIVE"
           @password-entered="passwordEntered"

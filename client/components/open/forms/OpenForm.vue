@@ -10,8 +10,8 @@
     <!-- Classic cover/logo rendering -->
     <div v-if="form && (form.logo_picture || form.cover_picture)" class="mb-2">
       <div v-if="form.cover_picture">
-        <div id="cover-picture" class="max-h-56 w-full overflow-hidden flex items-center justify-center">
-          <img :src="form.cover_picture" alt="Form Cover Picture" class="w-full">
+        <div id="cover-picture" class="h-56 w-full overflow-hidden pointer-events-none">
+          <BlockMediaLayout :image="coverMedia" img-class="w-full h-full object-cover" alt="Form cover image" />
         </div>
       </div>
       <div
@@ -26,7 +26,7 @@
       >
         <img
           :src="form.logo_picture"
-          alt="Logo Picture"
+          :alt="form.seo_meta?.site_name ? `${form.seo_meta.site_name} logo` : 'Form logo'"
           :class="{ 'top-5': !form.cover_picture, '-top-10': form.cover_picture }"
           class="w-20 h-20 object-contain absolute transition-all"
         >
@@ -140,6 +140,7 @@
 <script setup>
 import draggable from 'vuedraggable'
 import OpenFormButton from './OpenFormButton.vue'
+import BlockMediaLayout from './components/BlockMediaLayout.vue'
 import CaptchaWrapper from '~/components/forms/heavy/components/CaptchaWrapper.vue'
 import OpenFormField from './OpenFormField.vue'
 import FormProgressbar from './FormProgressbar.vue'
@@ -231,6 +232,12 @@ const submittedData = computed(() => props.formManager?.form?.data?.() ?? null)
 
 // Preview mode width override (FormEditorPreview uses PREVIEW mode)
 const isPreviewMode = computed(() => props.formManager?.mode?.value === FormMode.PREVIEW)
+
+const coverMedia = computed(() => ({
+  url: form.value?.cover_picture,
+  focal_point: form.value?.cover_settings?.focal_point,
+  brightness: form.value?.cover_settings?.brightness
+}))
 </script>
 
 <style lang='scss' scoped>
