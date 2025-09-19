@@ -10,11 +10,12 @@
       :id="id ? id : name"
       :name="name"
       :style="inputStyle"
-      class="flex items-stretch"
+      class="grid items-stretch w-full grid-cols-[auto_minmax(0,1fr)]"
     >
       <v-select
+        class="min-w-0"
         v-model="selectedCountryCode"
-        dropdown-class="max-w-[300px]"
+        popover-width="full"
         input-class="ltr-only:rounded-r-none rtl:rounded-l-none!"
         :data="countries"
         :disabled="disabled || countries.length===1"
@@ -38,8 +39,8 @@
               class="-mt-[9px]! rounded"
               :country="props.option.code"
             />
-            <span class="grow truncate">{{ props.option.name }}</span>
-            <span>{{ props.option.dial_code }}</span>
+            <span class="truncate">{{ props.option.name }}</span>
+            <span class="text-gray-500">{{ props.option.dial_code }}</span>
           </div>
         </template>
         <template #selected="props">
@@ -60,7 +61,7 @@
       <input
         v-model="inputVal"
         type="text"
-        class="inline-flex-grow ltr-only:border-l-0 ltr-only:!rounded-l-none rtl:border-r-0 rtl:rounded-r-none"
+        class="w-full min-w-0 ltr-only:border-l-0 ltr-only:!rounded-l-none rtl:border-r-0 rtl:rounded-r-none"
         :disabled="disabled?true:null"
         :class="ui.input()"
         :placeholder="placeholder"
@@ -190,7 +191,7 @@ export default {
 
       const phoneObj = parsePhoneNumber(this.compVal)
       if (phoneObj !== undefined && phoneObj) {
-        if (!this.selectedCountryCode && phoneObj.country !== undefined && phoneObj.country) {
+        if (phoneObj.country !== undefined && phoneObj.country) {
           this.selectedCountryCode = this.getCountryBy(phoneObj.country)
         }
         this.inputVal = phoneObj.nationalNumber

@@ -11,7 +11,7 @@
         sideOffset: 4
       }"
       :ui="{
-        content: 'w-(--reka-popper-anchor-width) bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + borderRadiusClass
+        content: (popoverWidth ? `w-[${popoverWidth}] ` : 'w-(--reka-popper-anchor-width) ') + 'bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + borderRadiusClass
       }"
     >
       <template #anchor>
@@ -239,7 +239,8 @@ export default {
     allowCreation: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     minSelection: { type: Number, default: null },
-    maxSelection: { type: Number, default: null }
+    maxSelection: { type: Number, default: null },
+    popoverWidth: { type: String, default: null }
   },
   emits: ['update:modelValue', 'update-options', 'focus', 'blur'],
   data () {
