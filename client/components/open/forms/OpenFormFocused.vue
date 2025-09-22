@@ -17,7 +17,13 @@
     <FormProgressbar :form-manager="formManager" />
 
     <!-- Slide: question vertically centered, next/submit button slides with it -->
-    <SlidingTransition direction="vertical" :step="currentIndex" :auto-height="false" class="grow min-h-0 flex">
+    <SlidingTransition 
+      direction="vertical"
+      :step="currentIndex"
+      :auto-height="false"
+      class="grow min-h-0 flex"
+      :speed="500"
+    >
       <div :key="currentIndex" class="w-full flex items-center px-6 grow min-h-0 z-10 h-full">
         <div class="w-full max-w-2xl mx-auto">
           <div class="relative">

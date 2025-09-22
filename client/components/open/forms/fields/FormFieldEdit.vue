@@ -95,14 +95,12 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import clonedeep from 'clone-deep'
 import FieldOptions from './components/FieldOptions.vue'
 import BlockOptions from './components/BlockOptions.vue'
 import BlockTypeIcon from '../components/BlockTypeIcon.vue'
 import blocksTypes from '~/data/blocks_types.json'
 import FormBlockLogicEditor from '../components/form-logic-components/FormBlockLogicEditor.vue'
 import CustomFieldValidation from '../components/CustomFieldValidation.vue'
-import { generateUUID } from '~/lib/utils'
 
 const workingFormStore = useWorkingFormStore()
 const { content: form } = storeToRefs(workingFormStore)
@@ -221,14 +219,7 @@ const dropdownItems = computed(() => {
       label: 'Duplicate',
       icon: 'i-heroicons-document-duplicate-20-solid',
       kbds: ['meta', 'd'],
-      onClick: () => {
-        const newField = clonedeep(field.value)
-        newField.id = generateUUID()
-        newField.name = 'Copy of ' + newField.name
-        const newFields = [...form.value.properties]
-        newFields.splice(selectedFieldIndex.value + 1, 0, newField)
-        form.value.properties = newFields
-      }
+      onClick: () => workingFormStore.duplicateField(field.value)
     }]
   ]
 

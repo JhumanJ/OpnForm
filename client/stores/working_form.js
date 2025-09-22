@@ -239,6 +239,19 @@ export const useWorkingFormStore = defineStore("working_form", {
     removeField(field) {
       this.internalRemoveField(field)
     },
+    duplicateField(fieldOrIndex) {
+      if (!this.content?.properties) return
+      const index = this.objectToIndex(fieldOrIndex)
+      if (index === -1) return
+      const fields = clonedeep(this.content.properties)
+      const source = fields[index]
+      const cloned = clonedeep(source)
+      cloned.id = generateUUID()
+      if (cloned.name) cloned.name = `Copy of ${cloned.name}`
+      fields.splice(index + 1, 0, cloned)
+      this.setProperties(fields)
+      this.openSettingsForField(index + 1)
+    },
     internalRemoveField(field) {
       const index = this.objectToIndex(field)
 

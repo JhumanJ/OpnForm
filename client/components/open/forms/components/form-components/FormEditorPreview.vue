@@ -79,16 +79,25 @@
                 @click.stop="handleAddBlock"
               />
             </UTooltip>
-            <UTooltip text="Edit question">
-              <UButton
-                icon="i-heroicons-cog-6-tooth"
-                color="neutral"
-                variant="outline"
-                size="sm"
-                label="Edit question"
-                @click.stop="handleEditCurrent"
-              />
-            </UTooltip>
+            <UButtonGroup size="sm">
+              <UTooltip text="Edit question">
+                <UButton
+                  icon="i-heroicons-cog-6-tooth"
+                  color="neutral"
+                  variant="outline"
+                  label="Edit"
+                  @click.stop="handleEditCurrent"
+                />
+              </UTooltip>
+              <UDropdownMenu :items="moreMenuItems" :content="{ align: 'end' }">
+                <UButton
+                  color="neutral"
+                  variant="outline"
+                  icon="i-heroicons-ellipsis-vertical"
+                  @click.stop
+                />
+              </UDropdownMenu>
+            </UButtonGroup>
           </div>
         </VTransition>
       </div>
@@ -208,6 +217,35 @@ function handleEditCurrent() {
   } catch (e) {
     console.error(e)
   }
+}
+
+// Dropdown items and actions for current slide
+const moreMenuItems = computed(() => ([
+  [
+    {
+      label: 'Duplicate',
+      icon: 'i-heroicons-document-duplicate-20-solid',
+      onClick: handleDuplicateCurrent
+    }
+  ],
+  [
+    {
+      label: 'Delete',
+      icon: 'i-heroicons-trash-20-solid',
+      color: 'error',
+      onClick: handleDeleteCurrent
+    }
+  ]
+]))
+
+function handleDuplicateCurrent() {
+  const index = currentSlideIndex.value
+  workingFormStore.duplicateField(index)
+}
+
+function handleDeleteCurrent() {
+  const index = currentSlideIndex.value
+  workingFormStore.removeField(index)
 }
 </script>
 

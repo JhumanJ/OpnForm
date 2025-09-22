@@ -1,5 +1,5 @@
 <template>
-  <div class="sliding-wrapper">
+  <div class="sliding-wrapper" :style="{ '--transition-speed': transitionSpeed }">
     <transition :name="transitionName">
       <slot />
     </transition>
@@ -18,6 +18,10 @@ const props = defineProps({
   step: {
     type: Number,
     default: 1
+  },
+  speed: {
+    type: [Number, String],
+    default: 800
   }
 })
 
@@ -25,6 +29,10 @@ const previousStep = ref(props.step)
 const transitionName = computed(() => {
   const baseTransition = props.direction === 'vertical' ? 'slide-vertical' : 'slide-horizontal'
   return `${baseTransition}-${props.step > previousStep.value ? 'forward' : 'backward'}`
+})
+
+const transitionSpeed = computed(() => {
+  return typeof props.speed === 'number' ? `${props.speed}ms` : props.speed
 })
 
 watch(() => props.step, (newStep, oldStep) => {
@@ -54,7 +62,7 @@ watch(() => props.step, (newStep, oldStep) => {
   right: 0;
   top: 0;
   bottom: 0;
-  transition: transform 800ms ease-in-out, opacity 800ms ease-in-out;
+  transition: transform var(--transition-speed, 800ms) ease-in-out, opacity var(--transition-speed, 800ms) ease-in-out;
   will-change: transform, opacity;
 }
 
