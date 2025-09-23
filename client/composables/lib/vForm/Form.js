@@ -88,7 +88,16 @@ class Form {
   resetAndFill(data = {}) {
     // Clear form state
     this.clear()
-    
+
+    // Remove any previously set keys that are not present in the incoming data
+    // This avoids stale values when switching contexts (e.g., viewing different submissions)
+    const incomingKeys = new Set(Object.keys(data || {}))
+    this.keys()
+      .filter((key) => !incomingKeys.has(key))
+      .forEach((key) => {
+        delete this[key]
+      })
+
     // Reset and update form data using the existing update method
     this.originalData = {}
     this.update(data)
