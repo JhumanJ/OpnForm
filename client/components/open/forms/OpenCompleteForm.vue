@@ -212,6 +212,7 @@ const { data: user } = useAuth().user()
 const passwordForm = useForm({ password: null })
 const hidePasswordDisabledMsg = ref(false)
 const submissionId = ref(route.query.submission_id || null)
+const authKey = ref(route.query.auth_key || null)
 const submittedData = ref(null)
 const showFirstSubmissionModal = ref(false)
 
@@ -246,6 +247,7 @@ if (props.form) {
   // Await the initialization for SSR
   formManager.initialize({
     submissionId: submissionId.value,
+    authKey: authKey.value,
     urlParams: new URLSearchParams(queryString),
   })
 }

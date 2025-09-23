@@ -131,10 +131,10 @@ export function useFormSubmissions() {
     }
   }
 
-  const submissionDetail = (slug, submissionId, options = {}) => {
+  const submissionDetail = (slug, submissionId, authKey,options = {}) => {
     return useQuery({
       queryKey: ['submissions', submissionId],
-      queryFn: () => formsApi.submissions.get(slug, submissionId, options),
+      queryFn: () => formsApi.submissions.get(slug, submissionId, authKey, options),
       enabled: !!(slug && submissionId),
       ...options
     })
