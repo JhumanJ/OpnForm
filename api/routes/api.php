@@ -320,7 +320,7 @@ Route::prefix('forms')->name('forms.')->group(function () {
 
     // Get form and submit
     Route::get('{form}', [PublicFormController::class, 'show'])->name('show');
-    Route::get('{form}/submissions/{submission_id}', [PublicFormController::class, 'fetchSubmission'])->name('fetchSubmission');
+    Route::get('{form}/submissions/{submission_id}/{auth_key}', [PublicFormController::class, 'fetchSubmission'])->name('fetchSubmission');
 
     // File uploads
     Route::get('assets/{assetFileName}', [PublicFormController::class, 'showAsset'])->name('assets.show');
