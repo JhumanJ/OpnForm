@@ -13,8 +13,10 @@ class AiGenerateFieldsRequest extends FormRequest
      */
     public function rules()
     {
+        $maxLength = $this->user()?->is_pro ? 10000 : 4000;
+
         return [
-            'fields_prompt' => 'required|string|max:4000',
+            'fields_prompt' => 'required|string|max:' . $maxLength,
             'current_form_structure' => 'nullable|array',
         ];
     }
