@@ -15,6 +15,7 @@ use App\Service\Forms\FormCleaner;
 use App\Service\WorkspaceHelper;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Vinkla\Hashids\Facades\Hashids;
 use Illuminate\Support\Str;
@@ -221,17 +222,18 @@ class PublicFormController extends Controller
         return $submissionData;
     }
 
-    public function fetchSubmission(Request $request, Form $form, string $submission_id)
+    public function fetchSubmission(Request $request, Form $form, string $submission_id, string $auth_key)
     {
         // Decode the submission ID using the same approach as in processSubmissionIdentifiers
         $decodedId = Hashids::decode($submission_id);
         $submissionId = !empty($decodedId) ? (int)($decodedId[0]) : false;
 
+
         // Ensure form is public and allows editable submissions
         if ($form->visibility !== 'public') {
             abort(404);
         }
-        if ($form->workspace == null || !$form->editable_submissions || !$submissionId) {
+        if ($form->workspace == null || !$form->editable_submissions || !$submissionId || !$auth_key) {
             return $this->error([
                 'message' => 'Not allowed.',
             ]);
@@ -242,6 +244,11 @@ class PublicFormController extends Controller
             return $this->error([
                 'message' => 'Submission not found.',
             ]);
+        }
+
+        $expected = hash_hmac('sha256', $submission_id . '|' . $form->slug, config('app.front_api_secret'));
+        if (!hash_equals($expected, $auth_key)) {
+            return $this->error(['message' => 'Invalid authorization key.'], 403);
         }
 
         $submission = new FormSubmissionResource($submission);

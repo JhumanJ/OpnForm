@@ -24,7 +24,7 @@ export const formsApi = {
   // Form submissions
   submissions: {
     list: (formId, options) => apiService.get(`/open/forms/${formId}/submissions`, options),
-    get: (slug, submissionId, options) => apiService.get(`/forms/${slug}/submissions/${submissionId}`, options),
+    get: (slug, submissionId, authKey, options) => apiService.get(`/forms/${slug}/submissions/${submissionId}/${authKey}`, options),
     update: (formId, submissionId, data) => apiService.put(`/open/forms/${formId}/submissions/${submissionId}`, data),
     delete: (formId, submissionId) => apiService.delete(`/open/forms/${formId}/submissions/${submissionId}`),
     deleteMulti: (formId, submissionIds) => apiService.post(`/open/forms/${formId}/submissions/multi`, { submissionIds }),

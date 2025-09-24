@@ -31,7 +31,7 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
     
     // 2. Try loading from submission ID
     if (options.submissionId) {
-      const loaded = await tryLoadFromSubmissionId(options.submissionId)
+      const loaded = await tryLoadFromSubmissionId(options.submissionId, options.authKey)
       if (loaded) return // Exit if loaded successfully
     }
     
@@ -202,7 +202,7 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
    * @param {String} submissionId - ID of the submission to load
    * @returns {Promise<Boolean>} - Whether loading was successful
    */
-  const tryLoadFromSubmissionId = async (submissionId) => {
+  const tryLoadFromSubmissionId = async (submissionId, authKey) => {
     const submissionIdValue = toValue(submissionId)
     if (!submissionIdValue) return false
     const config = toValue(formConfig) // Get the form config value
@@ -215,7 +215,7 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
     }
 
     // Use the correct route format: /forms/{slug}/submissions/{submission_id}
-    return formsApi.submissions.get(slug, submissionIdValue)
+    return formsApi.submissions.get(slug, submissionIdValue, authKey)
       .then(submissionData => {
         if (submissionData.data) {
           resetAndFill({
