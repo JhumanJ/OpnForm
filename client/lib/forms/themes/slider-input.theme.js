@@ -16,6 +16,9 @@ export const sliderInputTheme = {
       },
       notion: {
         slider: 'focus-visible:ring-form/40'
+      },
+      minimal: {
+        slider: 'focus-visible:ring-2 focus-visible:ring-form/60'
       }
     },
     size: {

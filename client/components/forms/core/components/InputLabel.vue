@@ -26,12 +26,16 @@ const props = defineProps({
   uppercaseLabels: { type: Boolean, default: false },
   required: { type: Boolean, default: false },
   label: { type: String, required: true },
+  theme: { type: String, default: 'default' },
+  size: { type: String, default: 'md' },
   ui: {type: Object, default: () => ({})}
 })
 
 // OPTIMIZED: Single computed following Nuxt UI pattern
 const ui = computed(() => {
   return tv(inputLabelTheme, props.ui)({
+    theme: props.theme,
+    size: props.size,
     uppercaseLabels: props.uppercaseLabels
   })
 })
