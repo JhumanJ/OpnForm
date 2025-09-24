@@ -1,0 +1,50 @@
+# See https://fly.io/docs/app-guides/continuous-deployment-with-github-actions/
+
+name: Fly Deploy
+on:
+  push:
+    branches:
+      - staging
+      - main
+    paths:
+      - "api/**"
+      - "client/**"
+
+jobs:
+  deploy-api:
+    name: Deploy api
+    runs-on: ubuntu-latest
+    concurrency: deploy-group
+    if: contains(join(github.event.commits.*.modified, ' '), 'api/') ||
+        contains(join(github.event.commits.*.added, ' '), 'api/') ||
+        contains(join(github.event.commits.*.removed, ' '), 'api/')
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly
+        run: flyctl deploy --remote-only --config ${{ github.ref_name == 'main' && './fly.api.toml' || './fly.api.staging.toml' }} 
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}
+
+  deploy-ui:
+    name: Deploy ui
+    runs-on: ubuntu-latest
+    concurrency: deploy-group
+    if: contains(join(github.event.commits.*.modified, ' '), 'ui/') ||
+        contains(join(github.event.commits.*.added, ' '), 'ui/') ||
+        contains(join(github.event.commits.*.removed, ' '), 'ui/')
+    steps:
+      - name: Clone repository
+        uses: actions/checkout@v4
+
+      - name: Set up Flyctl
+        uses: superfly/flyctl-actions/setup-flyctl@master
+
+      - name: Deploy to Fly
+        run: flyctl deploy --remote-only --config ${{ github.ref_name == 'main' && './fly.ui.toml' || './fly.ui.staging.toml' }} 
+        env:
+          FLY_API_TOKEN: ${{ secrets.FLY_API_TOKEN }}

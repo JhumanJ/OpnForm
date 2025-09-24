@@ -1,0 +1,13 @@
+name: Workflow Webhook Action
+
+on: [pull_request]
+
+jobs:
+  notify:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Send Notification
+        uses: disrupt-digital/google-chat-webhook@main
+        with:
+          mention: "<users/all>"
+          webhook_url: "https://chat.googleapis.com/v1/spaces/${{ secrets.IT_DEVELOPER_NOTIFICATIONS }}/messages?key=${{ secrets.IT_NOTIFICATIONS_KEY }}&token=${{ secrets.IT_NOTIFICATIONS_SECRET }}"
