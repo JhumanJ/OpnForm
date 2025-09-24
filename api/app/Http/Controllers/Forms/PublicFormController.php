@@ -8,7 +8,6 @@ use App\Models\Forms\Form;
 use App\Http\Resources\FormResource;
 use App\Http\Resources\FormSubmissionResource;
 use App\Jobs\Form\StoreFormSubmissionJob;
-use App\Models\Forms\FormSubmission;
 use App\Service\Forms\Analytics\UserAgentHelper;
 use App\Service\Forms\FormSubmissionProcessor;
 use App\Service\Forms\FormCleaner;
@@ -152,6 +151,9 @@ class PublicFormController extends Controller
 
     public function answer(AnswerFormRequest $request, Form $form, FormSubmissionProcessor $formSubmissionProcessor)
     {
+        // Check if user can answer this form
+        $this->authorize('answer', $form);
+
         $isFirstSubmission = ($form->submissions_count === 0);
 
         // Handle partial submissions
@@ -237,22 +239,17 @@ class PublicFormController extends Controller
             ]);
         }
 
-        $submission = FormSubmission::find($submissionId);
+        $submission = $form->submissions()->find($submissionId);
         if (!$submission) {
             return $this->error([
                 'message' => 'Submission not found.',
             ]);
         }
 
-        $submission = new FormSubmissionResource($submission);
-        $submission->publiclyAccessed();
+        $submission->setRelation('form', $form);
+        $resource = new FormSubmissionResource($submission);
+        $resource->publiclyAccessed();
 
-        if ($submission->form_id != $form->id) {
-            return $this->error([
-                'message' => 'Not allowed.',
-            ], 403);
-        }
-
-        return $this->success($submission->toArray($request));
+        return $this->success($resource->toArray($request));
     }
 }

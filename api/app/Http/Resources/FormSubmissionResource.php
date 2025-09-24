@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use Illuminate\Http\Resources\Json\JsonResource;
+use Vinkla\Hashids\Facades\Hashids;
 
 class FormSubmissionResource extends JsonResource
 {
@@ -27,7 +28,8 @@ class FormSubmissionResource extends JsonResource
             'completion_time' => $this->completion_time,
         ], ($this->publiclyAccessed) ? [] : [
             'form_id' => $this->form_id,
-            'id' => $this->id
+            'id' => $this->id,
+            'submission_id' => Hashids::encode($this->id),
         ]);
     }
 
@@ -43,6 +45,7 @@ class FormSubmissionResource extends JsonResource
             'status' => $this->status,
             'created_at' => $this->created_at->toDateTimeString(),
             'id' => $this->id,
+            'submission_id' => Hashids::encode($this->id),
         ]);
     }
 

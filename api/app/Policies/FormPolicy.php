@@ -113,4 +113,19 @@ class FormPolicy
     {
         return $this->canPerformWriteOperation($user, $form);
     }
+
+    /**
+     * Determine whether a user can answer/submit to the form.
+     * This method checks if the form is open for public submissions.
+     *
+     * @param  \App\Models\User|null  $user
+     * @param  \App\Models\Forms\Form  $form
+     * @return bool
+     */
+    public function answer(?User $user, Form $form)
+    {
+        return !$form->is_closed
+            && !$form->max_number_of_submissions_reached
+            && $form->visibility === 'public';
+    }
 }

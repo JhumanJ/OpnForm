@@ -545,9 +545,9 @@
         </small>
       </div>
 
-      <!--    Placeholder    -->
+      <!-- Placeholder -->
       <text-area-input
-        v-if="hasPlaceholder && field.type === 'text' && field.multi_lines"
+        v-if="hasPlaceholder && ((field.type === 'text' && field.multi_lines) || field.type === 'rich_text')"
         name="placeholder"
         class="mt-3"
         :form="field"
