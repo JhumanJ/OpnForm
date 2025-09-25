@@ -52,7 +52,7 @@ const {
   startResize
 } = useResizable({
   storageKey: 'formEditorRightSidebarWidth',
-  defaultWidth: 350,
+  defaultWidth: 315,
   direction: 'right',
   maxWidth: () => Math.min(600, window.innerWidth * 0.6)
 })
