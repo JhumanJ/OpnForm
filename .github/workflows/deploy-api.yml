@@ -1,0 +1,44 @@
+name: Deploy API (Bref Cloud)
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    concurrency: deploy-prod
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup PHP with Bref CLI
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: none
+          tools: composer, bref/cli
+
+      - name: Install Composer dependencies
+        uses: ramsey/composer-install@v3
+        with:
+          working-directory: ./api
+          composer-options: '--optimize-autoloader --no-dev'
+
+      - name: Setup Node (if api has package-lock.json)
+        if: ${{ hashFiles('api/package-lock.json') != '' }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: 'api/package-lock.json'
+
+      - name: Install NPM dependencies (api)
+        if: ${{ hashFiles('api/package-lock.json') != '' }}
+        working-directory: ./api
+        run: npm ci
+
+      - name: Deploy to Bref Cloud (prod)
+        working-directory: ./api
+        env:
+          BREF_TOKEN: ${{ secrets.BREF_TOKEN }}
+        run: bref deploy --env=prod

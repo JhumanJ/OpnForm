@@ -1,0 +1,55 @@
+service: laravel
+
+# Set your team ID if you are using Bref Cloud
+bref:
+    team: opnform
+
+provider:
+    name: aws
+    # The AWS region in which to deploy (us-east-1 is the default)
+    region: us-east-1
+    # Environment variables
+    environment:
+        APP_ENV: production # Or use ${sls:stage} if you want the environment to match the stage
+        SESSION_DRIVER: cookie # Change to database if you have set up a database
+
+package:
+    # Files and directories to exclude from deployment
+    patterns:
+        - '!node_modules/**'
+        - '!public/storage'
+        - '!resources/assets/**'
+        - '!resources/css/**'
+        - '!resources/images/**'
+        - '!resources/js/**'
+        - '!storage/**'
+        - '!tests/**'
+        - '!database/*.sqlite'
+        # Exclude assets except for the manifest file
+        - '!public/build/**'
+        - 'public/build/manifest.json'
+
+functions:
+
+    # This function runs the Laravel website/API
+    web:
+        handler: public/index.php
+        runtime: php-82-fpm
+        timeout: 28 # in seconds (API Gateway has a timeout of 29 seconds)
+        events:
+            - httpApi: '*'
+
+    # This function lets us run artisan commands in Lambda
+    artisan:
+        handler: artisan
+        runtime: php-82-console
+        timeout: 720 # in seconds
+        # Uncomment to also run the scheduler every minute
+        #events:
+        #    - schedule:
+        #          rate: rate(1 minute)
+        #          input: '"schedule:run"'
+
+plugins:
+    # We need to include the Bref plugin
+    - ./vendor/bref/bref
