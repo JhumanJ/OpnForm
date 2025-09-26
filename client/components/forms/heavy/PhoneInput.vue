@@ -10,11 +10,12 @@
       :id="id ? id : name"
       :name="name"
       :style="inputStyle"
-      class="flex items-stretch"
+      class="grid items-stretch w-full grid-cols-[auto_minmax(0,1fr)]"
     >
       <v-select
+        class="min-w-0"
         v-model="selectedCountryCode"
-        dropdown-class="max-w-[300px]"
+        popover-width="full"
         input-class="ltr-only:rounded-r-none rtl:rounded-l-none!"
         :data="countries"
         :disabled="disabled || countries.length===1"
@@ -38,22 +39,22 @@
               class="-mt-[9px]! rounded"
               :country="props.option.code"
             />
-            <span class="grow truncate">{{ props.option.name }}</span>
-            <span>{{ props.option.dial_code }}</span>
+            <span class="truncate">{{ props.option.name }}</span>
+            <span class="text-gray-500 whitespace-nowrap">{{ props.option.dial_code && props.option.dial_code.startsWith('+') ? props.option.dial_code : '+' + props.option.dial_code }}</span>
           </div>
         </template>
         <template #selected="props">
           <div
-            class="flex items-center gap-2 justify-center overflow-hidden"
+            class="flex items-center gap-2 w-full overflow-hidden ltr-only:pr-8 rtl-only:pl-8"
             :class="ui.selectedMaxHeight()"
           >
+            <span class="text-sm whitespace-nowrap shrink-0">{{ props.option.dial_code && props.option.dial_code.startsWith('+') ? props.option.dial_code : '+' + props.option.dial_code }}</span>
             <country-flag
               :size="countryFlagSize"
-              class="rounded-lg!"
+              class="rounded-lg! ms-auto shrink-0"
               :class="ui.flag()"
               :country="props.option.code"
             />
-            <span class="text-sm">{{ props.option.dial_code }}</span>
           </div>
         </template>
       </v-select>
@@ -66,7 +67,7 @@
       <input
         v-model="inputVal"
         type="text"
-        class="inline-flex-grow ltr-only:border-l-0 ltr-only:!rounded-l-none rtl:border-r-0 rtl:rounded-r-none"
+        class="w-full min-w-0 ltr-only:border-l-0 ltr-only:!rounded-l-none rtl:border-r-0 rtl:rounded-r-none"
         :disabled="disabled?true:null"
         :class="ui.input()"
         :placeholder="placeholder"
@@ -191,13 +192,19 @@ export default {
         return
       }
       if (!this.compVal?.startsWith('+')) {
-        this.selectedCountryCode = this.getCountryBy(this.compVal.substring(2, 0))
+        // If the user already selected a country, don't override it with inference
+        if (!this.selectedCountryCode) {
+          this.selectedCountryCode = this.getCountryBy(this.compVal.substring(2, 0))
+        }
       }
 
       const phoneObj = parsePhoneNumber(this.compVal)
       if (phoneObj !== undefined && phoneObj) {
-        if (!this.selectedCountryCode && phoneObj.country !== undefined && phoneObj.country) {
-          this.selectedCountryCode = this.getCountryBy(phoneObj.country)
+        if (phoneObj.country !== undefined && phoneObj.country) {
+          // Respect manual selection; infer only when none is set
+          if (!this.selectedCountryCode) {
+            this.selectedCountryCode = this.getCountryBy(phoneObj.country)
+          }
         }
         this.inputVal = phoneObj.nationalNumber
       }
