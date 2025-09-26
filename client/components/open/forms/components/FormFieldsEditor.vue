@@ -52,7 +52,7 @@
                 </EditableTag>
               </div>
 
-              <UTooltip :text="element.hidden ? 'Show Block' : 'Hide Block'">
+              <UTooltip arrow :text="element.hidden ? 'Show Block' : 'Hide Block'">
                 <button
                   class="hidden !cursor-pointer rounded-sm p-1 transition-colors hover:bg-blue-100 items-center justify-center"
                   :class="{
@@ -78,6 +78,7 @@
               <UTooltip
                 v-if="!element.type.startsWith('nf-')"
                 :text="element.required ? 'Make it optional' : 'Make it required'"
+                arrow
               >
                 <button
                   class="hidden cursor-pointer rounded-sm p-0.5 transition-colors hover:bg-blue-100 items-center px-1 justify-center"
@@ -94,15 +95,17 @@
                   </div>
                 </button>
               </UTooltip>
-              <button
-                class="cursor-pointer rounded-sm p-1 transition-colors hover:bg-blue-100 text-neutral-300 hover:text-blue-500 flex items-center justify-center"
-                @click="editOptions(index)"
-              >
-                <Icon
-                  name="heroicons:cog-8-tooth-solid"
-                  class="h-5 w-5"
-                />
-              </button>
+              <UTooltip arrow text="Open settings">
+                <button
+                  class="cursor-pointer rounded-sm p-1 transition-colors hover:bg-blue-100 text-neutral-300 hover:text-blue-500 flex items-center justify-center field-settings-button"
+                  @click="editOptions(index)"
+                >
+                  <Icon
+                    name="heroicons:cog-8-tooth-solid"
+                    class="h-5 w-5"
+                  />
+                </button>
+              </UTooltip>
             </div>
           </div>
         </template>

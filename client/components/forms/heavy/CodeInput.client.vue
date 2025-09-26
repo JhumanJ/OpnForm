@@ -10,7 +10,7 @@
 
     <div :class="ui.container()">
       <!-- Fullscreen button -->
-      <UTooltip text="Open in fullscreen" :popper="{ placement: 'left' }">
+      <UTooltip text="Open in fullscreen" :content="{ side: 'left' }" arrow>
         <UButton
           v-if="allowFullscreen"
           @click="openFullscreen"

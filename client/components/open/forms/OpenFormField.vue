@@ -31,8 +31,9 @@
             @click.stop.prevent="openAddFieldSidebar"
           >
             <UTooltip
+              arrow
               text="Add new field"
-              :popper="{ placement: 'right' }"
+              :content="{ side: 'left' }"
               :ui="{ container: 'z-50' }"
             >
               <Icon
@@ -47,8 +48,9 @@
             @click.stop.prevent="editFieldOptions"
           >
             <UTooltip
+              arrow
               text="Edit field settings"
-              :popper="{ placement: 'right' }"
+              :content="{ side: 'left' }"
               :ui="{ container: 'z-50' }"
             >
               <Icon
@@ -63,8 +65,9 @@
             @click.stop.prevent="removeField"
           >
             <UTooltip
+              arrow
               text="Delete field"
-              :popper="{ placement: 'right' }"
+              :content="{ side: 'left' }"
               :ui="{ container: 'z-50' }"
             >
               <Icon
