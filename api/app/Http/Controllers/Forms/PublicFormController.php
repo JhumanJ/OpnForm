@@ -136,6 +136,11 @@ class PublicFormController extends Controller
         // Explicitly mark this as a partial submission
         $submissionData['is_partial'] = true;
 
+        // Add IP address for tracking if enabled
+        if ($form->enable_ip_tracking && $form->is_pro) {
+            $submissionData['submitter_ip'] = $request->ip();
+        }
+
         // Use the same job as regular submissions to ensure consistent processing
         $job = new StoreFormSubmissionJob($form, $submissionData);
         $job->handle();
@@ -167,6 +172,11 @@ class PublicFormController extends Controller
 
         // Process submission hash and ID
         $submissionData = $this->processSubmissionIdentifiers($request, $submissionData);
+
+        // Add IP address for tracking if enabled
+        if ($form->enable_ip_tracking && $form->is_pro) {
+            $submissionData['submitter_ip'] = $request->ip();
+        }
 
         // Create the job with all data (including metadata)
         $job = new StoreFormSubmissionJob($form, $submissionData);
