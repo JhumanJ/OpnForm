@@ -58,6 +58,12 @@
           </div>
         </template>
       </v-select>
+      <div
+        v-if="resolvedTheme === 'minimal'"
+        :class="ui.separator()"
+        class="w-0 self-stretch"
+        aria-hidden="true"
+      />
       <input
         v-model="inputVal"
         type="text"

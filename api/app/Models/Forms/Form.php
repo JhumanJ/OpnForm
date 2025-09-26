@@ -36,7 +36,7 @@ class Form extends Model implements CachableAttributes
 
     public const BORDER_RADIUS = ['none', 'small', 'full'];
 
-    public const THEMES = ['default', 'simple', 'notion'];
+    public const THEMES = ['default', 'simple', 'notion', 'minimal'];
 
     public const WIDTHS = ['centered', 'full'];
 

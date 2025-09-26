@@ -200,11 +200,11 @@
     }
 
     h1 {
-        @apply text-2xl sm:text-3xl font-extrabold;
+        @apply text-2xl sm:text-3xl font-semibold;
     }
 
     h2 {
-        @apply text-2xl font-extrabold;
+        @apply text-2xl font-semibold;
     }
 
     a {
