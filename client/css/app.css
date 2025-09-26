@@ -3,7 +3,8 @@
 @import "./fonts.css";
 
 @custom-variant dark (&:where(.dark, .dark *));
-@custom-variant ltr-only (&:where(:not([dir="rtl"] *)));
+@custom-variant ltr-only (&:where(:dir(ltr)));
+@custom-variant rtl-only (&:where(:dir(rtl)));
 
 /* Explicitly scan form-themes.js file */
 @source "./lib/forms/themes/form-themes.js";
