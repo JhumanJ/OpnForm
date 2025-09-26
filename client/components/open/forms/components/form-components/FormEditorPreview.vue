@@ -41,7 +41,7 @@
             name="form_editor_toggle_expand"
             :properties="{toggle: !isExpanded}"
           >
-        <UTooltip :text="isExpanded ? 'Collapse' : 'Expand'">
+        <UTooltip arrow :text="isExpanded ? 'Collapse' : 'Expand'">
          
             <UButton
               :icon="isExpanded ? 'i-heroicons-arrows-pointing-in' : 'i-heroicons-arrows-pointing-out'"

@@ -73,7 +73,8 @@
         <UTooltip
           text="Help"
           class="items-center relative"
-          :popper="{ placement: 'left' }"
+          :content="{ side: 'bottom' }"
+          arrow
         >
           <UButton
             color="ghost"
@@ -84,7 +85,7 @@
         </UTooltip>
       </TrackClick>
       <slot name="before-save" />
-      <UTooltip :popper="{ placement: 'left' }">
+      <UTooltip arrow :content="{side: 'bottom'}">
         <template #content>
           <UKbd
             value="meta"

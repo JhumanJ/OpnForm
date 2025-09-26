@@ -1,8 +1,12 @@
 <template>
   <UTooltip
     v-if="show"
+    :delayDuration="400"
+    :open="open"
+    :reference="reference"
     text="Drag to resize"
-    :content="{ side: tooltipSide }"
+    :content="{ side: tooltipSide, sideOffset: 8, updatePositionStrategy: 'always' }"
+    arrow
   >
     <div
       ref="handleRef"
@@ -37,6 +41,25 @@ const props = defineProps({
 const tooltipSide = computed(() => props.direction === 'left' ? 'right' : 'left')
 
 const handleRef = ref(null)
+
+// Tooltip follows the mouse using a virtual reference anchored to the cursor
+const isHovered = useElementHover(handleRef)
+const { x, y } = useMouse({ type: 'client' })
+
+const open = computed(() => isHovered.value)
+
+const reference = computed(() => ({
+  getBoundingClientRect: () => ({
+    width: 0,
+    height: 0,
+    left: x.value,
+    right: x.value,
+    top: y.value,
+    bottom: y.value,
+    x: x.value,
+    y: y.value
+  })
+}))
 
 defineExpose({
   handleRef
