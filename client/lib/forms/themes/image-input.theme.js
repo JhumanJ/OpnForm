@@ -19,6 +19,12 @@ export const imageInputTheme = {
           'shadow-xs'
         ]
       },
+      minimal: {
+        button: [
+          'border-2 border-transparent',
+          'bg-neutral-100 text-neutral-700 dark:bg-notion-dark-light dark:text-neutral-300'
+        ]
+      },
       notion: {
         button: [
           'border border-notion-input-border dark:border-notion-input-borderDark',

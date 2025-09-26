@@ -41,6 +41,15 @@ export const scaleInputTheme = {
           'bg-notion-input-background dark:bg-notion-dark-light'
         ],
         buttonHover: 'hover:brightness-95'
+      },
+      minimal: {
+        button: [
+          'border-2 border-transparent'
+        ],
+        buttonUnselected: [
+          'bg-neutral-100 dark:bg-notion-dark-light'
+        ],
+        buttonHover: 'hover:bg-neutral-200/50 dark:hover:bg-neutral-900'
       }
     },
     size: {
