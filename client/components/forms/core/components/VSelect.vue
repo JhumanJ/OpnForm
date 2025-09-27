@@ -244,16 +244,24 @@ export default {
     allowCreation: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     minSelection: { type: Number, default: null },
-    maxSelection: { type: Number, default: null }
+      maxSelection: { type: Number, default: null },
+      // Local search performance tuning
+      fuseOptions: { type: Object, default: () => ({}) },
+      searchDebounceMs: { type: Number, default: 150 },
+      minSearchLength: { type: Number, default: 1 }
   },
   emits: ['update:modelValue', 'update-options', 'focus', 'blur'],
   data () {
     return {
       isOpen: false,
       searchTerm: '',
+        debouncedTerm: '',
       defaultValue: this.modelValue ?? null,
       isFocused: false,
-      virtualizer: null
+        virtualizer: null,
+        fuse: null,
+        fuseIndex: null,
+        updateDebouncedTerm: null
     }
   },
   computed: {
@@ -310,18 +318,24 @@ export default {
     },
     filteredOptions () {
       if (!this.data) return []
-      if (!this.searchable || this.remote || this.searchTerm === '') {
+
+      // If not searchable, remote search is used, or term too short/empty, return raw data
+      if (!this.searchable || this.remote) {
         return this.data
       }
 
-      // Fuse search
-      const fuzeOptions = {
-        keys: this.searchKeys
+      const term = this.debouncedTerm
+      if (!term || term.length < this.minSearchLength) {
+        return this.data
       }
-      const fuse = new Fuse(this.data, fuzeOptions)
-      return fuse.search(this.searchTerm).map((res) => {
-        return res.item
-      })
+
+      // Ensure Fuse is ready
+      if (!this.fuse) {
+        this.buildFuse()
+      }
+      if (!this.fuse) return this.data
+
+      return this.fuse.search(term).map((res) => res.item)
     },
     isSearchable () {
       return this.searchable || this.remote !== null || this.allowCreation
@@ -350,10 +364,19 @@ export default {
   },
   watch: {
     searchTerm (val) {
-      if (!this.debouncedRemote) return
-      if ((this.remote && val) || (val === '' && !this.modelValue) || (val === '' && this.isOpen)) {
-        return this.debouncedRemote(val)
+      // Remote search path
+      if (this.debouncedRemote) {
+        if ((this.remote && val) || (val === '' && !this.modelValue) || (val === '' && this.isOpen)) {
+          this.debouncedRemote(val)
+        }
+      } else {
+        // Local search path: debounce updates
+        if (this.updateDebouncedTerm) this.updateDebouncedTerm(val)
       }
+    },
+    data () {
+      // Rebuild fuse index when options change
+      this.buildFuse()
     },
     isOpen (val) {
       if (val) {
@@ -371,15 +394,46 @@ export default {
     }
   },
   mounted () {
-    // dropdownRef will be handled by the template ref
+    // Initialize fuse for local search and debounce handler
+    this.buildFuse()
+    this.updateDebouncedTerm = debounce((val) => {
+      this.debouncedTerm = val
+    }, this.searchDebounceMs)
   },
   beforeUnmount () {
     // Clean up virtualizer if it exists
     if (this.virtualizer) {
       this.virtualizer = null
     }
+    if (this.updateDebouncedTerm && this.updateDebouncedTerm.clear) {
+      this.updateDebouncedTerm.clear()
+    }
   },
   methods: {
+    buildFuse () {
+      if (!this.data || !Array.isArray(this.data) || this.data.length === 0) {
+        this.fuse = null
+        this.fuseIndex = null
+        return
+      }
+
+      const options = Object.assign({
+        keys: this.searchKeys,
+        threshold: 0.3,
+        ignoreLocation: true,
+        includeScore: false
+      }, this.fuseOptions || {})
+
+      try {
+        const index = Fuse.createIndex(options.keys, this.data)
+        this.fuseIndex = index
+        this.fuse = new Fuse(this.data, options, index)
+      } catch {
+        // Fallback without precomputed index
+        this.fuse = new Fuse(this.data, options)
+        this.fuseIndex = null
+      }
+    },
     setupVirtualizer () {
       if (!this.$refs.dropdownRef || !this.filteredOptions || this.filteredOptions.length === 0) {
         this.virtualizer = null
