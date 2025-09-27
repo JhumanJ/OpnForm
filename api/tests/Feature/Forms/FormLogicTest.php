@@ -695,3 +695,235 @@ it('cannot submit form with failed does_not_exist_in_submissions validation cond
             'message' => $validationMessage,
         ]);
 });
+
+it('can submit form with x_days_before date logic condition when date is within range', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'x_days_before',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '5',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with a date that is 7 days before today (should trigger the logic)
+    $testDate = now()->subDays(7)->format('Y-m-d');
+    $formData = [
+        'date_field' => $testDate,
+        'title' => 'Required field filled',
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
+
+it('cannot submit form with x_days_before date logic when required field is missing', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'x_days_before',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '5',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with a date that is 7 days before today but missing the required field
+    $testDate = now()->subDays(7)->format('Y-m-d');
+    $formData = [
+        'date_field' => $testDate,
+        // Missing 'title' field which should be required due to logic
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(422)
+        ->assertJson([
+            'message' => 'The Name field is required.',
+            'errors' => [
+                'title' => [
+                    'The Name field is required.',
+                ],
+            ],
+        ]);
+});
+
+it('can submit form with x_days_after date logic condition when date is within range', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'x_days_after',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '5',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with a date that is 7 days after today (should trigger the logic)
+    $testDate = now()->addDays(7)->format('Y-m-d');
+    $formData = [
+        'date_field' => $testDate,
+        'title' => 'Required field filled',
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
+
+it('cannot submit form with x_days_after date logic when required field is missing', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'x_days_after',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '5',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with a date that is 7 days after today but missing the required field
+    $testDate = now()->addDays(7)->format('Y-m-d');
+    $formData = [
+        'date_field' => $testDate,
+        // Missing 'title' field which should be required due to logic
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(422)
+        ->assertJson([
+            'message' => 'The Name field is required.',
+            'errors' => [
+                'title' => [
+                    'The Name field is required.',
+                ],
+            ],
+        ]);
+});
