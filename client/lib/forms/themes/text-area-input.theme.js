@@ -37,6 +37,14 @@ export const textAreaInputTheme = {
           'text-neutral-900 dark:text-neutral-100',
           'focus:ring-2 focus:ring-form/40 focus:border-transparent'
         ]
+      },
+      minimal: {
+        input: [
+          'border-2 border-transparent',
+          'bg-neutral-100 dark:bg-notion-dark-light',
+          'text-neutral-700 dark:text-neutral-300',
+          'focus:ring-0 focus:border-form'
+        ]
       }
     },
     size: {

@@ -11,7 +11,7 @@
         sideOffset: 4
       }"
       :ui="{
-        content: 'w-(--reka-popper-anchor-width) bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + borderRadiusClass
+        content: (popoverWidth ? `w-[${popoverWidth}] ` : 'w-(--reka-popper-anchor-width) ') + 'bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + borderRadiusClass
       }"
     >
       <template #anchor>
@@ -236,7 +236,6 @@ export default {
     placeholder: { type: String, default: null },
     uppercaseLabels: { type: Boolean, default: true },
     showClearButton: { type: Boolean, default: true },
-    // Theme configuration as strings for tailwind-variants
     theme: {type: String, default: null},
     size: {type: String, default: null}, 
     borderRadius: {type: String, default: null},
@@ -244,11 +243,11 @@ export default {
     allowCreation: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     minSelection: { type: Number, default: null },
-      maxSelection: { type: Number, default: null },
-      // Local search performance tuning
-      fuseOptions: { type: Object, default: () => ({}) },
-      searchDebounceMs: { type: Number, default: 150 },
-      minSearchLength: { type: Number, default: 1 }
+    maxSelection: { type: Number, default: null },
+    fuseOptions: { type: Object, default: () => ({}) },
+    searchDebounceMs: { type: Number, default: 150 },
+    minSearchLength: { type: Number, default: 1 },
+    popoverWidth: { type: String, default: null }
   },
   emits: ['update:modelValue', 'update-options', 'focus', 'blur'],
   data () {

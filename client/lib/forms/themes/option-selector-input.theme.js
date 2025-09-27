@@ -18,6 +18,9 @@ export const optionSelectorInputTheme = {
       default: {
         option: ['border-neutral-300', 'hover:bg-neutral-100']
       },
+      minimal: {
+        option: ['border-2 border-transparent', 'bg-neutral-100', 'hover:bg-neutral-200/50']
+      },
       notion: {
         option: ['border-notion-input-border dark:border-notion-input-borderDark', 'hover:backdrop-brightness-95']
       }

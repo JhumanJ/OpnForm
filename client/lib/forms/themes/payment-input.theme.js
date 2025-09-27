@@ -19,6 +19,17 @@ export const paymentInputTheme = {
           'bg-neutral-50 dark:bg-neutral-800'
         ]
       },
+      minimal: {
+        container: [
+          'border-2 border-transparent',
+          'bg-neutral-100 dark:bg-notion-dark-light',
+          'text-neutral-700 dark:text-neutral-300'
+        ],
+        amountBar: [
+          'border-2 border-transparent',
+          'bg-neutral-200/50 dark:bg-neutral-900'
+        ]
+      },
       notion: {
         container: [
           'border border-notion-input-border dark:border-notion-input-borderDark',

@@ -28,7 +28,7 @@
         <template #submit-btn="{ isProcessing }">
           <UButton
             class="mt-2"
-            :loading="loading || isProcessing"
+            :loading="updateSubmissionMutation.isPending.value || isProcessing"
             @click.prevent="updateForm"
             label="Update Submission"
           />
@@ -39,10 +39,10 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits, computed } from "vue"
 import OpenForm from "../forms/OpenForm.vue"
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import { useFormManager } from '~/lib/forms/composables/useFormManager'
+import { useFormSubmissions } from "~/composables/query/forms/useFormSubmissions"
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -87,25 +87,27 @@ watch(() => props.show, (newShow) => {
   }
 })
 
-const loading = ref(false)
+// Use form submissions composable for update
+const { updateSubmission } = useFormSubmissions()
+const updateSubmissionMutation = updateSubmission()
 
-const emit = defineEmits(["close", "updated"])
+const emit = defineEmits(["close"])
+const alert = useAlert()
+
 const updateForm = () => {
-  loading.value = true
-  formManager.form.put("/open/forms/" + props.form.id + "/submissions/" + props.submission.id)
-    .then((res) => {
-      useAlert().success(res.message)
-      loading.value = false
-      emit("close")
-      emit("updated", res.data.data)
-    })
-    .catch((error) => {
-      console.error(error)
-      if (error?.data) {
-        useAlert().formValidationError(error.data)
-      }
-      loading.value = false
-    })
+  updateSubmissionMutation.mutateAsync({
+    formId: props.form.id,
+    submissionId: props.submission.id,
+    data: formManager.form.data()
+  }).then((res) => {
+    alert.success(res.message)
+    emit("close")
+  }).catch((error) => {
+    console.error(error)
+    if (error?.data) {
+      alert.formValidationError(error.data)
+    }
+  })
 }
 
 const copySuccess = ref(false)
