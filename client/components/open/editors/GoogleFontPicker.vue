@@ -54,8 +54,8 @@
 
 <script setup>
 import { defineEmits } from "vue"
-import Fuse from "fuse.js"
 import { refDebounced, useElementVisibility } from "@vueuse/core"
+import { useFuse } from '@vueuse/integrations/useFuse'
 import FontCard from './FontCard.vue'
 import { contentApi } from "~/api"
 
@@ -87,6 +87,18 @@ const fonts = ref([])
 const selectedFont = ref(props.font || null)
 const search = ref("")
 const debouncedSearch = refDebounced(search, 500)
+const { results: fuseResults } = useFuse(
+  debouncedSearch,
+  computed(() => Object.values(fonts.value || [])),
+  {
+    fuseOptions: {
+      threshold: 0.3,
+      ignoreLocation: true,
+      includeScore: false,
+    },
+    matchAllWhenSearchEmpty: true,
+  }
+)
 const scrollContainer = ref(null)
 const fontRefs = new Map()
 const visible = ref([])
@@ -129,14 +141,8 @@ watch(() => props.show, fetchFonts)
 
 
 const enrichedFonts = computed(() => {
-  if (search.value === "" || search.value === null) {
-    return fonts.value
-  }
-
-  // Fuze search
-  const fuse = new Fuse(Object.values(fonts.value))
-  return fuse.search(debouncedSearch.value).map((res) => {
-    return res.item
-  })
+  return fuseResults.value && fuseResults.value.length > 0
+    ? fuseResults.value.map((res) => res.item)
+    : (fonts.value || [])
 })
 </script>

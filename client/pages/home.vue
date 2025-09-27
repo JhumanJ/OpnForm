@@ -127,7 +127,7 @@
 </template>
 
 <script setup>
-import Fuse from "fuse.js"
+import { useFuse } from '@vueuse/integrations/useFuse'
 import FormCard from '~/components/pages/home/FormCard.vue'
 import FormCardSkeleton from '~/components/pages/home/FormCardSkeleton.vue'
 import TrackClick from '~/components/global/TrackClick.vue'
@@ -198,27 +198,37 @@ const allTags = computed(() => {
 
 const tagOptions = computed(() => allTags.value.map(tag => ({ label: tag, value: tag })))
 
-const enrichedForms = computed(() => {
+const baseForms = computed(() => {
   if (!forms.value) return []
-  
-  const enriched = forms.value.filter((form) => {
-    if (selectedTags.value.length === 0) {
-      return true
-    }
-    return form.tags && form.tags.length ? selectedTags.value.every(r => form.tags.includes(r.value)) : false
+  return forms.value.filter((form) => {
+    if (selectedTags.value.length === 0) return true
+    const selectedTagStrings = selectedTags.value
+      .map(t => typeof t === 'string' ? t : t?.value)
+      .filter(Boolean)
+    return form.tags && form.tags.length
+      ? selectedTagStrings.every(tag => form.tags.includes(tag))
+      : false
   })
+})
 
-  if (!isFilteringForms.value || search.value === "" || search.value === null) {
-    return enriched
+const { results: fuseResults } = useFuse(
+  debouncedSearch,
+  baseForms,
+  {
+    fuseOptions: {
+      keys: ["title", "slug", "tags"],
+      threshold: 0.3,
+      ignoreLocation: true,
+      includeScore: false,
+    },
+    matchAllWhenSearchEmpty: true,
   }
+)
 
-  // Fuze search
-  const fuzeOptions = {
-    keys: ["title", "slug", "tags"],
-  }
-  const fuse = new Fuse(enriched, fuzeOptions)
-  return fuse.search(debouncedSearch.value).map((res) => {
-    return res.item
-  })
+const enrichedForms = computed(() => {
+  const base = baseForms.value
+  if (!base || base.length === 0) return []
+  const results = fuseResults.value
+  return results && results.length > 0 ? results.map(r => r.item) : base
 })
 </script>
