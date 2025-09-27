@@ -98,6 +98,24 @@
         </template>
       </ToggleSwitchInput>
 
+      <ToggleSwitchInput
+        class="mt-4"
+        name="enable_ip_tracking"
+        :form="form"
+        help="Collect and store submitter IP addresses for analytics, fraud prevention, and geographic insights. Helps identify submission patterns and improve security."
+      >
+        <template #label>
+          <span class="text-sm">
+            Collect IP addresses
+          </span>
+          <ProTag
+            class="ml-1"
+            upgrade-modal-title="Upgrade to collect IP addresses"
+            upgrade-modal-description="Automatically capture submitter IP addresses to gain valuable insights into your form traffic. Analyze geographic patterns, detect suspicious activity, and enhance your form security with detailed submission analytics."
+          />
+        </template>
+      </ToggleSwitchInput>
+
       <!-- Post-Submission Behavior -->
       <h4 class="font-semibold mt-4 border-t pt-4">
         After Submission <pro-tag

@@ -313,6 +313,19 @@ export function useTableState(form, withActions = false) {
         })
       }
 
+      // Add IP address column if needed
+      if (form.value?.is_pro && (form.value.enable_ip_tracking ?? false)) {
+        cols.push({
+          id: 'ip_address',
+          accessorKey: 'ip_address',
+          header: 'IP Address',
+          type: 'ip_address',
+          enableResizing: true,
+          minSize: 100,
+          maxSize: 500,
+        })
+      }
+
       // Add actions columns
       if (import.meta.client && withActions) {
         cols.unshift({

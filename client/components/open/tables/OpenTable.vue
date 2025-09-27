@@ -238,6 +238,7 @@ const fieldComponents = {
   payment: OpenPayment,
   barcode: OpenText,
   status: OpenSubmissionStatus,
+  ip_address: OpenText,
 }
 
 const table = ref(null)
