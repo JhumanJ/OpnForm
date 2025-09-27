@@ -202,8 +202,11 @@ const baseForms = computed(() => {
   if (!forms.value) return []
   return forms.value.filter((form) => {
     if (selectedTags.value.length === 0) return true
+    const selectedTagStrings = selectedTags.value
+      .map(t => typeof t === 'string' ? t : t?.value)
+      .filter(Boolean)
     return form.tags && form.tags.length
-      ? selectedTags.value.every(r => form.tags.includes(r.value))
+      ? selectedTagStrings.every(tag => form.tags.includes(tag))
       : false
   })
 })

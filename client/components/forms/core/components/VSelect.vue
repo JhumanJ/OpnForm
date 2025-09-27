@@ -100,6 +100,7 @@
         <ul
           tabindex="-1"
           role="listbox"
+          ref="scrollRef"
           :class="variantSlots.dropdown()"
         >
           <div
@@ -141,34 +142,46 @@
           </div>
           <div
             v-if="filteredOptions.length > 0"
-            ref="dropdownRef"
             :class="variantSlots.optionsContainer()"
-             
           >
-            <li
+            <div
               v-if="virtualizer"
-              v-for="virtualItem in virtualizer.getVirtualItems()"
-              :key="filteredOptions[virtualItem.index] ? filteredOptions[virtualItem.index][optionKey] : virtualItem.index"
-              role="option"
-              :style="optionStyle"
-              :class="[
-                variantSlots.option(),
-                dropdownClass,
-                { 'pr-9': multiple},
-                { 
-                  'opacity-50 cursor-not-allowed': filteredOptions[virtualItem.index] && disabledOptionsMap[filteredOptions[virtualItem.index][optionKey]],
-                  'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': filteredOptions[virtualItem.index] && !disabledOptionsMap[filteredOptions[virtualItem.index][optionKey]]
-                }
-              ]"
-              @click.stop="filteredOptions[virtualItem.index] && select(filteredOptions[virtualItem.index])"
+              :style="{ height: virtualizer.getTotalSize() + 'px', width: '100%', position: 'relative' }"
             >
-              <slot
-                v-if="filteredOptions[virtualItem.index]"
-                name="option"
-                :option="filteredOptions[virtualItem.index]"
-                :selected="isSelected(filteredOptions[virtualItem.index])"
-              />
-            </li>
+              <li
+                v-for="virtualItem in virtualizer.getVirtualItems()"
+                :key="filteredOptions[virtualItem.index] ? filteredOptions[virtualItem.index][optionKey] : virtualItem.index"
+                role="option"
+                :style="[
+                  optionStyle,
+                  {
+                    position: 'absolute',
+                    top: '0px',
+                    left: '0px',
+                    width: '100%',
+                    height: virtualItem.size + 'px',
+                    transform: `translateY(${virtualItem.start}px)`
+                  }
+                ]"
+                :class="[
+                  variantSlots.option(),
+                  dropdownClass,
+                  { 'pr-9': multiple},
+                  { 
+                    'opacity-50 cursor-not-allowed': filteredOptions[virtualItem.index] && disabledOptionsMap[filteredOptions[virtualItem.index][optionKey]],
+                    'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': filteredOptions[virtualItem.index] && !disabledOptionsMap[filteredOptions[virtualItem.index][optionKey]]
+                  }
+                ]"
+                @click.stop="filteredOptions[virtualItem.index] && select(filteredOptions[virtualItem.index])"
+              >
+                <slot
+                  v-if="filteredOptions[virtualItem.index]"
+                  name="option"
+                  :option="filteredOptions[virtualItem.index]"
+                  :selected="isSelected(filteredOptions[virtualItem.index])"
+                />
+              </li>
+            </div>
           </div>
           <slot
             v-else-if="!loading && !(allowCreation && searchTerm)"
@@ -374,8 +387,13 @@ export default {
       }
     },
     data () {
-      // Rebuild fuse index when options change
-      this.buildFuse()
+      // Only (re)build fuse when using local search
+      if (this.searchable && !this.remote) {
+        this.buildFuse()
+      } else {
+        this.fuse = null
+        this.fuseIndex = null
+      }
     },
     isOpen (val) {
       if (val) {
@@ -434,7 +452,7 @@ export default {
       }
     },
     setupVirtualizer () {
-      if (!this.$refs.dropdownRef || !this.filteredOptions || this.filteredOptions.length === 0) {
+      if (!this.$refs.scrollRef || !this.filteredOptions || this.filteredOptions.length === 0) {
         this.virtualizer = null
         return
       }
@@ -446,7 +464,7 @@ export default {
       
       this.virtualizer = useVirtualizer({
         count: this.filteredOptions.length,
-        getScrollElement: () => this.$refs.dropdownRef,
+        getScrollElement: () => this.$refs.scrollRef,
         estimateSize: () => 40,
         overscan: 5
       })

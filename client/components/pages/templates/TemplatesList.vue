@@ -215,8 +215,8 @@ const props = defineProps({
 
 const { industries: industriesMap, types: typesMap } = useTemplateMeta()
 
-const industries = computed(() => [...industriesMap.values()])
-const types = computed(() => [...typesMap.values()])
+const industries = computed(() => [...industriesMap.value.values()])
+const types = computed(() => [...typesMap.value.values()])
 
 const search = ref("")
 const debouncedSearch = refDebounced(search, 500)
