@@ -27,6 +27,7 @@
           :form="field"
           label="Block Width"
           seamless
+          v-if="!isFocused"
           :options="[
             { name: 'full', label: 'Full' },
             { name: '1/2', label: '1/2' },
@@ -117,10 +118,14 @@
       />
     </div>
   </div>
+
+  <!-- Focused Mode: Media settings for text blocks -->
+  <BlockMediaOptions v-if="field && field.type==='nf-text'" :model="field" :form="form" />
 </template>
 
 <script setup>
 import HiddenRequiredDisabled from './HiddenRequiredDisabled.vue'
+import BlockMediaOptions from '~/components/open/forms/components/media/BlockMediaOptions.vue'
 
 const props = defineProps({
   field: {
@@ -132,6 +137,8 @@ const props = defineProps({
     required: false
   }
 })
+
+const isFocused = computed(() => props.form?.presentation_style === 'focused')
 
 watch(() => props.field?.width, (val) => {
   if (val === undefined || val === null) {
