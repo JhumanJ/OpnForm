@@ -17,6 +17,7 @@ use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Stevebauman\Purify\Facades\Purify;
 
 /**
  * Job to store form submissions
@@ -56,9 +57,7 @@ class StoreFormSubmissionJob implements ShouldQueue
      * @param array $submissionData Form data including metadata fields (submission_id, completion_time, etc.)
      * @return void
      */
-    public function __construct(public Form $form, public array $submissionData)
-    {
-    }
+    public function __construct(public Form $form, public array $submissionData) {}
 
     /**
      * Execute the job.
@@ -194,6 +193,14 @@ class StoreFormSubmissionJob implements ShouldQueue
             $field = $properties->where('id', $answerKey)->first();
             if (!$field) {
                 continue;
+            }
+
+            // Sanitize only rich text; plain text fields are stored as-is and rendered safely in UI
+            if ($field['type'] === 'rich_text') {
+                if (is_string($answerValue)) {
+                    // Ensure rich text is cleaned with strict allowlist (defense-in-depth)
+                    $answerValue = Purify::clean($answerValue);
+                }
             }
 
             if (

@@ -166,6 +166,7 @@ import { useEventListener, refDebounced } from '@vueuse/core'
 import { useTableState } from '~/composables/components/tables/useTableState'
 import FormExportModal from '~/components/open/forms/FormExportModal.vue'
 import OpenText from "./components/OpenText.vue"
+import OpenRichText from "./components/OpenRichText.vue"
 import OpenUrl from "./components/OpenUrl.vue"
 import OpenSelect from "./components/OpenSelect.vue"
 import OpenMatrix from "./components/OpenMatrix.vue"
@@ -220,7 +221,7 @@ const tableColumns = computed(() => {
 
 const fieldComponents = {
   text: OpenText,
-  rich_text: OpenText,
+  rich_text: OpenRichText,
   number: OpenText,
   rating: OpenText,
   scale: OpenText,
