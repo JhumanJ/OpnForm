@@ -6,6 +6,7 @@ use Closure;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Sabberworm\CSS\Parser as CssParser;
 use Sabberworm\CSS\Settings;
+use Sabberworm\CSS\CSSList\CSSList;
 use Sabberworm\CSS\CSSList\AtRuleBlockList;
 use Sabberworm\CSS\CSSList\Document;
 use Sabberworm\CSS\RuleSet\AtRuleSet;
@@ -44,6 +45,24 @@ class CssOnlyRule implements ValidationRule
 
     private function validateCssDocument(Document $document, string $rawCss): bool
     {
+        if (!$this->validateCssList($document)) {
+            return false;
+        }
+
+        // Fallback: explicitly validate @import urls in raw CSS (robust against parser representations)
+        if (preg_match_all('/@import\b[^;]*url\s*\(\s*([\"\']?)([^\)\s]+)\1\s*\)/i', $rawCss, $matches)) {
+            foreach ($matches[2] as $importUrl) {
+                if (!$this->isAllowedUrl($importUrl)) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
+    }
+
+    private function validateCssList(CSSList $list): bool
+    {
         // Allowed at-rules list (case-insensitive)
         $allowedAtRules = [
             '@media',
@@ -55,16 +74,17 @@ class CssOnlyRule implements ValidationRule
             '@page'
         ];
 
-        // Check top-level contents
-        foreach ($document->getContents() as $content) {
+        foreach ($list->getContents() as $content) {
             if ($content instanceof AtRuleBlockList) {
                 $atRule = '@' . strtolower($content->atRuleName());
                 if (!in_array($atRule, array_map('strtolower', $allowedAtRules), true)) {
                     return false;
                 }
+                if (!$this->validateCssList($content)) {
+                    return false;
+                }
             }
 
-            // Validate @import at-rule args
             if ($content instanceof AtRuleSet) {
                 $atRule = '@' . strtolower($content->atRuleName());
                 if (!in_array($atRule, array_map('strtolower', $allowedAtRules), true)) {
@@ -81,14 +101,12 @@ class CssOnlyRule implements ValidationRule
             if ($content instanceof DeclarationBlock) {
                 foreach ($content->getRules() as $rule) {
                     $value = $rule->getValue();
-                    // Disallow legacy IE JS hooks
                     if (method_exists($rule, 'getRule')) {
                         $propName = strtolower((string) $rule->getRule());
                         if ($propName === 'behavior') {
                             return false;
                         }
                     }
-                    // Traverse for URL values
                     foreach ($this->flattenValues($value) as $v) {
                         if ($v instanceof CSSFunction) {
                             if (strtolower($v->getName()) === 'expression') {
@@ -107,12 +125,10 @@ class CssOnlyRule implements ValidationRule
                     }
                 }
             }
-        }
 
-        // Fallback: explicitly validate @import urls in raw CSS (robust against parser representations)
-        if (preg_match_all('/@import\b[^;]*url\s*\(\s*([\"\']?)([^\)\s]+)\1\s*\)/i', $rawCss, $matches)) {
-            foreach ($matches[2] as $importUrl) {
-                if (!$this->isAllowedUrl($importUrl)) {
+            // Generic recursion for any content that is a CSSList
+            if (is_object($content) && $content instanceof CSSList) {
+                if (!$this->validateCssList($content)) {
                     return false;
                 }
             }
