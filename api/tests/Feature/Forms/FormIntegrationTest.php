@@ -46,6 +46,45 @@ it('can CRUD form integration', function () {
         ]);
 });
 
+it('forbids non-admin users from viewing integrations and events', function () {
+    $owner = $this->actingAsProUser();
+    $workspace = $this->createUserWorkspace($owner);
+    $form = $this->createForm($owner, $workspace);
+
+    // Create one integration as owner
+    $this->postJson(route('open.forms.integration.create', $form), [
+        'status' => true,
+        'integration_id' => 'email',
+        'logic' => null,
+        'settings' => [
+            'send_to' => 'test@test.com',
+            'sender_name' => 'OpnForm',
+            'subject' => 'Subject',
+            'email_content' => 'Content',
+            'include_submission_data' => false,
+            'include_hidden_fields_submission_data' => false,
+            'reply_to' => null
+        ]
+    ])->assertSuccessful();
+
+    // Attach viewer and try to read
+    $viewer = $this->createUser();
+    $viewer->workspaces()->sync([$workspace->id => ['role' => 'readonly']], false);
+    $this->actingAs($viewer, 'api');
+
+    $this->getJson(route('open.forms.integrations', $form))
+        ->assertStatus(403);
+
+    // Events require an integration id; fetch as owner first
+    $this->actingAs($owner, 'api');
+    $integrationId = \App\Models\Integration\FormIntegration::where('form_id', $form->id)->value('id');
+
+    // Now as viewer, events should be forbidden as well
+    $this->actingAs($viewer, 'api');
+    $this->getJson(route('open.forms.integrations.events', [$form, $integrationId]))
+        ->assertStatus(403);
+});
+
 it('can create form integration with checkbox logic', function () {
     $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);

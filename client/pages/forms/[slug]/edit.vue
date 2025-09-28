@@ -129,7 +129,7 @@ useOpnSeoMeta({
   title: "Edit " + (form.value ? form.value.title : "Your Form"),
 })
 definePageMeta({
-  middleware: "auth",
+  middleware: ["auth", "readonly-block"],
   layout: 'empty'
 })
 </script>

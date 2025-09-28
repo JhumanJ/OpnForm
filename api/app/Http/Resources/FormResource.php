@@ -23,21 +23,29 @@ class FormResource extends JsonResource
             return $this->getProtectedForm();
         }
 
-        $ownerData = $this->userIsFormOwner() ? [
-            'views_count' => $this->views_count,
-            'submissions_count' => $this->submissions_count,
-            'redirect_url' => $this->redirect_url,
-            'submissions_url' => $this->submissions_url,
-            'database_fields_update' => $this->database_fields_update,
-            'cleanings' => $this->getCleanigns(),
-            'can_be_indexed' => $this->can_be_indexed,
-            'password' => $this->password,
-            'tags' => $this->tags,
-            'visibility' => $this->visibility,
-            'removed_properties' => $this->removed_properties,
-            'last_edited_human' => $this->updated_at?->diffForHumans(),
-            'seo_meta' => $this->seo_meta,
-        ] : [];
+        // Owner/Member view: readonly members can see everything except password
+        $ownerData = [];
+        if ($this->userIsFormOwner()) {
+            $ownerData = [
+                'views_count' => $this->views_count,
+                'submissions_count' => $this->submissions_count,
+                'redirect_url' => $this->redirect_url,
+                'submissions_url' => $this->submissions_url,
+                'database_fields_update' => $this->database_fields_update,
+                'cleanings' => $this->getCleanigns(),
+                'can_be_indexed' => $this->can_be_indexed,
+                'password' => $this->password,
+                'tags' => $this->tags,
+                'visibility' => $this->visibility,
+                'removed_properties' => $this->removed_properties,
+                'last_edited_human' => $this->updated_at?->diffForHumans(),
+                'seo_meta' => $this->seo_meta,
+            ];
+
+            if ($this->userIsReadonly()) {
+                unset($ownerData['password']);
+            }
+        }
 
         return array_merge(parent::toArray($request), $ownerData, [
             'is_pro' => $this->workspaceIsPro(),
@@ -114,6 +122,31 @@ class FormResource extends JsonResource
 
         // Fallback to checking ownership
         return $user instanceof UserModel && $user->ownsForm($this->resource);
+    }
+
+    private function userIsReadonly(): bool
+    {
+        if (!Auth::check()) {
+            return false;
+        }
+
+        /** @var UserModel|null $user */
+        $user = Auth::user();
+
+        // Use preloaded relationships to avoid N+1 when available
+        if ($this->relationLoaded('workspace') && $this->workspace->relationLoaded('users')) {
+            $pivot = $this->workspace->users->firstWhere('id', $user->id)?->pivot;
+            if ($pivot && isset($pivot->role)) {
+                return $pivot->role === \App\Models\User::ROLE_READONLY;
+            }
+        }
+
+        // Minimal query fallback targeting only current user pivot
+        return $this->workspace
+            ->users()
+            ->wherePivot('user_id', $user->id)
+            ->wherePivot('role', \App\Models\User::ROLE_READONLY)
+            ->exists();
     }
 
     private function getCleanigns()
