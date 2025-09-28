@@ -17,7 +17,7 @@ class FormIntegrationsController extends Controller
 
     public function index(Form $form)
     {
-        $this->authorize('view', $form);
+        $this->authorize('update', $form);
 
         $integrations = FormIntegration::query()
             ->where('form_id', $form->id)
