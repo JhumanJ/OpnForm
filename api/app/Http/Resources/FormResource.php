@@ -59,6 +59,8 @@ class FormResource extends JsonResource
             'form_pending_submission_key' => $this->form_pending_submission_key,
             'max_file_size' => $this->workspace->max_file_size / 1000000,
             'auto_save' => $this->getAutoSave(),
+            'presentation_style' => $this->presentation_style ?? 'classic',
+            'cover_settings' => $this->cover_settings ?? new \stdClass(),
         ]);
     }
 
@@ -91,7 +93,7 @@ class FormResource extends JsonResource
             'logo_picture' => $this->logo_picture,
             'seo_meta' => $this->seo_meta,
             'cover_picture' => $this->cover_picture,
-
+            'cover_settings' => $this->cover_settings ?? new \stdClass(),
         ];
     }
 

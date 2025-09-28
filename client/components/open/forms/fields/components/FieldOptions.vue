@@ -570,6 +570,7 @@
         :form="field"
         label="Block Width"
         seamless
+        v-if="!isFocused"
         :options="[
           { name: 'full', label: 'Full' },
           { name: '1/2', label: '1/2' },
@@ -673,6 +674,9 @@
         @update:model-value="onFieldGenAutoIdChange"
       />
     </div>
+
+  <!--  Focused Mode: Media settings  -->
+  <BlockMediaOptions :model="field" :form="form" />
   </div>
 </template>
 
@@ -688,10 +692,11 @@ import ProTag from '~/components/app/ProTag.vue'
 import { format } from 'date-fns'
 import { default as _has } from 'lodash/has'
 import blocksTypes from '~/data/blocks_types.json'
+import BlockMediaOptions from '~/components/open/forms/components/media/BlockMediaOptions.vue'
 
 export default {
   name: 'FieldOptions',
-  components: { CountryFlag, MatrixFieldOptions, HiddenRequiredDisabled, EditorSectionHeader, PaymentFieldOptions, ProTag },
+  components: { CountryFlag, MatrixFieldOptions, HiddenRequiredDisabled, EditorSectionHeader, PaymentFieldOptions, ProTag, BlockMediaOptions },
   props: {
     field: {
       type: Object,
@@ -723,6 +728,9 @@ export default {
   },
 
   computed: {
+    isFocused() {
+      return this.form?.presentation_style === 'focused'
+    },
     hasPlaceholder() {
       return !this.typesWithoutPlaceholder.includes(this.field.type)
     },
