@@ -32,6 +32,29 @@
         label="Custom Code"
         placeholder="<script>console.log('Hello World!')</script>"
       />
+
+      <div class="pt-6">
+        <h3 class="text-lg font-medium text-neutral-900">
+          Custom CSS <ProTag
+            class="mb-2 block"
+            upgrade-modal-title="Upgrade to Unlock Custom CSS"
+            upgrade-modal-description="On the Free plan, you can explore custom CSS within the editor. Upgrade to apply custom styles to your live forms."
+          />
+        </h3>
+        <p class="mt-1 text-sm text-neutral-500">
+          The CSS will be injected in the <b>head</b> of your form page.
+        </p>
+        <CodeInput
+          :allow-fullscreen="true"
+          language-mode="css"
+          name="custom_css"
+          class="mt-4"
+          :form="form"
+          help="CSS only. Example: body { background: #f8fafc }"
+          label="Custom CSS"
+          placeholder="body { background: #f8fafc }"
+        />
+      </div>
     </div>
   </VForm>
 </template>

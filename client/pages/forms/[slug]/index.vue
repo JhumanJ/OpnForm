@@ -283,7 +283,10 @@ useHead({
       content: 'black-translucent'
     },
   ] : {},
-  script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' }]
+  script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' }],
+  style: computed(() => form.value?.custom_css ? [
+    { key: 'custom-css', textContent: form.value.custom_css }
+  ] : [])
 })
 
 definePageMeta({

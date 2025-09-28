@@ -73,6 +73,7 @@ class Form extends Model implements CachableAttributes
 
         // Custom Code
         'custom_code',
+        'custom_css',
 
         // Submission
         'submit_button_text',

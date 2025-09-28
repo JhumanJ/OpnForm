@@ -77,6 +77,7 @@ class FormResource extends JsonResource
             'description' => $this->description,
             'slug' => $this->slug,
             'custom_code' => $this->custom_code,
+            'custom_css' => $this->custom_css,
             'dark_mode' => $this->dark_mode,
             'transparent_background' => $this->transparent_background,
             'color' => $this->color,
