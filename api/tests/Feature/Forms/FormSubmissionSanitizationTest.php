@@ -3,7 +3,7 @@
 use Illuminate\Support\Str;
 
 describe('Form submission sanitization', function () {
-    it('strips HTML from plain text-like fields and cleans rich_text', function () {
+    it('preserves plain text-like fields and cleans rich_text', function () {
         $user = $this->actingAsUser();
         $workspace = $this->createUserWorkspace($user);
         $form = $this->createForm($user, $workspace);

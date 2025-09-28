@@ -135,7 +135,9 @@ class FormResource extends JsonResource
         // Use preloaded relationships to avoid N+1 when available
         if ($this->relationLoaded('workspace') && $this->workspace->relationLoaded('users')) {
             $pivot = $this->workspace->users->firstWhere('id', $user->id)?->pivot;
-            return ($pivot?->role ?? null) === \App\Models\User::ROLE_READONLY;
+            if ($pivot && isset($pivot->role)) {
+                return $pivot->role === \App\Models\User::ROLE_READONLY;
+            }
         }
 
         // Minimal query fallback targeting only current user pivot
