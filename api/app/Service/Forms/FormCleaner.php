@@ -18,7 +18,7 @@ class FormCleaner
     /**
      * All the performed cleanings
      *
-     * @var bool
+     * @var array
      */
     private array $cleanings = [];
 
@@ -32,6 +32,7 @@ class FormCleaner
         'database_fields_update' => null,
         'editable_submissions' => false,
         'custom_code' => null,
+        'custom_css' => null,
         'seo_meta' => [],
         'redirect_url' => null,
         'enable_partial_submissions' => false,
@@ -54,6 +55,7 @@ class FormCleaner
         'database_fields_update' => 'Form submission will only create new records (no updates).',
         'editable_submissions' => 'Users will not be able to edit their submissions.',
         'custom_code' => 'Custom code was disabled',
+        'custom_css' => 'Custom CSS was disabled',
         'seo_meta' => 'Custom SEO was disabled',
         'redirect_url' => 'Redirect Url was disabled',
         'enable_partial_submissions' => 'Partial submissions were disabled',

@@ -73,6 +73,7 @@ class Form extends Model implements CachableAttributes
 
         // Custom Code
         'custom_code',
+        'custom_css',
 
         // Submission
         'submit_button_text',
@@ -198,7 +199,7 @@ class Form extends Model implements CachableAttributes
         }
 
         // Fallback to cached calculation for individual access
-        return $this->remember('views_count', 15 * 60, fn () => $this->calculateTotalViews());
+        return $this->remember('views_count', 15 * 60, fn() => $this->calculateTotalViews());
     }
 
     /**
