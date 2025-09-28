@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Workspace;
-use App\Models\User;
 
 describe('Workspace admin-only endpoints', function () {
     it('forbids non-admin users from updating custom domains', function () {

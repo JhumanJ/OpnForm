@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Forms\Form;
 use Illuminate\Support\Str;
 
 describe('Form submission sanitization', function () {

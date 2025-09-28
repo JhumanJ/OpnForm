@@ -76,7 +76,7 @@ class FormSubmissionResource extends JsonResource
             if (in_array($type, ['files', 'signature'], true) && !empty($value)) {
                 $fileItems = is_array($value) ? $value : [$value];
                 $mapped = collect($fileItems)
-                    ->filter(fn($file) => !is_null($file) && $file !== '')
+                    ->filter(fn ($file) => !is_null($file) && $file !== '')
                     ->map(function ($file) {
                         return [
                             'file_url' => URL::signedRoute(
