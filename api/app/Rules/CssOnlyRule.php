@@ -37,12 +37,12 @@ class CssOnlyRule implements ValidationRule
         }
 
         // Validate allowed at-rules and URLs
-        if (!$this->validateCssDocument($document)) {
+        if (!$this->validateCssDocument($document, $css)) {
             $fail('The :attribute contains disallowed CSS constructs.');
         }
     }
 
-    private function validateCssDocument(Document $document): bool
+    private function validateCssDocument(Document $document, string $rawCss): bool
     {
         // Allowed at-rules list (case-insensitive)
         $allowedAtRules = [
@@ -96,12 +96,24 @@ class CssOnlyRule implements ValidationRule
                             }
                         }
                         if ($v instanceof URL) {
-                            $url = (string) $v->getURL();
+                            $urlVal = $v->getURL();
+                            $url = is_object($urlVal) && method_exists($urlVal, 'getString')
+                                ? $urlVal->getString()
+                                : (string) $urlVal;
                             if (!$this->isAllowedUrl($url)) {
                                 return false;
                             }
                         }
                     }
+                }
+            }
+        }
+
+        // Fallback: explicitly validate @import urls in raw CSS (robust against parser representations)
+        if (preg_match_all('/@import\b[^;]*url\s*\(\s*([\"\']?)([^\)\s]+)\1\s*\)/i', $rawCss, $matches)) {
+            foreach ($matches[2] as $importUrl) {
+                if (!$this->isAllowedUrl($importUrl)) {
+                    return false;
                 }
             }
         }
@@ -112,12 +124,12 @@ class CssOnlyRule implements ValidationRule
     private function flattenValues($value): array
     {
         $values = [];
+        // Always include the node itself first so we don't lose function wrappers like expression()
+        $values[] = $value;
         if (is_object($value) && method_exists($value, 'getListComponents')) {
             foreach ($value->getListComponents() as $component) {
                 $values = array_merge($values, $this->flattenValues($component));
             }
-        } else {
-            $values[] = $value;
         }
         return $values;
     }
