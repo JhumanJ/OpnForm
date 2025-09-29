@@ -465,6 +465,7 @@
         :form="field"
         :options="prefillSelectsOptions"
         label="Pre-filled value"
+        :searchable="shouldEnableSelectSearch"
         :multiple="field.type === 'multi_select'"
       />
       <template v-else-if="field.type === 'matrix'">
@@ -741,6 +742,13 @@ export default {
           value: option.id
         }
       })
+    },
+    selectionOptionsCount() {
+      if (!['select', 'multi_select'].includes(this.field.type)) return 0
+      return Array.isArray(this.field[this.field.type]?.options) ? this.field[this.field.type].options.length : 0
+    },
+    shouldEnableSelectSearch() {
+      return ['select', 'multi_select'].includes(this.field.type) && this.selectionOptionsCount > 5
     },
     timezonesOptions() {
       if (this.field.type !== 'date') return []

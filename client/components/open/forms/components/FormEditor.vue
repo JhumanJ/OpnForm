@@ -385,10 +385,9 @@ const saveFormGuest = () => {
   emit("openRegister")
 }
 
-
-
 defineExpose({
-  saveFormCreate
+  saveFormCreate,
+  showValidationErrors
 })
 
 // Lifecycle hooks

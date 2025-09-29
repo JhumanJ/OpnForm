@@ -46,7 +46,7 @@
         <OpenCompleteForm
           ref="openCompleteForm"
           :form="form"
-          class="mb-10"
+          class="mb-20"
           :dark-mode="darkMode"
           :mode="FormMode.LIVE"
           @password-entered="passwordEntered"

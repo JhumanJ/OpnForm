@@ -169,6 +169,8 @@
             :form="form"
             label="Success page text"
             :required="false"
+            :max-char-limit="10000"
+            :show-char-limit="true"
           />
           <div class="flex items-center flex-wrap gap-x-4">
             <toggle-switch-input
