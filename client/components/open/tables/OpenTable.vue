@@ -83,6 +83,7 @@
       v-if="form"
       ref="table"
       v-model:row-selection="rowSelection"
+      v-model:column-order="columnOrder"
       :columns="allColumns"
       :column-visibility="columnVisibility"
       :column-pinning="columnPinning"
@@ -213,9 +214,10 @@ const tableState = useTableState(
   canModify.value
 )
 
-const { tableColumns: allColumns, columnVisibility, columnPinning, columnSizing, columnWrapping, handleColumnResize: handleColumnResizeState } = tableState
+const { tableColumns: allColumns, columnVisibility, columnPinning, columnSizing, columnWrapping, columnOrder, handleColumnResize: handleColumnResizeState } = tableState
 
 const tableColumns = computed(() => {
+  console.log('tableColumns changed')
   return allColumns.value.filter(column => !['actions', 'select'].includes(column.id))
 })
 
