@@ -1,23 +1,19 @@
-import {ref, computed, watch} from "vue"
+import {ref, computed, watch, inject} from "vue"
 import {default as _get} from "lodash/get"
 import {default as _set} from "lodash/set"
 import {default as _has} from "lodash/has"
-import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
+import { tv } from "tailwind-variants"
 
 export const inputProps = {
   id: {type: String, default: null},
   name: {type: String, required: true},
   label: {type: String, required: false},
   form: {type: Object, required: false},
-  theme: {
-    type: Object, default: () => {
-      const theme = inject("theme", null)
-      if (theme) {
-        return theme.value
-      }
-      return CachedDefaultTheme.getInstance()
-    }
-  },
+  // Theme configuration as strings for tailwind-variants
+  theme: {type: String, default: null},
+  size: {type: String, default: null}, 
+  borderRadius: {type: String, default: null},
+  ui: {type: Object, default: () => ({})},
   modelValue: {required: false},
   required: {type: Boolean, default: false},
   disabled: {type: Boolean, default: false},
@@ -37,9 +33,29 @@ export const inputProps = {
 export function useFormInput(props, context, options = {}) {
   const composableOptions = {
     formPrefixKey: null,
+    variants: null, // Tailwind-variants configuration object
+    additionalVariants: {}, // Component-specific variants
     ...options
   }
   const content = ref(props.modelValue)
+
+  // Inject theme values at composable level - centralized for all form inputs
+  const injectedTheme = inject('formTheme', null)
+  const injectedSize = inject('formSize', null)
+  const injectedBorderRadius = inject('formBorderRadius', null)
+
+  // Resolve theme values with proper reactivity
+  const resolvedTheme = computed(() => {
+    return props.theme || injectedTheme?.value || 'default'
+  })
+
+  const resolvedSize = computed(() => {
+    return props.size || injectedSize?.value || 'md'
+  })
+
+  const resolvedBorderRadius = computed(() => {
+    return props.borderRadius || injectedBorderRadius?.value || 'small'
+  })
 
   const inputStyle = computed(() => {
     return {
@@ -84,11 +100,29 @@ export function useFormInput(props, context, options = {}) {
   const inputWrapperProps = computed(() => {
     const wrapperProps = {}
     Object.keys(inputProps).forEach((key) => {
-      if (!["modelValue", "disabled", "placeholder", "color"].includes(key)) {
+      if (!["modelValue", "disabled", "placeholder", "color", "theme", "size", "borderRadius", "ui"].includes(key)) {
         wrapperProps[key] = props[key]
       }
     })
+    // Add resolved theme to wrapper props
+    wrapperProps.theme = resolvedTheme.value
     return wrapperProps
+  })
+
+  // CENTRALIZED VARIANTS: Single computed property for all tailwind-variants
+  // Following Nuxt UI pattern - only computed when variants config is provided
+  const ui = computed(() => {
+    if (!composableOptions.variants) return {}
+    
+    return tv(composableOptions.variants, props.ui)({
+      theme: resolvedTheme.value,        // props.theme resolved with injection
+      size: resolvedSize.value,
+      borderRadius: resolvedBorderRadius.value,
+      hasError: hasError.value,
+      disabled: props.disabled,
+      // Component-specific variants (e.g., loading, multiple, etc.)
+      ...composableOptions.additionalVariants
+    })
   })
 
   const onFocus = (event) => {
@@ -117,5 +151,12 @@ export function useFormInput(props, context, options = {}) {
     inputWrapperProps,
     onFocus,
     onBlur,
+    // Resolved theme values - available to all form input components
+    resolvedTheme,
+    resolvedSize,
+    resolvedBorderRadius,
+    // Centralized UI variants - ready to use in templates
+    ui,
   }
 }
+

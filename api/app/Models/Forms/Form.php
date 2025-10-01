@@ -36,13 +36,13 @@ class Form extends Model implements CachableAttributes
 
     public const BORDER_RADIUS = ['none', 'small', 'full'];
 
-    public const THEMES = ['default', 'simple', 'notion'];
+    public const THEMES = ['default', 'simple', 'notion', 'minimal'];
 
     public const WIDTHS = ['centered', 'full'];
 
     public const VISIBILITY = ['public', 'draft', 'closed'];
 
-    public const LANGUAGES = ['en', 'fr', 'hi', 'es', 'ar', 'zh', 'ja', 'bn', 'pt', 'ru', 'ur', 'pa', 'de', 'jv', 'ko', 'vi', 'te', 'mr', 'ta', 'tr', 'sk', 'cs', 'eu', 'gl', 'ca', 'sv', 'pl'];
+    public const LANGUAGES = ['en', 'fr', 'hi', 'es', 'ar', 'zh', 'ja', 'bn', 'pt', 'ru', 'ur', 'pa', 'de', 'jv', 'ko', 'vi', 'te', 'mr', 'ta', 'tr', 'sk', 'cs', 'eu', 'gl', 'ca', 'sv', 'pl', 'nl'];
 
     protected $fillable = [
         'workspace_id',
@@ -73,6 +73,7 @@ class Form extends Model implements CachableAttributes
 
         // Custom Code
         'custom_code',
+        'custom_css',
 
         // Submission
         'submit_button_text',

@@ -11,14 +11,7 @@
         aria-expanded="true"
         aria-labelledby="listbox-label"
         class="cursor-pointer relative w-full"
-        :class="[
-          theme.default.input, 
-          theme.default.spacing.horizontal,
-          theme.default.spacing.vertical,
-          theme.default.fontSize,
-          theme.default.borderRadius,
-          { 'ring-red-500 ring-2': hasError }
-        ]"
+        :class="ui.button()"
         :style="inputStyle"
         @click.prevent="showUploadModal = true"
       >
@@ -140,6 +133,7 @@
 import { inputProps, useFormInput } from "../useFormInput.js"
 import { storeFile } from "~/lib/file-uploads.js"
 import { formsApi } from '~/api'
+import { imageInputTheme } from '~/lib/forms/themes/image-input.theme.js'
 
 export default {
   components: {  },
@@ -149,8 +143,11 @@ export default {
   },
 
   setup(props, context) {
+    const formInput = useFormInput(props, context, {
+      variants: imageInputTheme
+    })
     return {
-      ...useFormInput(props, context),
+      ...formInput
     }
   },
 
@@ -228,21 +225,16 @@ export default {
               response.extension,
           })
             .then((moveFileResponseData) => {
-              if (!this.multiple) {
-                this.files = []
-              }
               this.compVal = moveFileResponseData.url
-              this.showUploadModal = false
-              this.loading = false
             })
             .catch(() => {
               this.compVal = null
-              this.showUploadModal = false
-              this.loading = false
             })
         })
         .catch(() => {
           this.compVal = null
+        })
+        .finally(() => {
           this.showUploadModal = false
           this.loading = false
         })

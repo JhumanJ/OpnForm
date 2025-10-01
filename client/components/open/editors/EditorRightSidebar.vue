@@ -3,7 +3,7 @@
     <div
       v-if="show"
       ref="elementRef"
-      class="absolute shadow-lg shadow-neutral-800/30 top-0 h-[calc(100vh-53px)] right-0 lg:shadow-none lg:relative bg-white border-l overflow-y-scroll flex-shrink-0 z-30"
+      class="absolute shadow-lg shadow-neutral-800/30 top-0 h-[calc(100vh-55px)] right-0 lg:shadow-none lg:relative bg-white border-l flex-shrink-0 z-30"
       :class="[
         isResizable ? '' : 'w-full md:w-1/2 lg:w-2/5',
         widthClass
@@ -16,7 +16,9 @@
         @start-resize="startResize"
       />
       
-      <slot />
+      <div class="h-full overflow-y-auto">
+        <slot />
+      </div>
     </div>
   </transition>
 </template>
@@ -50,7 +52,7 @@ const {
   startResize
 } = useResizable({
   storageKey: 'formEditorRightSidebarWidth',
-  defaultWidth: 350,
+  defaultWidth: 315,
   direction: 'right',
   maxWidth: () => Math.min(600, window.innerWidth * 0.6)
 })

@@ -31,8 +31,9 @@
             @click.stop.prevent="openAddFieldSidebar"
           >
             <UTooltip
+              arrow
               text="Add new field"
-              :popper="{ placement: 'right' }"
+              :content="{ side: 'left' }"
               :ui="{ container: 'z-50' }"
             >
               <Icon
@@ -47,8 +48,9 @@
             @click.stop.prevent="editFieldOptions"
           >
             <UTooltip
+              arrow
               text="Edit field settings"
-              :popper="{ placement: 'right' }"
+              :content="{ side: 'left' }"
               :ui="{ container: 'z-50' }"
             >
               <Icon
@@ -63,8 +65,9 @@
             @click.stop.prevent="removeField"
           >
             <UTooltip
+              arrow
               text="Delete field"
-              :popper="{ placement: 'right' }"
+              :content="{ side: 'left' }"
               :ui="{ container: 'z-50' }"
             >
               <Icon
@@ -139,8 +142,7 @@
             v-else
             :alt="field.name"
             :src="field.image_block"
-            class="max-w-full inline-block"
-            :class="theme.default.borderRadius"
+            class="max-w-full inline-block rounded-lg"
           >
         </div>
       </template>
@@ -162,7 +164,6 @@
 
 <script setup>
 import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
-import CachedDefaultTheme from "~/lib/forms/themes/CachedDefaultTheme.js"
 import { default as _has } from 'lodash/has'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import { useWorkingFormStore } from '~/stores/working_form'
@@ -175,10 +176,6 @@ const props = defineProps({
     required: true
   },
   formManager: {
-    type: Object,
-    required: true
-  },
-  theme: {
     type: Object,
     required: true
   }
@@ -334,7 +331,6 @@ function inputProperties(field) {
     help: field.help,
     helpPosition: (field.help_position) ? field.help_position : 'below_input',
     uppercaseLabels: form.value.uppercase_labels == 1 || form.value.uppercase_labels == true,
-    theme: props.theme || CachedDefaultTheme.getInstance(),
     maxCharLimit: (field.max_char_limit) ? parseInt(field.max_char_limit) : null,
     showCharLimit: field.show_char_limit || false,
     isDark: darkMode.value,

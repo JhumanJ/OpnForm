@@ -169,6 +169,8 @@
             :form="form"
             label="Success page text"
             :required="false"
+            :max-char-limit="10000"
+            :show-char-limit="true"
           />
           <div class="flex items-center flex-wrap gap-x-4">
             <toggle-switch-input
@@ -185,35 +187,34 @@
               label="Text of re-start button"
             />
           </div>
-
-          <div class="flex items-center flex-wrap gap-x-4">
-            <toggle-switch-input
-              name="editable_submissions"
-              class="w-full max-w-sm"
-              help="Allows users to edit submissions via unique URL"
-              :form="form"
-            >
-              <template #label>
-                <span class="text-sm">
-                  Editable submissions
-                </span>
-                <ProTag
-                  class="ml-1"
-                  upgrade-modal-title="Upgrade to use Editable Submissions"
-                  upgrade-modal-description="On the Free plan, you can try out all paid features only within the form editor. Upgrade your plan to allow users to update their submissions via a unique URL, and much more. Gain full access to all advanced features."
-                />
-              </template>
-            </toggle-switch-input>
-            <text-input
-              v-if="form.editable_submissions"
-              name="editable_submissions_button_text"
-              class="w-full max-w-64"
-              :form="form"
-              label="Edit submission button text"
-              :required="true"
-            />
-          </div>
         </template>
+        <div class="flex items-center flex-wrap gap-x-4">
+          <toggle-switch-input
+            name="editable_submissions"
+            class="w-full max-w-sm"
+            help="Allows users to edit submissions via unique URL"
+            :form="form"
+          >
+            <template #label>
+              <span class="text-sm">
+                Editable submissions
+              </span>
+              <ProTag
+                class="ml-1"
+                upgrade-modal-title="Upgrade to use Editable Submissions"
+                upgrade-modal-description="On the Free plan, you can try out all paid features only within the form editor. Upgrade your plan to allow users to update their submissions via a unique URL, and much more. Gain full access to all advanced features."
+              />
+            </template>
+          </toggle-switch-input>
+          <text-input
+            v-if="form.editable_submissions"
+            name="editable_submissions_button_text"
+            class="w-full max-w-64"
+            :form="form"
+            label="Edit submission button text"
+            :required="true"
+          />
+        </div>
       </div>
     </div>
   </VForm>

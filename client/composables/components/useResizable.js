@@ -15,7 +15,7 @@ export function useResizable(options = {}) {
   const {
     storageKey,
     defaultWidth = 350,
-    minWidth = 280,
+    minWidth = 315,
     maxWidth = 600,
     direction = 'right',
     breakpoint = 'lg'

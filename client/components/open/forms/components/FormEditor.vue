@@ -175,7 +175,7 @@ const {
   startResize
 } = useResizable({
   storageKey: 'formEditorSidebarWidth',
-  defaultWidth: 320,
+  defaultWidth: 315,
   direction: 'left',
   maxWidth: () => Math.min(600, window.innerWidth * 0.6)
 })
@@ -385,10 +385,9 @@ const saveFormGuest = () => {
   emit("openRegister")
 }
 
-
-
 defineExpose({
-  saveFormCreate
+  saveFormCreate,
+  showValidationErrors
 })
 
 // Lifecycle hooks

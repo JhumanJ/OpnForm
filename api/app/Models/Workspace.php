@@ -256,7 +256,10 @@ class Workspace extends Model implements CachableAttributes
 
         // Use loaded relationship if available to avoid queries
         if ($this->relationLoaded('users')) {
-            return $this->users->where('id', $user->id)->first()?->pivot->role === User::ROLE_ADMIN;
+            $pivot = $this->users->where('id', $user->id)->first()?->pivot;
+            if ($pivot && isset($pivot->role)) {
+                return $pivot->role === User::ROLE_ADMIN;
+            }
         }
 
         return $this->users()
@@ -273,7 +276,10 @@ class Workspace extends Model implements CachableAttributes
 
         // Use loaded relationship if available to avoid queries
         if ($this->relationLoaded('users')) {
-            return $this->users->where('id', $user->id)->first()?->pivot->role === User::ROLE_READONLY;
+            $pivot = $this->users->where('id', $user->id)->first()?->pivot;
+            if ($pivot && isset($pivot->role)) {
+                return $pivot->role === User::ROLE_READONLY;
+            }
         }
 
         return $this->users()

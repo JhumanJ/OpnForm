@@ -39,7 +39,7 @@
         color="error"
         variant="outline"
         :label="`Delete (${selectedIds.length})`"
-        :loading="multiDeleteLoading"
+        :loading="deleteMultiSubmissionsMutation.isPending.value"
         @click="onDeleteMultiClick"
       />
 
@@ -83,6 +83,7 @@
       v-if="form"
       ref="table"
       v-model:row-selection="rowSelection"
+      v-model:column-order="columnOrder"
       :columns="allColumns"
       :column-visibility="columnVisibility"
       :column-pinning="columnPinning"
@@ -152,8 +153,6 @@
             :form="form"
             :submission-id="row.original.id"
             :data="sortedData"
-            @deleted="(submission) => $emit('deleted', submission)"
-            @updated="(submission) => $emit('updated', submission)"
           />
         </div>
       </template>
@@ -168,6 +167,7 @@ import { useEventListener, refDebounced } from '@vueuse/core'
 import { useTableState } from '~/composables/components/tables/useTableState'
 import FormExportModal from '~/components/open/forms/FormExportModal.vue'
 import OpenText from "./components/OpenText.vue"
+import OpenRichText from "./components/OpenRichText.vue"
 import OpenUrl from "./components/OpenUrl.vue"
 import OpenSelect from "./components/OpenSelect.vue"
 import OpenMatrix from "./components/OpenMatrix.vue"
@@ -179,7 +179,7 @@ import OpenSubmissionStatus from "./components/OpenSubmissionStatus.vue"
 import RecordOperations from "../components/RecordOperations.vue"
 import TableHeader from "./components/TableHeader.vue"
 import TableColumnManager from "./components/TableColumnManager.vue"
-import { formsApi } from "~/api/forms"
+import { useFormSubmissions } from "~/composables/query/forms/useFormSubmissions"
 
 const props = defineProps({
   data: {
@@ -200,7 +200,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["updated", "deleted", "multi-delete", "search", "filter", "page-change"])
+const emit = defineEmits(["search", "filter", "page-change"])
 
 // Get workspace for table state
 const { current: workspace } = useCurrentWorkspace()
@@ -214,15 +214,16 @@ const tableState = useTableState(
   canModify.value
 )
 
-const { tableColumns: allColumns, columnVisibility, columnPinning, columnSizing, columnWrapping, handleColumnResize: handleColumnResizeState } = tableState
+const { tableColumns: allColumns, columnVisibility, columnPinning, columnSizing, columnWrapping, columnOrder, handleColumnResize: handleColumnResizeState } = tableState
 
 const tableColumns = computed(() => {
+  console.log('tableColumns changed')
   return allColumns.value.filter(column => !['actions', 'select'].includes(column.id))
 })
 
 const fieldComponents = {
   text: OpenText,
-  rich_text: OpenText,
+  rich_text: OpenRichText,
   number: OpenText,
   rating: OpenText,
   scale: OpenText,
@@ -252,6 +253,10 @@ const debouncedSearch = refDebounced(searchInput, 300)
 const statusFilter = ref('all')
 const alert = useAlert()
 
+// Use form submissions composable for multi-delete
+const { deleteMultiSubmissions } = useFormSubmissions()
+const deleteMultiSubmissionsMutation = deleteMultiSubmissions()
+
 // Watch and emit instead of filtering locally:
 watch(debouncedSearch, (newSearch) => {
   emit('search', newSearch)
@@ -263,7 +268,6 @@ watch(statusFilter, (newStatus) => {
 
 // Table row selection
 const rowSelection = ref({})
-const multiDeleteLoading = ref(false)
 const selectedIds = computed(() => {
   return table.value?.tableApi?.getFilteredSelectedRowModel()?.rows.map(row => row.original.id) || []
 })
@@ -274,23 +278,20 @@ const onDeleteMultiClick = () => {
   alert.confirm(`Do you really want to delete selected ${selectedIds.value.length} record${selectedIds.value.length > 1 ? 's' : ''}?`, deleteMultiRecord)
 }
 const deleteMultiRecord = () => {
-  multiDeleteLoading.value = true
-  formsApi.submissions.deleteMulti(props.form.id, selectedIds.value)
-    .then((data) => {
-      multiDeleteLoading.value = false
-      clearSelection()
-      if (data.type === "success") {
-        emit('multi-delete', selectedIds.value)
-        alert.success(data.message)
-      } else {
-        alert.error("Something went wrong!")
-      }
-    })
-    .catch((error) => {
-      multiDeleteLoading.value = false
-      clearSelection()
-      alert.error(error.data.message)
-    })
+  deleteMultiSubmissionsMutation.mutateAsync({ 
+    formId: props.form.id, 
+    submissionIds: selectedIds.value 
+  }).then((data) => {
+    clearSelection()
+    if (data.type === "success") {
+      alert.success(data.message)
+    } else {
+      alert.error("Something went wrong!")
+    }
+  }).catch((error) => {
+    clearSelection()
+    alert.error(error.data?.message || "Something went wrong!")
+  })
 }
 
 

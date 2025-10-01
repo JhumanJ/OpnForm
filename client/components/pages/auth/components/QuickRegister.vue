@@ -5,6 +5,9 @@
       v-model:open="isLoginModalOpen"
       title="Login to OpnForm"
       :dismissible="!appStore.isUnauthorizedError"
+      :content="{
+        onPointerDownOutside: (event) => { if (event.target?.closest('#credential_picker_container')) {return event.preventDefault()}}
+      }"
     >
       <template #body>
         <template v-if="appStore.isUnauthorizedError">

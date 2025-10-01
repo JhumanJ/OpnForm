@@ -31,7 +31,6 @@
           <div class="form-group flex flex-wrap w-full">
             <div class="relative w-full px-2">
               <text-input
-                :theme="theme"
                 :form="passwordForm"
                 name="password"
                 native-type="password"
@@ -110,7 +109,6 @@
             <open-form
               v-if="formManager && form && shouldDisplayForm"
               :form-manager="formManager"
-              :theme="theme"
               @submit="triggerSubmit"
             >
               <template #submit-btn="{loading}">
@@ -174,7 +172,6 @@
 <script setup>
 import { useFormManager } from '~/lib/forms/composables/useFormManager'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
-import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 import OpenForm from './OpenForm.vue'
 import OpenFormButton from './OpenFormButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
@@ -227,14 +224,10 @@ const darkModeRef = toRef(props, 'darkMode')
 // Create a reactive reference for the mode prop
 const modeRef = toRef(props, 'mode')
 
-// Add back the local theme computation
-const theme = computed(() => {
-  return new ThemeBuilder(props.form.theme, {
-    size: props.form.size,
-    borderRadius: props.form.border_radius
-  }).getAllComponents()
-})
-provide('theme', theme)
+// Provide theme context for components outside OpenForm (password input, TextBlock)
+provide('formTheme', computed(() => props.form.theme || 'default'))
+provide('formSize', computed(() => props.form.size || 'md'))  
+provide('formBorderRadius', computed(() => props.form.border_radius || 'small'))
 
 let formManager = null
 if (props.form) {
@@ -376,6 +369,11 @@ const triggerSubmit = () => {
         }
         
         emit('submitted', true)
+
+        // Ensure the submitted view starts at the top (parity with page change scroll)
+        if (import.meta.client) {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
       } else {
         console.warn('Form submission failed via composable, but no error thrown?')
         alert.error(t('forms.submission_error'))

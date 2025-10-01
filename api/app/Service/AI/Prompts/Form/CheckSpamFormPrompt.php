@@ -13,6 +13,8 @@ class CheckSpamFormPrompt extends Prompt
     protected string $model = 'gpt-4.1-mini';
 
     public const PROMPT_TEMPLATE = <<<'EOD'
+        {blockingConsiderations}
+
         Analyze this form for spam/phishing. Focus on CONTENT RISK, not user characteristics.
 
         <formContent>
@@ -97,41 +99,58 @@ class CheckSpamFormPrompt extends Prompt
         $isSubscribed = $this->form->creator->is_subscribed ? 'yes' : 'no';
         $totalFormsCreated = $this->form->creator->forms()->count();
 
-        // Only include blocking information if user has history
+        // Check if user has blocking history
         $hasBlockingHistory = !empty($this->form->creator->meta['blocking_history'] ?? []);
+        $blockingConsiderations = '';
 
         if ($hasBlockingHistory) {
-            $currentBlockStatus = $this->form->creator->is_blocked ? 'BLOCKED' : 'ACTIVE';
+            $history = $this->form->creator->meta['blocking_history'];
+            $lastBlock = end($history);
+            $daysSinceUnblock = null;
+            $recentUnblockInfo = '';
+
+            // Check if user was recently manually unblocked
+            if ($lastBlock && !is_null($lastBlock['unblocked_by']) && !is_null($lastBlock['unblocked_at'])) {
+                $daysSinceUnblock = \Carbon\Carbon::parse($lastBlock['unblocked_at'])->diffInDays(now());
+
+                if ($daysSinceUnblock <= 30) {
+                    $recentUnblockInfo = "
+**⚠️ RECENT MANUAL UNBLOCK ALERT:**
+This user was manually unblocked {$daysSinceUnblock} days ago by admin ID {$lastBlock['unblocked_by']}.
+Reason for unblock: \"{$lastBlock['unblock_reason']}\"
+
+**EXTREMELY HIGH threshold required for re-blocking!**
+";
+                }
+            }
+
             $blockingHistory = $this->extractBlockingHistory();
 
-            $blockingHistorySection = "Current block status: {$currentBlockStatus}\nBlocking history: {$blockingHistory}";
+            $blockingConsiderations = "**🚨 CRITICAL: BLOCKING HISTORY OVERRIDE RULES 🚨**
 
-            $blockingConsiderations = "**BLOCKING HISTORY CONSIDERATIONS:**
-- If user was previously blocked but manually unblocked by admin, use EXTRA CAUTION before re-blocking
-- Manual unblocks indicate admin review and approval - respect this decision
-- Only re-block previously reviewed users for CLEAR violations (login forms, obvious phishing)
-- Consider the pattern: repeated blocks may indicate persistent bad behavior
-- Give benefit of doubt to users who were unblocked and haven't violated since
+THIS USER HAS BLOCKING HISTORY - READ CAREFULLY:
+
+**ABSOLUTE RULES FOR PREVIOUSLY UNBLOCKED USERS:**
+1. ⛔ **NEVER re-block unless EXTREME violation** (login credential theft, clear brand impersonation with malicious intent)
+2. 🔒 **Manual admin unblocks are SACRED** - an admin already reviewed and approved this user
+3. ⚖️ **When in doubt, use 'needs_admin_review' instead of 'is_spam'** - let humans decide
+4. 🎯 **Only block for OBVIOUS phishing** - password collection, fake login pages, credential harvesting
+
+**DECISION PRIORITY:**
+1. 🟢 ALLOW (both false) - Default for previously unblocked users
+2. 🟡 ADMIN REVIEW (needs_admin_review: true) - Only if genuinely suspicious but not clearly malicious  
+3. 🔴 BLOCK (is_spam: true) - ONLY for extreme violations that endanger other users
+
+{$recentUnblockInfo}
+
+**USER BLOCKING HISTORY:**
+{$blockingHistory}
 
 ";
-
-            $adminReviewFactor = "5. **Admin Review History**: If user was manually unblocked, they were likely reviewed and cleared";
-
-            $enhancedTemplate = Str::of($template)
-                ->replace('<userInformation>', "<userInformation>\n{$blockingHistorySection}")
-                ->replace('CRITICAL ANALYSIS GUIDELINES:', $blockingConsiderations . 'CRITICAL ANALYSIS GUIDELINES:')
-                ->replace('4. **User Trust**: Subscribed users and users with multiple forms get more benefit of doubt', '4. **User Trust**: Subscribed users and users with multiple forms get more benefit of doubt' . "\n        {$adminReviewFactor}")
-                ->toString();
-
-            return Str::of($enhancedTemplate)
-                ->replace('{formContent}', $formContent)
-                ->replace('{userRegisteredSince}', $userRegisteredSince)
-                ->replace('{isSubscribed}', $isSubscribed)
-                ->replace('{totalFormsCreated}', $totalFormsCreated)
-                ->toString();
         }
 
         return Str::of($template)
+            ->replace('{blockingConsiderations}', $blockingConsiderations)
             ->replace('{formContent}', $formContent)
             ->replace('{userRegisteredSince}', $userRegisteredSince)
             ->replace('{isSubscribed}', $isSubscribed)
@@ -166,17 +185,29 @@ class CheckSpamFormPrompt extends Prompt
         $manualUnblocks = collect($history)->filter(fn ($block) => !is_null($block['unblocked_by']))->count();
 
         $summary = [];
-        $summary[] = "Total times blocked: {$totalBlocks}";
-        $summary[] = "Manual unblocks by admin: {$manualUnblocks}";
+        $summary[] = "📊 BLOCKING SUMMARY:";
+        $summary[] = "• Total blocks: {$totalBlocks}";
+        $summary[] = "• Manual admin unblocks: {$manualUnblocks}";
+
+        if ($manualUnblocks > 0) {
+            $summary[] = "🔓 CRITICAL: {$manualUnblocks} manual admin review(s) - user was APPROVED after human review";
+        }
 
         // Get the most recent block details
         $lastBlock = end($history);
         if ($lastBlock) {
-            $summary[] = "Last block reason: " . ($lastBlock['reason'] ?? 'N/A');
+            $summary[] = "";
+            $summary[] = "📋 MOST RECENT BLOCK:";
+            $summary[] = "• Block reason: " . ($lastBlock['reason'] ?? 'N/A');
+            $summary[] = "• Blocked at: " . ($lastBlock['blocked_at'] ?? 'N/A');
 
             if ($lastBlock['unblocked_by']) {
-                $summary[] = "Last unblock reason: " . ($lastBlock['unblock_reason'] ?? 'N/A');
-                $summary[] = "STATUS: Previously blocked user was manually reviewed and unblocked by admin.";
+                $summary[] = "• 🔓 MANUALLY UNBLOCKED by admin ID: " . $lastBlock['unblocked_by'];
+                $summary[] = "• Unblock reason: " . ($lastBlock['unblock_reason'] ?? 'N/A');
+                $summary[] = "• Unblocked at: " . ($lastBlock['unblocked_at'] ?? 'N/A');
+                $summary[] = "🟢 STATUS: User was manually reviewed and APPROVED by admin";
+            } else {
+                $summary[] = "🔴 STATUS: Block is still active or auto-resolved";
             }
         }
 

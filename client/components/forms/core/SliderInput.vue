@@ -16,22 +16,22 @@
         <input
           v-model="compVal"
           type="range"
-          class="w-full mt-3 slider"
+          :class="[ui.slider(), 'slider']"
           :style="{ '--thumb-color': color }"
           :disabled="disabled"
           :min="minSlider"
           :max="maxSlider"
           :step="stepSlider"
         >
-        <div class="grid grid-cols-3 gap-2 -mt-1">
-          <div
-            v-for="i in sliderLabelsList"
-            :key="i"
-            :class="[theme.SliderInput.stepLabel, i.style]"
-          >
-            {{ i.label }}
+          <div class="grid grid-cols-3 gap-2 -mt-1">
+            <div
+              v-for="(i, idx) in sliderLabelsList"
+              :key="i.label ?? idx"
+              :class="[ui.stepLabel(), i.style]"
+            >
+              {{ i.label }}
+            </div>
           </div>
-        </div>
       </div>
     </div>
 
@@ -46,6 +46,7 @@
 
 <script>
 import { inputProps, useFormInput } from "../useFormInput.js"
+import { sliderInputTheme } from "~/lib/forms/themes/slider-input.theme.js"
 
 export default {
   name: "SliderInput",
@@ -59,8 +60,15 @@ export default {
   },
 
   setup(props, context) {
+    const formInput = useFormInput(props, context, {
+      variants: sliderInputTheme,
+      additionalVariants: {
+        disabled: props.disabled
+      }
+    })
+
     return {
-      ...useFormInput(props, context),
+      ...formInput
     }
   },
   computed: {

@@ -49,6 +49,7 @@
     "@tanstack/query-devtools": "^5.81.2",
     "@tanstack/vue-query": "^5.81.5",
     "@tanstack/vue-query-devtools": "^5.81.5",
+    "@tanstack/vue-virtual": "^3.13.12",
     "@vueuse/components": "^11.2.0",
     "@vueuse/core": "^13.1.0",
     "@vueuse/integrations": "^11.2.0",
@@ -72,7 +73,6 @@
     "pinia": "^3.0.2",
     "prismjs": "^1.29.0",
     "qrcode": "^1.5.4",
-
     "quill": "^2.0.2",
     "tailwind-merge": "^2.5.4",
     "tailwindcss": "^4.1.10",

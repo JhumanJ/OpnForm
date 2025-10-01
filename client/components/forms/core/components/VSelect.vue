@@ -1,8 +1,7 @@
 <template>
   <div
     ref="select"
-    class="v-select relative"
-    :class="[{ 'w-0': multiple, 'min-w-full': multiple }]"
+    :class="variantSlots.container()"
   >
     <UPopover
       v-model:open="isOpen"
@@ -12,44 +11,26 @@
         sideOffset: 4
       }"
       :ui="{
-        content: 'w-(--reka-popper-anchor-width) bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + [theme.SelectInput.borderRadius].join(' ')
+        content: (popoverWidth ? `w-[${popoverWidth}] ` : 'w-(--reka-popper-anchor-width) ') + 'bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + borderRadiusClass
       }"
     >
       <template #anchor>
         <div
-          class="w-full flex overflow-hidden"
           :style="inputStyle"
-          :class="[
-            theme.SelectInput.input,
-            theme.SelectInput.borderRadius,
-            { 
-              'ring-red-500! ring-2! border-transparent!': hasError, 
-              '!cursor-not-allowed bg-neutral-200! dark:bg-neutral-800!': disabled,
-              'focus-within:ring-2 focus-within:ring-form/100 focus-within:border-transparent': !hasError && !disabled
-            },
-            inputClass
-          ]"
+          :class="[variantSlots.anchor(), inputClass]"
         >
         <button
           type="button"
           aria-haspopup="listbox"
           :aria-expanded="isOpen"
           aria-labelledby="listbox-label"
-          class="cursor-pointer w-full grow relative focus:outline-hidden min-w-0 truncate"
-          :class="[
-            theme.SelectInput.spacing.horizontal,
-            theme.SelectInput.spacing.vertical
-          ]"
+          :class="variantSlots.button()"
           @click.stop="toggleDropdown"
           @focus="onFocus"
           @blur="onBlur"
         >
           <div
-            class="flex items-center"
-            :class="[
-              theme.SelectInput.minHeight,
-              'ltr:pr-8 rtl:pl-8'
-            ]"
+            :class="variantSlots.buttonInner()"
           >
             <transition
               name="fade"
@@ -77,10 +58,9 @@
               >
                 <slot name="placeholder">
                   <div
-                    class="text-neutral-400 dark:text-neutral-500 w-full ltr:text-left rtl:text-right! truncate ltr:pr-3 rtl:pl-3 rtl:pr-0!"
                     :class="[
-                      { 'py-1': multiple && !loading },
-                      theme.SelectInput.fontSize
+                      variantSlots.placeholder(),
+                      { 'py-1': multiple && !loading }
                     ]"
                   >
                     {{ placeholder }}
@@ -90,28 +70,25 @@
             </transition>
           </div>
           <div
-            class="absolute inset-y-0 ltr:right-6 rtl:left-6 w-10 pointer-events-none -z-1"
-            :class="[disabled ? 'bg-linear-to-r from-transparent to-neutral-200 dark:to-neutral-800' : theme.SelectInput.chevronGradient]"
+            :class="variantSlots.chevronGradient()"
           />
           <span
-            class="absolute inset-y-0 ltr:right-0 rtl:left-0 rtl:right-auto! flex items-center ltr:pr-2 rtl:pl-2 rtl:pr-0! pointer-events-none"
-            :class="[disabled ? 'bg-neutral-200 dark:bg-neutral-800' : theme.SelectInput.background]"
+            :class="variantSlots.chevronContainer()"
           >
             <Icon
               name="heroicons:chevron-up-down-16-solid" 
-              class="h-5 w-5 text-neutral-500"
+              :class="variantSlots.chevronIcon()"
             />
           </span>
         </button>
         <button
           v-if="clearable && showClearButton && !disabled && !isEmpty"
-          class="hover:bg-neutral-50 dark:hover:bg-neutral-900 ltr:border-l rtl:border-l-0! rtl:border-r px-2 flex items-center shrink-0"
-          :class="[theme.SelectInput.spacing.vertical]"
+          :class="variantSlots.clearButton()"
           @click.stop.prevent="clear()"
         >
           <Icon
             name="heroicons:x-mark-20-solid"
-            class="w-5 h-5 text-neutral-500"
+            :class="variantSlots.clearIcon()"
             width="2em"
             dynamic
           />
@@ -123,40 +100,37 @@
         <ul
           tabindex="-1"
           role="listbox"
-          class="leading-6 shadow-xs overflow-auto focus:outline-hidden sm:text-sm sm:leading-5 relative"
-          :class="[
-            { 'max-h-42': !isSearchable, 'max-h-48': isSearchable },
-            theme.SelectInput.fontSize
-          ]"
+          ref="scrollRef"
+          :class="variantSlots.dropdown()"
         >
           <div
             v-if="isSearchable"
-            class="sticky top-0 z-10 flex border-b bg-white dark:!bg-notion-dark-light"
+            :class="variantSlots.searchContainer()"
           >
             <input
               v-model="searchTerm"
               type="text"
-              class="grow ltr:pl-3 ltr:pr-7 rtl:pr-3! rtl:pl-7 py-2 w-full focus:outline-hidden dark:text-white"
+              :class="variantSlots.searchInput()"
               :placeholder="allowCreation ? $t('forms.select.searchOrTypeToCreateNew') : $t('forms.select.search')"
             >
             <div
               v-if="!searchTerm"
-              class="flex absolute ltr:right-0 rtl:left-0 rtl:right-auto! inset-y-0 items-center px-2 justify-center pointer-events-none"
+              :class="variantSlots.searchIconContainer()"
             >
               <Icon
                 name="heroicons:magnifying-glass-solid"
-                class="h-5 w-5 text-neutral-500 dark:text-neutral-400"
+                :class="variantSlots.searchIcon()"
               />
             </div>
             <div
               v-else
               role="button"
-              class="flex absolute ltr:right-0 rtl:right-auto! rtl:left-0 inset-y-0 items-center px-2 justify-center"
+              :class="variantSlots.searchClearContainer()"
               @click.stop="searchTerm = ''"
             >
               <Icon
                 name="heroicons:backspace"
-                class="h-5 w-5 rtl:rotate-180 text-neutral-500 dark:text-neutral-400"
+                :class="variantSlots.searchClearIcon()"
               />
             </div>
           </div>
@@ -168,40 +142,53 @@
           </div>
           <div
             v-if="filteredOptions.length > 0"
-            class="p-1"
+            :class="variantSlots.optionsContainer()"
           >
-            <li
-              v-for="item in filteredOptions"
-              :key="item[optionKey]"
-              role="option"
-              :style="optionStyle"
-              :class="[
-                dropdownClass,
-                theme.SelectInput.option,
-                theme.SelectInput.spacing.horizontal,
-                theme.SelectInput.spacing.vertical,
-                { 'pr-9': multiple},
-                { 
-                  'opacity-50 cursor-not-allowed': disabledOptionsMap[item[optionKey]],
-                  'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': !disabledOptionsMap[item[optionKey]]
-                }
-              ]"
-              class="text-neutral-900 dark:text-neutral-50 select-none relative group rounded-sm focus:outline-hidden"
-              @click.stop="select(item)"
+            <div
+              v-if="virtualizer"
+              :style="{ height: virtualizer.getTotalSize() + 'px', width: '100%', position: 'relative' }"
             >
-              <slot
-                name="option"
-                :option="item"
-                :selected="isSelected(item)"
-              />
-            </li>
+              <li
+                v-for="virtualItem in virtualizer.getVirtualItems()"
+                :key="filteredOptions[virtualItem.index] ? filteredOptions[virtualItem.index][optionKey] : virtualItem.index"
+                role="option"
+                :style="[
+                  optionStyle,
+                  {
+                    position: 'absolute',
+                    top: '0px',
+                    left: '0px',
+                    width: '100%',
+                    height: virtualItem.size + 'px',
+                    transform: `translateY(${virtualItem.start}px)`
+                  }
+                ]"
+                :class="[
+                  variantSlots.option(),
+                  dropdownClass,
+                  { 'pr-9': multiple},
+                  { 
+                    'opacity-50 cursor-not-allowed': filteredOptions[virtualItem.index] && disabledOptionsMap[filteredOptions[virtualItem.index][optionKey]],
+                    'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': filteredOptions[virtualItem.index] && !disabledOptionsMap[filteredOptions[virtualItem.index][optionKey]]
+                  }
+                ]"
+                @click.stop="filteredOptions[virtualItem.index] && select(filteredOptions[virtualItem.index])"
+              >
+                <slot
+                  v-if="filteredOptions[virtualItem.index]"
+                  name="option"
+                  :option="filteredOptions[virtualItem.index]"
+                  :selected="isSelected(filteredOptions[virtualItem.index])"
+                />
+              </li>
+            </div>
           </div>
           <slot
             v-else-if="!loading && !(allowCreation && searchTerm)"
             name="empty-placeholder"
           >
             <p
-              class="w-full text-neutral-500 text-center py-2"
+              :class="variantSlots.emptyMessage()"
             >
               {{ (allowCreation ? $t('forms.select.typeSomethingToAddAnOption') : $t('forms.select.noOptionAvailable')) }}.
             </p>
@@ -213,11 +200,14 @@
             <li
               role="option"
               :style="optionStyle"
-              :class="[{ 'px-3 pr-9': multiple, 'px-3': !multiple },dropdownClass,theme.SelectInput.option]"
-              class="text-neutral-900 select-none relative py-2 cursor-pointer group hover:bg-neutral-100 dark:hover:bg-neutral-900 rounded-sm focus:outline-hidden"
+              :class="[
+                variantSlots.createOption(),
+                { 'px-3 pr-9': multiple, 'px-3': !multiple },
+                dropdownClass
+              ]"
               @click.stop="createOption(searchTerm)"
             >
-                            {{ $t('forms.select.create') }} <span class="px-2 bg-neutral-100 border border-neutral-300 rounded-sm group-hover-text-black">{{
+                            {{ $t('forms.select.create') }} <span :class="variantSlots.createLabel()">{{
                 searchTerm
               }}</span>
             </li>
@@ -232,7 +222,9 @@
 <script>
 import debounce from 'debounce'
 import Fuse from 'fuse.js'
-import CachedDefaultTheme from '~/lib/forms/themes/CachedDefaultTheme.js'
+import { tv } from "tailwind-variants"
+import { vSelectTheme } from "~/lib/forms/themes/v-select.theme.js"
+import { useVirtualizer } from '@tanstack/vue-virtual'
 
 export default {
   name: 'VSelect',
@@ -257,30 +249,69 @@ export default {
     placeholder: { type: String, default: null },
     uppercaseLabels: { type: Boolean, default: true },
     showClearButton: { type: Boolean, default: true },
-    theme: {
-      type: Object, default: () => {
-        const theme = inject('theme', null)
-        if (theme) {
-          return theme.value
-        }
-        return CachedDefaultTheme.getInstance()
-      }
-    },
+    theme: {type: String, default: null},
+    size: {type: String, default: null}, 
+    borderRadius: {type: String, default: null},
+    ui: {type: Object, default: () => ({})},
     allowCreation: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     minSelection: { type: Number, default: null },
-    maxSelection: { type: Number, default: null }
+    maxSelection: { type: Number, default: null },
+    fuseOptions: { type: Object, default: () => ({}) },
+    searchDebounceMs: { type: Number, default: 150 },
+    minSearchLength: { type: Number, default: 1 },
+    popoverWidth: { type: String, default: null }
   },
   emits: ['update:modelValue', 'update-options', 'focus', 'blur'],
   data () {
     return {
       isOpen: false,
       searchTerm: '',
+        debouncedTerm: '',
       defaultValue: this.modelValue ?? null,
-      isFocused: false
+      isFocused: false,
+        virtualizer: null,
+        fuse: null,
+        fuseIndex: null,
+        updateDebouncedTerm: null
     }
   },
   computed: {
+    // Resolve theme values with proper reactivity
+    resolvedTheme() {
+      return this.theme || 'default'
+    },
+    resolvedSize() {
+      return this.size || 'md'
+    },
+    resolvedBorderRadius() {
+      return this.borderRadius || 'small'
+    },
+
+    // Create select variants with UI prop merging
+    vSelectVariants() {
+      return tv(vSelectTheme, this.ui)
+    },
+
+    // Single variant computation
+    variantSlots() {
+      return this.vSelectVariants({
+        theme: this.resolvedTheme,
+        size: this.resolvedSize,
+        borderRadius: this.resolvedBorderRadius,
+        hasError: this.hasError,
+        disabled: this.disabled,
+        focused: this.isFocused,
+        multiple: this.multiple,
+        searchable: this.isSearchable
+      })
+    },
+
+    // Use variantSlots directly in the template for classes
+    borderRadiusClass() {
+      return this.variantSlots.anchor().match(/rounded-\S+/)?.[0] || 'rounded-lg'
+    },
+
     optionStyle () {
       return {
         '--bg-form-color': this.color
@@ -299,18 +330,24 @@ export default {
     },
     filteredOptions () {
       if (!this.data) return []
-      if (!this.searchable || this.remote || this.searchTerm === '') {
+
+      // If not searchable, remote search is used, or term too short/empty, return raw data
+      if (!this.searchable || this.remote) {
         return this.data
       }
 
-      // Fuse search
-      const fuzeOptions = {
-        keys: this.searchKeys
+      const term = this.debouncedTerm
+      if (!term || term.length < this.minSearchLength) {
+        return this.data
       }
-      const fuse = new Fuse(this.data, fuzeOptions)
-      return fuse.search(this.searchTerm).map((res) => {
-        return res.item
-      })
+
+      // Ensure Fuse is ready
+      if (!this.fuse) {
+        this.buildFuse()
+      }
+      if (!this.fuse) return this.data
+
+      return this.fuse.search(term).map((res) => res.item)
     },
     isSearchable () {
       return this.searchable || this.remote !== null || this.allowCreation
@@ -339,13 +376,99 @@ export default {
   },
   watch: {
     searchTerm (val) {
-      if (!this.debouncedRemote) return
-      if ((this.remote && val) || (val === '' && !this.modelValue) || (val === '' && this.isOpen)) {
-        return this.debouncedRemote(val)
+      // Remote search path
+      if (this.debouncedRemote) {
+        if ((this.remote && val) || (val === '' && !this.modelValue) || (val === '' && this.isOpen)) {
+          this.debouncedRemote(val)
+        }
+      } else {
+        // Local search path: debounce updates
+        if (this.updateDebouncedTerm) this.updateDebouncedTerm(val)
+      }
+    },
+    data () {
+      // Only (re)build fuse when using local search
+      if (this.searchable && !this.remote) {
+        this.buildFuse()
+      } else {
+        this.fuse = null
+        this.fuseIndex = null
+      }
+    },
+    isOpen (val) {
+      if (val) {
+        this.$nextTick(() => {
+          this.setupVirtualizer()
+        })
+      }
+    },
+    filteredOptions () {
+      if (this.isOpen) {
+        this.$nextTick(() => {
+          this.setupVirtualizer()
+        })
       }
     }
   },
+  mounted () {
+    // Initialize fuse for local search and debounce handler
+    this.buildFuse()
+    this.updateDebouncedTerm = debounce((val) => {
+      this.debouncedTerm = val
+    }, this.searchDebounceMs)
+  },
+  beforeUnmount () {
+    // Clean up virtualizer if it exists
+    if (this.virtualizer) {
+      this.virtualizer = null
+    }
+    if (this.updateDebouncedTerm && this.updateDebouncedTerm.clear) {
+      this.updateDebouncedTerm.clear()
+    }
+  },
   methods: {
+    buildFuse () {
+      if (!this.data || !Array.isArray(this.data) || this.data.length === 0) {
+        this.fuse = null
+        this.fuseIndex = null
+        return
+      }
+
+      const options = Object.assign({
+        keys: this.searchKeys,
+        threshold: 0.3,
+        ignoreLocation: true,
+        includeScore: false
+      }, this.fuseOptions || {})
+
+      try {
+        const index = Fuse.createIndex(options.keys, this.data)
+        this.fuseIndex = index
+        this.fuse = new Fuse(this.data, options, index)
+      } catch {
+        // Fallback without precomputed index
+        this.fuse = new Fuse(this.data, options)
+        this.fuseIndex = null
+      }
+    },
+    setupVirtualizer () {
+      if (!this.$refs.scrollRef || !this.filteredOptions || this.filteredOptions.length === 0) {
+        this.virtualizer = null
+        return
+      }
+      
+      // Clean up existing virtualizer
+      if (this.virtualizer) {
+        this.virtualizer = null
+      }
+      
+      this.virtualizer = useVirtualizer({
+        count: this.filteredOptions.length,
+        getScrollElement: () => this.$refs.scrollRef,
+        estimateSize: () => 40,
+        overscan: 5
+      })
+    },
     isSelected (value) {
       if (!this.modelValue) return false
 
@@ -440,4 +563,3 @@ export default {
   }
 }
 </script>
-

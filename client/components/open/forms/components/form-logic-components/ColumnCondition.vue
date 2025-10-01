@@ -39,7 +39,6 @@
 <script>
 import { defineAsyncComponent } from 'vue'
 import OpenFilters from "../../../../../data/open_filters.json"
-import ThemeBuilder from "~/lib/forms/themes/ThemeBuilder.js"
 
 export default {
   components: {
@@ -74,12 +73,7 @@ export default {
         email: "TextInput",
         phone_number: "TextInput",
         matrix: "MatrixInput",
-      },
-      // Create small-sized theme for all child components
-      smallTheme: new ThemeBuilder('simple', { 
-        size: 'xs',
-        borderRadius: 'small'
-      }).getAllComponents()
+      }
     }
   },
 
@@ -90,7 +84,8 @@ export default {
         component: this.inputComponent[this.property.type],
         name: this.property.id,
         required: true,
-        theme: this.smallTheme,
+        size: 'xs',
+        borderRadius: 'small',
         wrapperClass: 'm-0',
       }
 
