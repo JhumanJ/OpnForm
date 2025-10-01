@@ -97,7 +97,7 @@
       </template>
 
       <template #content>
-        <ul
+        <div
           tabindex="-1"
           role="listbox"
           ref="scrollRef"
@@ -146,21 +146,23 @@
           >
             <div
               v-if="virtualizer"
+              role="presentation"
               :style="{ height: virtualizer.getTotalSize() + 'px', width: '100%', position: 'relative' }"
             >
-              <li
+              <div
                 v-for="virtualItem in virtualizer.getVirtualItems()"
                 :key="filteredOptions[virtualItem.index] ? filteredOptions[virtualItem.index][optionKey] : virtualItem.index"
                 role="option"
+                :aria-selected="filteredOptions[virtualItem.index] ? isSelected(filteredOptions[virtualItem.index]) : false"
+                :data-index="virtualItem.index"
+                :ref="virtualizer ? virtualizer.measureElement : null"
                 :style="[
                   optionStyle,
                   {
                     position: 'absolute',
-                    top: '0px',
+                    top: virtualItem.start + 'px',
                     left: '0px',
-                    width: '100%',
-                    height: virtualItem.size + 'px',
-                    transform: `translateY(${virtualItem.start}px)`
+                    width: '100%'
                   }
                 ]"
                 :class="[
@@ -180,7 +182,32 @@
                   :option="filteredOptions[virtualItem.index]"
                   :selected="isSelected(filteredOptions[virtualItem.index])"
                 />
-              </li>
+              </div>
+            </div>
+            <div v-else>
+              <div
+                v-for="option in filteredOptions"
+                :key="option[optionKey]"
+                role="option"
+                :aria-selected="isSelected(option)"
+                :style="optionStyle"
+                :class="[
+                  variantSlots.option(),
+                  dropdownClass,
+                  { 'pr-9': multiple},
+                  { 
+                    'opacity-50 cursor-not-allowed': disabledOptionsMap[option[optionKey]],
+                    'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': !disabledOptionsMap[option[optionKey]]
+                  }
+                ]"
+                @click.stop="select(option)"
+              >
+                <slot
+                  name="option"
+                  :option="option"
+                  :selected="isSelected(option)"
+                />
+              </div>
             </div>
           </div>
           <slot
@@ -197,7 +224,7 @@
             v-if="allowCreation && searchTerm"
             class="border-t border-neutral-300 p-1"
           >
-            <li
+            <div
               role="option"
               :style="optionStyle"
               :class="[
@@ -207,13 +234,13 @@
               ]"
               @click.stop="createOption(searchTerm)"
             >
-                            {{ $t('forms.select.create') }} <span :class="variantSlots.createLabel()">{{
+              {{ $t('forms.select.create') }} <span :class="variantSlots.createLabel()">{{
                 searchTerm
               }}</span>
-            </li>
+            </div>
           </div>
           <slot name="after-options" />
-        </ul>
+        </div>
       </template>
     </UPopover>
   </div>
@@ -372,6 +399,15 @@ export default {
         map[item[this.optionKey]] = !isSelected && this.maxSelectionReached
       }
       return map
+    },
+    estimatedItemSizePx () {
+      switch (this.resolvedSize) {
+        case 'xs': return 28
+        case 'sm': return 32
+        case 'lg': return 52
+        case 'md':
+        default: return 40
+      }
     }
   },
   watch: {
@@ -403,6 +439,13 @@ export default {
       }
     },
     filteredOptions () {
+      if (this.isOpen) {
+        this.$nextTick(() => {
+          this.setupVirtualizer()
+        })
+      }
+    },
+    resolvedSize () {
       if (this.isOpen) {
         this.$nextTick(() => {
           this.setupVirtualizer()
@@ -462,11 +505,23 @@ export default {
         this.virtualizer = null
       }
       
+      // Skip virtualization if list fits in visible height
+      const dropdownEl = this.$refs.scrollRef
+      const maxVisibleHeight = dropdownEl && dropdownEl.clientHeight ? dropdownEl.clientHeight : 0
+      const estimatedItemSize = this.estimatedItemSizePx
+      const estimatedTotal = this.filteredOptions.length * estimatedItemSize
+      if (maxVisibleHeight && estimatedTotal <= maxVisibleHeight) {
+        this.virtualizer = null
+        return
+      }
+
       this.virtualizer = useVirtualizer({
         count: this.filteredOptions.length,
         getScrollElement: () => this.$refs.scrollRef,
-        estimateSize: () => 40,
-        overscan: 5
+        estimateSize: () => this.estimatedItemSizePx,
+        overscan: 5,
+        // Dynamic measurement so item height adapts to content
+        measureElement: (el) => (el ? el.getBoundingClientRect().height : 0)
       })
     },
     isSelected (value) {
