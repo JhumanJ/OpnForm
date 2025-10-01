@@ -107,8 +107,8 @@ export default {
           },
         )
       } else if (this.property.type === "date") {
-        // For x_days_before and x_days_after, use number input instead of date input
-        if (["x_days_before", "x_days_after"].includes(this.content.operator)) {
+        // For date range operators, use number input instead of date input
+        if (["at_least_x_days_ago", "at_least_x_days_from_now", "within_past_x_days", "within_next_x_days"].includes(this.content.operator)) {
           componentData.component = "TextInput"
         }
         // componentData.withTime = true

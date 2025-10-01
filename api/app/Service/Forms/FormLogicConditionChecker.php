@@ -285,15 +285,24 @@ class FormLogicConditionChecker
         return $fieldDate >= now()->toDateString() && $fieldDate <= now()->addYears(1)->toDateString();
     }
 
-    private function checkXDaysBefore($condition, $fieldValue): bool
+    private function checkAtLeastXDaysAgo($condition, $fieldValue): bool
     {
         if (!$fieldValue || !$condition['value']) {
             return false;
         }
 
-        $fieldDate = date('Y-m-d', strtotime($fieldValue));
-        $daysBefore = (int) $condition['value'];
+        // Validate date is valid
+        $timestamp = strtotime($fieldValue);
+        if ($timestamp === false) {
+            return false;
+        }
+        $fieldDate = date('Y-m-d', $timestamp);
 
+        // Validate days is a valid positive number
+        if (!is_numeric($condition['value'])) {
+            return false;
+        }
+        $daysBefore = (int) $condition['value'];
         if ($daysBefore < 0) {
             return false;
         }
@@ -305,15 +314,24 @@ class FormLogicConditionChecker
         return $fieldDate <= $targetDate;
     }
 
-    private function checkXDaysAfter($condition, $fieldValue): bool
+    private function checkAtLeastXDaysFromNow($condition, $fieldValue): bool
     {
         if (!$fieldValue || !$condition['value']) {
             return false;
         }
 
-        $fieldDate = date('Y-m-d', strtotime($fieldValue));
-        $daysAfter = (int) $condition['value'];
+        // Validate date is valid
+        $timestamp = strtotime($fieldValue);
+        if ($timestamp === false) {
+            return false;
+        }
+        $fieldDate = date('Y-m-d', $timestamp);
 
+        // Validate days is a valid positive number
+        if (!is_numeric($condition['value'])) {
+            return false;
+        }
+        $daysAfter = (int) $condition['value'];
         if ($daysAfter < 0) {
             return false;
         }
@@ -323,6 +341,66 @@ class FormLogicConditionChecker
 
         // Return true if fieldDate is on or after the target date (X days after today)
         return $fieldDate >= $targetDate;
+    }
+
+    private function checkWithinPastXDays($condition, $fieldValue): bool
+    {
+        if (!$fieldValue || !$condition['value']) {
+            return false;
+        }
+
+        // Validate date is valid
+        $timestamp = strtotime($fieldValue);
+        if ($timestamp === false) {
+            return false;
+        }
+        $fieldDate = date('Y-m-d', $timestamp);
+
+        // Validate days is a valid positive number
+        if (!is_numeric($condition['value'])) {
+            return false;
+        }
+        $daysBefore = (int) $condition['value'];
+        if ($daysBefore < 0) {
+            return false;
+        }
+
+        // Create target date by subtracting days from today
+        $targetDate = now()->subDays($daysBefore)->toDateString();
+        $today = now()->toDateString();
+
+        // Return true if fieldDate is between target date (X days ago) and today (inclusive)
+        return $fieldDate >= $targetDate && $fieldDate <= $today;
+    }
+
+    private function checkWithinNextXDays($condition, $fieldValue): bool
+    {
+        if (!$fieldValue || !$condition['value']) {
+            return false;
+        }
+
+        // Validate date is valid
+        $timestamp = strtotime($fieldValue);
+        if ($timestamp === false) {
+            return false;
+        }
+        $fieldDate = date('Y-m-d', $timestamp);
+
+        // Validate days is a valid positive number
+        if (!is_numeric($condition['value'])) {
+            return false;
+        }
+        $daysAfter = (int) $condition['value'];
+        if ($daysAfter < 0) {
+            return false;
+        }
+
+        // Create target date by adding days to today
+        $targetDate = now()->addDays($daysAfter)->toDateString();
+        $today = now()->toDateString();
+
+        // Return true if fieldDate is between today and target date (X days from now) (inclusive)
+        return $fieldDate >= $today && $fieldDate <= $targetDate;
     }
 
     private function checkLength($condition, $fieldValue, $operator = '==='): bool
@@ -534,10 +612,14 @@ class FormLogicConditionChecker
                 return $this->checkOnOrBefore($propertyCondition, $value);
             case 'on_or_after':
                 return $this->checkOnOrAfter($propertyCondition, $value);
-            case 'x_days_before':
-                return $this->checkXDaysBefore($propertyCondition, $value);
-            case 'x_days_after':
-                return $this->checkXDaysAfter($propertyCondition, $value);
+            case 'at_least_x_days_ago':
+                return $this->checkAtLeastXDaysAgo($propertyCondition, $value);
+            case 'at_least_x_days_from_now':
+                return $this->checkAtLeastXDaysFromNow($propertyCondition, $value);
+            case 'within_past_x_days':
+                return $this->checkWithinPastXDays($propertyCondition, $value);
+            case 'within_next_x_days':
+                return $this->checkWithinNextXDays($propertyCondition, $value);
             case 'is_empty':
                 return $this->checkIsEmpty($propertyCondition, $value);
             case 'past_week':
