@@ -7,7 +7,7 @@ it('can login to Forms', function () {
 
     $this->postJson('/login', [
         'email' => $user->email,
-        'password' => 'password',
+        'password' => 'Abcd@1234',
     ])
         ->assertSuccessful()
         ->assertJsonStructure(['token', 'expires_in'])
@@ -24,7 +24,7 @@ it('can fetch current user', function () {
 it('can log out', function () {
     $this->postJson('/login', [
         'email' => User::factory()->create()->email,
-        'password' => 'password',
+        'password' => 'Abcd@1234',
     ])->assertSuccessful();
 
     $this->assertAuthenticated();
@@ -43,7 +43,7 @@ it('cannot login if user is blocked', function () {
 
     $this->postJson('/login', [
         'email' => $user->email,
-        'password' => 'password',
+        'password' => 'Abcd@1234',
     ])
         ->assertStatus(422)
         ->assertJsonValidationErrors(['email' => 'Your account has been blocked. Please contact support.']);
