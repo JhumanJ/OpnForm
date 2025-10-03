@@ -24,7 +24,7 @@ class PasswordController extends Controller
                 'min:8', // Minimum password length
                 'regex:/[A-Za-z]/', // Include letters
                 'regex:/[0-9]/', // Include numbers
-                'regex:/[@$!%*#?&]/', // Include special characters
+                'regex:/[@$!%*#?&\-_+=.,:;<>^()[\]{}|~]/', // Include special characters (expanded set)
                 'confirmed',
             ],
         ]);
