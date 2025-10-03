@@ -201,10 +201,7 @@ export default {
       const phoneObj = parsePhoneNumber(this.compVal)
       if (phoneObj !== undefined && phoneObj) {
         if (phoneObj.country !== undefined && phoneObj.country) {
-          // Respect manual selection; infer only when none is set
-          if (!this.selectedCountryCode) {
-            this.selectedCountryCode = this.getCountryBy(phoneObj.country)
-          }
+          this.selectedCountryCode = this.getCountryBy(phoneObj.country)
         }
         this.inputVal = phoneObj.nationalNumber
       }
