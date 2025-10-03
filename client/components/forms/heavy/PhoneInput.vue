@@ -27,6 +27,7 @@
         :theme="resolvedTheme"
         :size="resolvedSize"
         :border-radius="resolvedBorderRadius"
+        :popover-width="width"
         :ui="{ container: ui.countrySelectWidth() }"
         :placeholder="'Select a country'"
         :uppercase-labels="true"
@@ -39,16 +40,16 @@
               class="-mt-[9px]! rounded"
               :country="props.option.code"
             />
-            <span class="truncate">{{ props.option.name }}</span>
-            <span class="text-gray-500 whitespace-nowrap">{{ props.option.dial_code && props.option.dial_code.startsWith('+') ? props.option.dial_code : '+' + props.option.dial_code }}</span>
+            <span class="truncate" :class="ui.option()">{{ props.option.name }}</span>
+            <span class="text-gray-500 whitespace-nowrap" :class="ui.option()">{{ props.option.dial_code && props.option.dial_code.startsWith('+') ? props.option.dial_code : '+' + props.option.dial_code }}</span>
           </div>
         </template>
         <template #selected="props">
           <div
-            class="flex items-center gap-2 w-full overflow-hidden ltr-only:pr-8 rtl-only:pl-8"
-            :class="ui.selectedMaxHeight()"
+            class="flex items-center gap-2 w-full overflow-hidden ltr-only:pr-1 rtl-only:pl-1"
+            :class="[ui.selectedMaxHeight(), ui.selected()]"
           >
-            <span class="text-sm whitespace-nowrap shrink-0">{{ props.option.dial_code && props.option.dial_code.startsWith('+') ? props.option.dial_code : '+' + props.option.dial_code }}</span>
+            <span class="whitespace-nowrap shrink-0" :class="ui.selected()">{{ props.option.dial_code && props.option.dial_code.startsWith('+') ? props.option.dial_code : '+' + props.option.dial_code }}</span>
             <country-flag
               :size="countryFlagSize"
               class="rounded-lg! ms-auto shrink-0"
@@ -94,6 +95,9 @@ import parsePhoneNumber from 'libphonenumber-js'
 import { phoneInputTheme } from '~/lib/forms/themes/phone-input.theme.js'
 import { useElementSize } from '@vueuse/core'
 
+// Emits
+const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
+
 // Props
 const props = defineProps({
   ...inputProps,
@@ -102,7 +106,7 @@ const props = defineProps({
 })
 
 // Composables
-const { compVal, resolvedSize, inputStyle, inputWrapperProps, ui } = useFormInput(props, undefined, {
+const { compVal, resolvedSize, inputStyle, inputWrapperProps, ui } = useFormInput(props, { emit }, {
   variants: phoneInputTheme
 })
 
