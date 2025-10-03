@@ -123,7 +123,6 @@ const countries = computed(() => {
 
 const phoneInputContainer = ref(null)
 const { width, height } = useElementSize(phoneInputContainer)
-console.log(width.value, height.value)
 
 const countryFlagSize = computed(() => {
   const size = resolvedSize.value
@@ -211,8 +210,3 @@ onMounted(() => {
   }
 })
 </script>
-<style>  
-:root {
-  --reka-popper-anchor-width: 1000px;
-}
-</style>
