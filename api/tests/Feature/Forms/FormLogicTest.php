@@ -695,3 +695,629 @@ it('cannot submit form with failed does_not_exist_in_submissions validation cond
             'message' => $validationMessage,
         ]);
 });
+
+it('can submit form with at_least_x_days_ago date logic condition when date is within range', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'at_least_x_days_ago',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '5',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with a date that is 7 days before today (should trigger the logic)
+    $testDate = now()->subDays(7)->format('Y-m-d');
+    $formData = [
+        'date_field' => $testDate,
+        'title' => 'Required field filled',
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
+
+it('cannot submit form with at_least_x_days_ago date logic when required field is missing', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'at_least_x_days_ago',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '5',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with a date that is 7 days before today but missing the required field
+    $testDate = now()->subDays(7)->format('Y-m-d');
+    $formData = [
+        'date_field' => $testDate,
+        // Missing 'title' field which should be required due to logic
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(422)
+        ->assertJson([
+            'message' => 'The Name field is required.',
+            'errors' => [
+                'title' => [
+                    'The Name field is required.',
+                ],
+            ],
+        ]);
+});
+
+it('can submit form with at_least_x_days_from_now date logic condition when date is within range', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'at_least_x_days_from_now',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '5',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with a date that is 7 days after today (should trigger the logic)
+    $testDate = now()->addDays(7)->format('Y-m-d');
+    $formData = [
+        'date_field' => $testDate,
+        'title' => 'Required field filled',
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
+
+it('cannot submit form with at_least_x_days_from_now date logic when required field is missing', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'at_least_x_days_from_now',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '5',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with a date that is 7 days after today but missing the required field
+    $testDate = now()->addDays(7)->format('Y-m-d');
+    $formData = [
+        'date_field' => $testDate,
+        // Missing 'title' field which should be required due to logic
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertStatus(422)
+        ->assertJson([
+            'message' => 'The Name field is required.',
+            'errors' => [
+                'title' => [
+                    'The Name field is required.',
+                ],
+            ],
+        ]);
+});
+
+it('can submit form with within_past_x_days date logic condition when date is within range', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'within_past_x_days',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '7',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with a date that is 3 days before today (within the 7 day range - should trigger)
+    $testDate = now()->subDays(3)->toDateString();
+    $formData = [
+        'date_field' => $testDate,
+        'title' => 'Required field filled',
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
+
+it('cannot submit form with within_past_x_days date logic when date is outside range', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'within_past_x_days',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '7',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with a date that is 10 days before today (outside the 7 day range - should NOT trigger)
+    $testDate = now()->subDays(10)->toDateString();
+    $formData = [
+        'date_field' => $testDate,
+        // No title field since logic should not trigger
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
+
+
+it('can submit form with within_next_x_days date logic condition when date is within range', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'within_next_x_days',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '7',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with a date that is 3 days after today (within the 7 day range - should trigger)
+    $testDate = now()->addDays(3)->toDateString();
+    $formData = [
+        'date_field' => $testDate,
+        'title' => 'Required field filled',
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
+
+it('cannot submit form with within_next_x_days date logic when date is outside range', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'within_next_x_days',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '7',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with a date that is 10 days after today (outside the 7 day range - should NOT trigger)
+    $testDate = now()->addDays(10)->toDateString();
+    $formData = [
+        'date_field' => $testDate,
+        // No title field since logic should not trigger
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
+
+it('validates within_past_x_days includes today', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'within_past_x_days',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '7',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with today's date (should trigger since range includes today)
+    $testDate = now()->toDateString();
+    $formData = [
+        'date_field' => $testDate,
+        'title' => 'Required field filled',
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
+
+it('validates within_next_x_days includes today', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'within_next_x_days',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => '7',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // Test with today's date (should trigger since range includes today)
+    $testDate = now()->toDateString();
+    $formData = [
+        'date_field' => $testDate,
+        'title' => 'Required field filled',
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
+
+it('validates date logic properly rejects invalid numeric condition values', function () {
+    $user = $this->actingAsUser();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace, [
+        'properties' => [
+            [
+                'id' => 'date_field',
+                'name' => 'Event Date',
+                'type' => 'date',
+                'hidden' => false,
+                'required' => true,
+            ],
+            [
+                'id' => 'title',
+                'name' => 'Name',
+                'type' => 'title',
+                'hidden' => false,
+                'required' => false,
+                'logic' => [
+                    'conditions' => [
+                        'operatorIdentifier' => 'and',
+                        'children' => [
+                            [
+                                'identifier' => 'date_field',
+                                'value' => [
+                                    'operator' => 'within_past_x_days',
+                                    'property_meta' => [
+                                        'id' => 'date_field',
+                                        'type' => 'date',
+                                    ],
+                                    'value' => 'abc',
+                                ],
+                            ],
+                        ],
+                    ],
+                    'actions' => ['require-answer'],
+                ],
+            ],
+        ],
+    ]);
+
+    // With invalid condition value, logic should not trigger (returns false)
+    // So the title field should NOT be required
+    $testDate = now()->subDays(3)->toDateString();
+    $formData = [
+        'date_field' => $testDate,
+        // No title field - logic should not trigger for invalid condition values
+    ];
+
+    $this->postJson(route('forms.answer', $form->slug), $formData)
+        ->assertSuccessful()
+        ->assertJson([
+            'type' => 'success',
+            'message' => 'Form submission saved.',
+        ]);
+});
