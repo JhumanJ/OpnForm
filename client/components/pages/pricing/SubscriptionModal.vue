@@ -88,7 +88,7 @@
                           <UButton
                             class="relative border border-white border-opacity-20 h-10 inline-flex px-4 items-center rounded-lg text-sm font-semibold w-full justify-center mt-4"
                             @click.prevent="onSelectPlan('default')"
-                            label="Start 3-day trial"
+                            label="Get Pro"
                           />
                         </TrackClick>
                         <UButton
