@@ -11,7 +11,7 @@
         sideOffset: 4
       }"
       :ui="{
-        content: (popoverWidth ? `w-[${popoverWidth}] ` : 'w-(--reka-popper-anchor-width) ') + 'bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + borderRadiusClass
+        content: 'w-(--reka-popper-anchor-width) bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + borderRadiusClass
       }"
     >
       <template #anchor>
@@ -286,8 +286,7 @@ export default {
     maxSelection: { type: Number, default: null },
     fuseOptions: { type: Object, default: () => ({}) },
     searchDebounceMs: { type: Number, default: 150 },
-    minSearchLength: { type: Number, default: 1 },
-    popoverWidth: { type: String, default: null }
+    minSearchLength: { type: Number, default: 1 }
   },
   emits: ['update:modelValue', 'update-options', 'focus', 'blur'],
   data () {

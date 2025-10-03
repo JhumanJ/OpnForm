@@ -7,6 +7,7 @@
     </template>
 
     <div
+      ref="phoneInputContainer"
       :id="id ? id : name"
       :name="name"
       :style="inputStyle"
@@ -15,7 +16,6 @@
       <v-select
         class="min-w-0"
         v-model="selectedCountryCode"
-        popover-width="full"
         input-class="ltr-only:rounded-r-none rtl:rounded-l-none!"
         :data="countries"
         :disabled="disabled || countries.length===1"
@@ -86,129 +86,129 @@
   </input-wrapper>
 </template>
 
-<script>
+<script setup>
 import { inputProps, useFormInput } from '../useFormInput.js'
 import countryCodes from '~/data/country_codes.json'
 import CountryFlag from 'vue-country-flag-next'
 import parsePhoneNumber from 'libphonenumber-js'
 import { phoneInputTheme } from '~/lib/forms/themes/phone-input.theme.js'
+import { useElementSize } from '@vueuse/core'
 
-export default {
-  phone: 'PhoneInput',
-  components: { CountryFlag },
-  props: {
-    ...inputProps,
-    canOnlyCountry: { type: Boolean, default: false },
-    unavailableCountries: { type: Array, default: () => [] }
-  },
+// Props
+const props = defineProps({
+  ...inputProps,
+  canOnlyCountry: { type: Boolean, default: false },
+  unavailableCountries: { type: Array, default: () => [] }
+})
 
-  setup (props, context) {
-    const formInput = useFormInput(props, context, {
-      variants: phoneInputTheme
-    })
-    const countryFlagSize = computed(() => {
-      const size = formInput.resolvedSize.value
-      return (size === 'xs' || size === 'sm') ? 'small' : 'normal'
-    })
-    return {
-      ...formInput,
-      countryFlagSize
-    }
-  },
+// Composables
+const { compVal, resolvedSize, inputStyle, inputWrapperProps, ui } = useFormInput(props, undefined, {
+  variants: phoneInputTheme
+})
 
-  data () {
-    return {
-      selectedCountryCode: null,
-      inputVal: null
-    }
-  },
+// Reactive data
+const selectedCountryCode = ref(null)
+const inputVal = ref(null)
 
-  computed: {
-    countries () {
-      return countryCodes.filter((item) => {
-        return !this.unavailableCountries.includes(item.code)
-      })
-    }
-  },
+// Computed properties
+const countries = computed(() => {
+  return countryCodes.filter((item) => {
+    return !props.unavailableCountries.includes(item.code)
+  })
+})
 
-  watch: {
-    inputVal: {
-      handler(val) {
-        if (!this.selectedCountryCode) return
-        
-        if (val && val.startsWith('0')) {
-          val = val.substring(1)
-        }
-        if (this.canOnlyCountry) {
-          this.compVal = (val) ? this.selectedCountryCode.code + this.selectedCountryCode.dial_code + val : this.selectedCountryCode.code + this.selectedCountryCode.dial_code
-        } else {
-          this.compVal = (val) ? this.selectedCountryCode.code + this.selectedCountryCode.dial_code + val : null
-        }
-      }
-    },
-    compVal () {
-      this.initState()
-    },
-    selectedCountryCode (newVal, oldVal) {
-      if (this.compVal && newVal && oldVal) {
-        this.compVal = this.compVal.replace(oldVal.code + oldVal.dial_code, newVal.code + newVal.dial_code)
-      }
-    }
-  },
+const phoneInputContainer = ref(null)
+const { width, height } = useElementSize(phoneInputContainer)
+console.log(width.value, height.value)
 
-  mounted () {
-    if (this.compVal) {
-      this.initState()
-    }
-    if (!this.selectedCountryCode) {
-      this.selectedCountryCode = this.getCountryBy()
-    }
-    if (!this.selectedCountryCode || this.countries.length === 1) {
-      this.selectedCountryCode = this.countries[0]
-    }
-  },
+const countryFlagSize = computed(() => {
+  const size = resolvedSize.value
+  return (size === 'xs' || size === 'sm') ? 'small' : 'normal'
+})
 
-  methods: {
-    getCountryBy (code = 'US', type = 'code') {
-      if (!code) code = 'US' // Default US
-      return this.countries.find((item) => {
-        return item[type] === code
-      }) ?? null
-    },
-    onInput (event) {
-      this.inputVal = event?.target?.value.replace(/[^0-9]/g, '')
+// Methods
+const getCountryBy = (code = 'US', type = 'code') => {
+  if (!code) code = 'US' // Default US
+  return countries.value.find((item) => {
+    return item[type] === code
+  }) ?? null
+}
 
-    },
-    onChangeCountryCode () {
-      if (!this.selectedCountryCode && this.countries.length > 0) {
-        this.selectedCountryCode = this.countries[0]
-      }
-      if (this.canOnlyCountry && (this.inputVal === null || this.inputVal === '' || !this.inputVal)) {
-        this.compVal = this.selectedCountryCode.code + this.selectedCountryCode.dial_code
-      }
-    },
-    initState () {
-      if (this.compVal === null) {
-        return
-      }
-      if (!this.compVal?.startsWith('+')) {
-        // If the user already selected a country, don't override it with inference
-        if (!this.selectedCountryCode) {
-          this.selectedCountryCode = this.getCountryBy(this.compVal.substring(2, 0))
-        }
-      }
+const onInput = (event) => {
+  inputVal.value = event?.target?.value.replace(/[^0-9]/g, '')
+}
 
-      const phoneObj = parsePhoneNumber(this.compVal)
-      if (phoneObj !== undefined && phoneObj) {
-        if (phoneObj.country !== undefined && phoneObj.country) {
-          // Respect manual selection; infer only when none is set
-          if (!this.selectedCountryCode) {
-            this.selectedCountryCode = this.getCountryBy(phoneObj.country)
-          }
-        }
-        this.inputVal = phoneObj.nationalNumber
-      }
-    }
+const onChangeCountryCode = () => {
+  if (!selectedCountryCode.value && countries.value.length > 0) {
+    selectedCountryCode.value = countries.value[0]
+  }
+  if (props.canOnlyCountry && (inputVal.value === null || inputVal.value === '' || !inputVal.value)) {
+    compVal.value = selectedCountryCode.value.code + selectedCountryCode.value.dial_code
   }
 }
+
+const initState = () => {
+  if (compVal.value === null) {
+    return
+  }
+  if (!compVal.value?.startsWith('+')) {
+    // If the user already selected a country, don't override it with inference
+    if (!selectedCountryCode.value) {
+      selectedCountryCode.value = getCountryBy(compVal.value.substring(2, 0))
+    }
+  }
+
+  const phoneObj = parsePhoneNumber(compVal.value)
+  if (phoneObj !== undefined && phoneObj) {
+    if (phoneObj.country !== undefined && phoneObj.country) {
+      // Respect manual selection; infer only when none is set
+      if (!selectedCountryCode.value) {
+        selectedCountryCode.value = getCountryBy(phoneObj.country)
+      }
+    }
+    inputVal.value = phoneObj.nationalNumber
+  }
+}
+
+// Watchers
+watch(inputVal, (val) => {
+  if (!selectedCountryCode.value) return
+  
+  if (val && val.startsWith('0')) {
+    val = val.substring(1)
+  }
+  if (props.canOnlyCountry) {
+    compVal.value = (val) ? selectedCountryCode.value.code + selectedCountryCode.value.dial_code + val : selectedCountryCode.value.code + selectedCountryCode.value.dial_code
+  } else {
+    compVal.value = (val) ? selectedCountryCode.value.code + selectedCountryCode.value.dial_code + val : null
+  }
+})
+
+watch(() => compVal.value, () => {
+  initState()
+})
+
+watch(selectedCountryCode, (newVal, oldVal) => {
+  if (compVal.value && newVal && oldVal) {
+    compVal.value = compVal.value.replace(oldVal.code + oldVal.dial_code, newVal.code + newVal.dial_code)
+  }
+})
+
+// Lifecycle
+onMounted(() => {
+  if (compVal.value) {
+    initState()
+  }
+  if (!selectedCountryCode.value) {
+    selectedCountryCode.value = getCountryBy()
+  }
+  if (!selectedCountryCode.value || countries.value.length === 1) {
+    selectedCountryCode.value = countries.value[0]
+  }
+})
 </script>
+<style>  
+:root {
+  --reka-popper-anchor-width: 1000px;
+}
+</style>
