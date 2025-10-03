@@ -122,7 +122,7 @@ const countries = computed(() => {
 })
 
 const phoneInputContainer = ref(null)
-const { width, height } = useElementSize(phoneInputContainer)
+const { width } = useElementSize(phoneInputContainer)
 
 const countryFlagSize = computed(() => {
   const size = resolvedSize.value
