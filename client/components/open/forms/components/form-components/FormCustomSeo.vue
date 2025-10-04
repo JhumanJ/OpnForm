@@ -112,8 +112,8 @@ const { content: form } = storeToRefs(workingFormStore)
 const { current: workspace } = useCurrentWorkspace()
 
 const customDomainOptions = computed(() => {
-  return workspace.value.custom_domains
-    ? workspace.value.custom_domains.map((domain) => {
+  return workspace?.value?.custom_domains
+    ? workspace?.value?.custom_domains.map((domain) => {
         return {
           name: domain,
           value: domain,
