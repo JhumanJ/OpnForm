@@ -211,85 +211,92 @@ export function useTableState(form, withActions = false) {
   /*                              Column ordering                               */
   /* -------------------------------------------------------------------------- */
 
-  // Helper function to set a specific column to a specific index
+  // Column order for TanStack Table (array of column IDs)
+  const columnOrder = computed({
+    get() {
+      try {
+        // Return all column IDs in the correct order
+        const cols = tableColumns.value || []
+        return cols.map(col => col.id)
+      } catch (error) {
+        console.error('Error in columnOrder computed:', error)
+        return []
+      }
+    },
+    set(newOrder) {
+      try {
+        // newOrder is an array of column IDs
+        // Filter out 'select' and 'actions' columns as they're managed separately
+        const dataColumnIds = newOrder.filter(id => !['select', 'actions'].includes(id))
+        
+        // Update preferences for each column based on the new order
+        dataColumnIds.forEach((id, index) => {
+          columnPreferences.setColumnPreference(id, { order: index })
+        })
+        
+        // Give high order numbers to columns not in the new order
+        const allColumnIds = columnConfigurations.value.map(c => c.id)
+        allColumnIds.forEach(id => {
+          if (!dataColumnIds.includes(id)) {
+            columnPreferences.setColumnPreference(id, { order: 9999 })
+          }
+        })
+      } catch (error) {
+        console.error('Error in columnOrder setter:', error)
+      }
+    }
+  })
+
+  // Helper function to set a specific column to a specific index (used by drag-and-drop)
   const setColumnOrder = (columnId, newIndex) => {
     try {
-      // Get the current list of VISIBLE column IDs, already in the correct order
-      let visibleColumnIds = orderedColumns.value
-        .filter(c => columnVisibility.value[c.id] !== false)
-        .map(c => c.id)
-
-      // Perform the move on this array
-      const currentIndex = visibleColumnIds.indexOf(columnId)
-      if (currentIndex > -1) {
-        visibleColumnIds.splice(currentIndex, 1)
-      }
-      visibleColumnIds.splice(newIndex, 0, columnId)
-
-      // Update the preferences based on the new order
-      const allColumnIds = columnConfigurations.value.map(c => c.id)
-      allColumnIds.forEach(id => {
-        const visibleIndex = visibleColumnIds.indexOf(id)
-        if (visibleIndex !== -1) {
-          // It's visible, set its order
-          columnPreferences.setColumnPreference(id, { order: visibleIndex })
-        } else {
-          // It's hidden, give it a high order number
-          columnPreferences.setColumnPreference(id, { order: 9999 })
-        }
-      })
+      // Get current column order
+      const currentOrder = columnOrder.value
+      
+      // Find the column in the current order
+      const currentIndex = currentOrder.indexOf(columnId)
+      if (currentIndex === -1) return
+      
+      // Create new order by moving the column
+      const newOrder = [...currentOrder]
+      newOrder.splice(currentIndex, 1)
+      newOrder.splice(newIndex, 0, columnId)
+      
+      // Update via columnOrder setter (triggers TanStack Table update)
+      columnOrder.value = newOrder
     } catch (error) {
       console.error('Error in setColumnOrder:', error)
     }
   }
 
-  // Ordered columns for display
-  const orderedColumns = computed({
-    get() {
-      try {
-        const prefs = columnPreferences.preferences.value
-        const configCols = columnConfigurations.value || []
-        const columns = Array.isArray(configCols) ? [...configCols] : []
+  // Ordered columns for display (read-only getter)
+  const orderedColumns = computed(() => {
+    try {
+      const prefs = columnPreferences.preferences.value
+      const configCols = columnConfigurations.value || []
+      const columns = Array.isArray(configCols) ? [...configCols] : []
 
-        // Sort by order preference, then by original position
-        columns.sort((a, b) => {
-          const prefA = prefs.columns[a.id] || {}
-          const prefB = prefs.columns[b.id] || {}
+      // Sort by order preference, then by original position
+      columns.sort((a, b) => {
+        const prefA = prefs.columns[a.id] || {}
+        const prefB = prefs.columns[b.id] || {}
 
-          const orderA = prefA.order ?? 9999
-          const orderB = prefB.order ?? 9999
+        const orderA = prefA.order ?? 9999
+        const orderB = prefB.order ?? 9999
 
-          if (orderA !== orderB) {
-            return orderA - orderB
-          }
-
-          // Fallback to original order
-          return configCols.indexOf(a) - configCols.indexOf(b)
-        })
-
-        return columns
-      } catch (error) {
-        console.error('Error in orderedColumns computed:', error)
-        return []
-      }
-    },
-    set(newOrderColumns) {
-      // Logic to update column order preferences
-      const allColumnIds = (columnConfigurations.value || []).map(c => c.id)
-      const newOrderIds = newOrderColumns.map(c => c.id)
-
-      allColumnIds.forEach(id => {
-        const order = newOrderIds.indexOf(id)
-        if (order !== -1) {
-          // If the column is in the new order, set its order
-          columnPreferences.setColumnPreference(id, { order })
-        } else {
-          // If it's not (e.g., it's a hidden column not in the ordered list),
-          // assign a high order number to keep it at the end if it becomes visible
-          columnPreferences.setColumnPreference(id, { order: 9999 })
+        if (orderA !== orderB) {
+          return orderA - orderB
         }
+
+        // Fallback to original order
+        return configCols.indexOf(a) - configCols.indexOf(b)
       })
-    },
+
+      return columns
+    } catch (error) {
+      console.error('Error in orderedColumns computed:', error)
+      return []
+    }
   })
 
   // Final array of columns to be passed to the table component
@@ -407,6 +414,7 @@ export function useTableState(form, withActions = false) {
     columnPinning,
     columnWrapping,
     columnSizing,
+    columnOrder, // TanStack Table column order state
     
     // Preference helpers (for components)
     getColumnPreference,
@@ -416,8 +424,6 @@ export function useTableState(form, withActions = false) {
     toggleColumnVisibility: toggleColumnVisibility,
     toggleColumnWrapping,
     toggleColumnPin: toggleColumnPin,
-    toggleColumnWrap: columnPreferences.toggleColumnWrap,
-    setColumnsOrder: columnPreferences.setColumnsOrder,
     handleColumnResize,
   }
 } 

@@ -369,6 +369,11 @@ const triggerSubmit = () => {
         }
         
         emit('submitted', true)
+
+        // Ensure the submitted view starts at the top (parity with page change scroll)
+        if (import.meta.client) {
+          window.scrollTo({ top: 0, behavior: 'smooth' })
+        }
       } else {
         console.warn('Form submission failed via composable, but no error thrown?')
         alert.error(t('forms.submission_error'))

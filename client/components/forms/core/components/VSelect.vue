@@ -11,7 +11,7 @@
         sideOffset: 4
       }"
       :ui="{
-        content: 'w-(--reka-popper-anchor-width) bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + borderRadiusClass
+        content: 'bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + borderRadiusClass
       }"
     >
       <template #anchor>
@@ -97,10 +97,13 @@
       </template>
 
       <template #content>
-        <ul
+        <div
           tabindex="-1"
           role="listbox"
+          ref="scrollRef"
           :class="variantSlots.dropdown()"
+          class="w-(--reka-popper-anchor-width)"
+          :style="popoverContentStyle"
         >
           <div
             v-if="isSearchable"
@@ -143,28 +146,71 @@
             v-if="filteredOptions.length > 0"
             :class="variantSlots.optionsContainer()"
           >
-            <li
-              v-for="item in filteredOptions"
-              :key="item[optionKey]"
-              role="option"
-              :style="optionStyle"
-              :class="[
-                variantSlots.option(),
-                dropdownClass,
-                { 'pr-9': multiple},
-                { 
-                  'opacity-50 cursor-not-allowed': disabledOptionsMap[item[optionKey]],
-                  'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': !disabledOptionsMap[item[optionKey]]
-                }
-              ]"
-              @click.stop="select(item)"
+            <div
+              v-if="virtualizer"
+              role="presentation"
+              :style="{ height: virtualizer.getTotalSize() + 'px', width: '100%', position: 'relative' }"
             >
-              <slot
-                name="option"
-                :option="item"
-                :selected="isSelected(item)"
-              />
-            </li>
+              <div
+                v-for="virtualItem in virtualizer.getVirtualItems()"
+                :key="filteredOptions[virtualItem.index] ? filteredOptions[virtualItem.index][optionKey] : virtualItem.index"
+                role="option"
+                :aria-selected="filteredOptions[virtualItem.index] ? isSelected(filteredOptions[virtualItem.index]) : false"
+                :data-index="virtualItem.index"
+                :ref="virtualizer ? virtualizer.measureElement : null"
+                :style="[
+                  optionStyle,
+                  {
+                    position: 'absolute',
+                    top: virtualItem.start + 'px',
+                    left: '0px',
+                    width: '100%'
+                  }
+                ]"
+                :class="[
+                  variantSlots.option(),
+                  dropdownClass,
+                  { 'pr-9': multiple},
+                  { 
+                    'opacity-50 cursor-not-allowed': filteredOptions[virtualItem.index] && disabledOptionsMap[filteredOptions[virtualItem.index][optionKey]],
+                    'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': filteredOptions[virtualItem.index] && !disabledOptionsMap[filteredOptions[virtualItem.index][optionKey]]
+                  }
+                ]"
+                @click.stop="filteredOptions[virtualItem.index] && select(filteredOptions[virtualItem.index])"
+              >
+                <slot
+                  v-if="filteredOptions[virtualItem.index]"
+                  name="option"
+                  :option="filteredOptions[virtualItem.index]"
+                  :selected="isSelected(filteredOptions[virtualItem.index])"
+                />
+              </div>
+            </div>
+            <div v-else>
+              <div
+                v-for="option in filteredOptions"
+                :key="option[optionKey]"
+                role="option"
+                :aria-selected="isSelected(option)"
+                :style="optionStyle"
+                :class="[
+                  variantSlots.option(),
+                  dropdownClass,
+                  { 'pr-9': multiple},
+                  { 
+                    'opacity-50 cursor-not-allowed': disabledOptionsMap[option[optionKey]],
+                    'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': !disabledOptionsMap[option[optionKey]]
+                  }
+                ]"
+                @click.stop="select(option)"
+              >
+                <slot
+                  name="option"
+                  :option="option"
+                  :selected="isSelected(option)"
+                />
+              </div>
+            </div>
           </div>
           <slot
             v-else-if="!loading && !(allowCreation && searchTerm)"
@@ -180,7 +226,7 @@
             v-if="allowCreation && searchTerm"
             class="border-t border-neutral-300 p-1"
           >
-            <li
+            <div
               role="option"
               :style="optionStyle"
               :class="[
@@ -190,13 +236,13 @@
               ]"
               @click.stop="createOption(searchTerm)"
             >
-                            {{ $t('forms.select.create') }} <span :class="variantSlots.createLabel()">{{
+              {{ $t('forms.select.create') }} <span :class="variantSlots.createLabel()">{{
                 searchTerm
               }}</span>
-            </li>
+            </div>
           </div>
           <slot name="after-options" />
-        </ul>
+        </div>
       </template>
     </UPopover>
   </div>
@@ -207,6 +253,7 @@ import debounce from 'debounce'
 import Fuse from 'fuse.js'
 import { tv } from "tailwind-variants"
 import { vSelectTheme } from "~/lib/forms/themes/v-select.theme.js"
+import { useVirtualizer } from '@tanstack/vue-virtual'
 
 export default {
   name: 'VSelect',
@@ -231,7 +278,6 @@ export default {
     placeholder: { type: String, default: null },
     uppercaseLabels: { type: Boolean, default: true },
     showClearButton: { type: Boolean, default: true },
-    // Theme configuration as strings for tailwind-variants
     theme: {type: String, default: null},
     size: {type: String, default: null}, 
     borderRadius: {type: String, default: null},
@@ -239,15 +285,25 @@ export default {
     allowCreation: { type: Boolean, default: false },
     disabled: { type: Boolean, default: false },
     minSelection: { type: Number, default: null },
-    maxSelection: { type: Number, default: null }
+    maxSelection: { type: Number, default: null },
+    fuseOptions: { type: Object, default: () => ({}) },
+    searchDebounceMs: { type: Number, default: 150 },
+    minSearchLength: { type: Number, default: 1 },
+    // Explicit popover width control. Accepts number (px) or CSS length string.
+    popoverWidth: { type: [String, Number], default: null }
   },
   emits: ['update:modelValue', 'update-options', 'focus', 'blur'],
   data () {
     return {
       isOpen: false,
       searchTerm: '',
+        debouncedTerm: '',
       defaultValue: this.modelValue ?? null,
-      isFocused: false
+      isFocused: false,
+        virtualizer: null,
+        fuse: null,
+        fuseIndex: null,
+        updateDebouncedTerm: null
     }
   },
   computed: {
@@ -296,6 +352,12 @@ export default {
         '--tw-ring-color': this.color
       }
     },
+    popoverContentStyle () {
+      const widthValue = this.popoverWidth !== null && this.popoverWidth !== undefined
+        ? (typeof this.popoverWidth === 'number' ? `${this.popoverWidth}px` : String(this.popoverWidth))
+        : 'var(--reka-popper-anchor-width)'
+      return { width: widthValue }
+    },
     debouncedRemote () {
       if (this.remote) {
         return debounce(this.remote, 300)
@@ -304,18 +366,24 @@ export default {
     },
     filteredOptions () {
       if (!this.data) return []
-      if (!this.searchable || this.remote || this.searchTerm === '') {
+
+      // If not searchable, remote search is used, or term too short/empty, return raw data
+      if (!this.searchable || this.remote) {
         return this.data
       }
 
-      // Fuse search
-      const fuzeOptions = {
-        keys: this.searchKeys
+      const term = this.debouncedTerm
+      if (!term || term.length < this.minSearchLength) {
+        return this.data
       }
-      const fuse = new Fuse(this.data, fuzeOptions)
-      return fuse.search(this.searchTerm).map((res) => {
-        return res.item
-      })
+
+      // Ensure Fuse is ready
+      if (!this.fuse) {
+        this.buildFuse()
+      }
+      if (!this.fuse) return this.data
+
+      return this.fuse.search(term).map((res) => res.item)
     },
     isSearchable () {
       return this.searchable || this.remote !== null || this.allowCreation
@@ -340,17 +408,138 @@ export default {
         map[item[this.optionKey]] = !isSelected && this.maxSelectionReached
       }
       return map
+    },
+    estimatedItemSizePx () {
+      switch (this.resolvedSize) {
+        case 'xs': return 28
+        case 'sm': return 32
+        case 'lg': return 52
+        case 'md':
+        default: return 40
+      }
     }
   },
   watch: {
     searchTerm (val) {
-      if (!this.debouncedRemote) return
-      if ((this.remote && val) || (val === '' && !this.modelValue) || (val === '' && this.isOpen)) {
-        return this.debouncedRemote(val)
+      // Remote search path
+      if (this.debouncedRemote) {
+        if ((this.remote && val) || (val === '' && !this.modelValue) || (val === '' && this.isOpen)) {
+          this.debouncedRemote(val)
+        }
+      } else {
+        // Local search path: debounce updates
+        if (this.updateDebouncedTerm) this.updateDebouncedTerm(val)
+      }
+    },
+    data () {
+      // Only (re)build fuse when using local search
+      if (this.searchable && !this.remote) {
+        this.buildFuse()
+      } else {
+        this.fuse = null
+        this.fuseIndex = null
+      }
+    },
+    isOpen (val) {
+      if (val) {
+        this.$nextTick(() => {
+          this.setupVirtualizer()
+        })
+      }
+    },
+    filteredOptions () {
+      if (this.isOpen) {
+        this.$nextTick(() => {
+          this.setupVirtualizer()
+        })
+      }
+    },
+    resolvedSize () {
+      if (this.isOpen) {
+        this.$nextTick(() => {
+          this.setupVirtualizer()
+        })
+      }
+    },
+    popoverWidth () {
+      if (this.isOpen) {
+        this.$nextTick(() => {
+          this.setupVirtualizer()
+        })
       }
     }
   },
+  mounted () {
+    // Initialize fuse for local search and debounce handler
+    this.buildFuse()
+    this.updateDebouncedTerm = debounce((val) => {
+      this.debouncedTerm = val
+    }, this.searchDebounceMs)
+  },
+  beforeUnmount () {
+    // Clean up virtualizer if it exists
+    if (this.virtualizer) {
+      this.virtualizer = null
+    }
+    if (this.updateDebouncedTerm && this.updateDebouncedTerm.clear) {
+      this.updateDebouncedTerm.clear()
+    }
+  },
   methods: {
+    buildFuse () {
+      if (!this.data || !Array.isArray(this.data) || this.data.length === 0) {
+        this.fuse = null
+        this.fuseIndex = null
+        return
+      }
+
+      const options = Object.assign({
+        keys: this.searchKeys,
+        threshold: 0.3,
+        ignoreLocation: true,
+        includeScore: false
+      }, this.fuseOptions || {})
+
+      try {
+        const index = Fuse.createIndex(options.keys, this.data)
+        this.fuseIndex = index
+        this.fuse = new Fuse(this.data, options, index)
+      } catch {
+        // Fallback without precomputed index
+        this.fuse = new Fuse(this.data, options)
+        this.fuseIndex = null
+      }
+    },
+    setupVirtualizer () {
+      if (!this.$refs.scrollRef || !this.filteredOptions || this.filteredOptions.length === 0) {
+        this.virtualizer = null
+        return
+      }
+      
+      // Clean up existing virtualizer
+      if (this.virtualizer) {
+        this.virtualizer = null
+      }
+      
+      // Skip virtualization if list fits in visible height
+      const dropdownEl = this.$refs.scrollRef
+      const maxVisibleHeight = dropdownEl && dropdownEl.clientHeight ? dropdownEl.clientHeight : 0
+      const estimatedItemSize = this.estimatedItemSizePx
+      const estimatedTotal = this.filteredOptions.length * estimatedItemSize
+      if (maxVisibleHeight && estimatedTotal <= maxVisibleHeight) {
+        this.virtualizer = null
+        return
+      }
+
+      this.virtualizer = useVirtualizer({
+        count: this.filteredOptions.length,
+        getScrollElement: () => this.$refs.scrollRef,
+        estimateSize: () => this.estimatedItemSizePx,
+        overscan: 5,
+        // Dynamic measurement so item height adapts to content
+        measureElement: (el) => (el ? el.getBoundingClientRect().height : 0)
+      })
+    },
     isSelected (value) {
       if (!this.modelValue) return false
 
@@ -445,4 +634,3 @@ export default {
   }
 }
 </script>
-

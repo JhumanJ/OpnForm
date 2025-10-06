@@ -70,7 +70,15 @@ class RegisterController extends Controller
         $rules = [
             'name' => 'required|max:255',
             'email' => 'required|email:filter|max:255|unique:users|indisposable',
-            'password' => 'required|min:6|confirmed',
+            'password' => [
+                'required',
+                'string',
+                'min:8', // Minimum password length
+                'regex:/[A-Za-z]/', // Include letters
+                'regex:/[0-9]/', // Include numbers
+                'regex:/[@$!%*#?&\-_+=.,:;<>^()[\]{}|~]/', // Include special characters (expanded set)
+                'confirmed',
+            ],
             'hear_about_us' => 'required|string',
             'appsumo_license' => ['nullable'],
             'invite_token' => ['nullable', 'string'],

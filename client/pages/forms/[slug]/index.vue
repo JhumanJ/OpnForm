@@ -46,7 +46,7 @@
         <OpenCompleteForm
           ref="openCompleteForm"
           :form="form"
-          class="mb-10"
+          class="mb-20"
           :dark-mode="darkMode"
           :mode="FormMode.LIVE"
           @password-entered="passwordEntered"
@@ -283,7 +283,10 @@ useHead({
       content: 'black-translucent'
     },
   ] : {},
-  script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' }]
+  script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' }],
+  style: computed(() => form.value?.custom_css ? [
+    { key: 'custom-css', textContent: form.value.custom_css }
+  ] : [])
 })
 
 definePageMeta({
