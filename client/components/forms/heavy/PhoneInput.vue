@@ -161,11 +161,19 @@ const initState = () => {
     }
   }
 
-  const phoneObj = parsePhoneNumber(compVal.value)
+  // Parse only the dial part (strip ISO code prefix like "US")
+  let toParse = compVal.value
+  if (!toParse.startsWith('+')) {
+    const plusIndex = toParse.indexOf('+')
+    if (plusIndex >= 0) {
+      toParse = toParse.substring(plusIndex)
+    }
+  }
+  const phoneObj = parsePhoneNumber(toParse)
   if (phoneObj !== undefined && phoneObj) {
     if (phoneObj.country !== undefined && phoneObj.country) {
-      // Respect manual selection; infer only when none is set
-      if (!selectedCountryCode.value) {
+      // Sync selection to parsed country when different or not set
+      if (!selectedCountryCode.value || selectedCountryCode.value.code !== phoneObj.country) {
         selectedCountryCode.value = getCountryBy(phoneObj.country)
       }
     }
