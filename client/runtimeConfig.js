@@ -35,4 +35,6 @@ export default {
    */
   apiSecret: process.env.NUXT_API_SECRET || '',
   privateApiBase: process.env.NUXT_PRIVATE_API_BASE || null,
+  // Comma-separated list of domains allowed to embed the entire platform (server-only)
+  allowedEmbedDomains: process.env.NUXT_ALLOWED_EMBED_DOMAINS || process.env.NUXT_PUBLIC_ALLOWED_EMBED_DOMAINS || '',
 }
