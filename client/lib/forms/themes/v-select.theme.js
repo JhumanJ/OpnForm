@@ -11,12 +11,12 @@ export const vSelectTheme = {
     ],
     buttonInner: [
       'flex items-center',
-      'ltr-only:pr-8 rtl-only:pl-8'
+      'ltr-only:pr-6 rtl-only:pl-6'
     ],
     placeholder: [
       'text-neutral-400 dark:text-neutral-500 w-full ltr:text-left rtl:text-right! truncate ltr:pr-3 rtl:pl-3 rtl:pr-0!'
     ],
-    chevronGradient: 'absolute inset-y-0 ltr-only:right-6 rtl-only:left-6 w-10 pointer-events-none -z-1',
+    chevronGradient: 'absolute inset-y-0 ltr-only:right-6 rtl-only:left-6 w-10 pointer-events-none',
     chevronContainer: [
       'absolute inset-y-0 ltr-only:right-0 rtl-only:left-0 rtl-only:right-auto!',
       'flex items-center ltr-only:pr-2 rtl-only:pl-2 rtl-only:pr-0! pointer-events-none'

@@ -22,6 +22,7 @@
           multiple
           placeholder="Tags"
           class="hidden sm:block"
+          :ui="{ content: 'min-w-fit' }"
         />
 
         <!-- Clear button -->

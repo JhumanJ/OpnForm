@@ -11,7 +11,7 @@
         sideOffset: 4
       }"
       :ui="{
-        content: (popoverWidth ? `w-[${popoverWidth}] ` : 'w-(--reka-popper-anchor-width) ') + 'bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + borderRadiusClass
+        content: 'bg-white dark:!bg-notion-dark-light shadow-xl z-30 overflow-auto ' + borderRadiusClass
       }"
     >
       <template #anchor>
@@ -102,6 +102,8 @@
           role="listbox"
           ref="scrollRef"
           :class="variantSlots.dropdown()"
+          class="w-(--reka-popper-anchor-width)"
+          :style="popoverContentStyle"
         >
           <div
             v-if="isSearchable"
@@ -287,7 +289,8 @@ export default {
     fuseOptions: { type: Object, default: () => ({}) },
     searchDebounceMs: { type: Number, default: 150 },
     minSearchLength: { type: Number, default: 1 },
-    popoverWidth: { type: String, default: null }
+    // Explicit popover width control. Accepts number (px) or CSS length string.
+    popoverWidth: { type: [String, Number], default: null }
   },
   emits: ['update:modelValue', 'update-options', 'focus', 'blur'],
   data () {
@@ -348,6 +351,12 @@ export default {
       return {
         '--tw-ring-color': this.color
       }
+    },
+    popoverContentStyle () {
+      const widthValue = this.popoverWidth !== null && this.popoverWidth !== undefined
+        ? (typeof this.popoverWidth === 'number' ? `${this.popoverWidth}px` : String(this.popoverWidth))
+        : 'var(--reka-popper-anchor-width)'
+      return { width: widthValue }
     },
     debouncedRemote () {
       if (this.remote) {
@@ -446,6 +455,13 @@ export default {
       }
     },
     resolvedSize () {
+      if (this.isOpen) {
+        this.$nextTick(() => {
+          this.setupVirtualizer()
+        })
+      }
+    },
+    popoverWidth () {
       if (this.isOpen) {
         this.$nextTick(() => {
           this.setupVirtualizer()
