@@ -26,6 +26,8 @@ export default {
     SENTRY_TRACES_SAMPLE_RATE: parseNumber(process.env.SENTRY_TRACES_SAMPLE_RATE),
     SENTRY_REPLAY_SAMPLE_RATE: parseNumber(process.env.SENTRY_REPLAY_SAMPLE_RATE),
     SENTRY_ERROR_REPLAY_SAMPLE_RATE: parseNumber(process.env.SENTRY_ERROR_REPLAY_SAMPLE_RATE),
+
+    clarityProjectId: process.env.NUXT_PUBLIC_CLARITY_PROJECT_ID || null,
   },
 
   /**

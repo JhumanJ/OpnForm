@@ -108,6 +108,7 @@
       >
         <ImpersonateUser :user="userInfo" />
         <SendPasswordResetEmail :user="userInfo" />
+        <ClarityLink :user="userInfo" />
       </div>
       <div
         class="w-full grid gap-2 grid-cols-1 lg:grid-cols-2"
