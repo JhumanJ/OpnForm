@@ -35,7 +35,7 @@
     >
       <template #selected="{ option }">
         <template v-if="multiple">
-          <div class="flex items-center truncate mr-6">
+          <div class="flex items-center truncate ltr-only:mr-6 rtl-only:ml-6">
             <span
               class="truncate"
               :class="ui.selected()"
@@ -50,7 +50,7 @@
             :option="option"
             :option-name="getOptionName(option)"
           >
-            <div class="flex items-center truncate mr-6">
+            <div class="flex items-center truncate ltr-only:mr-6 rtl-only:ml-6">
               <div :class="ui.selected()">
                 {{ getOptionName(option) }}
               </div>

@@ -12,6 +12,7 @@ use Illuminate\Validation\ValidationException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Request;
+use App\Rules\CssOnlyRule;
 
 /**
  * Abstract class to validate create/update forms
@@ -67,7 +68,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
         ];
 
         // Log to both default channel and Slack
-        if (!in_array(app()->environment(), ['testing'])) {
+        if (!app()->environment('testing')) {
             Log::channel('slack_errors')->warning(
                 'Frontend validation bypass detected in form submission',
                 $logData
@@ -135,12 +136,13 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
 
             // Custom Code
             'custom_code' => 'string|nullable',
+            'custom_css' => ['string', 'nullable', new CssOnlyRule()],
 
             // Submission
             'submit_button_text' => 'nullable|string|max:50',
             're_fillable' => 'boolean',
             're_fill_button_text' => 'nullable|string|max:50',
-            'submitted_text' => 'string|max:2000',
+            'submitted_text' => 'string|max:10000',
             'redirect_url' => 'nullable|string',
             'database_fields_update' => 'nullable|array',
             'max_submissions_count' => 'integer|nullable|min:1',

@@ -214,7 +214,7 @@ trait TestHelpers
 
         $this->postJson('/login', [
             'email' => $user->email,
-            'password' => 'password',
+            'password' => 'Abcd@1234',
         ])->assertSuccessful();
 
         return $user;

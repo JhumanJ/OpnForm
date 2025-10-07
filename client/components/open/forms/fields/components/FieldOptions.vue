@@ -387,11 +387,13 @@
         name="use_simple_text_input"
         label="Use simple text input"
       />
+
       <template v-if="field.type === 'phone_number' && !field.use_simple_text_input">
         <select-input
+          class="mt-3"
           v-model="field.unavailable_countries"
-          class="mt-4"
-          wrapper-class="relative"
+          popover-width="full"
+          input-class="ltr-only:rounded-r-none rtl:rounded-l-none!"
           :options="allCountries"
           :multiple="true"
           :searchable="true"
@@ -408,14 +410,14 @@
             </div>
           </template>
           <template #option="{ option, selected }">
-            <div class="flex items-center space-x-2 hover:text-white">
+            <div class="flex items-center gap-2 max-w-full">
               <country-flag
                 size="normal"
-                class="!-mt-[9px]"
+                class="-mt-[9px]! rounded"
                 :country="option.code"
               />
-              <span class="grow">{{ option.name }}</span>
-              <span>{{ option.dial_code }}</span>
+              <span class="truncate">{{ option.name }}</span>
+              <span class="text-gray-500">{{ option.dial_code }}</span>
             </div>
             <span
               v-if="selected"
@@ -463,6 +465,7 @@
         :form="field"
         :options="prefillSelectsOptions"
         label="Pre-filled value"
+        :searchable="shouldEnableSelectSearch"
         :multiple="field.type === 'multi_select'"
       />
       <template v-else-if="field.type === 'matrix'">
@@ -747,6 +750,13 @@ export default {
           value: option.id
         }
       })
+    },
+    selectionOptionsCount() {
+      if (!['select', 'multi_select'].includes(this.field.type)) return 0
+      return Array.isArray(this.field[this.field.type]?.options) ? this.field[this.field.type].options.length : 0
+    },
+    shouldEnableSelectSearch() {
+      return ['select', 'multi_select'].includes(this.field.type) && this.selectionOptionsCount > 5
     },
     timezonesOptions() {
       if (this.field.type !== 'date') return []

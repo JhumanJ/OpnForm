@@ -16,7 +16,7 @@
         <OpenCompleteForm
           ref="openCompleteForm"
           :form="form"
-          class="grow flex flex-col"
+          class="grow flex flex-col mb-20"
           :dark-mode="darkMode"
           :mode="FormMode.LIVE"
           @password-entered="passwordEntered"
@@ -39,6 +39,7 @@ import {
 } from '~/lib/forms/public-page'
 import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import { formsApi } from '~/api'
+import { customDomainUsed } from '~/lib/utils.js'
 
 const crisp = useCrisp()
 const appStore = useAppStore()
@@ -126,7 +127,13 @@ onMounted(() => {
     })
 
     if (import.meta.client) {
-      if (form.value.custom_code) {
+      const allowSelfHosted = !!useFeatureFlag('custom_code.enable_self_hosted', false)
+      const isSelfHosted = !!useFeatureFlag('self_hosted', false)
+      const isCustomDomain = customDomainUsed()
+
+      const canExecuteCustomCode = isCustomDomain || (isSelfHosted && allowSelfHosted)
+
+      if (form.value.custom_code && canExecuteCustomCode) {
         const scriptEl = document.createRange().createContextualFragment(form.value.custom_code)
         try {
           document.head.append(scriptEl)
@@ -253,7 +260,10 @@ useHead({
       content: 'black-translucent'
     },
   ] : {},
-  script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' }]
+  script: [{ src: '/widgets/iframeResizer.contentWindow.min.js' }],
+  style: computed(() => form.value?.custom_css ? [
+    { key: 'custom-css', textContent: form.value.custom_css }
+  ] : [])
 })
 
 definePageMeta({

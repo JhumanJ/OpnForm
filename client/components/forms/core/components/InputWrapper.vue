@@ -11,6 +11,8 @@
         :required="required"
         :native-for="id ? id : name"
         :uppercase-labels="uppercaseLabels"
+        :theme="theme"
+        :size="resolvedSize"
         :ui="ui?.label"
       />
       </VTransition>
@@ -90,6 +92,7 @@ const props = defineProps({
   hasValidation: { type: Boolean, default: true },
   media: { type: Object, default: null },
   // Theme configuration as strings for tailwind-variants
+  theme: {type: String, default: 'default'},
   size: {type: String, default: null}, 
   borderRadius: {type: String, default: null},
   ui: {type: Object, default: () => ({})}

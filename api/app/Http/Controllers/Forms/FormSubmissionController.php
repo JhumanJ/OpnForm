@@ -165,11 +165,27 @@ class FormSubmissionController extends Controller
         }
 
         if (config('filesystems.default') !== 's3') {
-            return response()->file(Storage::path($fileName));
+            return response()->download(
+                Storage::path($fileName),
+                basename($fileName),
+                [
+                    'Content-Type' => 'application/octet-stream',
+                    'X-Content-Type-Options' => 'nosniff',
+                    'Content-Disposition' => 'attachment; filename="' . basename($fileName) . '"'
+                ]
+            );
         }
 
+        // Force download on S3 as well
         return redirect(
-            Storage::temporaryUrl($fileName, now()->addMinute())
+            Storage::temporaryUrl(
+                $fileName,
+                now()->addMinute(),
+                [
+                    'ResponseContentDisposition' => 'attachment; filename="' . basename($fileName) . '"',
+                    'ResponseContentType' => 'application/octet-stream'
+                ]
+            )
         );
     }
 

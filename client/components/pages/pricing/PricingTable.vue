@@ -60,7 +60,7 @@
             </h3>
             <p class="mt-2 text-base font-medium leading-7 text-neutral-600">
               OpnForm Pro offers empowering features tailored to the advanced
-              needs of teams and creators. Enjoy our free 3-day trial!
+              needs of teams and creators.
             </p>
 
             <div class="flex items-center mt-6 gap-x-4">
@@ -134,7 +134,7 @@
                     class="mr-1"
                     :to="{ name: 'register' }"
                     trailing-icon="i-heroicons-arrow-right"
-                    label="Start free trial"
+                    label="Get Pro"
                   />
                   <UButton
                     v-else-if="authenticated && user && user.is_subscribed"
@@ -149,7 +149,7 @@
                     class="mr-1"
                     trailing-icon="i-heroicons-arrow-right"
                     @click.prevent="openSubscriptionModal({ plan: 'default', yearly: isYearly })"
-                    label="Start free trial"
+                    label="Get Pro"
                   />
                 </div>
                 <p

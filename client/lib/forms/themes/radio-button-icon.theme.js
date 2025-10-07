@@ -23,6 +23,9 @@ export const radioButtonIconTheme = {
       },
       notion: {
         uncheckedIcon: 'text-notion-input-border dark:text-notion-input-borderDark'
+      },
+      minimal: {
+        uncheckedIcon: 'text-neutral-400 dark:text-neutral-600'
       }
     },
     size: {

@@ -22,15 +22,18 @@ class WorkspaceController extends Controller
 
         // Eager load users with pivot roles to prevent N+1 queries in WorkspaceResource
         // Make this query identical to UserController to avoid duplicate database work
-        $user = Auth::user()->load([
-            'workspaces' => function ($query) {
-                $query->withPivot('role')->with([
-                    'users' => function ($subQuery) {
-                        $subQuery->withPivot('role');
-                    }
-                ]);
-            }
-        ]);
+        $user = Auth::user();
+        if ($user instanceof \App\Models\User) {
+            $user->load([
+                'workspaces' => function ($query) {
+                    $query->withPivot('role')->with([
+                        'users' => function ($subQuery) {
+                            $subQuery->withPivot('role');
+                        }
+                    ]);
+                }
+            ]);
+        }
 
         $workspaces = $user->workspaces;
 
@@ -39,6 +42,7 @@ class WorkspaceController extends Controller
 
     public function saveCustomDomain(CustomDomainRequest $request)
     {
+        $this->authorize('adminAction', $request->workspace);
         if (!$request->workspace->is_pro) {
             return $this->error([
                 'message' => 'A Pro plan is required to use this feature.',
@@ -53,6 +57,7 @@ class WorkspaceController extends Controller
 
     public function saveEmailSettings(EmailSettingsRequest $request)
     {
+        $this->authorize('adminAction', $request->workspace);
         if (!$request->workspace->is_pro) {
             return $this->error([
                 'message' => 'A Pro plan is required to use this feature.',

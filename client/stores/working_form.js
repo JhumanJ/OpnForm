@@ -27,6 +27,13 @@ export const useWorkingFormStore = defineStore("working_form", {
     formBlocks() {
       return this.content?.properties || []
     },
+    // Whether custom code is allowed for the current form/context
+    isCustomCodeAllowed() {
+      const hasCustomDomain = !!this.content?.custom_domain
+      const selfHosted = !!useFeatureFlag('self_hosted')
+      const allowSelfHosted = !!useFeatureFlag('custom_code.enable_self_hosted')
+      return hasCustomDomain || (selfHosted && allowSelfHosted)
+    },
 
     // Get page count using structure service
     simplePageCount() {
@@ -42,6 +49,30 @@ export const useWorkingFormStore = defineStore("working_form", {
     }
   },
   actions: {
+    // Unified alert for disallowed custom code
+    showCustomCodeDisabledAlert() {
+      const selfHosted = !!useFeatureFlag('self_hosted')
+      const actions = []
+      let message = ''
+      if (selfHosted) {
+        // Self-hosted: safety notice + docs
+        message = 'Custom code is disabled for safety on self-hosted. See technical docs to learn more.'
+        actions.push({
+          label: 'View docs',
+          icon: 'i-heroicons-book-open',
+          onclick: () => { if (import.meta.client) window.open('https://docs.opnform.com/introduction', '_blank') }
+        })
+      } else {
+        // Cloud: require custom domain + Crisp help
+        message = 'Your form needs to be using a custom domain to add a code block.'
+        actions.push({
+          label: 'Help',
+          icon: 'i-heroicons-question-mark-circle',
+          onclick: () => { try { useCrisp().openHelpdeskArticle('how-do-i-add-custom-code-to-my-form-1amadj3') } catch { /* noop */ } }
+        })
+      }
+      useAlert().error(message, 10000, { title: 'Custom code disabled', actions })
+    },
     set(form) {
       this.content = form
       // Don't reset structure service here - it's externally managed now
@@ -181,6 +212,12 @@ export const useWorkingFormStore = defineStore("working_form", {
       const originalBlockDefinition = blocksTypes[type]
       const effectiveType = originalBlockDefinition?.actual_input || type
       const effectiveBlockDefinition = blocksTypes[effectiveType]
+
+      // Block adding custom code blocks unless allowed (custom domain or self-hosted with explicit enable)
+      if (effectiveType === 'nf-code' && !this.isCustomCodeAllowed) {
+        this.showCustomCodeDisabledAlert()
+        return
+      }
 
       if (originalBlockDefinition?.self_hosted !== undefined && !originalBlockDefinition.self_hosted && useFeatureFlag('self_hosted')) {
         useAlert().error(block?.title + ' is not allowed on self hosted. Please use our hosted version.')

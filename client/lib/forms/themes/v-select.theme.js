@@ -11,15 +11,15 @@ export const vSelectTheme = {
     ],
     buttonInner: [
       'flex items-center',
-      'ltr:pr-8 rtl:pl-8'
+      'ltr-only:pr-6 rtl-only:pl-6'
     ],
     placeholder: [
       'text-neutral-400 dark:text-neutral-500 w-full ltr:text-left rtl:text-right! truncate ltr:pr-3 rtl:pl-3 rtl:pr-0!'
     ],
-    chevronGradient: 'absolute inset-y-0 ltr:right-6 rtl:left-6 w-10 pointer-events-none -z-1',
+    chevronGradient: 'absolute inset-y-0 ltr-only:right-6 rtl-only:left-6 w-10 pointer-events-none',
     chevronContainer: [
-      'absolute inset-y-0 ltr:right-0 rtl:left-0 rtl:right-auto!',
-      'flex items-center ltr:pr-2 rtl:pl-2 rtl:pr-0! pointer-events-none'
+      'absolute inset-y-0 ltr-only:right-0 rtl-only:left-0 rtl-only:right-auto!',
+      'flex items-center ltr-only:pr-2 rtl-only:pl-2 rtl-only:pr-0! pointer-events-none'
     ],
     chevronIcon: 'h-5 w-5 text-neutral-500',
     clearButton: [
@@ -37,10 +37,10 @@ export const vSelectTheme = {
       'grow ltr:pl-3 ltr:pr-7 rtl:pr-3! rtl:pl-7 py-2 w-full focus:outline-hidden dark:text-white'
     ],
     searchIconContainer: [
-      'flex absolute ltr:right-0 rtl:left-0 rtl:right-auto! inset-y-0 items-center px-2 justify-center pointer-events-none'
+      'flex absolute ltr-only:right-0 rtl-only:left-0 rtl-only:right-auto! inset-y-0 items-center px-2 justify-center pointer-events-none'
     ],
     searchClearContainer: [
-      'flex absolute ltr:right-0 rtl:right-auto! rtl:left-0 inset-y-0 items-center px-2 justify-center'
+      'flex absolute ltr-only:right-0 rtl-only:right-auto! rtl-only:left-0 inset-y-0 items-center px-2 justify-center'
     ],
     searchIcon: 'h-5 w-5 text-neutral-500 dark:text-neutral-400',
     searchClearIcon: 'h-5 w-5 rtl:rotate-180 text-neutral-500 dark:text-neutral-400',
@@ -80,6 +80,14 @@ export const vSelectTheme = {
         ],
         chevronGradient: 'bg-gradient-to-r from-transparent to-notion-input-background dark:to-notion-dark-light',
         chevronContainer: 'bg-notion-input-background dark:bg-notion-dark-light'
+      },
+      minimal: {
+        anchor: [
+          'border-2 border-transparent',
+          'bg-neutral-100 dark:bg-notion-dark-light'
+        ],
+        chevronGradient: 'bg-gradient-to-r from-transparent to-neutral-100 dark:to-notion-dark-light',
+        chevronContainer: 'bg-neutral-100 dark:bg-notion-dark-light'
       }
     },
     size: {
@@ -89,7 +97,7 @@ export const vSelectTheme = {
         placeholder: 'text-xs',
         clearButton: 'py-1.5',
         dropdown: 'text-xs',
-        option: 'px-2.5 py-1.5'
+        option: 'px-2.5'
       },
       sm: {
         button: 'px-2 py-1.5',
@@ -97,7 +105,7 @@ export const vSelectTheme = {
         placeholder: 'text-sm',
         clearButton: 'py-1.5',
         dropdown: 'text-sm',
-        option: 'px-2 py-1.5'
+        option: 'px-2 py-0.5'
       },
       md: {
         button: 'px-4 py-2',
@@ -105,7 +113,7 @@ export const vSelectTheme = {
         placeholder: 'text-base',
         clearButton: 'py-2',
         dropdown: 'text-base',
-        option: 'px-4 py-2'
+        option: 'px-4 py-1.5'
       },
       lg: {
         button: 'px-5 py-3',
@@ -113,7 +121,7 @@ export const vSelectTheme = {
         placeholder: 'text-lg',
         clearButton: 'py-3',
         dropdown: 'text-lg',
-        option: 'px-5 py-3'
+        option: 'px-5 py-2'
       }
     },
     borderRadius: {

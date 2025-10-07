@@ -33,7 +33,8 @@
             
             <UDropdownMenu
               :items="dropdownItems"
-              :popper="{ placement: 'bottom-start' }"
+              :content="{ side: 'bottom', align: 'start' }"
+              arrow
             >
               <UButton
                 color="neutral"

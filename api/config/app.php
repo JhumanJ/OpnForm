@@ -146,6 +146,7 @@ return [
         'ca' => 'CA',
         'sv' => 'SV',
         'pl' => 'PL',
+        'nl' => 'NL',
     ],
 
     /*

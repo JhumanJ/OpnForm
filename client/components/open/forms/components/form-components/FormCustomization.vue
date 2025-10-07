@@ -15,6 +15,7 @@
         { name: 'Default', value: 'default' },
         { name: 'Notion', value: 'notion' },
         { name: 'Simple (no shadows)', value: 'simple' },
+        { name: 'Minimal', value: 'minimal' },
       ]"
       :form="form"
       label="Form Theme"

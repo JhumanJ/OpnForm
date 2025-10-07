@@ -42,6 +42,9 @@ class FeatureFlagsController extends Controller
                     'google_sheets' => !empty(config('services.google.client_id')) && !empty(config('services.google.client_secret')),
                     'telegram' => !empty(config('services.telegram.bot_token')),
                 ],
+                'custom_code' => [
+                    'enable_self_hosted' => (bool) config('opnform.custom_code.enable_self_hosted', false),
+                ],
             ];
         });
 
