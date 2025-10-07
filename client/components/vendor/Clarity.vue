@@ -2,18 +2,19 @@
 
 <script setup>
 import Clarity from '@microsoft/clarity'
+import { useIsAuthenticated } from '~/composables/useAuthFlow'
 
 const authStore = useAuthStore()
-const authenticated = computed(() => authStore.check)
 const user = computed(() => authStore.user)
 const isIframe = useIsIframe()
 const loaded = ref(false)
 const runtimeConfig = useRuntimeConfig()
 const clarityProjectId = computed(() => runtimeConfig.public.clarityProjectId || null)
+const { isAuthenticated } = useIsAuthenticated()
 
 async function loadClarity() {
   const projectId = clarityProjectId.value
-  if (!projectId || !authenticated.value || isIframe || loaded.value) return
+  if (!projectId || !isAuthenticated.value || isIframe || loaded.value) return
 
   try {
     Clarity.init(projectId)
@@ -26,13 +27,13 @@ async function loadClarity() {
   }
 }
 
-watch(authenticated, (val) => {
+watch(isAuthenticated, (val) => {
   if (val) loadClarity()
 })
 
 watch(user, (val) => {
   if (import.meta.server) return
-  if (!loaded.value || !authenticated.value || isIframe) return
+  if (!loaded.value || !isAuthenticated.value || isIframe) return
   if (val?.id) {
     try {
       Clarity.identify(String(val.id), null, null, val.email)
