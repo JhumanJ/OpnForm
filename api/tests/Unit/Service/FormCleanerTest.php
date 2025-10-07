@@ -108,5 +108,3 @@ describe('FormCleaner custom code policy', function () {
         expect($types)->toContain('nf-code');
     });
 });
-
-
