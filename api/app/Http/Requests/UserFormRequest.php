@@ -125,7 +125,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'closes_at' => 'date|nullable',
             'closed_text' => 'string|nullable',
             'logo_picture' => 'url|nullable',
-            
+
             // Cover
             'cover_picture' => 'url|nullable',
             'cover_settings' => 'nullable|array',
