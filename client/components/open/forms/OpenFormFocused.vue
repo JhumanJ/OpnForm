@@ -24,42 +24,22 @@
       class="grow min-h-0 flex"
       :speed="500"
     >
-      <div :key="currentIndex" class="w-full flex items-center px-6 grow min-h-0 z-10 h-full">
-        <div class="w-full max-w-2xl mx-auto">
-          <div class="relative">
-            <!-- If current block defines background layout, render as underlay -->
-            <div v-if="isBackgroundLayout" class="absolute inset-0 -z-10 pointer-events-none">
-              <BlockMediaLayout :image="currentMedia" />
-            </div>
-            <BlockRenderer :block="currentBlock" :form-manager="formManager" />
-          </div>
-
-          <div class="mt-4">
-            <template v-if="isLast">
-              <slot name="submit-btn" :loading="isProcessing">
-                <open-form-button
-                  :form="form"
-                  class="mt-2 px-6"
-                  :loading="isProcessing"
-                  @click.prevent="emit('submit')"
-                >
-                  {{ form.submit_button_text || $t('forms.buttons.submit') }}
-                </open-form-button>
-              </slot>
-            </template>
-            <open-form-button
-              v-else
-              native-type="button"
-              :form="form"
-              class="mt-2 px-6"
-              :loading="isProcessing"
-              @click.stop="handleNextClick"
-            >
-              {{ currentBlock?.next_button_text || $t('forms.buttons.next') }}
-            </open-form-button>
-          </div>
+      <!-- Unified layout rendering: one dynamic component -->
+      <component :is="currentLayoutComponent" v-bind="currentLayoutProps" :key="currentIndex">
+        <div class="relative">
+          <BlockRenderer :block="currentBlock" :form-manager="formManager" />
         </div>
-      </div>
+        <div class="mt-4">
+          <slot name="submit-btn" v-if="isLast" :loading="isProcessing">
+            <open-form-button :form="form" class="mt-2 px-6" :loading="isProcessing" @click.prevent="emit('submit')">
+              {{ form.submit_button_text || $t('forms.buttons.submit') }}
+            </open-form-button>
+          </slot>
+          <open-form-button v-else native-type="button" :form="form" class="mt-2 px-6" :loading="isProcessing" @click.stop="handleNextClick">
+            {{ currentBlock?.next_button_text || $t('forms.buttons.next') }}
+          </open-form-button>
+        </div>
+      </component>
     </SlidingTransition>
 
     <!-- Cleanings slot -->
@@ -76,6 +56,9 @@
 <script setup>
 import BlockRenderer from './BlockRenderer.vue'
 import BlockMediaLayout from './components/BlockMediaLayout.vue'
+import SideMediaSplit from './components/layouts/SideMediaSplit.vue'
+import SideMediaSmall from './components/layouts/SideMediaSmall.vue'
+import CenteredStep from './components/layouts/CenteredStep.vue'
 import FormProgressbar from './FormProgressbar.vue'
 import OpenFormButton from './OpenFormButton.vue'
 import SlidingTransition from '../../global/transitions/SlidingTransition.vue'
@@ -104,7 +87,35 @@ const isProcessing = computed(() => props.formManager.state.isProcessing)
 // const isSubmitted = computed(() => !!props.formManager?.state.isSubmitted)
 // const isPasswordProtected = computed(() => !!form.value?.is_password_protected)
 
-const isBackgroundLayout = computed(() => currentMedia.value && currentMedia.value.layout === 'background')
+const layoutName = computed(() => currentMedia.value?.layout || null)
+
+// Lookup table for layout -> component + props
+const layoutConfig = {
+  'left-split': {
+    component: SideMediaSplit,
+    props: () => ({ image: currentMedia.value, side: 'left' })
+  },
+  'right-split': {
+    component: SideMediaSplit,
+    props: () => ({ image: currentMedia.value, side: 'right' })
+  },
+  'left-small': {
+    component: SideMediaSmall,
+    props: () => ({ image: currentMedia.value, side: 'left' })
+  },
+  'right-small': {
+    component: SideMediaSmall,
+    props: () => ({ image: currentMedia.value, side: 'right' })
+  },
+  'background': {
+    component: CenteredStep,
+    props: () => ({ background: currentMedia.value })
+  }
+}
+
+// Single dynamic component + props for active layout
+const currentLayoutComponent = computed(() => layoutConfig[layoutName.value]?.component || CenteredStep)
+const currentLayoutProps = computed(() => layoutConfig[layoutName.value]?.props() || { background: null })
 
 const handleNextClick = () => {
   props.formManager.nextPage().then(() => {
