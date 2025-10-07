@@ -14,8 +14,8 @@
         :key="formPageIndex"
         class="form-group flex flex-wrap w-full"
       >
-        <draggable
-          :list="currentFields"
+        <VueDraggable
+          :model-value="currentFields"
           group="form-elements"
           item-key="id"
           class="grid grid-cols-12 relative transition-all w-full"
@@ -26,17 +26,22 @@
           filter=".not-draggable"
           :animation="200"
           :disabled="!allowDragging"
-          @change="handleDragDropped"
+          @add="handleDragAdd"
+          @update="handleDragUpdate"
         >
-          <template #item="{element}">
-            <VTransition name="fadeHeight">
+          <template #default>
+            <VTransition
+              v-for="element in currentFields"
+              :key="element.id"
+              name="fadeHeight"
+            >
               <open-form-field
                 :field="element"
                 :form-manager="formManager"
               />
             </VTransition>
           </template>
-        </draggable>
+        </VueDraggable>
       </div>
     </transition>
 
@@ -89,7 +94,7 @@
 </template>
 
 <script setup>
-import draggable from 'vuedraggable'
+import { VueDraggable } from 'vue-draggable-plus'
 import OpenFormButton from './OpenFormButton.vue'
 import CaptchaWrapper from '~/components/forms/heavy/components/CaptchaWrapper.vue'
 import OpenFormField from './OpenFormField.vue'
@@ -148,20 +153,22 @@ const handleNextClick = () => {
   })
 }
 
-const handleDragDropped = (data) => {
+const getAbsoluteIndex = (relativeIndex) => {
+  return structure.value.getTargetDropIndex(relativeIndex, state.value.currentPage)
+}
+
+const handleDragAdd = (evt) => {
   if (!structure.value) return
+  const targetIndex = getAbsoluteIndex(evt.newIndex)
+  const payload = evt?.clonedData
+  workingFormStore.addBlock(payload, targetIndex, false)
+}
 
-  const getAbsoluteIndex = (relativeIndex) => {
-    return structure.value.getTargetDropIndex(relativeIndex, state.value.currentPage)
-  }
-
-  if (data.added) {
-    const targetIndex = getAbsoluteIndex(data.added.newIndex)
-    workingFormStore.addBlock(data.added.element, targetIndex, false)
-  }
-  if (data.moved) {
-    const oldTargetIndex = getAbsoluteIndex(data.moved.oldIndex)
-    const newTargetIndex = getAbsoluteIndex(data.moved.newIndex)
+const handleDragUpdate = (evt) => {
+  if (!structure.value) return
+  const oldTargetIndex = getAbsoluteIndex(evt.oldIndex)
+  const newTargetIndex = getAbsoluteIndex(evt.newIndex)
+  if (oldTargetIndex !== newTargetIndex) {
     workingFormStore.moveField(oldTargetIndex, newTargetIndex)
   }
 }

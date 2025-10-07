@@ -15,13 +15,14 @@
     <div class="p-4">
       <Draggable
         v-model="form.properties"
-        item-key="id"
         class="mx-auto w-full overflow-hidden rounded-md border border-neutral-300 bg-white transition-colors dark:bg-notion-dark-light"
         ghost-class="bg-blue-100"
         :animation="200"
       >
-        <template #item="{ element, index }">
+        <template #default>
           <div
+            v-for="(element, index) in form.properties"
+            :key="element.id || index"
             class="mx-auto w-full border-neutral-300 transition-colors cursor-grab"
             :class="{
               'bg-neutral-100 ': element.hidden && !isBeingEdited(index),
@@ -115,14 +116,14 @@
 </template>
 
 <script>
-import draggable from 'vuedraggable'
+import { VueDraggable } from 'vue-draggable-plus'
 import EditableTag from '~/components/app/EditableTag.vue'
 import BlockTypeIcon from './BlockTypeIcon.vue'
 
 export default {
   name: 'FormFieldsEditor',
   components: {
-    Draggable: draggable,
+    Draggable: VueDraggable,
     EditableTag,
     BlockTypeIcon
   },

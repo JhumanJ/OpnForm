@@ -83,11 +83,11 @@
     "vue-codemirror": "^6.1.1",
     "vue-confetti": "^2.3.0",
     "vue-country-flag-next": "^2.3.2",
+    "vue-draggable-plus": "^0.5.6",
     "vue-json-pretty": "^2.4.0",
     "vue-notion": "^3.0.0",
     "vue-signature-pad": "^3.0.2",
     "vue-stripe-js": "^1.0.4",
-    "vuedraggable": "next",
     "webcam-easy": "^1.1.1"
   },
   "eslintIgnore": [
