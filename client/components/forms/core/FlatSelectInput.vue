@@ -11,7 +11,6 @@
     />
     <div
       v-else
-      class="relative overflow-hidden"
       :class="ui.container()"
       :role="multiple ? 'group' : 'radiogroup'"
       :aria-label="label || `Select ${multiple ? 'options' : 'option'}`"
@@ -24,13 +23,7 @@
           :key="option[optionKey]"
           :role="multiple?'checkbox':'radio'"
           :aria-checked="isSelected(option[optionKey])"
-          :class="[
-            'relative',
-            ui.option(),
-            ui.hover(),
-            { '!cursor-not-allowed !bg-neutral-200 dark:!bg-neutral-800': disableOptions.includes(option[optionKey]) }
-          ]"
-          class="focus-visible:ring-2 focus-visible:ring-form/100 focus-visible:outline-none"
+          :class="ui.option({ optionDisabled: disabled || disableOptions.includes(option[optionKey]) || isOptionDisabled(option[optionKey]) })"
           :tabindex="getOptionTabIndex(index)"
           @click="onSelect(option[optionKey])"
           @keydown="handleKeydown($event, index)"

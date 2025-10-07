@@ -19,12 +19,16 @@ export default defineNitroPlugin((nitroApp) => {
 
     if (routePath && !routePath.startsWith("/forms/")) {
       // Build frame-ancestors for non-form routes: localhost variants + matching allowlisted domain (if Referer present)
-      const ancestors = ["'self'",
-        'http://localhost:*', 'https://localhost:*',
-        'http://127.0.0.1:*', 'https://127.0.0.1:*',
-        'http://0.0.0.0:*', 'https://0.0.0.0:*',
-        'http://[::1]:*', 'https://[::1]:*'
-      ]
+      // Note: CSP frame-ancestors doesn't support port wildcards, so we list common dev ports
+      const commonPorts = ['', ':3000', ':3001', ':4200', ':5000', ':5173', ':8000', ':8080', ':8081', ':9000']
+      const ancestors = ["'self'"]
+      
+      commonPorts.forEach(port => {
+        ancestors.push(`http://localhost${port}`)
+        ancestors.push(`https://localhost${port}`)
+        ancestors.push(`http://127.0.0.1${port}`)
+        ancestors.push(`https://127.0.0.1${port}`)
+      })
 
       const referer = event.node?.req?.headers?.referer || ''
       const refererHost = referer ? (getDomain(referer) || '').toLowerCase() : ''

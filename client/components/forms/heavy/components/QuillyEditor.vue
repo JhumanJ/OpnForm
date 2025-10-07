@@ -99,6 +99,11 @@ const initializeQuill = () => {
       model.value = quillInstance.getSemanticHTML()
     }
 
+    // Apply initial disabled state
+    if (props.disabled) {
+      quillInstance.disable()
+    }
+
     emit('ready', quillInstance)
   }
 }
@@ -133,6 +138,7 @@ watch(model, (newValue, oldValue) => {
 })
 
 watch(() => props.disabled, (newValue) => {
+  if (!quillInstance) return
   if (newValue) {
     quillInstance.disable()
   } else {
