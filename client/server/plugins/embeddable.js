@@ -1,10 +1,49 @@
+import { getDomain } from '~/lib/utils'
+
 export default defineNitroPlugin((nitroApp) => {
   nitroApp.hooks.hook("render:response", (response, { event }) => {
     const routePath = event.node?.req?.url || event.node?.req?.originalUrl
-    // const routePath= event.context.params._
+    const config = useRuntimeConfig()
+    
+    // Parse allowed domains from private config
+    const allowedDomains = config.allowedEmbedDomains
+      ? config.allowedEmbedDomains.split(',').map(domain => domain.trim()).filter(Boolean)
+      : []
+
+    // Normalize allowed domains to hostnames (supports plain host or full URL)
+    const normalizedAllowed = allowedDomains.map((d) => (getDomain(d) || '').toLowerCase()).filter(Boolean)
+    
+    // Remove legacy header to control framing via CSP
+    delete response.headers["X-Frame-Options"]
+    delete response.headers["x-frame-options"]
+
     if (routePath && !routePath.startsWith("/forms/")) {
-      // Only allow embedding of forms
-      response.headers["X-Frame-Options"] = "sameorigin"
+      // Build frame-ancestors for non-form routes: localhost variants + matching allowlisted domain (if Referer present)
+      const ancestors = ["'self'",
+        'http://localhost:*', 'https://localhost:*',
+        'http://127.0.0.1:*', 'https://127.0.0.1:*',
+        'http://0.0.0.0:*', 'https://0.0.0.0:*',
+        'http://[::1]:*', 'https://[::1]:*'
+      ]
+
+      const referer = event.node?.req?.headers?.referer || ''
+      const refererHost = referer ? (getDomain(referer) || '').toLowerCase() : ''
+
+      function hostMatchesAllowed(host, allowedHost) {
+        if (!host || !allowedHost) return false
+        return host === allowedHost || host.endsWith(`.${allowedHost}`)
+      }
+
+      const matched = normalizedAllowed.find((allowedHost) => hostMatchesAllowed(refererHost, allowedHost))
+      if (matched) {
+        ancestors.push(`https://${matched}`)
+      }
+
+      // Restrict embedding to localhost + (optionally) matched allowlisted domain
+      response.headers["Content-Security-Policy"] = `frame-ancestors ${ancestors.join(' ')};`
+    } else {
+      // Forms: embeddable anywhere, omit CSP directive
+      delete response.headers["Content-Security-Policy"]
     }
 
     delete response.headers["x-powered-by"]
