@@ -184,7 +184,7 @@ class FormCleaner
      * Clean all forms:
      * - Escape html of custom text block
      */
-    private function commonCleaning(array $data, array $options = [])
+    private function commonCleaning(array $data)
     {
         if (!empty($data['properties']) && is_array($data['properties'])) {
             foreach ($data['properties'] as $index => &$property) {
@@ -197,6 +197,7 @@ class FormCleaner
                     unset($data['properties'][$index]);
                 }
             }
+            unset($property);
             // Reindex properties array if any removals occurred
             $data['properties'] = array_values($data['properties']);
         }
@@ -248,6 +249,7 @@ class FormCleaner
             // Clean pro field options
             $this->cleanField($property, $this->fieldDefaults, $simulation);
         }
+        unset($property);
     }
 
     private function clean(array &$data, array $defaults, $simulation = false): void
