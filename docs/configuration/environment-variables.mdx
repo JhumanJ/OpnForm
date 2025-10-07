@@ -21,37 +21,39 @@ There are dedicated configuration pages available for more detailed setup instru
 
 ### Configuration Environment Variables
 
-| Variable Name               | Description                                                                                              |
-| --------------------------- | -------------------------------------------------------------------------------------------------------- |
-| `H_CAPTCHA_SITE_KEY`        | Site key for hCaptcha integration.                                                                       |
-| `H_CAPTCHA_SECRET_KEY`      | Secret key for hCaptcha integration.                                                                     |
-| `RE_CAPTCHA_SITE_KEY`       | Site key for reCAPTCHA integration.                                                                      |
-| `RE_CAPTCHA_SECRET_KEY`     | Secret key for reCAPTCHA integration.                                                                    |
-| `OPEN_AI_API_KEY`           | API key for accessing OpenAI services.                                                                   |
-| `UNSPLASH_ACCESS_KEY`       | Access key for Unsplash API.                                                                             |
-| `UNSPLASH_SECRET_KEY`       | Secret key for Unsplash API.                                                                             |
-| `FRONT_URL`                 | Public facing URL of the front-end.                                                                      |
-| `FRONT_API_SECRET`          | Shared secret with the front-end.                                                                        |
-| `JWT_TTL`                   | Time to live for JSON Web Tokens (JWT).                                                                  |
-| `JWT_SECRET`                | Secret key used to sign JWTs.                                                                            |
-| `JWT_SKIP_IP_UA_VALIDATION` | Set to `true` to disable JWT IP and User Agent validation (defaults to `false`). Useful for dynamic IPs. |
+| Variable Name                    | Description                                                                                                                   |
+| -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `H_CAPTCHA_SITE_KEY`             | Site key for hCaptcha integration.                                                                                            |
+| `H_CAPTCHA_SECRET_KEY`           | Secret key for hCaptcha integration.                                                                                          |
+| `RE_CAPTCHA_SITE_KEY`            | Site key for reCAPTCHA integration.                                                                                           |
+| `RE_CAPTCHA_SECRET_KEY`          | Secret key for reCAPTCHA integration.                                                                                         |
+| `OPEN_AI_API_KEY`                | API key for accessing OpenAI services.                                                                                        |
+| `UNSPLASH_ACCESS_KEY`            | Access key for Unsplash API.                                                                                                  |
+| `UNSPLASH_SECRET_KEY`            | Secret key for Unsplash API.                                                                                                  |
+| `FRONT_URL`                      | Public facing URL of the front-end.                                                                                           |
+| `FRONT_API_SECRET`               | Shared secret with the front-end.                                                                                             |
+| `JWT_TTL`                        | Time to live for JSON Web Tokens (JWT).                                                                                       |
+| `JWT_SECRET`                     | Secret key used to sign JWTs.                                                                                                 |
+| `JWT_SKIP_IP_UA_VALIDATION`      | Set to `true` to disable JWT IP and User Agent validation (defaults to `false`). Useful for dynamic IPs.                      |
+| `CUSTOM_CODE_ENABLE_SELF_HOSTED` | Enables execution of user-provided custom code on self-hosted deployments. Defaults to `false` for safety reasons (XSS etc.). |
 
 ### OAuth Integration Environment Variables
 
 OAuth integrations enable user authentication and third-party service connections. OpnForm automatically handles OAuth redirect URLs - you don't need to manually configure redirect URIs in your OAuth applications.
 
 <Info>
-For detailed setup instructions for each OAuth provider, see the [OAuth Integration Setup](../configuration/oauth-setup) guide.
+    For detailed setup instructions for each OAuth provider, see the [OAuth
+    Integration Setup](../configuration/oauth-setup) guide.
 </Info>
 
-| Variable Name           | Description                                                                                               |
-| ----------------------- | --------------------------------------------------------------------------------------------------------- |
-| `GOOGLE_CLIENT_ID`      | Client ID for Google OAuth authentication and Google Sheets integration.                                 |
-| `GOOGLE_CLIENT_SECRET`  | Client secret for Google OAuth authentication and Google Sheets integration.                             |
-| `GOOGLE_FONTS_API_KEY`  | API key for accessing Google Fonts (optional).                                                           |
-| `STRIPE_CLIENT_ID`      | Client ID for Stripe Connect OAuth integration for payment processing.                                   |
-| `STRIPE_CLIENT_SECRET`  | Client secret for Stripe Connect OAuth integration.                                                      |
-| `TELEGRAM_BOT_TOKEN`    | Authentication token for your Telegram bot notifications (bot ID is extracted automatically).           |
+| Variable Name          | Description                                                                                   |
+| ---------------------- | --------------------------------------------------------------------------------------------- |
+| `GOOGLE_CLIENT_ID`     | Client ID for Google OAuth authentication and Google Sheets integration.                      |
+| `GOOGLE_CLIENT_SECRET` | Client secret for Google OAuth authentication and Google Sheets integration.                  |
+| `GOOGLE_FONTS_API_KEY` | API key for accessing Google Fonts (optional).                                                |
+| `STRIPE_CLIENT_ID`     | Client ID for Stripe Connect OAuth integration for payment processing.                        |
+| `STRIPE_CLIENT_SECRET` | Client secret for Stripe Connect OAuth integration.                                           |
+| `TELEGRAM_BOT_TOKEN`   | Authentication token for your Telegram bot notifications (bot ID is extracted automatically). |
 
 ### User Options Environment Variables
 

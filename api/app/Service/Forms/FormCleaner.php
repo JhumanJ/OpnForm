@@ -49,6 +49,9 @@ class FormCleaner
         'secret_input' => false,
     ];
 
+    // Policy toggles for current cleaning run
+    private bool $allowCustomCode = true;
+
     private array $cleaningMessages = [
         // For form
         'no_branding' => 'OpenForm branding is not hidden.',
@@ -114,6 +117,18 @@ class FormCleaner
     public function processForm(Request $request, Form $form): FormCleaner
     {
         $data = (new FormResource($form))->toArray($request);
+
+        // Determine if custom code is allowed in this response context
+        $allowOnSelfHosted = config('app.self_hosted', true) && (bool) config('opnform.custom_code.enable_self_hosted', false);
+        $hasCustomDomain = !empty($data['custom_domain'] ?? null);
+        $this->allowCustomCode = $hasCustomDomain || $allowOnSelfHosted;
+
+        // Suppress top-level custom_code if not allowed (silent, not recorded as cleaning)
+        if (!$this->allowCustomCode) {
+            $data['custom_code'] = null;
+        }
+
+        // Single pass over properties: sanitize text blocks and optionally remove nf-code blocks
         $this->data = $this->commonCleaning($data);
 
         return $this;
@@ -171,10 +186,20 @@ class FormCleaner
      */
     private function commonCleaning(array $data)
     {
-        foreach ($data['properties'] as &$property) {
-            if ($property['type'] == 'nf-text' && isset($property['content'])) {
-                $property['content'] = Purify::clean($property['content']);
+        if (!empty($data['properties']) && is_array($data['properties'])) {
+            foreach ($data['properties'] as $index => &$property) {
+                if (($property['type'] ?? null) === 'nf-text' && isset($property['content'])) {
+                    $property['content'] = Purify::clean($property['content']);
+                }
+
+                if (!$this->allowCustomCode && ($property['type'] ?? null) === 'nf-code') {
+                    // Remove the block entirely (silent, not recorded as cleaning)
+                    unset($data['properties'][$index]);
+                }
             }
+            unset($property);
+            // Reindex properties array if any removals occurred
+            $data['properties'] = array_values($data['properties']);
         }
 
         return $data;
@@ -224,6 +249,7 @@ class FormCleaner
             // Clean pro field options
             $this->cleanField($property, $this->fieldDefaults, $simulation);
         }
+        unset($property);
     }
 
     private function clean(array &$data, array $defaults, $simulation = false): void
