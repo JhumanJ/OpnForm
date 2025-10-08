@@ -16,7 +16,7 @@
         <OpenCompleteForm
           ref="openCompleteForm"
           :form="form"
-          class="grow flex flex-col mb-20"
+          class="w-full grow min-h-0"
           :dark-mode="darkMode"
           :mode="FormMode.LIVE"
           @password-entered="passwordEntered"

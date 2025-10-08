@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex items-stretch grow min-h-0 z-10 h-full">
+  <div class="w-full flex items-stretch grow min-h-0 z-10">
     <div v-if="isLeft" class="hidden md:block w-1/2 relative overflow-hidden">
       <BlockMediaLayout :image="image" :fallback-height="null" />
     </div>

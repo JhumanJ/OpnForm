@@ -1,7 +1,7 @@
 <template>
   <form
     v-if="form"
-    class="pb-8"
+    class="pb-20"
     @submit.prevent=""
   >
     <!-- Alerts slot (renderer decides placement) -->
