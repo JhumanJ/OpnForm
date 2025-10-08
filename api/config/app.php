@@ -147,6 +147,7 @@ return [
         'sv' => 'SV',
         'pl' => 'PL',
         'nl' => 'NL',
+        'sr' => 'SR',
     ],
 
     /*
