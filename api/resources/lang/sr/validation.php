@@ -152,4 +152,3 @@ return [
     'select_min' => 'Molimo izaberite najmanje :min opcija',
     'select_max' => 'Molimo izaberite najviše :max opcija',
 ];
-
