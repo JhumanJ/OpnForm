@@ -5,7 +5,6 @@
     ref="form-block"
     class="px-2"
     :class="[
-      fieldWidthClasses(field.width),
       {
         'group/nffield hover:bg-neutral-100/50 relative hover:z-10 transition-colors hover:border-neutral-200 border-dashed border border-transparent box-border dark:hover:border-blue-900 dark:hover:bg-blue-950 rounded-md': isAdminPreview,
         'cursor-pointer':workingFormStore.showEditFieldSidebar && isAdminPreview,
@@ -167,7 +166,6 @@ import FormLogicPropertyResolver from "~/lib/forms/FormLogicPropertyResolver.js"
 import { default as _has } from 'lodash/has'
 import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
 import { useWorkingFormStore } from '~/stores/working_form'
-import { getFieldWidthClasses as fieldWidthClasses } from '~/lib/utils'
 import { useComponentRegistry } from '~/composables/components/useComponentRegistry'
 
 // Define props

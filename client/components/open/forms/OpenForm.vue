@@ -33,16 +33,13 @@
             <div
               v-for="element in currentFields"
               :key="element.id"
-              class="px-2"
-              :class="fieldWidthClasses(element.width)"
+              :class="getFieldWidthClasses(element.width)"
             >
               <VTransition name="fadeHeight">
-                <div>
-                  <open-form-field
-                    :field="element"
-                    :form-manager="formManager"
-                  />
-                </div>
+                <open-form-field
+                  :field="element"
+                  :form-manager="formManager"
+                />
               </VTransition>
             </div>
           </template>
@@ -105,7 +102,6 @@ import CaptchaWrapper from '~/components/forms/heavy/components/CaptchaWrapper.v
 import OpenFormField from './OpenFormField.vue'
 import FormProgressbar from './FormProgressbar.vue'
 import { useWorkingFormStore } from '~/stores/working_form'
-import { getFieldWidthClasses as fieldWidthClasses } from '~/lib/utils'
 
 const props = defineProps({
   formManager: { type: Object, required: true }
@@ -180,6 +176,22 @@ const handleDragUpdate = (evt) => {
 }
 
 const isProcessing = computed(() => props.formManager.state.isProcessing)
+
+const getFieldWidthClasses = (width) => {
+  if (!width || width === 'full') return 'col-span-full'
+  else if (width === '1/2') {
+    return 'sm:col-span-6 col-span-full'
+  } else if (width === '1/3') {
+    return 'sm:col-span-4 col-span-full'
+  } else if (width === '2/3') {
+    return 'sm:col-span-8 col-span-full'
+  } else if (width === '1/4') {
+    return 'sm:col-span-3 col-span-full'
+  } else if (width === '3/4') {
+    return 'sm:col-span-9 col-span-full'
+  }
+  return 'col-span-full'
+}
 </script>
 
 <style lang='scss' scoped>
