@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex items-center px-6 grow min-h-0 z-10 h-full">
+  <div class="w-full flex items-center px-6 sm:px-12 grow min-h-0 z-10 h-full">
     <div class="w-full max-w-6xl mx-auto flex items-center justify-between gap-8">
       <div v-if="isLeft" class="hidden md:block shrink-0 basis-1/2 max-w-1/2">
         <div class="p-4 xl:p-6" :class="ui.mediaContainer()">

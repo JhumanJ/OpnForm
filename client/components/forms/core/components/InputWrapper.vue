@@ -13,6 +13,7 @@
         :uppercase-labels="uppercaseLabels"
         :theme="theme"
         :size="resolvedSize"
+        :presentation="presentationStyle"
         :ui="ui?.label"
       />
       </VTransition>
@@ -27,7 +28,7 @@
         :help="help"
         :help-classes="ui.help()"
       >
-        <template #after-help>
+        <template #after-help v-if="!!$slots['bottom_after_help']">
           <slot name="bottom_after_help" />
         </template>
       </InputHelp>
@@ -55,7 +56,7 @@
         :help="help"
         :help-classes="ui.help()"
       >
-        <template #after-help>
+        <template #after-help v-if="!!$slots['bottom_after_help']">
           <slot name="bottom_after_help" />
         </template>
       </InputHelp>
@@ -68,6 +69,7 @@
         :form="form"
         :field-id="name"
         :field-name="label"
+        :error-classes="ui.error()"
       />
     </VTransition>
     </slot>
@@ -116,16 +118,22 @@ const resolvedBorderRadius = computed(() => {
   return props.borderRadius || injectedBorderRadius?.value || 'small'
 })
 
+const injectedPresentationStyle = computed(() => {
+  return inject('formPresentationStyle', ref('classic'))?.value || 'classic'
+})
+
 // OPTIMIZED: Single computed following Nuxt UI pattern
 const ui = computed(() => {
   return tv(inputWrapperTheme, props.ui)({
     size: resolvedSize.value,
     borderRadius: resolvedBorderRadius.value,
-    mediaStyle: 'intrinsic'
+    mediaStyle: 'intrinsic',
+    presentation: injectedPresentationStyle.value
   })
 })
 
 // Wrapper classes with twMerge operation - makes sense as computed property
 const wrapperClasses = computed(() => twMerge(ui.value.wrapper(), props.wrapperClass))
 
+const presentationStyle = computed(() => injectedPresentationStyle.value)
 </script>

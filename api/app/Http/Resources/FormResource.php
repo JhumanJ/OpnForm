@@ -61,6 +61,7 @@ class FormResource extends JsonResource
             'auto_save' => $this->getAutoSave(),
             'presentation_style' => $this->presentation_style ?? 'classic',
             'cover_settings' => $this->cover_settings ?? new \stdClass(),
+            'translations' => $this->translations ?? new \stdClass(),
         ]);
     }
 

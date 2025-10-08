@@ -74,6 +74,7 @@ class Form extends Model implements CachableAttributes
         'uppercase_labels',
         'no_branding',
         'transparent_background',
+        'translations',
 
         // Custom Code
         'custom_code',
@@ -118,6 +119,7 @@ class Form extends Model implements CachableAttributes
             'removed_properties' => 'array',
             'seo_meta' => 'object',
             'cover_settings' => 'array',
+            'translations' => 'array',
             'enable_partial_submissions' => 'boolean',
             'auto_save' => 'boolean',
             'presentation_style' => 'string',

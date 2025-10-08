@@ -29,14 +29,14 @@
         <div class="relative">
           <BlockRenderer :block="currentBlock" :form-manager="formManager" />
         </div>
-        <div class="mt-4">
+        <div class="mt-2">
           <slot name="submit-btn" v-if="isLast" :loading="isProcessing">
-            <open-form-button :form="form" class="mt-2 px-6" :loading="isProcessing" @click.prevent="emit('submit')">
+            <open-form-button :form="form" class="mt-0.5 px-6" :loading="isProcessing" @click.prevent="emit('submit')">
               {{ form.submit_button_text || $t('forms.buttons.submit') }}
             </open-form-button>
           </slot>
-          <open-form-button v-else native-type="button" :form="form" class="mt-2 px-6" :loading="isProcessing" @click.stop="handleNextClick">
-            {{ currentBlock?.next_button_text || $t('forms.buttons.next') }}
+          <open-form-button v-else native-type="button" :form="form" class="mt-0.5 px-6" :loading="isProcessing" @click.stop="handleNextClick">
+            {{ form?.translations?.focused_next_button_text || $t('forms.buttons.next') }}
           </open-form-button>
         </div>
       </component>
@@ -83,6 +83,7 @@ const currentMedia = computed(() => currentBlock.value?.image || null)
 
 const isLast = computed(() => structure?.value?.isLastPage?.value ?? false)
 const isProcessing = computed(() => props.formManager.state.isProcessing)
+
 // Reserved for future gating if focused renderer wants to branch
 // const isSubmitted = computed(() => !!props.formManager?.state.isSubmitted)
 // const isPasswordProtected = computed(() => !!form.value?.is_password_protected)

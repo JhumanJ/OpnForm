@@ -5,9 +5,10 @@
 export const inputWrapperTheme = {
   slots: {
     wrapper: [
-      'relative'
+      'relative flex flex-col gap-1'
     ],
     help: 'text-neutral-500',
+    error: 'has-error text-xs text-red-500 mt-1 break-words whitespace-break-spaces',
     media: '',
     // classes for the media component root (e.g., <BlockMediaLayout />)
     mediaComponent: '',
@@ -15,6 +16,12 @@ export const inputWrapperTheme = {
     mediaImg: ''
   },
   variants: {
+    presentation: {
+      classic: {},
+      focused: {
+        wrapper: 'gap-2',
+      }
+    },
     borderRadius: {
       none: {},
       small: {},
@@ -23,19 +30,15 @@ export const inputWrapperTheme = {
     size: {
       xs: {
         wrapper: 'my-0.5',
-        media: 'mb-1'
       },
       sm: {
         wrapper: 'my-1',
-        media: 'mb-1.5'
       },
       md: {
         wrapper: 'my-1.5',
-        media: 'mb-2'
       },
       lg: {
         wrapper: 'my-1.5',
-        media: 'mb-2.5'
       }
     },
     mediaStyle: {
@@ -56,11 +59,18 @@ export const inputWrapperTheme = {
     // Intrinsic style: border radius applied directly to the image
     { mediaStyle: 'intrinsic', borderRadius: 'none', class: { mediaImg: 'rounded-none' } },
     { mediaStyle: 'intrinsic', borderRadius: 'small', class: { mediaImg: 'rounded-md' } },
-    { mediaStyle: 'intrinsic', borderRadius: 'full', class: { mediaImg: 'rounded-[20px]' } }
+    { mediaStyle: 'intrinsic', borderRadius: 'full', class: { mediaImg: 'rounded-[20px]' } },
+
+    // Text size adjustments for focused presentation (help and error)
+    { presentation: 'focused', size: 'xs', class: { help: 'text-sm', error: 'text-sm text-red-500 mt-0 leading-none' } },
+    { presentation: 'focused', size: 'sm', class: { help: 'text-sm', error: 'text-sm mt-0 leading-none' } },
+    { presentation: 'focused', size: 'md', class: { help: 'text-base', error: 'text-sm mt-0 leading-none' } },
+    { presentation: 'focused', size: 'lg', class: { help: 'text-lg', error: 'text-base mt-0 leading-none' } }
   ],
   defaultVariants: {
     size: 'md',
     borderRadius: 'small',
-    mediaStyle: 'default'
+    mediaStyle: 'default',
+    presentation: 'classic'
   }
 }

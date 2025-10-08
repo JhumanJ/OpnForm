@@ -11,7 +11,7 @@
     >
       <template #label>
         <div class="flex items-center gap-0.5">
-          <span class="text-neutral-700 font-semibold text-sm">Form Style</span>
+          <span class="text-neutral-700 font-semibold text-xs">Form Style</span>
           <UButton
             color="neutral"
             variant="ghost"
@@ -117,6 +117,8 @@ function onSelectStyle(newVal) {
 
   if (newVal === 'focused' && removalList.value.length === 0) {
     form.value.presentation_style = 'focused'
+    // Ensure large input size in focused mode
+    form.value.size = 'lg'
     return
   }
 
@@ -137,6 +139,10 @@ function confirmSwitch() {
   const props = Array.isArray(form.value.properties) ? form.value.properties : []
   form.value.properties = props.filter(p => !(p && disallowedNames.has(p.type)))
   form.value.presentation_style = target
+  // Ensure large input size in focused mode
+  if (target === 'focused') {
+    form.value.size = 'lg'
+  }
   showConfirmModal.value = false
   pendingStyle.value = null
   removalList.value = []

@@ -164,10 +164,6 @@ const formPageIndex = computed(() => props.formManager.state.currentPage)
 const strategy = computed(() => props.formManager.strategy.value)
 const structure = props.formManager.structure
 
-// Provide theme context for all child form components
-provide('formTheme', computed(() => form.value?.theme || 'default'))
-provide('formSize', computed(() => form.value?.size || 'md'))  
-provide('formBorderRadius', computed(() => form.value?.border_radius || 'small'))
 
 const hasPaymentBlock = computed(() => structure.value?.currentPageHasPaymentBlock?.value ?? false)
 

@@ -207,7 +207,7 @@ const alert = useAlert()
 const workingFormStore = useWorkingFormStore()
 const { data: user } = useAuth().user()
 const passwordForm = useForm({ password: null })
-const hidePasswordDisabledMsg = ref(false)
+// Removed unused hidePasswordDisabledMsg (was always false and unused)
 const submissionId = ref(route.query.submission_id || null)
 const submittedData = ref(null)
 const showFirstSubmissionModal = ref(false)
@@ -228,6 +228,7 @@ const modeRef = toRef(props, 'mode')
 provide('formTheme', computed(() => props.form.theme || 'default'))
 provide('formSize', computed(() => props.form.size || 'md'))  
 provide('formBorderRadius', computed(() => props.form.border_radius || 'small'))
+provide('formPresentationStyle', computed(() => props.form.presentation_style || 'classic'))
 
 let formManager = null
 if (props.form) {

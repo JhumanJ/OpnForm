@@ -14,7 +14,7 @@
         label="Layout"
         :options="layoutOptions"
         :multiple="false"
-        :columns="2"
+        :columns="3"
       />
     </template>
   </div>
@@ -32,12 +32,12 @@ const props = defineProps({
 const isFocusedMode = computed(() => (props.form?.presentation_style || 'classic') === 'focused')
 
 const layoutOptions = [
-  { name: 'between', label: 'Between' },
-  { name: 'background', label: 'Background (full)' },
-  { name: 'left-small', label: 'Left side (small)' },
-  { name: 'right-small', label: 'Right side (small)' },
-  { name: 'left-split', label: 'Left side (50% split)' },
-  { name: 'right-split', label: 'Right side (50% split)' },
+  { name: 'between', icon: 'i-opnform-form-layout-between', iconClass: 'w-[70px] h-[50px] rounded text-slate-600' },
+  { name: 'left-small', icon: 'i-opnform-form-layout-left-small', iconClass: 'w-[70px] h-[50px] rounded' },
+  { name: 'left-split', icon: 'i-opnform-form-layout-left-split', iconClass: 'w-[70px] h-[50px] rounded' },
+  { name: 'background', icon: 'i-opnform-form-layout-background', iconClass: 'w-[70px] h-[50px] rounded' },
+  { name: 'right-small', icon: 'i-opnform-form-layout-right-small', iconClass: 'w-[70px] h-[50px] rounded' },
+  { name: 'right-split', icon: 'i-opnform-form-layout-right-split', iconClass: 'w-[70px] h-[50px] rounded' },
 ]
 
 function setDefaultImageSettings() {

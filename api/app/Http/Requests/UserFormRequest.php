@@ -122,6 +122,7 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'uppercase_labels' => 'required|boolean',
             'no_branding' => 'required|boolean',
             'transparent_background' => 'required|boolean',
+            'translations' => 'nullable|array',
             'closes_at' => 'date|nullable',
             'closed_text' => 'string|nullable',
             'logo_picture' => 'url|nullable',

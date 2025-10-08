@@ -138,7 +138,10 @@ const boundProps = computed(() => {
     showCharLimit: field.show_char_limit || false,
     isDark: darkMode.value,
     locale: (form.value?.language) ? form.value.language : 'en',
-    media: shouldInjectBetweenMedia.value ? field.image : null
+    media: shouldInjectBetweenMedia.value ? field.image : null,
+    presentation: form.value?.presentation_style || 'classic',
+    required: field.required || false,
+    disabled: field.disabled || false
   }
 
   if (field.type === 'matrix') {
