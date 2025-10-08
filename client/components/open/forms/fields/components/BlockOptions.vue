@@ -58,6 +58,11 @@
         />
     </div>
 
+    <!-- Focused Mode: Media settings (high priority under general) -->
+    <div v-if="isFocused && field.type==='nf-text'" class="mt-2">
+      <BlockMediaOptions :model="field" :form="form" />
+    </div>
+
     <div
       v-if="field.type == 'nf-text'"
       class="border-t mt-4"
@@ -119,8 +124,7 @@
     </div>
   </div>
 
-  <!-- Focused Mode: Media settings for text blocks -->
-  <BlockMediaOptions v-if="field && field.type==='nf-text'" :model="field" :form="form" />
+  <!-- (moved above for focused mode) -->
 </template>
 
 <script setup>

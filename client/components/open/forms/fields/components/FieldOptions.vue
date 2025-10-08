@@ -19,6 +19,11 @@
       />
     </div>
 
+    <!-- Focused Mode: Media settings (high priority under general) -->
+    <div v-if="isFocused" class="mt-2">
+      <BlockMediaOptions :model="field" :form="form" />
+    </div>
+
     <!-- Checkbox -->
     <div
       v-if="field.type === 'checkbox'"
@@ -676,8 +681,7 @@
       />
     </div>
 
-  <!--  Focused Mode: Media settings  -->
-  <BlockMediaOptions :model="field" :form="form" />
+  <!--  (moved above for focused mode)  -->
   </div>
 </template>
 

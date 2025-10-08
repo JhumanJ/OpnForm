@@ -17,7 +17,7 @@
   >
     <div 
       class="border rounded-lg bg-white dark:bg-notion-dark w-full grow shadow-xs transition-all overflow-y-scroll flex flex-col"
-      :class="{ 'max-w-5xl': !isExpanded, 'h-full': isExpanded }"
+      :class="{ 'h-full': isExpanded }"
     >
       <div class="w-full bg-white dark:bg-neutral-950 border-b border-neutral-300 dark:border-blue-900 dark:border-neutral-700 rounded-t-lg p-1.5 pl-4 pr-1.5 flex items-center gap-x-1.5">
         <div class="bg-red-500 rounded-full w-2.5 h-2.5" />

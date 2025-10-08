@@ -1,26 +1,12 @@
 <template>
   <div v-if="isFocusedMode" class="px-4 mt-6">
-    <EditorSectionHeader icon="i-heroicons-photo" title="Media" />
+    <EditorSectionHeader icon="i-heroicons-photo" title="Media & Layout" />
 
-    <image-input
-      name="image.url"
-      :form="model"
-      label="Image"
-      :required="false"
-      class="mt-2"
-    />
+    <!-- Unified image input with settings popover (focus/brightness/alt) -->
+    <ImageWithSettings :form="model" name="image.url" label="Image" kind="block" />
 
+    <!-- Layout selection appears only when an image is present -->
     <template v-if="model?.image && model.image.url">
-      <text-input
-        :form="model"
-        name="image.alt"
-        label="Alt text"
-        placeholder="Describe the image for accessibility (max 125 characters)"
-        :max-char-limit="125"
-        :show-char-limit="true"
-        class="mt-3"
-      />
-
       <OptionSelectorInput
         v-model="model.image.layout"
         name="image.layout"
@@ -30,30 +16,13 @@
         :multiple="false"
         :columns="2"
       />
-
-      <div class="mt-4">
-        <FocalPointPicker label="Focal point" v-model="model.image.focal_point" :src="model.image.url" />
-      </div>
-
-      <div class="mt-4">
-        <SliderInput
-          v-model="model.image.brightness"
-          name="image.brightness"
-          :form="model"
-          :min-slider="-100"
-          :max-slider="100"
-          :step-slider="1"
-          label="Brightness"
-        />
-      </div>
     </template>
   </div>
 </template>
 
 <script setup>
 import EditorSectionHeader from '~/components/open/forms/components/form-components/EditorSectionHeader.vue'
-import FocalPointPicker from './FocalPointPicker.vue'
-import SliderInput from '~/components/forms/core/SliderInput.vue'
+import ImageWithSettings from './ImageWithSettings.vue'
 
 const props = defineProps({
   model: { type: Object, required: true },

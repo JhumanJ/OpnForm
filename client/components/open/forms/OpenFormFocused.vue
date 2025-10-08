@@ -118,8 +118,8 @@ const currentLayoutComponent = computed(() => layoutConfig[layoutName.value]?.co
 const currentLayoutProps = computed(() => layoutConfig[layoutName.value]?.props() || { background: null })
 
 const handleNextClick = () => {
-  props.formManager.nextPage().then(() => {
-    if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
+  props.formManager.nextPage().then((moved) => {
+    if (moved && import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
   })
 }
 

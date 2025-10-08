@@ -165,7 +165,7 @@
         :required="false"
       />
 
-      <CoverImageInput :form="form" />
+      <ImageWithSettings :form="form" name="cover_picture" :label="isFocused ? 'Background' : 'Cover (~1500px)'" kind="cover" />
     </div>
 
     <toggle-switch-input
@@ -226,7 +226,7 @@ import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
 import ProTag from "~/components/app/ProTag.vue"
 import { DEFAULT_COLOR } from "@/composables/forms/initForm"
 import PresentationStyleSwitch from "./PresentationStyleSwitch.vue"
-import CoverImageInput from "../media/CoverImageInput.vue"
+import ImageWithSettings from "../media/ImageWithSettings.vue"
 
 
 const workingFormStore = useWorkingFormStore()

@@ -35,7 +35,12 @@
     </slot>
     <template v-if="media && media.url">
       <div :class="ui.media()">
-        <BlockMediaLayout :image="media" img-class="w-full h-full object-cover transition-opacity duration-300" />
+        <BlockMediaLayout
+          :image="media"
+          :fallback-height="''"
+          :class="ui.mediaComponent()"
+          :img-class="ui.mediaImg()"
+        />
       </div>
     </template>
 
@@ -115,7 +120,8 @@ const resolvedBorderRadius = computed(() => {
 const ui = computed(() => {
   return tv(inputWrapperTheme, props.ui)({
     size: resolvedSize.value,
-    borderRadius: resolvedBorderRadius.value
+    borderRadius: resolvedBorderRadius.value,
+    mediaStyle: 'intrinsic'
   })
 })
 

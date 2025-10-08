@@ -8,19 +8,17 @@ export const inputWrapperTheme = {
       'relative'
     ],
     help: 'text-neutral-500',
-    media: 'rounded-md overflow-hidden'
+    media: '',
+    // classes for the media component root (e.g., <BlockMediaLayout />)
+    mediaComponent: '',
+    // classes for the underlying <img> inside BlockMediaLayout
+    mediaImg: ''
   },
   variants: {
     borderRadius: {
-      none: {
-        media: 'rounded-none overflow-hidden'
-      },
-      small: {
-        media: 'rounded-md overflow-hidden'
-      },
-      full: {
-        media: 'rounded-[20px] overflow-hidden'
-      }
+      none: {},
+      small: {},
+      full: {}
     },
     size: {
       xs: {
@@ -39,10 +37,30 @@ export const inputWrapperTheme = {
         wrapper: 'my-1.5',
         media: 'mb-2.5'
       }
+    },
+    mediaStyle: {
+      default: {},
+      intrinsic: {
+        // apply intrinsic sizing to the component root and the image itself
+        mediaComponent: 'inline-block align-top !w-auto !h-auto',
+        mediaImg: 'inline-block h-auto w-auto max-w-[75%] max-h-120 object-contain transition-opacity duration-300'
+      }
     }
   },
+  compoundVariants: [
+    // Default style: border radius on the container with overflow clipping
+    { mediaStyle: 'default', borderRadius: 'none', class: { media: 'rounded-none overflow-hidden' } },
+    { mediaStyle: 'default', borderRadius: 'small', class: { media: 'rounded-md overflow-hidden' } },
+    { mediaStyle: 'default', borderRadius: 'full', class: { media: 'rounded-[20px] overflow-hidden' } },
+
+    // Intrinsic style: border radius applied directly to the image
+    { mediaStyle: 'intrinsic', borderRadius: 'none', class: { mediaImg: 'rounded-none' } },
+    { mediaStyle: 'intrinsic', borderRadius: 'small', class: { mediaImg: 'rounded-md' } },
+    { mediaStyle: 'intrinsic', borderRadius: 'full', class: { mediaImg: 'rounded-[20px]' } }
+  ],
   defaultVariants: {
     size: 'md',
-    borderRadius: 'small'
+    borderRadius: 'small',
+    mediaStyle: 'default'
   }
 }
