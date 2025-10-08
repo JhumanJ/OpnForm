@@ -266,6 +266,7 @@
                   <div v-if="shouldShowUpsell">
                     <v-form size="sm">
                       <toggle-switch-input
+                        name=""
                         v-model="isYearly"
                         label="20% off with the yearly plan"
                         size="sm"

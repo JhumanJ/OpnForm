@@ -185,6 +185,7 @@ import { useTemplateMeta } from "~/composables/data/useTemplateMeta"
 const props = defineProps({
   templates: {
     type: Array,
+    default: () => [],
     required: true,
   },
   loading: {
