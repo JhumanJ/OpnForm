@@ -148,6 +148,7 @@ return [
         'pl' => 'PL',
         'nl' => 'NL',
         'sr' => 'SR',
+        'uk' => 'UK',
     ],
 
     /*
