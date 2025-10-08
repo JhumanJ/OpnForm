@@ -1,9 +1,14 @@
 <template>
   <div class="w-full flex items-center px-6 grow min-h-0 z-10 h-full">
     <div class="w-full max-w-6xl mx-auto flex items-center justify-between gap-8">
-      <div v-if="isLeft" class="hidden md:block shrink-0">
-        <div class="relative w-[420px] h-[236px] xl:w-[520px] xl:h-[292px] overflow-hidden rounded-md">
-          <BlockMediaLayout :image="image" :fallback-height="null" />
+      <div v-if="isLeft" class="hidden md:block shrink-0 basis-1/2 max-w-1/2">
+        <div class="p-4 xl:p-6" :class="ui.mediaContainer()">
+          <BlockMediaLayout
+            :image="image"
+            :fallback-height="null"
+            :class="ui.mediaComponent()"
+            :img-class="ui.mediaImg()"
+          />
         </div>
       </div>
 
@@ -11,9 +16,14 @@
         <slot />
       </div>
 
-      <div v-if="!isLeft" class="hidden md:block shrink-0">
-        <div class="relative w-[420px] h-[236px] xl:w-[520px] xl:h-[292px] overflow-hidden rounded-md">
-          <BlockMediaLayout :image="image" :fallback-height="null" />
+      <div v-if="!isLeft" class="hidden md:block shrink-0 basis-1/2 max-w-1/2">
+        <div class="p-4 xl:p-6" :class="ui.mediaContainer()">
+          <BlockMediaLayout
+            :image="image"
+            :fallback-height="null"
+            :class="ui.mediaComponent()"
+            :img-class="ui.mediaImg()"
+          />
         </div>
       </div>
     </div>
@@ -22,13 +32,22 @@
 
 <script setup>
 import BlockMediaLayout from '../BlockMediaLayout.vue'
+import { tv } from 'tailwind-variants'
+import { sideMediaSmallTheme } from '~/lib/forms/themes/side-media-small.theme.js'
 
 const props = defineProps({
   image: { type: Object, required: true },
-  side: { type: String, default: 'left' } // 'left' | 'right'
+  side: { type: String, default: 'left' }, // 'left' | 'right'
+  borderRadius: { type: String, default: 'small' } // 'none' | 'small' | 'full'
 })
 
 const isLeft = computed(() => (props.side || 'left') === 'left')
+
+const ui = computed(() => {
+  return tv(sideMediaSmallTheme)({
+    borderRadius: props.borderRadius || 'small'
+  })
+})
 </script>
 
 

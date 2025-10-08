@@ -68,7 +68,7 @@
         <VTransition name="fade">
           <div
             v-if="!isExpanded && form && form.presentation_style === 'focused'"
-            class="absolute bottom-4 left-4 z-50 flex items-center gap-2"
+            class="absolute top-2 right-2 z-50 flex items-center gap-2"
           >
             <UTooltip text="Add block">
               <UButton

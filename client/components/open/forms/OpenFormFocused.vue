@@ -101,11 +101,11 @@ const layoutConfig = {
   },
   'left-small': {
     component: SideMediaSmall,
-    props: () => ({ image: currentMedia.value, side: 'left' })
+    props: () => ({ image: currentMedia.value, side: 'left', borderRadius: borderRadius.value })
   },
   'right-small': {
     component: SideMediaSmall,
-    props: () => ({ image: currentMedia.value, side: 'right' })
+    props: () => ({ image: currentMedia.value, side: 'right', borderRadius: borderRadius.value })
   },
   'background': {
     component: CenteredStep,
@@ -128,6 +128,8 @@ const coverMedia = computed(() => ({
   focal_point: form.value?.cover_settings?.focal_point,
   brightness: form.value?.cover_settings?.brightness
 }))
+
+const borderRadius = computed(() => form.value?.border_radius || 'small')
 </script>
 
 
