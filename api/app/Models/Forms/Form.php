@@ -95,6 +95,7 @@ class Form extends Model implements CachableAttributes
         'auto_save',
         'auto_focus',
         'enable_partial_submissions',
+        'enable_ip_tracking',
 
         // Security & Privacy
         'can_be_indexed',
@@ -114,6 +115,7 @@ class Form extends Model implements CachableAttributes
             'removed_properties' => 'array',
             'seo_meta' => 'object',
             'enable_partial_submissions' => 'boolean',
+            'enable_ip_tracking' => 'boolean',
             'auto_save' => 'boolean',
         ];
     }
