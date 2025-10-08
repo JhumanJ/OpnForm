@@ -13,7 +13,7 @@
     </div>
 
     <div class="p-4">
-      <Draggable
+      <VueDraggable
         v-model="form.properties"
         class="mx-auto w-full overflow-hidden rounded-md border border-neutral-300 bg-white transition-colors dark:bg-notion-dark-light"
         ghost-class="bg-blue-100"
@@ -110,7 +110,7 @@
             </div>
           </div>
         </template>
-      </Draggable>
+      </VueDraggable>
     </div>
   </div>
 </template>
@@ -123,7 +123,7 @@ import BlockTypeIcon from './BlockTypeIcon.vue'
 export default {
   name: 'FormFieldsEditor',
   components: {
-    Draggable: VueDraggable,
+    VueDraggable,
     EditableTag,
     BlockTypeIcon
   },
