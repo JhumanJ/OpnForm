@@ -2,6 +2,7 @@
   <UModal
     v-model:open="isOpen"
     :ui="{ content: 'sm:max-w-5xl' }"
+    title=""
     :close="false"
   >
     <template #body>
