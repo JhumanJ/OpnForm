@@ -30,16 +30,21 @@
           @update="handleDragUpdate"
         >
           <template #default>
-            <VTransition
+            <div
               v-for="element in currentFields"
               :key="element.id"
-              name="fadeHeight"
+              class="px-2"
+              :class="fieldWidthClasses(element.width)"
             >
-              <open-form-field
-                :field="element"
-                :form-manager="formManager"
-              />
-            </VTransition>
+              <VTransition name="fadeHeight">
+                <div>
+                  <open-form-field
+                    :field="element"
+                    :form-manager="formManager"
+                  />
+                </div>
+              </VTransition>
+            </div>
           </template>
         </VueDraggable>
       </div>
@@ -100,6 +105,7 @@ import CaptchaWrapper from '~/components/forms/heavy/components/CaptchaWrapper.v
 import OpenFormField from './OpenFormField.vue'
 import FormProgressbar from './FormProgressbar.vue'
 import { useWorkingFormStore } from '~/stores/working_form'
+import { getFieldWidthClasses as fieldWidthClasses } from '~/lib/utils'
 
 const props = defineProps({
   formManager: { type: Object, required: true }

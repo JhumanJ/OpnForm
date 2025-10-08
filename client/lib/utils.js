@@ -149,3 +149,20 @@ export function cleanQuotes(str) {
   if (!str) return ''
   return str.replace(/^"|"$/g, '')
 }
+
+// Grid width utility for form fields
+export function getFieldWidthClasses(width) {
+  if (!width || width === 'full') return 'col-span-full'
+  else if (width === '1/2') {
+    return 'sm:col-span-6 col-span-full'
+  } else if (width === '1/3') {
+    return 'sm:col-span-4 col-span-full'
+  } else if (width === '2/3') {
+    return 'sm:col-span-8 col-span-full'
+  } else if (width === '1/4') {
+    return 'sm:col-span-3 col-span-full'
+  } else if (width === '3/4') {
+    return 'sm:col-span-9 col-span-full'
+  }
+  return 'col-span-full'
+}
