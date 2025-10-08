@@ -201,6 +201,46 @@ const currentSlideIndex = computed(() => {
   }
 })
 
+// Shared guards/helpers
+const isFocusedEditing = computed(() => {
+  return !!(
+    form.value &&
+    form.value.presentation_style === 'focused' &&
+    workingFormStore.showEditFieldSidebar
+  )
+})
+
+function isValidIndex(index) {
+  const total = (workingFormStore.content?.properties?.length) || 0
+  return typeof index === 'number' && index >= 0 && index < total
+}
+
+// Sync selected field with current page in focused mode while editing
+watch(() => currentSlideIndex.value, (newIndex) => {
+  try {
+    if (isFocusedEditing.value && isValidIndex(newIndex) && workingFormStore.selectedFieldIndex !== newIndex) {
+      // Update the selected field to follow the currently focused slide
+      workingFormStore.setEditingField(newIndex)
+    }
+  } catch (e) {
+    console.error(e)
+  }
+})
+
+// Also keep the preview page aligned when selection changes externally
+watch(() => workingFormStore.selectedFieldIndex, (newIndex) => {
+  try {
+    if (isFocusedEditing.value && isValidIndex(newIndex)) {
+      const struct = workingFormStore.structureService
+      if (struct && typeof struct.setPageForField === 'function') {
+        struct.setPageForField(newIndex)
+      }
+    }
+  } catch (e) {
+    console.error(e)
+  }
+})
+
 function handleAddBlock() {
   try {
     workingFormStore.activeTab = 'build'
