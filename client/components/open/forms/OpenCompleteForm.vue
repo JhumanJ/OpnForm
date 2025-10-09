@@ -237,8 +237,8 @@ if (props.form) {
     mode: modeRef
   })
 
-  // Await the initialization for SSR
-  formManager.initialize({
+  // Await initialization so SSR includes form structure and fields
+  await formManager.initialize({
     submissionId: submissionId.value,
     urlParams: new URLSearchParams(queryString),
   })
