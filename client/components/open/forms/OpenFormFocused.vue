@@ -23,7 +23,7 @@
     >
       <!-- Password view (exclusive) -->
       <template v-if="$slots.password && form?.is_password_protected" key="password">
-        <div key="pwd" class="w-full flex items-center px-6 grow min-h-0 z-10 h-full">
+        <div key="pwd" class="w-full flex items-center px-6 grow min-h-0 z-10">
           <div class="w-full max-w-xl mx-auto p-4">
             <slot name="password" />
           </div>
@@ -31,7 +31,7 @@
       </template>
       <!-- Alerts view (exclusive) -->
       <template v-else-if="$slots.alerts" key="alerts">
-        <div key="alerts" class="w-full flex items-center px-6 grow min-h-0 z-10 h-full">
+        <div key="alerts" class="w-full flex items-center px-6 grow min-h-0 z-10">
           <div class="w-full max-w-2xl mx-auto p-4">
             <slot name="alerts" />
           </div>
@@ -39,7 +39,7 @@
       </template>
       <!-- After-submit view (exclusive) -->
       <template v-else-if="props.formManager?.state.isSubmitted && $slots['after-submit']" key="submitted">
-        <div key="submitted" class="w-full flex items-center px-6 grow min-h-0 z-10 h-full">
+        <div key="submitted" class="w-full flex items-center px-6 grow min-h-0 z-10">
           <div class="w-full max-w-2xl mx-auto p-4">
             <slot name="after-submit" :submittedData="props.formManager?.form?.data?.()" />
           </div>
