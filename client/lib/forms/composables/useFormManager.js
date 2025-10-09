@@ -142,18 +142,31 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
    */
   const nextPage = async () => {
     if (state.isProcessing) return false
+
+    // Derive fields and conditions up-front so we can decide if we need a loading state
+    const currentPageFields = structure.value.getPageFields(state.currentPage)
+    const isCurrentlyLastPage = structure.value.isLastPage.value 
+    const paymentBlock = structure.value.currentPagePaymentBlock.value
+
+    // Determine if this step requires validation via validation helper filtering
+    const validatableFields = validation.filterValidatableFields(currentPageFields)
+    const needsValidation = !!(strategy.value?.validation?.validateOnNextPage) && validatableFields.length > 0
+
+    // If no validation and no payment work is needed, skip loading and just advance
+    if (!needsValidation && !paymentBlock) {
+      if (!isCurrentlyLastPage) {
+        state.currentPage++
+      }
+      return true
+    }
+
     state.isProcessing = true
 
     try {
-    const currentPageFields = structure.value.getPageFields(state.currentPage)
-      // Use computed isLastPage directly from structure composable
-      const isCurrentlyLastPage = structure.value.isLastPage.value 
-
-      // 1. Validate current page
-      await validation.validateCurrentPage(currentPageFields, strategy.value)
+      // 1. Validate current page if needed
+      if (needsValidation) await validation.validateCurrentPage(currentPageFields, strategy.value)
 
       // 2. Process payment (Create Payment Intent if applicable)
-      const paymentBlock = structure.value.currentPagePaymentBlock.value
       if (paymentBlock) {
         // In editor/test mode (not LIVE), skip payment validation
         const isPaymentRequired = mode.value === FormMode.LIVE ? !!paymentBlock.required : false

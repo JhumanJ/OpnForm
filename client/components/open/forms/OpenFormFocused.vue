@@ -24,7 +24,6 @@
       class="grow min-h-0 flex"
       :speed="500"
     >
-      <!-- Unified layout rendering: one dynamic component -->
       <component :is="currentLayoutComponent" v-bind="currentLayoutProps" :key="currentIndex">
         <div class="relative">
           <BlockRenderer :block="currentBlock" :form-manager="formManager" />

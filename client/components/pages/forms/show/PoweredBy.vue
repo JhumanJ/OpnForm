@@ -4,8 +4,9 @@
     color="form"
     :label="props.label"
     trailing-icon="i-heroicons-arrow-up-right-20-solid"
-    class="fixed bottom-4 right-4 hover:no-underline powered-by-button"
+    class="fixed z-10 bottom-4 right-4 hover:no-underline powered-by-button"
     :class="textColorClass"
+    size="sm"
     target="_blank"
   /> 
 </template>
