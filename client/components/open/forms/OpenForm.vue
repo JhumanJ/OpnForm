@@ -4,9 +4,6 @@
     class="pb-20"
     @submit.prevent=""
   >
-    <!-- Alerts slot (renderer decides placement) -->
-    <slot name="alerts" />
-
     <!-- Classic cover/logo rendering -->
     <div v-if="form && (form.logo_picture || form.cover_picture)" class="mb-2">
       <div v-if="form.cover_picture">
@@ -48,6 +45,10 @@
       >
         <div v-if="$slots.password" key="password" class="w-full">
           <slot name="password" />
+        </div>
+
+        <div v-else-if="$slots.alerts" key="alerts" class="w-full">
+          <slot name="alerts" />
         </div>
 
         <div v-else-if="isSubmitted" key="submitted" class="px-2 w-full">
