@@ -62,6 +62,7 @@ if (import.meta.server) {
 const openCompleteForm = ref(null)
 
 const passwordEntered = function (password) {
+  console.log('passwordEntered', password)
   const cookie = useCookie('password-' + slug, {
     maxAge: 60 * 60 * 7,
     sameSite: 'none',
@@ -70,6 +71,7 @@ const passwordEntered = function (password) {
   cookie.value = sha256(password)
   nextTick(() => {
     refetchForm().then(() => {
+      console.log('form.value', form.value)
       if (form.value?.is_password_protected) {
         openCompleteForm.value.addPasswordError(t('forms.invalid_password'))
       } else {

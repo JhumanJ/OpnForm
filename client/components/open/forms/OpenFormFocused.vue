@@ -24,11 +24,18 @@
       class="grow min-h-0 flex"
       :speed="500"
     >
-      <component :is="currentLayoutComponent" v-bind="currentLayoutProps" :key="currentIndex">
+      <template v-if="$slots.password" key="password">
+        <div :key="'pwd-'+currentIndex" class="w-full flex items-center px-6 grow min-h-0 z-10 h-full">
+          <div class="w-full max-w-xl mx-auto p-4">
+            <slot name="password" />
+          </div>
+        </div>
+      </template>
+      <component v-else :is="currentLayoutComponent" v-bind="currentLayoutProps" :key="currentIndex">
         <div class="relative">
           <BlockRenderer :block="currentBlock" :form-manager="formManager" />
         </div>
-        <div class="mt-2">
+        <div class="mt-2 flex gap-2 justify-start">
           <slot name="submit-btn" v-if="isLast" :loading="isProcessing">
             <open-form-button :form="form" class="mt-0.5 px-6" :loading="isProcessing" @click.prevent="emit('submit')">
               {{ form.submit_button_text || $t('forms.buttons.submit') }}

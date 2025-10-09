@@ -64,30 +64,28 @@
         <Loader class="h-6 w-6 text-blue-500 mx-auto" />
       </div>
 
-      <div v-else-if="isPublicFormPage && form.is_password_protected" key="password">
-        <p class="form-description text-neutral-700 dark:text-neutral-300 px-2">
-          {{ t('forms.password_protected') }}
-        </p>
-        <div class="form-group flex flex-wrap w-full">
-          <div class="relative w-full px-2">
-            <text-input :form="passwordForm" name="password" native-type="password" label="Password" />
-          </div>
-        </div>
-        <div class="flex flex-wrap justify-center w-full text-center">
-          <open-form-button :form="form" class="my-4" @click="passwordEntered">
-            {{ t('forms.submit') }}
-          </open-form-button>
-        </div>
-      </div>
-
       <component
-        v-else-if="form && !form.is_password_protected && !isFormSubmitted &&formManager && form && shouldDisplayForm"
+        v-else-if="form && !isFormSubmitted && formManager && form && shouldDisplayForm"
         :key="'form'+form.presentation_style"
         :is="FormComponent"
         :form-manager="formManager"
         @submit="triggerSubmit"
         class="flex flex-col grow"
       >
+        <template #password v-if="isPublicFormPage && form.is_password_protected" >
+          <div class="w-full">
+            <div class="form-group flex flex-wrap w-full max-w-sm mx-auto">
+              <div class="relative w-full px-2">
+                <text-input :form="passwordForm" name="password" native-type="password" label="Password" :help="t('forms.password_protected')" />
+              </div>
+            </div>
+            <div class="flex flex-wrap justify-center w-full text-center">
+              <open-form-button :form="form" class="my-4 px-8" @click="passwordEntered">
+                {{ t('forms.submit') }}
+              </open-form-button>
+            </div>
+          </div>
+        </template>
         <template #alerts>
           <UAlert
             v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
@@ -415,6 +413,7 @@ const editSubmission = () => {
 }
 
 const passwordEntered = () => {
+  console.log('passwordEntered', passwordForm.password)
   if (passwordForm.password) {
     emit('password-entered', passwordForm.password)
   } else {

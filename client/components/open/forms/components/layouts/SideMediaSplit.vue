@@ -1,17 +1,33 @@
 <template>
-  <div class="w-full flex items-stretch grow min-h-0 z-10">
+  <div class="w-full flex grow min-h-0 z-10 flex-col md:flex-row">
+    <!-- Mobile: media as background on top, content dictates scroll -->
+    <div class="relative block md:hidden w-full">
+      <!-- Spacer for 50vh visual band -->
+      <div class="pt-[50vh]"></div>
+      <!-- Absolute background image so it doesn't affect layout height beyond spacer -->
+      <div class="absolute inset-0 pointer-events-none">
+        <BlockMediaLayout :image="image" :fallback-height="null" />
+      </div>
+    </div>
+
+    <!-- Desktop: media on the left -->
     <div v-if="isLeft" class="hidden md:block w-1/2 relative overflow-hidden">
       <BlockMediaLayout :image="image" :fallback-height="null" />
     </div>
+
+    <!-- Content -->
     <div class="w-full md:w-1/2 flex items-center px-6">
-      <div class="w-full max-w-2xl mx-auto">
+      <div class="w-full max-w-2xl mx-auto mt-4 md:mt-0 py-4">
         <slot />
       </div>
     </div>
+
+    <!-- Desktop: media on the right -->
     <div v-if="!isLeft" class="hidden md:block w-1/2 relative overflow-hidden">
       <BlockMediaLayout :image="image" :fallback-height="null" />
     </div>
   </div>
+  
 </template>
 
 <script setup>
