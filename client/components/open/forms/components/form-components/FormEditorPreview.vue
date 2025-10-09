@@ -253,7 +253,7 @@ function handleAddBlock() {
 function handleEditCurrent() {
   try {
     workingFormStore.activeTab = 'build'
-    workingFormStore.openSettingsForField(currentSlideIndex.value)
+    workingFormStore.openSettingsForField(currentSlideIndex.value, true)
   } catch (e) {
     console.error(e)
   }

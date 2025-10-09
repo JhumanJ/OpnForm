@@ -112,6 +112,7 @@ function onSelectStyle(newVal) {
   if (newVal === 'classic' && removalList.value.length === 0) {
     // No removal, apply immediately
     form.value.presentation_style = 'classic'
+    workingFormStore.closeAllSidebars()
     return
   }
 
@@ -119,6 +120,7 @@ function onSelectStyle(newVal) {
     form.value.presentation_style = 'focused'
     // Ensure large input size in focused mode
     form.value.size = 'lg'
+    workingFormStore.closeAllSidebars()
     return
   }
 
@@ -143,6 +145,7 @@ function confirmSwitch() {
   if (target === 'focused') {
     form.value.size = 'lg'
   }
+  workingFormStore.closeAllSidebars()
   showConfirmModal.value = false
   pendingStyle.value = null
   removalList.value = []

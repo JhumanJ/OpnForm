@@ -1,5 +1,6 @@
 <template>
   <div
+    class="text-block"
     :class="classes"
     v-html="processedContent"
   />

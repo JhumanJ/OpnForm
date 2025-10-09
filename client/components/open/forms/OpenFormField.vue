@@ -199,7 +199,7 @@ const beingEdited = computed(() =>
 // Methods
 function editFieldOptions() {
   if (!isAdminPreview.value) return
-  workingFormStore.openSettingsForField(props.field)
+  workingFormStore.openSettingsForField(props.field, true)
 }
 
 function setFieldAsSelected() {

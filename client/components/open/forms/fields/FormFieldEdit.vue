@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div 
+    :class="{ 'sidebar-bounce': sidebarBounce }"
+    class="sidebar-container"
+  >
     <div class="p-2 border-b sticky top-0 z-20 bg-white">
       <UButton
         v-if="!field"
@@ -104,7 +107,7 @@ import FormBlockLogicEditor from '../components/form-logic-components/FormBlockL
 import CustomFieldValidation from '../components/CustomFieldValidation.vue'
 
 const workingFormStore = useWorkingFormStore()
-const { content: form } = storeToRefs(workingFormStore)
+const { content: form, sidebarBounce } = storeToRefs(workingFormStore)
 
 const selectedFieldIndex = computed(() => workingFormStore.selectedFieldIndex)
 
@@ -267,3 +270,37 @@ const tabItems = computed(() => {
 })
 
 </script>
+
+<style scoped>
+.sidebar-container {
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.sidebar-bounce {
+  animation: bounce-left 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes bounce-left {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(0);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(0);
+  }
+  90% {
+    transform: translateX(-1px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+</style>

@@ -37,6 +37,14 @@
           </div>
         </div>
       </template>
+      <!-- After-submit view (exclusive) -->
+      <template v-else-if="props.formManager?.state.isSubmitted && $slots['after-submit']" key="submitted">
+        <div key="submitted" class="w-full flex items-center px-6 grow min-h-0 z-10 h-full">
+          <div class="w-full max-w-2xl mx-auto p-4">
+            <slot name="after-submit" :submittedData="props.formManager?.form?.data?.()" />
+          </div>
+        </div>
+      </template>
       <component v-else :is="currentLayoutComponent" v-bind="currentLayoutProps" :key="currentIndex">
         <div class="relative">
           <BlockRenderer :block="currentBlock" :form-manager="formManager" />

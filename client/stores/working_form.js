@@ -21,6 +21,9 @@ export const useWorkingFormStore = defineStore("working_form", {
     
     // Structure service instance - will be set from useFormManager
     structureService: null,
+    
+    // Animation state
+    sidebarBounce: false,
   }),
   getters: {
     // Get all blocks/properties in the form
@@ -100,9 +103,15 @@ export const useWorkingFormStore = defineStore("working_form", {
     setEditingField(field) {
       this.selectedFieldIndex = this.objectToIndex(field)
     },
-    openSettingsForField(field) {
+    openSettingsForField(field, triggerBounce = false) {
       const targetIndex = this.objectToIndex(field)
       const previousIndex = this.selectedFieldIndex
+      
+      // Check if sidebar is already open for the same field and bounce is requested
+      if (triggerBounce && this.showEditFieldSidebar && targetIndex === previousIndex) {
+        this.triggerSidebarBounce()
+        return
+      }
       
       this.selectedFieldIndex = targetIndex
       this.showEditFieldSidebar = true
@@ -129,6 +138,11 @@ export const useWorkingFormStore = defineStore("working_form", {
     },
     closeAddFieldSidebar() {
       this.selectedFieldIndex = null
+      this.showAddFieldSidebar = false
+    },
+    closeAllSidebars() {
+      this.selectedFieldIndex = null
+      this.showEditFieldSidebar = false
       this.showAddFieldSidebar = false
     },
     reset() {
@@ -320,6 +334,15 @@ export const useWorkingFormStore = defineStore("working_form", {
       
       newFields.splice(validNewIndex, 0, field)
       this.setProperties(newFields)
+    },
+    
+    // Trigger sidebar bounce animation
+    triggerSidebarBounce() {
+      this.sidebarBounce = true
+      // Reset after animation duration
+      setTimeout(() => {
+        this.sidebarBounce = false
+      }, 600)
     }
   },
   history: {

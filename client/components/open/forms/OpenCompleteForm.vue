@@ -11,7 +11,7 @@
       </div>
 
       <component
-        v-else-if="form && !isFormSubmitted && formManager && form"
+        v-else-if="form && formManager && form"
         :key="'form'+form.presentation_style"
         :is="FormComponent"
         :form-manager="formManager"
@@ -75,35 +75,36 @@
         <template #branding v-if="!form.no_branding && formModeStrategy.display.showBranding">
           <PoweredBy :color="form.color" />
         </template>
-      </component>
 
-      <div v-else key="submitted" class="px-2">
-        <TextBlock
-          v-if="form.submitted_text"
-          class="form-description text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap"
-          :content="form.submitted_text"
-          :mentions-allowed="true"
-          :form="form"
-          :form-data="submittedData"
-        />
-        <div class="flex w-full gap-2 items-center mt-4">
-          <open-form-button
-            v-if="form.re_fillable"
+        <!-- Submitted view provided to renderer -->
+        <template #after-submit>
+          <TextBlock
+            v-if="form.submitted_text"
+            class="form-description text-neutral-700 dark:text-neutral-300 whitespace-pre-wrap"
+            :content="form.submitted_text"
+            :mentions-allowed="true"
             :form="form"
-            icon="i-lucide-rotate-ccw"
-            @click="restart"
-          >
-            {{ form.re_fill_button_text || t('forms.buttons.re_fill') }}
-          </open-form-button>
-          <open-form-button
-            v-if="form.editable_submissions && submissionId"
-            :form="form"
-            @click="editSubmission"
-          >
-            {{ form.editable_submissions_button_text }}
-          </open-form-button>
-        </div>
-      </div>
+            :form-data="submittedData"
+          />
+          <div class="flex w-full gap-2 items-center mt-4">
+            <open-form-button
+              v-if="form.re_fillable"
+              :form="form"
+              icon="i-lucide-rotate-ccw"
+              @click="restart"
+            >
+              {{ form.re_fill_button_text || t('forms.buttons.re_fill') }}
+            </open-form-button>
+            <open-form-button
+              v-if="form.editable_submissions && submissionId"
+              :form="form"
+              @click="editSubmission"
+            >
+              {{ form.editable_submissions_button_text }}
+            </open-form-button>
+          </div>
+        </template>
+      </component>
     </v-transition>
 
     <template v-if="!isAutoSubmit">
@@ -245,7 +246,6 @@ const isFormOwner = computed(() => {
   return isAuthenticated.value && props.form && props.form.creator_id === user.value.id
 })
 
-const isFormSubmitted = computed(() => formManager?.state.isSubmitted ?? false)
 const isProcessing = computed(() => formManager?.state.isProcessing ?? false)
 const showFormCleanings = computed(() => formManager?.strategy.value.display.showFormCleanings ?? false)
 const showFontLink = computed(() => formManager?.strategy.value.display.showFontLink ?? false)
