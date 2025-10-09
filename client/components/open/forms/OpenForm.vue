@@ -81,9 +81,6 @@
         </div>
       </transition>
 
-      <!-- Cleanings slot -->
-      <slot name="cleanings" />
-
       <!-- Captcha -->
       <CaptchaWrapper v-if="form.use_captcha" :form-manager="formManager" />
 
@@ -133,6 +130,14 @@
 
       <!-- Branding slot (renderer placement) -->
       <slot name="branding" />
+
+      <!-- Cleanings slot -->
+      <div class="fixed bottom-4 left-4 max-w-full z-10" v-if="$slots.cleanings">
+        <div class="max-w-lg">
+          <slot name="cleanings" />
+        </div>
+      </div>
+
     </div>
   </form>
 </template>

@@ -5,18 +5,6 @@
     :dir="form?.layout_rtl ? 'rtl' : 'ltr'"
     :style="formStyle"
   >
-
-    <template v-if="!isAutoSubmit">
-      <form-cleanings
-        v-if="showFormCleanings"
-        :hideable="true"
-        class="mb-4 mx-2"
-        :form="form"
-        :specify-form-owner="true"
-        :use-cookie-dismissal="true"
-      />
-    </template>
-
     <v-transition name="fade" mode="out-in">
       <div v-if="isAutoSubmit" key="auto-submit" class="text-center p-6">
         <Loader class="h-6 w-6 text-blue-500 mx-auto" />

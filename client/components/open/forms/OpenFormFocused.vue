@@ -41,8 +41,9 @@
         <div class="relative">
           <BlockRenderer :block="currentBlock" :form-manager="formManager" />
         </div>
-        <div class="mt-2 flex gap-2 justify-start">
+        <div class="mt-2 flex gap-2 justify-start" :class="{'flex-col justify-normal! items-center': isLast &&form.use_captcha}">
           <slot name="submit-btn" v-if="isLast" :loading="isProcessing">
+            <CaptchaWrapper v-if="form.use_captcha" :form-manager="formManager" />
             <open-form-button :form="form" class="mt-0.5 px-6" :loading="isProcessing" @click.prevent="emit('submit')">
               {{ form.submit_button_text || $t('forms.buttons.submit') }}
             </open-form-button>
@@ -51,14 +52,20 @@
             {{ form?.translations?.focused_next_button_text || $t('forms.buttons.next') }}
           </open-form-button>
         </div>
+        <div v-if="hasPaymentBlock" class="mt-2">
+          <p class="text-xs text-neutral-400 dark:text-neutral-500 max-w-md">
+            {{ $t('forms.payment.payment_disclaimer') }}
+          </p>
+        </div>
       </component>
     </SlidingTransition>
 
     <!-- Cleanings slot -->
-    <slot name="cleanings" />
-
-    <!-- Captcha -->
-    <CaptchaWrapper v-if="form.use_captcha" :form-manager="formManager" />
+    <div class="fixed bottom-4 left-4 max-w-full z-10" v-if="$slots.cleanings">
+      <div class="max-w-lg">
+        <slot name="cleanings" />
+      </div>
+    </div>
 
     <!-- Branding slot -->
     <slot name="branding" />
@@ -95,6 +102,7 @@ const currentMedia = computed(() => currentBlock.value?.image || null)
 
 const isLast = computed(() => structure?.value?.isLastPage?.value ?? false)
 const isProcessing = computed(() => props.formManager.state.isProcessing)
+const hasPaymentBlock = computed(() => structure.value?.currentPageHasPaymentBlock?.value ?? false)
 
 // Reserved for future gating if focused renderer wants to branch
 // const isSubmitted = computed(() => !!props.formManager?.state.isSubmitted)
