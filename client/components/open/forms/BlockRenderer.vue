@@ -20,8 +20,14 @@
       :key="'text-' + block.id"
       class="nf-text w-full my-1.5 break-words whitespace-break-spaces"
       :class="[getFieldAlignClasses(block)]"
-      v-html="block.content"
-    />
+    >
+      <TextBlock
+        :content="block.content"
+        :form="form"
+        :form-data="dataForm"
+        :media="shouldInjectBetweenMedia ? block.image : null"
+      />
+    </div>
     <div
       v-else-if="block.type === 'nf-code' && block.content"
       :id="block.id"
@@ -41,6 +47,7 @@
 <script setup>
 import ClientOnlyWrapper from '~/components/global/ClientOnlyWrapper.vue'
 import { useComponentRegistry } from '~/composables/components/useComponentRegistry'
+import TextBlock from '~/components/forms/core/TextBlock.vue'
 
 const props = defineProps({
   block: { type: Object, required: false, default: null },

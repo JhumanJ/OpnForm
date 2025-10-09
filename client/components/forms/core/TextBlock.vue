@@ -2,14 +2,26 @@
   <div
     class="text-block"
     :class="classes"
-    v-html="processedContent"
-  />
+  >
+    <div v-if="media && media.url" class="mb-3" :class="ui.media()">
+      <BlockMediaLayout
+        :image="media"
+        :fallback-height="''"
+        :class="ui.mediaComponent()"
+        :img-class="ui.mediaImg()"
+      />
+    </div>
+    <div v-html="processedContent" />
+  </div>
+  
 </template>
 
 <script setup>
 import { useParseMention } from '@/composables/components/useParseMention'
 import { tv } from 'tailwind-variants'
 import { textBlockTheme } from '~/lib/forms/themes/text-block.theme.js'
+import BlockMediaLayout from '~/components/open/forms/components/BlockMediaLayout.vue'
+import { inputWrapperTheme } from '~/lib/forms/themes/input-wrapper.theme.js'
 
 const props = defineProps({
   content: { type: String, required: true },
@@ -17,6 +29,8 @@ const props = defineProps({
   form: { type: Object, default: null },
   formData: { type: Object, default: null },
   size: { type: String, default: null },
+  media: { type: Object, default: null },
+  borderRadius: { type: String, default: null },
 })
 
 const processedContent = computed(() => {
@@ -24,7 +38,17 @@ const processedContent = computed(() => {
 })
 
 const injectedSize = inject('formSize', null)
+const injectedBorderRadius = inject('formBorderRadius', null)
 const resolvedSize = computed(() => props.size || injectedSize?.value || 'md')
 const variants = computed(() => tv(textBlockTheme))
 const classes = computed(() => variants.value({ size: resolvedSize.value }).root())
+
+// Media UI (reuse input wrapper theme for border radius handling)
+const resolvedBorderRadius = computed(() => props.borderRadius || injectedBorderRadius?.value || 'small')
+const ui = computed(() => {
+  return tv(inputWrapperTheme)({
+    borderRadius: resolvedBorderRadius.value,
+    mediaStyle: 'intrinsic'
+  })
+})
 </script>
