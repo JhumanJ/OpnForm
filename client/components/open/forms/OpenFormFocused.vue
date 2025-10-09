@@ -10,9 +10,6 @@
       <img :src="form.logo_picture" :alt="form.seo_meta?.site_name ? `${form.seo_meta.site_name} logo` : 'Form logo'" class="size-16 object-contain">
     </div>
 
-    <!-- Alerts slot (renderer decides placement) -->
-    <slot name="alerts" />
-
     <!-- Progressbar -->
     <FormProgressbar :form-manager="formManager" />
 
@@ -24,10 +21,19 @@
       class="grow min-h-0 flex"
       :speed="500"
     >
-      <template v-if="$slots.password" key="password">
-        <div :key="'pwd-'+currentIndex" class="w-full flex items-center px-6 grow min-h-0 z-10 h-full">
+      <!-- Password view (exclusive) -->
+      <template v-if="$slots.password && form?.is_password_protected" key="password">
+        <div key="pwd" class="w-full flex items-center px-6 grow min-h-0 z-10 h-full">
           <div class="w-full max-w-xl mx-auto p-4">
             <slot name="password" />
+          </div>
+        </div>
+      </template>
+      <!-- Alerts view (exclusive) -->
+      <template v-else-if="$slots.alerts" key="alerts">
+        <div key="alerts" class="w-full flex items-center px-6 grow min-h-0 z-10 h-full">
+          <div class="w-full max-w-2xl mx-auto p-4">
+            <slot name="alerts" />
           </div>
         </div>
       </template>

@@ -5,50 +5,8 @@
     :dir="form?.layout_rtl ? 'rtl' : 'ltr'"
     :style="formStyle"
   >
-    <ClientOnly>
-      <Teleport to="head">
-        <link
-          v-if="showFontLink && form.font_family"
-          :key="form.font_family"
-          :href="getFontUrl"
-          rel="stylesheet"
-          crossorigin="anonymous"
-          referrerpolicy="no-referrer"
-        >
-      </Teleport>
-    </ClientOnly>
 
     <template v-if="!isAutoSubmit">
-      <UAlert
-        v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
-        icon="i-heroicons-lock-closed-20-solid"
-        color="warning"
-        variant="subtle"
-        class="m-2 my-4"
-      >
-        <template #description>
-          <div
-            class="break-words whitespace-break-spaces"
-            v-html="form.closed_text"
-          />
-        </template>
-      </UAlert>
-
-      <UAlert
-        v-else-if="isPublicFormPage && form.max_number_of_submissions_reached"
-        icon="i-heroicons-lock-closed-20-solid"
-        color="warning"
-        variant="subtle"
-        class="m-2 my-4"
-      >
-        <template #description>
-          <div
-            class="break-words whitespace-break-spaces"
-            v-html="form.max_submissions_reached_text"
-          />
-        </template>
-      </UAlert>
-
       <form-cleanings
         v-if="showFormCleanings"
         :hideable="true"
@@ -65,7 +23,7 @@
       </div>
 
       <component
-        v-else-if="form && !isFormSubmitted && formManager && form && shouldDisplayForm"
+        v-else-if="form && !isFormSubmitted && formManager && form"
         :key="'form'+form.presentation_style"
         :is="FormComponent"
         :form-manager="formManager"
@@ -86,9 +44,13 @@
             </div>
           </div>
         </template>
-        <template #alerts>
+        
+        <template
+          #alerts
+          v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed' || form.max_number_of_submissions_reached)"
+        >
           <UAlert
-            v-if="isPublicFormPage && (form.is_closed || form.visibility=='closed')"
+            v-if="form.is_closed || form.visibility=='closed'"
             icon="i-heroicons-lock-closed-20-solid"
             color="warning"
             variant="subtle"
@@ -99,7 +61,7 @@
             </template>
           </UAlert>
           <UAlert
-            v-else-if="isPublicFormPage && form.max_number_of_submissions_reached"
+            v-else
             icon="i-heroicons-lock-closed-20-solid"
             color="warning"
             variant="subtle"
@@ -122,8 +84,8 @@
           />
         </template>
 
-        <template #branding>
-          <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
+        <template #branding v-if="!form.no_branding && formModeStrategy.display.showBranding">
+          <PoweredBy :color="form.color" />
         </template>
       </component>
 
@@ -157,7 +119,6 @@
     </v-transition>
 
     <template v-if="!isAutoSubmit">
-      <PoweredBy v-if="form && !form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
       <FirstSubmissionModal
         :show="showFirstSubmissionModal"
         :form="form"
@@ -300,9 +261,6 @@ const isFormSubmitted = computed(() => formManager?.state.isSubmitted ?? false)
 const isProcessing = computed(() => formManager?.state.isProcessing ?? false)
 const showFormCleanings = computed(() => formManager?.strategy.value.display.showFormCleanings ?? false)
 const showFontLink = computed(() => formManager?.strategy.value.display.showFontLink ?? false)
-const shouldDisplayForm = computed(() => {
-  return (!props.form.is_closed && !props.form.max_number_of_submissions_reached) || formManager?.strategy?.value.admin?.showAdminControls
-})
 
 const formStyle = computed(() => {
   const baseStyle = {
@@ -325,6 +283,21 @@ const formStyle = computed(() => {
 
 const FormComponent = computed(() => {
   return props.form?.presentation_style === 'focused' ? OpenFormFocused : OpenForm
+})
+
+// Conditionally add font link to the page head (SSR-friendly)
+useHead({
+  link: computed(() =>
+    (showFontLink.value && props.form?.font_family && getFontUrl.value) ? [
+      {
+        key: `form-font-${props.form.font_family}`,
+        rel: 'stylesheet',
+        href: getFontUrl.value,
+        crossorigin: 'anonymous',
+        referrerpolicy: 'no-referrer'
+      }
+    ] : []
+  )
 })
 
 watch(() => props.form.language, (newLanguage) => {

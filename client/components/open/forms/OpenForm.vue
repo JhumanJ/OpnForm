@@ -46,7 +46,7 @@
         name="fade"
         mode="out-in"
       >
-        <div v-if="isPasswordProtected" key="password" class="w-full">
+        <div v-if="$slots.password" key="password" class="w-full">
           <slot name="password" />
         </div>
 
@@ -218,7 +218,6 @@ const handleDragDropped = (data) => {
 const isProcessing = computed(() => props.formManager.state.isProcessing)
 
 // Renderer-level gates
-const isPasswordProtected = computed(() => !!form.value?.is_password_protected)
 const isSubmitted = computed(() => !!props.formManager?.state.isSubmitted)
 const shouldDisplayForm = computed(() => {
   const showAdminControls = !!props.formManager?.strategy?.value?.admin?.showAdminControls
