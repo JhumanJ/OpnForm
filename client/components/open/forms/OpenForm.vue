@@ -5,7 +5,7 @@
     @submit.prevent=""
   >
     <!-- Classic cover/logo rendering -->
-    <div v-if="form && (form.logo_picture || form.cover_picture)" class="mb-2">
+    <div v-if="showBrandingMedia" class="mb-2">
       <div v-if="form.cover_picture">
         <div id="cover-picture" class="h-56 w-full overflow-hidden pointer-events-none">
           <BlockMediaLayout :image="coverMedia" img-class="w-full h-full object-cover" alt="Form cover image" />
@@ -33,7 +33,7 @@
     <div
       class="w-full mx-auto px-4"
       :class="[
-        (!isIframe && !form.logo_picture) ? 'mt-6' : '',
+        (!isIframe && !showBrandingMedia) ? 'mt-6' : '',
         form && form.width === 'centered' ? (isPreviewMode ? 'max-w-lg' : 'md:w-3/5 lg:w-1/2 md:max-w-2xl') : '',
         (form && form.width === 'full' && !isIframe) ? 'max-w-7xl' : ''
       ]"
@@ -239,6 +239,13 @@ const coverMedia = computed(() => ({
   focal_point: form.value?.cover_settings?.focal_point,
   brightness: form.value?.cover_settings?.brightness
 }))
+
+// Hide logo/cover in READ_ONLY and EDIT modes
+const showBrandingMedia = computed(() => {
+  const mode = props.formManager?.mode?.value
+  if (mode === FormMode.READ_ONLY || mode === FormMode.EDIT) return false
+  return !!(form.value && (form.value.logo_picture || form.value.cover_picture))
+})
 </script>
 
 <style lang='scss' scoped>

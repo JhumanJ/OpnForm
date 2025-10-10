@@ -113,6 +113,7 @@ export function createFormModeStrategy(mode) {
     case FormMode.READ_ONLY:
       // Read only mode - no validation, no submission, fields are disabled
       strategy.validation.validateOnNextPage = false
+      strategy.display.showHiddenFields = true
       strategy.validation.validateOnSubmit = false
       strategy.validation.performActualSubmission = false
       strategy.display.disableFields = true

@@ -57,6 +57,7 @@ const props = defineProps({
 const form = computed(() => props.formManager?.config?.value || {})
 const dataForm = computed(() => props.formManager?.form || {})
 const darkMode = computed(() => props.formManager?.darkMode?.value || false)
+const strategy = computed(() => props.formManager?.strategy?.value || {})
 
 const { getFormComponent } = useComponentRegistry()
 
@@ -148,7 +149,8 @@ const boundProps = computed(() => {
     media: shouldInjectBetweenMedia.value ? field.image : null,
     presentation: form.value?.presentation_style || 'classic',
     required: field.required || false,
-    disabled: field.disabled || false
+    // Respect global disable flag from form mode (e.g., READ_ONLY)
+    disabled: (strategy.value?.display?.disableFields === true) || (field.disabled || false)
   }
 
   if (field.type === 'matrix') {
