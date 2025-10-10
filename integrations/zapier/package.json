@@ -1,6 +1,6 @@
 {
   "name": "opnform",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "OpnForm is an open-source form builder for creating and managing forms, enabling seamless data collection and automation.",
   "main": "index.js",
   "scripts": {
