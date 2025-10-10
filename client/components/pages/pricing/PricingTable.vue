@@ -174,7 +174,6 @@
 </template>
 
 <script>
-import { computed } from "vue"
 import MonthlyYearlySelector from "./MonthlyYearlySelector.vue"
 import CustomPlan from "./CustomPlan.vue"
 import { useIsAuthenticated } from "~/composables/useAuthFlow"
@@ -195,12 +194,12 @@ export default {
   setup() {
     const { openSubscriptionModal } = useAppModals()
     const { isAuthenticated: authenticated } = useIsAuthenticated()
-    const auth = useAuth()
+    const { data: user } = useAuth().user()
     
     return {
       openSubscriptionModal,
       authenticated,
-      user: computed(() => auth.user().data.value),
+      user,
     }
   },
   data: () => ({

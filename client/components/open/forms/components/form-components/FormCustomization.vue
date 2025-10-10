@@ -26,7 +26,7 @@
       class="my-4"
     >
       <template #label>
-        <InputLabel>Accent Color - <a
+        <InputLabel label="">Accent Color - <a
           href="#" class="text-blue-500"
           @click.prevent="form.color = DEFAULT_COLOR"
         >Reset</a></InputLabel>

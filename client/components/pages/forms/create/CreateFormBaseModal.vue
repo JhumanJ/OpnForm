@@ -10,12 +10,15 @@
         v-if="state === 'default'"
         class="grid grid-cols-1 sm:grid-cols-3 gap-4"
       >
-        <div
-          v-track.select_form_base="{ base: 'contact-form' }"
-          role="button"
-          class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
-          @click="$emit('close')"
+        <TrackClick
+          name="select_form_base"
+          :properties="{ base: 'contact-form' }"
         >
+          <div
+            role="button"
+            class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
+            @click="$emit('close')"
+          >
           <div class="p-4">
             <UIcon
               name="i-heroicons-envelope"
@@ -25,14 +28,18 @@
           <p class="font-medium">
             Simple contact form
           </p>
-        </div>
-        <div
+          </div>
+        </TrackClick>
+        <TrackClick
           v-if="useFeatureFlag('ai_features')"
-          v-track.select_form_base="{ base: 'ai' }"
-          class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
-          role="button"
-          @click="state = 'ai'"
+          name="select_form_base"
+          :properties="{ base: 'ai' }"
         >
+          <div
+            class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
+            role="button"
+            @click="state = 'ai'"
+          >
           <div class="p-4">
             <UIcon
               name="i-heroicons-bolt"
@@ -42,7 +49,8 @@
           <p class="font-medium text-blue-700">
             AI Form Generator
           </p>
-        </div>
+          </div>
+        </TrackClick>
         <div
           class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50 relative"
         >
@@ -55,11 +63,15 @@
           <p class="font-medium">
             Browse templates <Icon name="heroicons:arrow-top-right-on-square-20-solid" class="w-3 h-3 text-neutral-500" />
           </p>
-          <NuxtLink
-            v-track.select_form_base="{ base: 'template' }"
-            :to="{ name: 'templates' }"
-            class="absolute inset-0"
-          />
+          <TrackClick
+            name="select_form_base"
+            :properties="{ base: 'template' }"
+          >
+            <NuxtLink
+              :to="{ name: 'templates' }"
+              class="absolute inset-0"
+            />
+          </TrackClick>
         </div>
       </div>
       <div v-else-if="state === 'ai'">
@@ -104,6 +116,7 @@
 <script setup>
 import AIFormLoadingMessages from "~/components/open/forms/components/AIFormLoadingMessages.vue"
 import { formsApi } from "~/api/forms"
+import TrackClick from "~/components/global/TrackClick.vue"
 
 const props = defineProps({
   show: { type: Boolean, required: true },

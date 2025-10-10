@@ -2,6 +2,7 @@
   <UModal
     v-model:open="isOpen"
     :ui="{ content: 'sm:max-w-5xl' }"
+    title=""
     :close="false"
   >
     <template #body>
@@ -266,6 +267,7 @@
                   <div v-if="shouldShowUpsell">
                     <v-form size="sm">
                       <toggle-switch-input
+                        name=""
                         v-model="isYearly"
                         label="20% off with the yearly plan"
                         size="sm"
