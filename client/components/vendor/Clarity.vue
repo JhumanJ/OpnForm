@@ -19,7 +19,7 @@ async function loadClarity() {
   try {
     Clarity.init(projectId)
     if (user.value?.id) {
-      Clarity.identify(String(user.value.id), null, null, user.value.email)
+      Clarity.identify(String(user.value.id), null, null, String(user.value.id))
     }
     loaded.value = true
   } catch (error) {
@@ -36,7 +36,7 @@ watch(user, (val) => {
   if (!loaded.value || !isAuthenticated.value || isIframe) return
   if (val?.id) {
     try {
-      Clarity.identify(String(val.id), null, null, val.email)
+      Clarity.identify(String(val.id), null, null, String(val.id))
     } catch (error) {
       console.error('[Clarity] Failed to identify user', error)
     }
