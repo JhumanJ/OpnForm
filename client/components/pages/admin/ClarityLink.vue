@@ -17,6 +17,6 @@ const runtimeConfig = useRuntimeConfig()
 const clarityProjectId = computed(() => runtimeConfig.public.clarityProjectId || null)
 
 const clarityLink = computed(() => {
-  return `https://clarity.microsoft.com/projects/view/${clarityProjectId.value}/impressions?CustomUserId=is%3B${props.user.email}`
+  return `https://clarity.microsoft.com/projects/view/${clarityProjectId.value}/impressions?CustomUserId=is%3B${props.user.id}`
 })
 </script>
