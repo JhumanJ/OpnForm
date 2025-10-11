@@ -52,6 +52,9 @@ services:
   ui:
     image: jhumanj/opnform-client:dev
     container_name: opnform-client
+    depends_on:
+      api:
+        condition: service_started
     command: sh -c "
       if [ ! -f node_modules/.install-complete ] || [ package.json -nt node_modules/.install-complete ]; then
       echo 'Installing dependencies...';

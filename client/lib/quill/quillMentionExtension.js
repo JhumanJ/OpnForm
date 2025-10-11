@@ -22,6 +22,7 @@ export default function registerMentionExtension(QuillInstance) {
     class MentionBlot extends ParchmentEmbed {
       static blotName = 'mention'
       static tagName = 'SPAN'
+      static className = 'mention'
       static scope = Parchment.Scope.INLINE
       
       constructor(scroll, domNode) {

@@ -5,7 +5,6 @@
     ref="form-block"
     class="px-2"
     :class="[
-      getFieldWidthClasses(field),
       {
         'group/nffield hover:bg-neutral-100/50 relative hover:z-10 transition-colors hover:border-neutral-200 border-dashed border border-transparent box-border dark:hover:border-blue-900 dark:hover:bg-blue-950 rounded-md': isAdminPreview,
         'cursor-pointer':workingFormStore.showEditFieldSidebar && isAdminPreview,
@@ -220,21 +219,6 @@ function openAddFieldSidebar() {
 function removeField() {
   if (!isAdminPreview.value) return
   workingFormStore.removeField(props.field)
-}
-
-function getFieldWidthClasses(field) {
-  if (!field.width || field.width === 'full') return 'col-span-full'
-  else if (field.width === '1/2') {
-    return 'sm:col-span-6 col-span-full'
-  } else if (field.width === '1/3') {
-    return 'sm:col-span-4 col-span-full'
-  } else if (field.width === '2/3') {
-    return 'sm:col-span-8 col-span-full'
-  } else if (field.width === '1/4') {
-    return 'sm:col-span-3 col-span-full'
-  } else if (field.width === '3/4') {
-    return 'sm:col-span-9 col-span-full'
-  }
 }
 
 function getFieldAlignClasses(field) {

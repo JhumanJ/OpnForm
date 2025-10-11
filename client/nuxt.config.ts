@@ -54,6 +54,8 @@ export default defineNuxtConfig({
         { code: 'sv', name: 'Swedish', iso: 'sv-SE', file: 'sv.json' },
         { code: 'pl', name: 'Polish', iso: 'pl-PL', file: 'pl.json' },
         { code: 'nl', name: 'Dutch', iso: 'nl-NL', file: 'nl.json' },
+        { code: 'sr', name: 'Serbian', iso: 'sr-RS', file: 'sr.json' },
+        { code: 'uk', name: 'Ukrainian', iso: 'uk-UA', file: 'uk.json' },
       ],
       defaultLocale: 'en',
       lazy: true,
