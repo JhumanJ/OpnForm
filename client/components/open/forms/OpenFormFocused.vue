@@ -90,6 +90,7 @@ import FormProgressbar from './FormProgressbar.vue'
 import OpenFormButton from './OpenFormButton.vue'
 import SlidingTransition from '../../global/transitions/SlidingTransition.vue'
 import CaptchaWrapper from '~/components/forms/heavy/components/CaptchaWrapper.vue'
+import { FormMode } from '~/lib/forms/FormModeStrategy.js'
 
 const props = defineProps({
   formManager: { type: Object, required: true }
@@ -100,6 +101,7 @@ const emit = defineEmits(['submit'])
 const form = computed(() => props.formManager.config.value)
 const structure = props.formManager.structure
 const state = computed(() => props.formManager.state)
+const isTemplateMode = computed(() => props.formManager?.mode?.value === FormMode.TEMPLATE)
 
 const currentIndex = computed(() => state.value.currentPage)
 const currentFields = computed(() => structure?.value?.getPageFields
@@ -148,7 +150,7 @@ const currentLayoutProps = computed(() => layoutConfig[layoutName.value]?.props(
 
 const handleNextClick = () => {
   props.formManager.nextPage().then((moved) => {
-    if (moved && import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
+    if (moved && import.meta.client && !isTemplateMode.value) window.scrollTo({ top: 0, behavior: 'smooth' })
   })
 }
 

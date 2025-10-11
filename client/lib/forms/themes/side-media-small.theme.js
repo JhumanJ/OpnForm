@@ -4,7 +4,7 @@
 export const sideMediaSmallTheme = {
   slots: {
     mediaContainer: '',
-    mediaComponent: 'flex md:justify-center align-top',
+    mediaComponent: 'flex @3xl:justify-center align-top',
     mediaImg: 'inline-block h-auto w-auto max-w-full max-h-[236px] xl:max-h-[292px] object-contain transition-opacity duration-300'
   },
   variants: {

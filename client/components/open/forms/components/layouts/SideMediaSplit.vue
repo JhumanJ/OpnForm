@@ -1,10 +1,8 @@
 <template>
-  <div class="w-full flex z-10 flex-col @5xl:flex-row">
+  <div class="w-full flex z-10 flex-col @3xl:flex-row">
     <!-- Mobile: media as background on top, content dictates scroll -->
     <div class="relative block @3xl:hidden w-full">
-      <!-- Spacer for 50vh visual band -->
-      <div class="pt-[50vh]"></div>
-      <!-- Absolute background image so it doesn't affect layout height beyond spacer -->
+      <div class="pt-[45cqh]"></div>
       <div class="absolute inset-0 pointer-events-none">
         <BlockMediaLayout :image="image" :fallback-height="null" />
       </div>
