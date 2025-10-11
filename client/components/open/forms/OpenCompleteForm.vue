@@ -123,7 +123,15 @@
                 </open-form-button>
               </template>
             </open-form>
-            <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
+            <!-- Focused nav arrows -->
+            <div
+              v-if="shouldShowArrows"
+              class="hidden sm:flex flex-col gap-2 fixed bottom-4 right-16 z-10"
+              aria-label="Navigation arrows"
+            >
+              <UButton color="form" square variant="solid" size="sm" icon="i-heroicons-chevron-up-20-solid" :disabled="!canGoPrev" @click="goPrev" />
+              <UButton v-if="!isLastPage" color="form" square variant="solid" size="sm" icon="i-heroicons-chevron-down-20-solid" @click="goNext" />
+            </div>
           </div>
           <div
             v-else
@@ -156,7 +164,6 @@
               {{ form.editable_submissions_button_text }}
             </open-form-button>
             </div>
-            <PoweredBy v-if="!form.no_branding && formModeStrategy.display.showBranding" :color="form.color" />
           </div>
         </v-transition>
         <FirstSubmissionModal
@@ -177,7 +184,6 @@ import OpenFormButton from './OpenFormButton.vue'
 import FormCleanings from '../../pages/forms/show/FormCleanings.vue'
 import VTransition from '~/components/global/transitions/VTransition.vue'
 import FirstSubmissionModal from '~/components/open/forms/components/FirstSubmissionModal.vue'
-import PoweredBy from '~/components/pages/forms/show/PoweredBy.vue'
 import { useForm } from '~/composables/useForm'
 import { useAlert } from '~/composables/useAlert'
 import { useI18n } from 'vue-i18n'
@@ -320,6 +326,29 @@ const formStyle = computed(() => {
 
   return baseStyle
 })
+
+// Focused arrows logic
+const showArrowsSetting = computed(() => (props.form?.settings?.navigation_arrows !== false))
+const canGoPrev = computed(() => (formManager?.state.currentPage ?? 0) > 0)
+const isLastPage = computed(() => formManager?.structure?.isLastPage?.value ?? true)
+const hasExclusiveView = computed(() => {
+  // Hide on password screen, closed/max submissions alerts, or after submit
+  const passwordView = isPublicFormPage.value && props.form?.is_password_protected
+  const closedView = isPublicFormPage.value && (props.form?.is_closed || props.form?.visibility === 'closed')
+  const maxReachedView = isPublicFormPage.value && props.form?.max_number_of_submissions_reached
+  return passwordView || closedView || maxReachedView || isFormSubmitted.value
+})
+const shouldShowArrows = computed(() => showArrowsSetting.value && !hasExclusiveView.value)
+const goPrev = () => {
+  if (canGoPrev.value) {
+    formManager?.previousPage().then(() => import.meta.client && window.scrollTo({ top: 0, behavior: 'smooth' }))
+  }
+}
+const goNext = () => {
+  if (!isLastPage.value) {
+    formManager?.nextPage().then(() => import.meta.client && window.scrollTo({ top: 0, behavior: 'smooth' }))
+  }
+}
 
 watch(() => props.form.language, (newLanguage) => {
   if (newLanguage && typeof newLanguage === 'string') {

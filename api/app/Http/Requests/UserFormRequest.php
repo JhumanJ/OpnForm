@@ -207,6 +207,10 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             // Custom SEO
             'seo_meta' => 'nullable|array',
             'custom_domain' => 'sometimes|nullable|regex:' . CustomDomainRequest::CUSTOM_DOMAINS_REGEX,
+
+            // Settings
+            'settings' => 'nullable|array',
+            'settings.navigation_arrows' => 'sometimes|boolean',
         ];
     }
 

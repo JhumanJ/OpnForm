@@ -71,6 +71,9 @@ class Form extends Model implements CachableAttributes
         'no_branding',
         'transparent_background',
 
+        // Settings
+        'settings',
+
         // Custom Code
         'custom_code',
         'custom_css',
@@ -115,6 +118,7 @@ class Form extends Model implements CachableAttributes
             'seo_meta' => 'object',
             'enable_partial_submissions' => 'boolean',
             'auto_save' => 'boolean',
+            'settings' => 'array',
         ];
     }
 

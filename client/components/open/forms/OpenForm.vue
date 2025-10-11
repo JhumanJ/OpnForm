@@ -92,6 +92,9 @@
         </p>
       </div>
     </div>
+
+    <!-- Branding button -->
+    <PoweredBy v-if="!form.no_branding && showBranding" :color="form.color" />
   </form>
 </template>
 
@@ -101,6 +104,7 @@ import OpenFormButton from './OpenFormButton.vue'
 import CaptchaWrapper from '~/components/forms/heavy/components/CaptchaWrapper.vue'
 import OpenFormField from './OpenFormField.vue'
 import FormProgressbar from './FormProgressbar.vue'
+import PoweredBy from '~/components/pages/forms/show/PoweredBy.vue'
 import { useWorkingFormStore } from '~/stores/working_form'
 
 const props = defineProps({
@@ -192,6 +196,9 @@ const getFieldWidthClasses = (width) => {
   }
   return 'col-span-full'
 }
+
+// Branding display control comes from strategy; default to true
+const showBranding = computed(() => props.formManager?.strategy?.value?.display?.showBranding ?? true)
 </script>
 
 <style lang='scss' scoped>
