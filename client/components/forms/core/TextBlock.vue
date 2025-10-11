@@ -52,3 +52,14 @@ const ui = computed(() => {
   })
 })
 </script>
+
+<style>
+@reference '~/css/app.css';
+
+.text-block h1 {
+  @apply mb-2;
+}
+.text-block h2 {
+  @apply mb-1;
+}
+</style>

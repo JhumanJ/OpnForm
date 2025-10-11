@@ -69,8 +69,8 @@ const form = computed(() => formRef.value || {})
 const currentStyle = computed(() => form.value.presentation_style || 'classic')
 
 const styleOptions = [
-  { name: 'classic', label: 'Classic', icon: 'i-heroicons-bars-3-16-solid', tooltip: 'Classic form: multiple inputs per page, multi-line layout, supports multiple pages and layout blocks.' },
-  { name: 'focused', label: 'Focused', icon: 'i-heroicons-rectangle-stack', tooltip: 'Typeform-like, one question per step.' }
+  { name: 'classic', label: 'Classic', icon: 'i-opnform-form-style-classic', iconClass: 'w-[91px] h-[65px] rounded shadow', tooltip: 'Classic form: multiple inputs per page, multi-line layout, supports multiple pages and layout blocks.' },
+  { name: 'focused', label: 'Focused', icon: 'i-opnform-form-style-focused', iconClass: 'w-[91px] h-[65px] rounded shadow', tooltip: 'Typeform-like, one question per step.' }
 ]
 
 const showConfirmModal = ref(false)
@@ -112,6 +112,8 @@ function onSelectStyle(newVal) {
   if (newVal === 'classic' && removalList.value.length === 0) {
     // No removal, apply immediately
     form.value.presentation_style = 'classic'
+    // Reset input size when returning to classic
+    form.value.size = 'md'
     workingFormStore.closeAllSidebars()
     return
   }
@@ -144,6 +146,9 @@ function confirmSwitch() {
   // Ensure large input size in focused mode
   if (target === 'focused') {
     form.value.size = 'lg'
+  } else if (target === 'classic') {
+    // Reset input size when returning to classic
+    form.value.size = 'md'
   }
   workingFormStore.closeAllSidebars()
   showConfirmModal.value = false
