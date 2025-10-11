@@ -91,6 +91,7 @@ import OpenFormButton from './OpenFormButton.vue'
 import SlidingTransition from '../../global/transitions/SlidingTransition.vue'
 import CaptchaWrapper from '~/components/forms/heavy/components/CaptchaWrapper.vue'
 import { FormMode } from '~/lib/forms/FormModeStrategy.js'
+import { useFormImagePreloader } from '~/composables/forms/useFormImagePreloader.js'
 
 const props = defineProps({
   formManager: { type: Object, required: true }
@@ -161,6 +162,9 @@ const coverMedia = computed(() => ({
 }))
 
 const borderRadius = computed(() => form.value?.border_radius || 'small')
+
+// Preload images used by the form (cover/logo/blocks)
+useFormImagePreloader(form, state)
 </script>
 
 
