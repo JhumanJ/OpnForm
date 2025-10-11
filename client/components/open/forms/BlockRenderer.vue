@@ -126,7 +126,8 @@ const shouldInjectBetweenMedia = computed(() => (
   props.block?.image &&
   props.block.image.url &&
   props.block.image.layout === 'between' &&
-  form.value?.presentation_style === 'focused'
+  form.value?.presentation_style === 'focused' &&
+  !(strategy.value?.display?.forceClassicPresentation === true)
 )) 
 
 const boundProps = computed(() => {

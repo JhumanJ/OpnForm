@@ -60,7 +60,8 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
   const structure = shallowRef(null)
 
   function buildStructureAdapter() {
-    const style = (toValue(config)?.presentation_style) || 'classic'
+    const forceClassic = !!strategy.value?.display?.forceClassicPresentation
+    const style = forceClassic ? 'classic' : ((toValue(config)?.presentation_style) || 'classic')
     return style === 'focused'
       ? useFocusedStructure(config, state, form)
       : useFormStructure(config, state, form)

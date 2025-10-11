@@ -1,20 +1,20 @@
 <template>
-  <div class="w-full flex items-center px-6 sm:px-12 grow min-h-0 z-10">
-    <div class="w-full max-w-6xl mx-auto flex items-stretch md:items-center justify-between gap-6 md:gap-8 flex-col md:flex-row">
+  <div class="w-full flex items-center px-6 @2xl:px-12 grow min-h-0 z-10">
+    <div class="w-full max-w-6xl mx-auto flex items-stretch @3xl:items-center justify-between gap-6 @3xl:gap-8 flex-col @3xl:flex-row">
       <!-- Content -->
       <div
         class="w-full max-w-2xl order-1"
-        :class="isLeft ? 'md:order-2' : 'md:order-1'"
+        :class="isLeft ? '@3xl:order-2' : '@3xl:order-1'"
       >
         <slot />
       </div>
 
       <!-- Media: below content on mobile; left/right on desktop -->
       <div
-        class="w-full  md:max-w-1/2 order-2"
-        :class="isLeft ? 'md:order-1' : 'md:order-2'"
+        class="w-full  @3xl:max-w-1/2 order-2"
+        :class="isLeft ? '@3xl:order-1' : '@3xl:order-2'"
       >
-        <div class="md:p-4 xl:p-6 mb-4" :class="ui.mediaContainer()">
+        <div class="@3xl:p-4 @7xl:p-6 mb-4" :class="ui.mediaContainer()">
           <BlockMediaLayout
             :image="image"
             :fallback-height="null"

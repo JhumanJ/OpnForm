@@ -1,5 +1,5 @@
 <template>
-  <form v-if="form" @submit.prevent="" class="w-full relative overflow-hidden flex flex-col min-h-full">
+  <form v-if="form" @submit.prevent="" class="@container w-full relative overflow-hidden flex flex-col min-h-full">
     <!-- Fixed fullscreen background from form cover -->
     <div v-if="form.cover_picture" class="absolute inset-0 pointer-events-none">
       <BlockMediaLayout :image="coverMedia" alt="Form cover image" />

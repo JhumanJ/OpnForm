@@ -1,7 +1,7 @@
 <template>
   <form
     v-if="form"
-    class="pb-20"
+    class="@container pb-20"
     @submit.prevent=""
   >
     <!-- Classic cover/logo rendering -->
@@ -16,7 +16,7 @@
         class="w-full p-5 relative mx-auto"
         :class="[
           !form.cover_picture ? 'pt-20' : '',
-          form.width === 'centered' ? (isPreviewMode ? 'max-w-lg' : 'md:w-3/5 lg:w-1/2 md:max-w-2xl') : '',
+          form.width === 'centered' ? (isPreviewMode ? 'max-w-lg' : '@3xl:w-3/5 @5xl:w-1/2 @3xl:max-w-2xl') : '',
           (form.width === 'full' && !isIframe) ? 'max-w-7xl' : ''
         ]"
         :style="{ direction: form?.layout_rtl ? 'rtl' : 'ltr' }"
@@ -34,7 +34,7 @@
       class="w-full mx-auto px-4"
       :class="[
         (!isIframe && !showBrandingMedia) ? 'mt-6' : '',
-        form && form.width === 'centered' ? (isPreviewMode ? 'max-w-lg' : 'md:w-3/5 lg:w-1/2 md:max-w-2xl') : '',
+        form && form.width === 'centered' ? (isPreviewMode ? 'max-w-lg' : '@3xl:w-3/5 @5xl:w-1/2 @3xl:max-w-2xl') : '',
         (form && form.width === 'full' && !isIframe) ? 'max-w-7xl' : ''
       ]"
     >

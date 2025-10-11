@@ -35,7 +35,9 @@ export function createFormModeStrategy(mode) {
       showFormCleanings: true,
       showFontLink: false,
       showBranding: true,
-      disableFields: false
+      disableFields: false,
+      // When true, UI should force classic presentation regardless of form config
+      forceClassicPresentation: false
     },
     
     // Admin behaviors
@@ -92,6 +94,7 @@ export function createFormModeStrategy(mode) {
       // Editing submission - same validation as LIVE mode, but show hidden fields
       // This ensures edit mode behaves like live mode for validation
       strategy.display.showHiddenFields = true
+      strategy.display.forceClassicPresentation = true
       strategy.submission.enablePartialSubmissions = false
       break
 
@@ -117,6 +120,7 @@ export function createFormModeStrategy(mode) {
       strategy.validation.validateOnSubmit = false
       strategy.validation.performActualSubmission = false
       strategy.display.disableFields = true
+      strategy.display.forceClassicPresentation = true
       strategy.submission.enablePartialSubmissions = false
       break
     
