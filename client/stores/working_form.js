@@ -21,6 +21,9 @@ export const useWorkingFormStore = defineStore("working_form", {
     
     // Structure service instance - will be set from useFormManager
     structureService: null,
+    
+    // Animation state
+    sidebarBounce: false,
   }),
   getters: {
     // Get all blocks/properties in the form
@@ -44,7 +47,8 @@ export const useWorkingFormStore = defineStore("working_form", {
     // Current page index from structure service
     formPageIndex() {
       if (!this.structureService) return 0
-      return this.structureService.currentPage
+      const cp = this.structureService.currentPage
+      return (typeof cp === 'number') ? cp : (cp?.value || 0)
     }
   },
   actions: {
@@ -99,9 +103,15 @@ export const useWorkingFormStore = defineStore("working_form", {
     setEditingField(field) {
       this.selectedFieldIndex = this.objectToIndex(field)
     },
-    openSettingsForField(field) {
+    openSettingsForField(field, triggerBounce = false) {
       const targetIndex = this.objectToIndex(field)
       const previousIndex = this.selectedFieldIndex
+      
+      // Check if sidebar is already open for the same field and bounce is requested
+      if (triggerBounce && this.showEditFieldSidebar && targetIndex === previousIndex) {
+        this.triggerSidebarBounce()
+        return
+      }
       
       this.selectedFieldIndex = targetIndex
       this.showEditFieldSidebar = true
@@ -128,6 +138,11 @@ export const useWorkingFormStore = defineStore("working_form", {
     },
     closeAddFieldSidebar() {
       this.selectedFieldIndex = null
+      this.showAddFieldSidebar = false
+    },
+    closeAllSidebars() {
+      this.selectedFieldIndex = null
+      this.showEditFieldSidebar = false
       this.showAddFieldSidebar = false
     },
     reset() {
@@ -275,6 +290,19 @@ export const useWorkingFormStore = defineStore("working_form", {
     removeField(field) {
       this.internalRemoveField(field)
     },
+    duplicateField(fieldOrIndex) {
+      if (!this.content?.properties) return
+      const index = this.objectToIndex(fieldOrIndex)
+      if (index === -1) return
+      const fields = clonedeep(this.content.properties)
+      const source = fields[index]
+      const cloned = clonedeep(source)
+      cloned.id = generateUUID()
+      if (cloned.name) cloned.name = `Copy of ${cloned.name}`
+      fields.splice(index + 1, 0, cloned)
+      this.setProperties(fields)
+      this.openSettingsForField(index + 1)
+    },
     internalRemoveField(field) {
       const index = this.objectToIndex(field)
 
@@ -306,6 +334,15 @@ export const useWorkingFormStore = defineStore("working_form", {
       
       newFields.splice(validNewIndex, 0, field)
       this.setProperties(newFields)
+    },
+    
+    // Trigger sidebar bounce animation
+    triggerSidebarBounce() {
+      this.sidebarBounce = true
+      // Reset after animation duration
+      setTimeout(() => {
+        this.sidebarBounce = false
+      }, 600)
     }
   },
   history: {

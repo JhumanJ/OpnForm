@@ -285,8 +285,13 @@ import TrackClick from "~/components/global/TrackClick.vue"
 const route = useRoute()
 const { detail, list } = useTemplates()
 
-const { data: template } = detail(route.params.slug)
+const { data: template, suspense: templateSuspense } = detail(route.params.slug)
 const { data: allTemplates } = list()
+
+// Handle SSR suspense to prevent flash of error message
+if (import.meta.server) {
+  await templateSuspense()
+}
 
 const form = computed(() => {
   if (!template.value) {

@@ -36,7 +36,7 @@ export const optionSelectorInputTheme = {
       false: { option: 'rounded-lg' }
     },
     selected: {
-      true: { option: ['bg-form/10', 'border-form', 'relative z-10'] }
+      true: { option: ['bg-form/10', 'hover:bg-form/10', 'border-form', 'relative z-10'] }
     },
     disabled: {
       true: { button: 'opacity-50 pointer-events-none' }

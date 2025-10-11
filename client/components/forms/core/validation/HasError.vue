@@ -2,7 +2,7 @@
   <transition name="fade">
     <div
       v-if="errorMessage"
-      class="has-error text-xs text-red-500 mt-1 break-words whitespace-break-spaces"
+      :class="errorClasses"
       v-html="errorMessage"
     />
   </transition>
@@ -23,6 +23,10 @@ export default {
     fieldName: {
       type: String,
       required: false,
+    },
+    errorClasses: {
+      type: String,
+      default: 'has-error text-xs text-red-500 mt-1 break-words whitespace-break-spaces',
     },
   },
   computed: {

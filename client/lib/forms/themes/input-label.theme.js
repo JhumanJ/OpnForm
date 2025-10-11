@@ -11,6 +11,12 @@ export const inputLabelTheme = {
     requiredDot: 'text-red-500 required-dot'
   },
   variants: {
+    presentation: {
+      classic: {},
+      focused: {
+        label: 'leading-none'
+      }
+    },
     theme: {
       default: {
         label: 'font-semibold'
@@ -48,9 +54,17 @@ export const inputLabelTheme = {
       }
     }
   },
+  compoundVariants: [
+    // Label font size adjustments for focused presentation (increase by 1 step)
+    { presentation: 'focused', size: 'xs', class: { label: 'text-sm leading-none' } },
+    { presentation: 'focused', size: 'sm', class: { label: 'text-sm leading-none' } },
+    { presentation: 'focused', size: 'md', class: { label: 'text-base leading-none' } },
+    { presentation: 'focused', size: 'lg', class: { label: 'text-xl leading-none' } }
+  ],
   defaultVariants: {
     theme: 'default',
     size: 'md',
-    uppercaseLabels: false
+    uppercaseLabels: false,
+    presentation: 'classic'
   }
 }

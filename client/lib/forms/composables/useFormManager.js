@@ -1,7 +1,8 @@
-import { reactive, computed, ref, toValue, onBeforeUnmount } from 'vue'
+import { reactive, computed, ref, toValue, onBeforeUnmount, shallowRef, watch } from 'vue'
 import { useForm } from '~/composables/useForm.js' // Assuming useForm handles vForm setup
 import { FormMode, createFormModeStrategy } from '../FormModeStrategy'
 import { useFormStructure } from './useFormStructure'
+import { useFocusedStructure } from './useFocusedStructure'
 import { useFormInitialization } from './useFormInitialization'
 import { useFormValidation } from './useFormValidation'
 import { useFormSubmission } from './useFormSubmission'
@@ -55,7 +56,32 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
   // --- Instantiate Other Composables (Services) ---
   const timer = useFormTimer(pendingSubmissionService)
   const initialization = useFormInitialization(config, form, pendingSubmissionService)
-  const structure = useFormStructure(config, state, form) 
+  // Structure adapter (hot-swappable)
+  const structure = shallowRef(null)
+
+  function buildStructureAdapter() {
+    const forceClassic = !!strategy.value?.display?.forceClassicPresentation
+    const style = forceClassic ? 'classic' : ((toValue(config)?.presentation_style) || 'classic')
+    return style === 'focused'
+      ? useFocusedStructure(config, state, form)
+      : useFormStructure(config, state, form)
+  }
+
+  function replaceStructure() {
+    structure.value = buildStructureAdapter()
+    // Clamp current page to valid range for the new structure
+    try {
+      const totalPages = structure.value?.pageCount?.value ?? 1
+      if (typeof totalPages === 'number' && totalPages >= 1) {
+        if (state.currentPage >= totalPages) {
+          state.currentPage = Math.max(0, totalPages - 1)
+        } else if (state.currentPage < 0) {
+          state.currentPage = 0
+        }
+      }
+    } catch { /* no-op */ }
+  }
+
   const validation = useFormValidation(config, form, state)
   const payment = useFormPayment(config, form)
   const submission = useFormSubmission(config, form)
@@ -95,6 +121,9 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
 
     timer.reset()
     timer.start()
+
+    // Ensure structure is built after initialization
+    replaceStructure()
     
     // Start partial submission sync if enabled in both config and strategy
     if (import.meta.client && config.value.enable_partial_submissions && strategy.value.submission.enablePartialSubmissions) {
@@ -104,23 +133,41 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
     state.isProcessing = false
   }
 
+  // React to presentation_style changes
+  watch(() => toValue(config)?.presentation_style, () => {
+    replaceStructure()
+  })
+
   /**
    * Navigates to the next page, handling validation and payment intent creation.
    */
   const nextPage = async () => {
     if (state.isProcessing) return false
+
+    // Derive fields and conditions up-front so we can decide if we need a loading state
+    const currentPageFields = structure.value.getPageFields(state.currentPage)
+    const isCurrentlyLastPage = structure.value.isLastPage.value 
+    const paymentBlock = structure.value.currentPagePaymentBlock.value
+
+    // Determine if this step requires validation via validation helper filtering
+    const validatableFields = validation.filterValidatableFields(currentPageFields)
+    const needsValidation = !!(strategy.value?.validation?.validateOnNextPage) && validatableFields.length > 0
+
+    // If no validation and no payment work is needed, skip loading and just advance
+    if (!needsValidation && !paymentBlock) {
+      if (!isCurrentlyLastPage) {
+        state.currentPage++
+      }
+      return true
+    }
+
     state.isProcessing = true
 
     try {
-      const currentPageFields = structure.getPageFields(state.currentPage)
-      // Use computed isLastPage directly from structure composable
-      const isCurrentlyLastPage = structure.isLastPage.value 
-
-      // 1. Validate current page
-      await validation.validateCurrentPage(currentPageFields, strategy.value)
+      // 1. Validate current page if needed
+      if (needsValidation) await validation.validateCurrentPage(currentPageFields, strategy.value)
 
       // 2. Process payment (Create Payment Intent if applicable)
-      const paymentBlock = structure.currentPagePaymentBlock.value
       if (paymentBlock) {
         // In editor/test mode (not LIVE), skip payment validation
         const isPaymentRequired = mode.value === FormMode.LIVE ? !!paymentBlock.required : false
@@ -142,7 +189,7 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
     } catch {
       // Use validation composable's failure handler
       validation.onValidationFailure({
-        fieldGroups: structure.fieldGroups.value, // Pass reactive groups
+        fieldGroups: structure.value.fieldGroups.value, // Pass reactive groups
         setPageIndexCallback: (index) => { state.currentPage = index },
         timerService: timer // Pass the timer composable instance
       })
@@ -181,7 +228,7 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
       const completionTime = timer.getCompletionTime()
 
       // 2. Process payment if applicable
-      const paymentBlock = structure.currentPagePaymentBlock.value
+      const paymentBlock = structure.value.currentPagePaymentBlock.value
       if (paymentBlock) {
         
         // In editor/test mode (not LIVE), skip payment validation
@@ -274,7 +321,7 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
       
       // Handle validation or submission errors using validation composable's handler
       validation.onValidationFailure({
-        fieldGroups: structure.fieldGroups.value,
+        fieldGroups: structure.value.fieldGroups.value,
         setPageIndexCallback: (index) => { state.currentPage = index },
         timerService: timer
       })

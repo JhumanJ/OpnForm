@@ -3,7 +3,7 @@
  */
 export const textBlockTheme = {
   slots: {
-    root: 'break-words whitespace-break-spaces'
+    root: 'break-words whitespace-break-spaces [&>h1]:mb-2 [&>h2]:mb-1'
   },
   variants: {
     size: {

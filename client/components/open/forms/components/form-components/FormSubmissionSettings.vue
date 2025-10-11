@@ -10,12 +10,22 @@
         </div>
       </div>
 
-      <TextInput
-        name="submit_button_text"
-        :form="form"
-        class="max-w-xs"
-        label="Submit button text"
-      />
+      <div class="flex flex-wrap items-end gap-4">
+        <TextInput
+          name="submit_button_text"
+          :form="form"
+          class="max-w-xs"
+          label="Submit button text"
+        />
+        <TextInput
+          v-if="isFocused"
+          v-model="focusedNextText"
+          name="focused_next_button_text"
+          class="max-w-xs"
+          label="Next button text"
+          :placeholder="$t('forms.buttons.next')"
+        />
+      </div>
       <ToggleSwitchInput
         name="auto_save"
         :form="form"
@@ -262,5 +272,28 @@ watch(submissionOptions, (val) => {
 
 const hasPaymentBlock = computed(() => {
   return form.value.properties.some(property => property.type === 'payment')
+})
+
+const isFocused = computed(() => form.value?.presentation_style === 'focused')
+
+onMounted(() => {
+  // Ensure translations is a plain, writable object (avoid writing into readonly proxies)
+  const t = form.value?.translations
+  if (!t || typeof t !== 'object' || Array.isArray(t)) {
+    form.value.translations = {}
+  } else {
+    form.value.translations = { ...t }
+  }
+})
+
+const focusedNextText = computed({
+  get() {
+    return form.value?.translations?.focused_next_button_text || ''
+  },
+  set(val) {
+    const current = form.value?.translations && typeof form.value.translations === 'object' ? form.value.translations : {}
+    // Replace the entire translations object to avoid setting into a readonly proxy
+    form.value.translations = { ...current, focused_next_button_text: val }
+  }
 })
 </script>

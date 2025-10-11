@@ -6,6 +6,8 @@
       :show-line="false"
     />
 
+    <PresentationStyleSwitch />
+
     <select-input
       name="theme"
       class="mt-4"
@@ -54,7 +56,7 @@
     />
     <div class="grid grid-cols-2 gap-4">
       <div class="flex-grow my-1" v-if="useFeatureFlag('services.google.fonts')">
-        <label class="text-neutral-700 font-semibold text-sm mb-1 block">Font Family</label>
+        <label class="text-neutral-700 font-semibold text-xs mb-0.5 block">Font Family</label>
         <UButton
           color="neutral"
           variant="outline"
@@ -141,6 +143,7 @@
       :form="form"
       name="width"
       seamless
+      v-if="!isFocused"
       :options="[
         { name: 'centered', label: 'Centered' },
         { name: 'full', label: 'Full Width' },
@@ -162,12 +165,7 @@
         :required="false"
       />
 
-      <image-input
-        name="cover_picture"
-        :form="form"
-        label="Cover (~1500px)"
-        :required="false"
-      />
+      <ImageWithSettings :form="form" name="cover_picture" :label="isFocused ? 'Background' : 'Cover (~1500px)'" kind="cover" />
     </div>
 
     <toggle-switch-input
@@ -227,6 +225,8 @@ import { useWorkingFormStore } from "../../../../../stores/working_form"
 import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
 import ProTag from "~/components/app/ProTag.vue"
 import { DEFAULT_COLOR } from "@/composables/forms/initForm"
+import PresentationStyleSwitch from "./PresentationStyleSwitch.vue"
+import ImageWithSettings from "../media/ImageWithSettings.vue"
 
 
 const workingFormStore = useWorkingFormStore()
@@ -245,6 +245,8 @@ const isPro = computed(() => {
   if (!user.value || !workspace.value) return false
   return workspace.value.is_pro
 })
+
+const isFocused = computed(() => form.value?.presentation_style === 'focused')
 
 const availableLocales = computed(() => {
   return $i18n.locales?.value.map(locale => ({ name: locale.name, value: locale.code })) ?? []

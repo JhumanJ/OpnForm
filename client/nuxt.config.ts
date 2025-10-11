@@ -128,7 +128,14 @@ export default defineNuxtConfig({
   },
 
   icon: {
+      customCollections: [
+          {
+              prefix: 'opnform',
+              dir: './public/icons'
+          },
+      ],
       clientBundle: {
+          includeCustomCollections: true,
           scan: {
               globInclude: ['**/*.vue', '**/*.json'],
           },

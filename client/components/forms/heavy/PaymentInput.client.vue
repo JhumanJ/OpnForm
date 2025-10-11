@@ -19,7 +19,7 @@
       </div>
       <div
         v-else-if="showSuccessState"
-        class="my-4 p-4 text-center text-sm text-green-700 bg-green-100 dark:bg-green-900/50 dark:text-green-300 rounded-md"
+        :class="ui.section() + ' p-4 text-center text-sm text-green-700 bg-green-100 dark:bg-green-900/50 dark:text-green-300 rounded-md'"
       >
         <div class="flex items-center justify-center gap-2">
           <Icon
@@ -32,7 +32,7 @@
       <template v-else>
         <div
           v-if="shouldShowPreviewMessage || (props.isAdminPreview && (!stripeState.stripeAccountId || !publishableKey || !isStripeJsLoaded))"
-          class="my-4 p-4 text-center text-sm text-blue-700 bg-blue-100 dark:bg-blue-900/50 dark:text-blue-300 rounded-md"
+          :class="ui.section() + ' p-4 text-center text-sm text-blue-700 bg-blue-100 dark:bg-blue-900/50 dark:text-blue-300 rounded-md'"
         >
           <p v-if="shouldShowPreviewMessage">Please save the form to activate the payment preview.</p>
           <p v-else>
@@ -45,19 +45,19 @@
         </div>
         <div
           v-else-if="stripeState && stripeState.isLoadingAccount"
-          class="my-4 flex justify-center"
+          :class="ui.section() + ' flex justify-center'"
         >
           <Loader class="mx-auto h-6 w-6" />
         </div>
         <div
           v-else-if="stripeState && stripeState.hasAccountLoadingError"
-          class="my-4 p-4 text-center text-sm text-red-700 bg-red-100 dark:bg-red-900/50 dark:text-red-300 rounded-md"
+          :class="ui.section() + ' p-4 text-center text-sm text-red-700 bg-red-100 dark:bg-red-900/50 dark:text-red-300 rounded-md'"
         >
           <p>{{ stripeState.errorMessage || 'Failed to load payment configuration' }}</p>
         </div>
         <div
           v-else-if="stripeState && stripeState.stripeAccountId && isStripeJsLoaded && publishableKey"
-          class="my-2"
+          :class="ui.section()"
         >
           <div :class="ui.amountBar()">
             <span class="text-sm font-medium text-neutral-700 dark:text-neutral-300">{{ $t('forms.payment.amount_to_pay') }}</span>
@@ -73,8 +73,8 @@
             @error="onStripeError"
           >
             <template #default="{ elements }">
-              <div class="space-y-4">
-                <div :class="[ui.container(), isCardFocused && !hasError ? 'ring-2 ring-form border-transparent' : '']">
+              <div :class="ui.stack()">
+                <div :class="[ui.card(), isCardFocused && !hasError ? 'ring-2 ring-form border-transparent' : '']">
                   <StripeElement
                     v-if="elements"
                     ref="card"
@@ -92,6 +92,8 @@
                   :placeholder="$t('forms.payment.name_on_card')"
                   class="w-full"
                   :disabled="disabled"
+                  wrapper-class="my-0"
+                  :color="color"
                 />
                 <TextInput
                   v-model="cardHolderEmail"
@@ -99,6 +101,8 @@
                   :placeholder="$t('forms.payment.billing_email')"
                   class="w-full"
                   :disabled="disabled"
+                  wrapper-class="my-0"
+                  :color="color"
                 />
               </div>
             </template>

@@ -14,7 +14,8 @@
           </div>
         </div>
         <input
-          v-model="compVal"
+          ref="range"
+          v-model.number="compVal"
           type="range"
           :class="[ui.slider(), 'slider']"
           :style="{ '--thumb-color': color }"
@@ -57,6 +58,7 @@ export default {
     minSlider: { type: Number, default: 0 },
     maxSlider: { type: Number, default: 50 },
     stepSlider: { type: Number, default: 5 },
+    thumbSize: { type: Number, default: 16 },
   },
 
   setup(props, context) {
@@ -71,14 +73,20 @@ export default {
       ...formInput
     }
   },
+  data() {
+    return {
+      inputWidth: 0,
+    }
+  },
   computed: {
     labelStyle() {
       const ratio =
-        ((this.compVal - this.minSlider) / (this.maxSlider - this.minSlider)) *
-        100
+        (Number(this.compVal) - this.minSlider) / (this.maxSlider - this.minSlider)
+      const width = this.inputWidth || (this.$refs.range ? this.$refs.range.offsetWidth : 0)
+      const x = (ratio * (width - this.thumbSize)) + (this.thumbSize / 2)
       return {
-        left: `${ratio}%`,
-        marginLeft: `-${(ratio / 100) * 15}px`,
+        left: `${x}px`,
+        transform: 'translateX(-50%)',
       }
     },
     sliderLabelsList() {
@@ -101,8 +109,26 @@ export default {
     },
   },
   mounted() {
-    this.compVal = parseInt(this.compVal ?? this.minSlider)
+    // Initialize only if no value provided; don't override an existing model value
+    if (this.compVal === undefined || this.compVal === null || isNaN(Number(this.compVal))) {
+      const initial = (this.modelValue !== undefined && this.modelValue !== null && !isNaN(Number(this.modelValue)))
+        ? Number(this.modelValue)
+        : 0
+      this.compVal = initial
+    }
+    this.updateInputWidth()
+    window.addEventListener('resize', this.updateInputWidth)
   },
+  beforeUnmount() {
+    window.removeEventListener('resize', this.updateInputWidth)
+  },
+  methods: {
+    updateInputWidth() {
+      this.$nextTick(() => {
+        this.inputWidth = this.$refs.range ? this.$refs.range.offsetWidth : 0
+      })
+    }
+  }
 }
 </script>
 
