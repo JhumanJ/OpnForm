@@ -187,6 +187,14 @@
       </template>
     </toggle-switch-input>
 
+    <toggle-switch-input
+      name="settings.navigation_arrows"
+      :form="form"
+      class="mt-2"
+      label="Show navigation arrows in Focused mode"
+      help="Stacked up/down arrows at bottom-right in focused presentation."
+    />
+
     <EditorSectionHeader
       icon="heroicons:cog-6-tooth-16-solid"
       title="Advanced Options"
