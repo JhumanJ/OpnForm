@@ -147,6 +147,11 @@
       </div>
 
     </div>
+
+    <!-- Branding button -->
+    <div v-if="!form.no_branding && showBranding" class="fixed z-10 bottom-4 right-4">
+      <PoweredBy :color="form.color" />
+    </div>
   </form>
 </template>
 
@@ -157,6 +162,7 @@ import BlockMediaLayout from './components/BlockMediaLayout.vue'
 import CaptchaWrapper from '~/components/forms/heavy/components/CaptchaWrapper.vue'
 import OpenFormField from './OpenFormField.vue'
 import FormProgressbar from './FormProgressbar.vue'
+import PoweredBy from '~/components/pages/forms/show/PoweredBy.vue'
 import { useWorkingFormStore } from '~/stores/working_form'
 import { FormMode } from '~/lib/forms/FormModeStrategy.js'
 import { useIsIframe } from '~/composables/useIsIframe'
@@ -271,6 +277,9 @@ const getFieldWidthClasses = (width) => {
   }
   return 'col-span-full'
 }
+
+// Branding display control comes from strategy; default to true
+const showBranding = computed(() => props.formManager?.strategy?.value?.display?.showBranding ?? true)
 </script>
 
 <style lang='scss' scoped>

@@ -76,6 +76,9 @@ class Form extends Model implements CachableAttributes
         'transparent_background',
         'translations',
 
+        // Settings
+        'settings',
+
         // Custom Code
         'custom_code',
         'custom_css',
@@ -123,6 +126,7 @@ class Form extends Model implements CachableAttributes
             'enable_partial_submissions' => 'boolean',
             'auto_save' => 'boolean',
             'presentation_style' => 'string',
+            'settings' => 'array',
         ];
     }
 
@@ -207,7 +211,7 @@ class Form extends Model implements CachableAttributes
         }
 
         // Fallback to cached calculation for individual access
-        return $this->remember('views_count', 15 * 60, fn () => $this->calculateTotalViews());
+        return $this->remember('views_count', 15 * 60, fn() => $this->calculateTotalViews());
     }
 
     /**

@@ -3,7 +3,7 @@
     <div class="w-full max-w-6xl mx-auto flex items-stretch @3xl:items-center justify-between gap-6 @3xl:gap-8 flex-col @3xl:flex-row">
       <!-- Content -->
       <div
-        class="w-full max-w-2xl order-1"
+        class="w-full max-w-2xl order-1 py-4 @2xl:px-8 @3xl:px-4 @4xl:px-8 "
         :class="isLeft ? '@3xl:order-2' : '@3xl:order-1'"
       >
         <slot />

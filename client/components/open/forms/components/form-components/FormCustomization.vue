@@ -175,9 +175,11 @@
       @update:model-value="onChangeNoBranding"
     >
       <template #label>
-        <span class="text-sm">
-          Hide OpnForm Branding
-        </span>
+        <InputLabel
+          :label="'Hide OpnForm Branding'"
+          :native-for="'no_branding'"
+          class="text-sm font-medium!"
+        />
         <pro-tag
           upgrade-modal-title="Upgrade today to remove OpnForm branding"
           class="-mt-1"
@@ -188,6 +190,14 @@
     <EditorSectionHeader
       icon="heroicons:cog-6-tooth-16-solid"
       title="Advanced Options"
+    />
+
+    <toggle-switch-input
+      v-if="isFocused"
+      name="settings.navigation_arrows"
+      :form="form"
+      class="mt-2"
+      label="Show navigation arrows"
     />
     <toggle-switch-input
       name="show_progress_bar"

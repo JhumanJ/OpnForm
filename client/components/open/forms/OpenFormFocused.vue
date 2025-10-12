@@ -75,8 +75,18 @@
       </div>
     </div>
 
-    <!-- Branding slot -->
-    <slot name="branding" />
+    <!-- Bottom right controls: arrows and branding -->
+    <div class="hidden sm:flex gap-2 fixed bottom-4 right-4 z-10" aria-label="Form controls">
+      <!-- Focused nav arrows with fade transition -->
+      <Transition name="fade" mode="out-in">
+        <div v-if="shouldShowArrows && showArrowsOnCurrentPage" class="flex gap-2">
+          <UButton color="form" square variant="solid" size="sm" icon="i-heroicons-chevron-up-20-solid" :disabled="!canGoPrev" @click="goPrev" />
+          <UButton color="form" square variant="solid" size="sm" icon="i-heroicons-chevron-down-20-solid" :disabled="isLast" @click="goNext" />
+        </div>
+      </Transition>
+      <!-- Branding button -->
+      <PoweredBy v-if="!form.no_branding && showBranding" :color="form.color" />
+    </div>
   </form>
 </template>
 
@@ -92,6 +102,7 @@ import SlidingTransition from '../../global/transitions/SlidingTransition.vue'
 import CaptchaWrapper from '~/components/forms/heavy/components/CaptchaWrapper.vue'
 import { FormMode } from '~/lib/forms/FormModeStrategy.js'
 import { useFormImagePreloader } from '~/composables/forms/useFormImagePreloader.js'
+import PoweredBy from '~/components/pages/forms/show/PoweredBy.vue'
 
 const props = defineProps({
   formManager: { type: Object, required: true }
@@ -165,6 +176,47 @@ const borderRadius = computed(() => form.value?.border_radius || 'small')
 
 // Preload images used by the form (cover/logo/blocks)
 useFormImagePreloader(form, state)
+
+// Slots/utilities
+const slots = useSlots()
+
+// Branding gating from strategy; defaults to true when not present
+const showBranding = computed(() => props.formManager?.strategy?.value?.display?.showBranding ?? true)
+
+// Focused arrows logic and gating
+const showArrowsSetting = computed(() => (form.value?.settings?.navigation_arrows !== false))
+const canGoPrev = computed(() => state.value.currentPage > 0)
+const hasExclusiveView = computed(() => (
+  !!(form.value?.is_password_protected && slots.password) ||
+  !!slots.alerts ||
+  (!!props.formManager?.state.isSubmitted && !!slots['after-submit'])
+))
+const shouldShowArrows = computed(() => showArrowsSetting.value && !hasExclusiveView.value)
+const showArrowsOnCurrentPage = computed(() => {
+  // Don't show arrows on first page (page 0) - only show when there are multiple pages and we're not on the first
+  return state.value.currentPage > 0 || !isLast.value
+})
+const goPrev = () => { 
+  if (canGoPrev.value && props.formManager?.previousPage) {
+    try {
+      const result = props.formManager.previousPage()
+      if (result && typeof result.then === 'function') {
+        result.then(() => {
+          // Navigation successful
+        }).catch(error => {
+          console.warn('Error in previousPage:', error)
+        }).finally(() => {
+          if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
+        })
+      } else {
+        // Synchronous result, scroll immediately
+        if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
+      }
+    } catch (error) {
+      console.warn('Error calling previousPage:', error)
+      if (import.meta.client) window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+  }
+}
+const goNext = () => { if (!isLast.value) handleNextClick() }
 </script>
-
-
