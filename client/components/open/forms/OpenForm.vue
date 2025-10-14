@@ -14,8 +14,8 @@
         :key="formPageIndex"
         class="form-group flex flex-wrap w-full"
       >
-        <draggable
-          :list="currentFields"
+        <VueDraggable
+          :model-value="currentFields"
           group="form-elements"
           item-key="id"
           class="grid grid-cols-12 relative transition-all w-full"
@@ -26,17 +26,24 @@
           filter=".not-draggable"
           :animation="200"
           :disabled="!allowDragging"
-          @change="handleDragDropped"
+          @add="handleDragAdd"
+          @update="handleDragUpdate"
         >
-          <template #item="{element}">
-            <VTransition name="fadeHeight">
-              <open-form-field
-                :field="element"
-                :form-manager="formManager"
-              />
-            </VTransition>
+          <template #default>
+            <div
+              v-for="element in currentFields"
+              :key="element.id"
+              :class="getFieldWidthClasses(element.width)"
+            >
+              <VTransition name="fadeHeight">
+                <open-form-field
+                  :field="element"
+                  :form-manager="formManager"
+                />
+              </VTransition>
+            </div>
           </template>
-        </draggable>
+        </VueDraggable>
       </div>
     </transition>
 
@@ -89,7 +96,7 @@
 </template>
 
 <script setup>
-import draggable from 'vuedraggable'
+import { VueDraggable } from 'vue-draggable-plus'
 import OpenFormButton from './OpenFormButton.vue'
 import CaptchaWrapper from '~/components/forms/heavy/components/CaptchaWrapper.vue'
 import OpenFormField from './OpenFormField.vue'
@@ -148,25 +155,43 @@ const handleNextClick = () => {
   })
 }
 
-const handleDragDropped = (data) => {
+const getAbsoluteIndex = (relativeIndex) => {
+  return structure.value.getTargetDropIndex(relativeIndex, state.value.currentPage)
+}
+
+const handleDragAdd = (evt) => {
   if (!structure.value) return
+  const targetIndex = getAbsoluteIndex(evt.newIndex)
+  const payload = evt?.clonedData
+  workingFormStore.addBlock(payload, targetIndex, false)
+}
 
-  const getAbsoluteIndex = (relativeIndex) => {
-    return structure.value.getTargetDropIndex(relativeIndex, state.value.currentPage)
-  }
-
-  if (data.added) {
-    const targetIndex = getAbsoluteIndex(data.added.newIndex)
-    workingFormStore.addBlock(data.added.element, targetIndex, false)
-  }
-  if (data.moved) {
-    const oldTargetIndex = getAbsoluteIndex(data.moved.oldIndex)
-    const newTargetIndex = getAbsoluteIndex(data.moved.newIndex)
+const handleDragUpdate = (evt) => {
+  if (!structure.value) return
+  const oldTargetIndex = getAbsoluteIndex(evt.oldIndex)
+  const newTargetIndex = getAbsoluteIndex(evt.newIndex)
+  if (oldTargetIndex !== newTargetIndex) {
     workingFormStore.moveField(oldTargetIndex, newTargetIndex)
   }
 }
 
 const isProcessing = computed(() => props.formManager.state.isProcessing)
+
+const getFieldWidthClasses = (width) => {
+  if (!width || width === 'full') return 'col-span-full'
+  else if (width === '1/2') {
+    return 'sm:col-span-6 col-span-full'
+  } else if (width === '1/3') {
+    return 'sm:col-span-4 col-span-full'
+  } else if (width === '2/3') {
+    return 'sm:col-span-8 col-span-full'
+  } else if (width === '1/4') {
+    return 'sm:col-span-3 col-span-full'
+  } else if (width === '3/4') {
+    return 'sm:col-span-9 col-span-full'
+  }
+  return 'col-span-full'
+}
 </script>
 
 <style lang='scss' scoped>
