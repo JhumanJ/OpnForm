@@ -50,9 +50,10 @@ export const useAuthStore = defineStore("auth", {
     setCookie(name, value, options = {}) {
       if (import.meta.client) {
         const secureDefault = (typeof window !== 'undefined') ? window.location.protocol === 'https:' : true
+        const embedded = typeof window !== 'undefined' && window.top !== window.self
         const safeOptions = {
-          sameSite: options.sameSite ?? 'lax',
-          secure: options.secure ?? secureDefault,
+          sameSite: options.sameSite ?? (embedded ? 'none' : 'lax'),
+          secure: options.secure ?? (embedded ? true : secureDefault),
           ...options,
         }
         useCookie(name, safeOptions).value = value

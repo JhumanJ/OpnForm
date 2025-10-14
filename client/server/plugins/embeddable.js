@@ -50,6 +50,14 @@ export default defineNitroPlugin((nitroApp) => {
       delete response.headers["Content-Security-Policy"]
     }
 
+    // Enable required features within the embedded document
+    response.headers["Permissions-Policy"] = [
+      "clipboard-read=(self)",
+      "clipboard-write=(self)",
+      "identity-credentials-get=(self)",
+      "fullscreen=(self)"
+    ].join(", ")
+
     delete response.headers["x-powered-by"]
   })
 })
