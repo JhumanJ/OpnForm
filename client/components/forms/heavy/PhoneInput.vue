@@ -11,7 +11,8 @@
       :id="id ? id : name"
       :name="name"
       :style="inputStyle"
-      class="grid items-stretch w-full grid-cols-[auto_minmax(0,1fr)]"
+      class="grid items-stretch w-full"
+      :class="resolvedTheme === 'minimal' ? 'grid-cols-[auto_0.1rem_minmax(0,1fr)]' : 'grid-cols-[auto_minmax(0,1fr)]'"
     >
       <v-select
         class="min-w-0"
@@ -106,7 +107,7 @@ const props = defineProps({
 })
 
 // Composables
-const { compVal, resolvedSize, inputStyle, inputWrapperProps, ui } = useFormInput(props, { emit }, {
+const { compVal, resolvedSize, resolvedTheme, inputStyle, inputWrapperProps, ui } = useFormInput(props, { emit }, {
   variants: phoneInputTheme
 })
 
