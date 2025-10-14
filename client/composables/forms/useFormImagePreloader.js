@@ -45,7 +45,7 @@ export const useFormImagePreloader = (formRef, stateRef) => {
         const img = new Image()
         img.decoding = 'async'
         img.src = u
-      } catch (_) { /* no-op */ }
+      } catch { /* no-op */ }
     })
   }
 

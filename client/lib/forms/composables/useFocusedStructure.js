@@ -1,6 +1,6 @@
 import { computed, toValue } from 'vue'
 
-export function useFocusedStructure(formConfig, managerState, formData) {
+export function useFocusedStructure(formConfig, managerState, _formData) {
   const form = computed(() => toValue(formConfig) || { properties: [] })
 
   const fieldGroups = computed(() => {
@@ -67,7 +67,7 @@ export function useFocusedStructure(formConfig, managerState, formData) {
     return Math.max(0, Math.min(targetPageIndex, (form.value.properties || []).length))
   }
 
-  const determineInsertIndex = (selectedFieldIndex, currentPageIndex, explicitIndex = null, insertOnSamePage = false) => {
+  const determineInsertIndex = (selectedFieldIndex, currentPageIndex, explicitIndex = null, _insertOnSamePage = false) => {
     if (explicitIndex !== null && typeof explicitIndex === 'number') return explicitIndex
     if (selectedFieldIndex !== null && selectedFieldIndex !== undefined && selectedFieldIndex >= 0) return selectedFieldIndex + 1
     const properties = form.value.properties || []

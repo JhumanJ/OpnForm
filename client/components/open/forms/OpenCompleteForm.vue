@@ -115,7 +115,7 @@
 
 <script setup>
 import { useFormManager } from '~/lib/forms/composables/useFormManager'
-import { FormMode, createFormModeStrategy } from "~/lib/forms/FormModeStrategy.js"
+import { FormMode } from "~/lib/forms/FormModeStrategy.js"
 import OpenForm from './OpenForm.vue'
 import OpenFormFocused from './OpenFormFocused.vue'
 import OpenFormButton from './OpenFormButton.vue'
@@ -160,7 +160,6 @@ const queryString = route.fullPath.split('?')[1] || ''
 // Check for auto_submit parameter during setup
 const isAutoSubmit = ref(import.meta.client && window.location.href.includes('auto_submit=true'))
 
-const formModeStrategy = computed(() => createFormModeStrategy(props.mode))
 
 // Create a reactive reference directly from the prop
 const darkModeRef = toRef(props, 'darkMode')

@@ -7,6 +7,31 @@ export function useAlert() {
       options = { ...message, ...options }
       message = options.description || options.message || ''
     }
+    // Compose actions, optionally appending an "Open form" action when a form is provided
+    const composedActions = Array.isArray(options.actions) ? [...options.actions] : []
+    const form = options.form || options.openForm
+    const shareUrl = form?.share_url || options.shareUrl
+    if (form && shareUrl) {
+      composedActions.push({
+        label: options.openFormLabel ?? 'Open form',
+        icon: 'i-heroicons-arrow-top-right-on-square',
+        onClick: () => {
+          if (form.visibility === 'draft') {
+            useAlert().warning(
+              'This form is currently in Draft mode and is not publicly accessible, You can change the form status on the edit form page.'
+            )
+          } else if (import.meta.client) {
+            window.open(shareUrl, '_blank')
+          }
+        }
+      })
+    }
+
+    const extraOptions = { ...options }
+    if (composedActions.length > 0) {
+      extraOptions.actions = composedActions
+    }
+
     return useToast().add({
       icon: 'i-heroicons-check-circle',
       title: options.title ?? 'Success',
@@ -14,7 +39,7 @@ export function useAlert() {
       color: 'success',
       closeIcon: 'i-heroicons-x-mark-20-solid',
       duration: autoClose,
-      ...options
+      ...extraOptions
     })
   }
 

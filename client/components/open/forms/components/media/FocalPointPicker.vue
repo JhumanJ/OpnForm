@@ -44,11 +44,11 @@ const props = defineProps({
 })
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
-const { compVal, inputWrapperProps, onFocus, onBlur } = useFormInput(props, { emit })
+const { compVal, inputWrapperProps } = useFormInput(props, { emit })
 
 const container = ref(null)
 
-const safePoint = (val, axis = 'x') => {
+const safePoint = (val, _axis = 'x') => {
   const num = typeof val === 'number' ? val : 50
   return Math.max(0, Math.min(100, num))
 }
@@ -81,7 +81,7 @@ function onTouchMove(e) {
   setFromEvent(e)
 }
 
-function startDrag(e) {
+function startDrag(_e) {
   dragging = true
 }
 
