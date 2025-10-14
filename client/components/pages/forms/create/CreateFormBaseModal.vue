@@ -30,13 +30,14 @@
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div
                   role="button"
-                  class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
+                  class="group rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
                   @click="selectStyle('classic')"
                 >
                   <div class="p-4">
-                    <UIcon
-                      name="i-opnform-form-style-classic"
-                      class="w-[140px] h-[100px] rounded-md shadow"
+                    <Icon
+                      name="opnform:form-style-classic"
+                      mode="svg"
+                      class="w-[140px] h-[100px] rounded-md shadow **:transition-colors duration-100 ease-out [--icon-fg:#737373] [--icon-muted:#D4D4D4] group-hover:[--icon-fg:#2563eb] group-hover:[--icon-muted:#93c5fd]"
                     />
                   </div>
                   <p class="font-medium">Classic</p>
@@ -44,13 +45,14 @@
                 </div>
                 <div
                   role="button"
-                  class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
+                  class="group rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
                   @click="selectStyle('focused')"
                 >
                   <div class="p-4">
-                    <UIcon
-                      name="i-opnform-form-style-focused"
-                      class="w-[140px] h-[100px] rounded-md shadow"
+                    <Icon
+                      name="opnform:form-style-focused"
+                      mode="svg"
+                      class="w-[140px] h-[100px] rounded-md shadow **:transition-colors duration-100 ease-out [--icon-fg:#737373] [--icon-muted:#D4D4D4] group-hover:[--icon-fg:#2563eb] group-hover:[--icon-muted:#93c5fd]"
                     />
                   </div>
                   <p class="font-medium">Focused</p>
@@ -246,6 +248,13 @@ function selectStyle(style) {
     workingFormStore.content.presentation_style = style
     if (style === 'focused') {
       workingFormStore.content.size = 'lg'
+      // Ensure navigation arrows are enabled by default in focused mode
+      if (!workingFormStore.content.settings) {
+        workingFormStore.content.settings = {}
+      }
+      if (workingFormStore.content.settings.navigation_arrows === undefined) {
+        workingFormStore.content.settings.navigation_arrows = true
+      }
     }
     // Close any open sidebars since layout may change
     workingFormStore.closeAllSidebars()

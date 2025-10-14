@@ -53,7 +53,9 @@
         </UTooltip>
       </TrackClick>
       </div>
-      <div class="flex-grow overflow-y-auto relative flex flex-col">
+      <div class="flex-grow overflow-y-auto relative flex flex-col transform-gpu">
+        <!-- The transform creates a containing block so descendants with position: fixed
+             are anchored to this preview container instead of the page viewport. -->
         <open-complete-form
           ref="formPreview"
           class="w-full grow min-h-0"

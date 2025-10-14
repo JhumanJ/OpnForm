@@ -76,12 +76,12 @@
     </div>
 
     <!-- Bottom right controls: arrows and branding -->
-    <div class="hidden sm:flex gap-2 fixed bottom-4 right-4 z-10" aria-label="Form controls">
+    <div class="hidden sm:flex gap-2 fixed bottom-8 right-8 z-10" aria-label="Form controls">
       <!-- Focused nav arrows with fade transition -->
       <Transition name="fade" mode="out-in">
         <div v-if="shouldShowArrows && showArrowsOnCurrentPage" class="flex gap-2">
-          <UButton color="form" square variant="solid" size="sm" icon="i-heroicons-chevron-up-20-solid" :disabled="!canGoPrev" @click="goPrev" />
-          <UButton color="form" square variant="solid" size="sm" icon="i-heroicons-chevron-down-20-solid" :disabled="isLast" @click="goNext" />
+          <UButton color="form" square variant="solid" icon="i-heroicons-chevron-up-20-solid" :disabled="!canGoPrev" @click="goPrev" />
+          <UButton color="form" square variant="solid" icon="i-heroicons-chevron-down-20-solid" :disabled="isLast" @click="goNext" />
         </div>
       </Transition>
       <!-- Branding button -->

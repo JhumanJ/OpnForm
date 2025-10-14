@@ -69,8 +69,20 @@ const form = computed(() => formRef.value || {})
 const currentStyle = computed(() => form.value.presentation_style || 'classic')
 
 const styleOptions = [
-  { name: 'classic', label: 'Classic', icon: 'i-opnform-form-style-classic', iconClass: 'w-[91px] h-[65px] rounded shadow', tooltip: 'Classic form: multiple inputs per page, multi-line layout, supports multiple pages and layout blocks.' },
-  { name: 'focused', label: 'Focused', icon: 'i-opnform-form-style-focused', iconClass: 'w-[91px] h-[65px] rounded shadow', tooltip: 'Typeform-like, one question per step.' }
+  {
+    name: 'classic',
+    label: 'Classic',
+    icon: 'opnform:form-style-classic',
+    iconClass: 'w-[91px] h-[65px] rounded shadow *:transition-colors duration-150 ease-out [--icon-fg:#737373] [--icon-muted:#D4D4D4] group-hover:[--icon-fg:#1d4ed8] group-hover:[--icon-muted:#60a5fa] group-aria-selected:[--icon-fg:#1d4ed8] group-aria-selected:[--icon-muted:#60a5fa] group-[aria-selected=true]:[--icon-fg:#1d4ed8] group-[aria-selected=true]:[--icon-muted:#60a5fa]',
+    tooltip: 'Classic form: multiple inputs per page, multi-line layout, supports multiple pages and layout blocks.'
+  },
+  {
+    name: 'focused',
+    label: 'Focused',
+    icon: 'opnform:form-style-focused',
+    iconClass: 'w-[91px] h-[65px] rounded shadow *:transition-colors duration-150 ease-out [--icon-fg:#737373] [--icon-muted:#D4D4D4] group-hover:[--icon-fg:#1d4ed8] group-hover:[--icon-muted:#60a5fa] group-aria-selected:[--icon-fg:#1d4ed8] group-aria-selected:[--icon-muted:#60a5fa] group-[aria-selected=true]:[--icon-fg:#1d4ed8] group-[aria-selected=true]:[--icon-muted:#60a5fa]',
+    tooltip: 'Typeform-like, one question per step.'
+  }
 ]
 
 const showConfirmModal = ref(false)
@@ -163,7 +175,7 @@ function cancelSwitch() {
 }
 
 function openHelpArticle() {
-  crisp.openHelpdeskArticle('9817ba02-c8dd-41fc-90ea-fc121a3b4fc5')
+  crisp.openHelpdeskArticle('how-to-create-a-typeformstyle-onequestionatatime-form-focused-mode-1d5r5x')
 }
 </script>
 

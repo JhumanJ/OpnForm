@@ -89,14 +89,12 @@
     <ToggleSwitchInput
       name="layout_rtl"
       :form="form"
-      class="mt-4"
       label="Right-to-Left Layout"
     />
     
     <toggle-switch-input
       name="uppercase_labels"
       :form="form"
-      class="mt-4"
       label="Uppercase Input Labels"
     />
 
@@ -155,7 +153,7 @@
 
     <EditorSectionHeader
       icon="heroicons:tag-16-solid"
-      title="Branding & Media"
+      title="Branding"
     />
     <div class="grid grid-cols-2 gap-4">
       <image-input

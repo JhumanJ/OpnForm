@@ -31,13 +31,17 @@ const props = defineProps({
 
 const isFocusedMode = computed(() => (props.form?.presentation_style || 'classic') === 'focused')
 
+// DRY icon classes
+const iconBaseClass = 'w-[70px] h-[50px] rounded transition-colors duration-150 ease-out [--icon-fg:#737373] [--icon-muted:#D4D4D4] group-hover:[--icon-fg:#3b82f6] group-hover:[--icon-muted:#60a5fa] text-neutral-500 group-hover:text-blue-500 group-aria-selected:[--icon-fg:#3b82f6] group-aria-selected:[--icon-muted:#60a5fa] group-[aria-selected=true]:[--icon-fg:#3b82f6] group-[aria-selected=true]:[--icon-muted:#60a5fa] group-aria-selected:text-blue-500 group-[aria-selected=true]:text-blue-500'
+const iconSelectedClass = '[--icon-fg:#3b82f6] [--icon-muted:#60a5fa] text-blue-500'
+
 const layoutOptions = [
-  { name: 'between', icon: 'i-opnform-form-layout-between', iconClass: 'w-[70px] h-[50px] rounded text-slate-600' },
-  { name: 'left-small', icon: 'i-opnform-form-layout-left-small', iconClass: 'w-[70px] h-[50px] rounded' },
-  { name: 'left-split', icon: 'i-opnform-form-layout-left-split', iconClass: 'w-[70px] h-[50px] rounded' },
-  { name: 'background', icon: 'i-opnform-form-layout-background', iconClass: 'w-[70px] h-[50px] rounded' },
-  { name: 'right-small', icon: 'i-opnform-form-layout-right-small', iconClass: 'w-[70px] h-[50px] rounded' },
-  { name: 'right-split', icon: 'i-opnform-form-layout-right-split', iconClass: 'w-[70px] h-[50px] rounded' },
+  { name: 'between',      icon: 'opnform:form-layout-between',      iconClass: iconBaseClass, iconSelectedClass },
+  { name: 'left-small',   icon: 'opnform:form-layout-left-small',    iconClass: iconBaseClass, iconSelectedClass },
+  { name: 'left-split',   icon: 'opnform:form-layout-left-split',    iconClass: iconBaseClass, iconSelectedClass },
+  { name: 'background',   icon: 'opnform:form-layout-background',    iconClass: iconBaseClass, iconSelectedClass },
+  { name: 'right-small',  icon: 'opnform:form-layout-right-small',   iconClass: iconBaseClass, iconSelectedClass },
+  { name: 'right-split',  icon: 'opnform:form-layout-right-split',   iconClass: iconBaseClass, iconSelectedClass },
 ]
 
 function setDefaultImageSettings() {

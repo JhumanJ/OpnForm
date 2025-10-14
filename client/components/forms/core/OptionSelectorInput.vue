@@ -24,7 +24,7 @@
         :class="optionClasses(isSelected(option))"
       >
         <button
-          class="flex flex-col items-center justify-center transition-colors focus:outline-hidden w-full h-full"
+          class="group flex flex-col items-center justify-center transition-colors focus:outline-hidden w-full h-full"
           :class="[buttonClasses(disabled || option.disabled), option.class ? (typeof option.class === 'function' ? option.class(isSelected(option)) : option.class) : {}, isSelected(option) ? 'text-form-color' : 'text-inherit']"
           :aria-selected="isSelected(option) ? 'true' : 'false'"
           :tabindex="disabled || option.disabled ? -1 : 0"
@@ -38,11 +38,13 @@
             <Icon
               v-if="option.icon"
               :name="isSelected(option) && option.selectedIcon ? option.selectedIcon : option.icon"
+              mode="svg"
               :class="[
                 'w-4 h-4',
                 option.label ? 'mb-1' : '',
                 isSelected(option) ? 'text-form-color' : 'text-inherit',
-                option.iconClass ? (typeof option.iconClass === 'function' ? option.iconClass(isSelected(option)) : option.iconClass) : {}
+                option.iconClass ? (typeof option.iconClass === 'function' ? option.iconClass(isSelected(option)) : option.iconClass) : {},
+                isSelected(option) && option.iconSelectedClass ? (typeof option.iconSelectedClass === 'function' ? option.iconSelectedClass(true) : option.iconSelectedClass) : {}
               ]"
             />
           </slot>
