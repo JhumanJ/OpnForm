@@ -52,7 +52,9 @@ class FormResource extends JsonResource
             'is_pro' => $this->workspaceIsPro(),
             'is_trialing' => $this->workspaceIsTrialing(),
             'workspace_id' => $this->workspace_id,
-            'workspace' => new WorkspaceResource($this->workspace),
+            'workspace' => $this->userIsFormOwner()
+                ? new WorkspaceResource($this->workspace)
+                : (new WorkspaceResource($this->workspace))->restrictForGuest(),
             'is_closed' => $this->is_closed,
             'size' => $this->size,
             'is_password_protected' => false,
