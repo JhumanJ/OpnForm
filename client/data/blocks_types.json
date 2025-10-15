@@ -6,10 +6,12 @@
     "default_block_name": "Your name",
     "bg_class": "bg-blue-100",
     "text_class": "text-blue-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {
       "multi_lines": false,
-      "max_char_limit": 2000
+      "max_char_limit": 2000,
+      "placeholder": "Type your answer"
     }
   },
   "rich_text": {
@@ -19,9 +21,11 @@
     "default_block_name": "Description",
     "bg_class": "bg-blue-100",
     "text_class": "text-blue-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {
-      "max_char_limit": 2000
+      "max_char_limit": 2000,
+      "placeholder": "Write your answer"
     }
   },
   "date": {
@@ -31,6 +35,7 @@
     "default_block_name": "Date",
     "bg_class": "bg-green-100",
     "text_class": "text-green-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {}
   },
@@ -41,9 +46,11 @@
     "default_block_name": "Link",
     "bg_class": "bg-blue-100",
     "text_class": "text-blue-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {
-      "max_char_limit": 2000
+      "max_char_limit": 2000,
+      "placeholder": "https://example.com"
     }
   },
   "phone_number": {
@@ -53,8 +60,11 @@
     "default_block_name": "Phone Number",
     "bg_class": "bg-blue-100",
     "text_class": "text-blue-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
-    "default_values": {}
+    "default_values": {
+      "placeholder": "+1 202 555 0142"
+    }
   },
   "email": {
     "name": "email",
@@ -63,9 +73,11 @@
     "default_block_name": "Email",
     "bg_class": "bg-blue-100",
     "text_class": "text-blue-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {
-      "max_char_limit": 2000
+      "max_char_limit": 2000,
+      "placeholder": "name@example.com"
     }
   },
   "checkbox": {
@@ -75,6 +87,7 @@
     "default_block_name": "Checkbox",
     "bg_class": "bg-red-100",
     "text_class": "text-red-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {}
   },
@@ -85,8 +98,10 @@
     "default_block_name": "Select",
     "bg_class": "bg-red-100",
     "text_class": "text-red-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {
+      "placeholder": "Select an option",
       "select": {
         "options": [
           { "name": "Option 1", "id": "Option 1" },
@@ -102,8 +117,10 @@
     "default_block_name": "Multi Select",
     "bg_class": "bg-red-100",
     "text_class": "text-red-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {
+      "placeholder": "Select options",
       "multi_select": {
         "options": [
           { "name": "Option 1", "id": "Option 1" },
@@ -119,6 +136,7 @@
     "default_block_name": "Matrix",
     "bg_class": "bg-red-100",
     "text_class": "text-red-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {
       "rows": ["Row 1"],
@@ -135,8 +153,11 @@
     "default_block_name": "Number",
     "bg_class": "bg-purple-100",
     "text_class": "text-purple-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
-    "default_values": {}
+    "default_values": {
+      "placeholder": "Type a number"
+    }
   },
   "rating": {
     "name": "rating",
@@ -145,6 +166,7 @@
     "default_block_name": "Rating",
     "bg_class": "bg-purple-100",
     "text_class": "text-purple-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {
       "rating_max_value": 5
@@ -157,6 +179,7 @@
     "default_block_name": "Scale",
     "bg_class": "bg-purple-100",
     "text_class": "text-purple-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {
       "scale_min_value": 1,
@@ -171,6 +194,7 @@
     "default_block_name": "Slider",
     "bg_class": "bg-purple-100",
     "text_class": "text-purple-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {
       "slider_min_value": 0,
@@ -185,6 +209,7 @@
     "default_block_name": "Files",
     "bg_class": "bg-pink-100",
     "text_class": "text-pink-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {}
   },
@@ -195,6 +220,7 @@
     "default_block_name": "Signature",
     "bg_class": "bg-pink-100",
     "text_class": "text-pink-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {}
   },
@@ -205,6 +231,7 @@
     "default_block_name": "Scan Barcode",
     "bg_class": "bg-pink-100",
     "text_class": "text-pink-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {
       "decoders": ["qr_reader", "ean_reader", "ean_8_reader"]
@@ -217,9 +244,10 @@
     "default_block_name": "Scan QR Code",
     "bg_class": "bg-pink-100",
     "text_class": "text-pink-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "default_values": {
-      "decoders": ["qr_reader", "ean_reader", "ean_8_reader"]
+      "decoders": ["qr_reader"]
     },
     "actual_input": "barcode"
   },
@@ -230,6 +258,7 @@
     "default_block_name": "Payment",
     "bg_class": "bg-green-100",
     "text_class": "text-green-900",
+    "available_in": ["classic", "focused"],
     "is_input": true,
     "self_hosted": false,
     "max_count": 1,
@@ -242,6 +271,7 @@
     "default_block_name": "Text",
     "bg_class": "bg-yellow-100",
     "text_class": "text-yellow-900",
+    "available_in": ["classic", "focused"],
     "is_input": false,
     "default_values": {}
   },
@@ -252,6 +282,7 @@
     "default_block_name": "Page Break",
     "bg_class": "bg-gray-100",
     "text_class": "text-gray-900",
+    "available_in": ["classic"],
     "is_input": false,
     "default_values": {}
   },
@@ -262,6 +293,7 @@
     "default_block_name": "Divider",
     "bg_class": "bg-gray-100",
     "text_class": "text-gray-900",
+    "available_in": ["classic"],
     "is_input": false,
     "default_values": {}
   },
@@ -272,6 +304,7 @@
     "default_block_name": "Image",
     "bg_class": "bg-yellow-100",
     "text_class": "text-yellow-900",
+    "available_in": ["classic"],
     "is_input": false,
     "default_values": {}
   },
@@ -282,6 +315,7 @@
     "default_block_name": "Code Block",
     "bg_class": "bg-yellow-100",
     "text_class": "text-yellow-900",
+    "available_in": ["classic", "focused"],
     "is_input": false,
     "default_values": {}
   }

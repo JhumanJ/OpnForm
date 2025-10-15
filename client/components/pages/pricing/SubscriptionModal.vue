@@ -8,8 +8,10 @@
     <template #body>
       <div class="overflow-hidden">
         <SlidingTransition
+          :style="transitionContainerStyle"
           direction="horizontal"
           :step="currentStep"
+          :speed="transitionDurationMs"
         >
           <div
             :key="currentStep"
@@ -19,6 +21,7 @@
               v-if="currentStep === 1"
               key="step1"
               class="flex flex-col items-center px-4 rounded-2xl relative"
+              ref="step1Ref"
             >
               <main class="flex flex-col mt-4 max-w-full text-center w-[591px] max-md:mt-10">
                 <img
@@ -233,7 +236,7 @@
                       OpnForm - {{ currentPlan == 'default' ? 'Pro' : 'Team' }} plan
                     </p>
                     <UBadge
-                      :color="isYearly?'green':'amber'"
+                      :color="isYearly?'success':'warning'"
                       variant="subtle"
                     >
                       {{ !isYearly ? 'No Discount' : 'Discount Applied' }}
@@ -297,6 +300,7 @@
                 >
                 <TrackClick
                   name="upgrade_modal_confirm_submit"
+                  class="grow flex"
                   :properties="{plan: currentPlan.value, period: isYearly?'yearly':'monthly'}"
                 >
                     <UButton
@@ -340,6 +344,8 @@ import TrackClick from '~/components/global/TrackClick.vue'
 
 import { useCheckoutUrl } from '@/composables/components/stripe/useCheckoutUrl'
 import { authApi } from '~/api'
+import { computed, watchEffect } from 'vue'
+import { useElementSize } from '@vueuse/core'
 
 const props = defineProps({
   modelValue: {
@@ -396,6 +402,21 @@ const { data: user } = useAuth().user()
 const isSubscribed = computed(() => user.value.is_pro)
 const currency = 'usd'
 
+const transitionDurationMs = 300
+// Measure Step 1 height and apply as fixed height to the container
+const step1Ref = ref(null)
+const { height: step1Height } = useElementSize(step1Ref)
+const cachedStep1Height = ref(0)
+watchEffect(() => {
+  if (step1Height?.value) {
+    cachedStep1Height.value = step1Height.value
+  }
+})
+const transitionContainerStyle = computed(() => {
+  const h = cachedStep1Height.value
+  return h ? { height: h + 'px' } : {}
+})
+
 const checkoutUrl = useCheckoutUrl(
   computed(() => form.name),
   computed(() => form.email),
@@ -418,8 +439,8 @@ watch(() => props.modelValue, () => {
       }
       isYearly.value = props.yearly
       shouldShowUpsell.value = !isYearly.value
-      currentStep.value = 2
       currentPlan.value = props.plan
+      currentStep.value = 2
     }
   }
 })

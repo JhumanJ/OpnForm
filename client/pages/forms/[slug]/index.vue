@@ -1,39 +1,9 @@
 <template>
   <div
     id="public-form"
-    class="flex flex-col"
+    class="flex flex-col min-h-screen"
   >
-    <div v-if="form && !isIframe && (form.logo_picture || form.cover_picture)">
-      <div v-if="form.cover_picture">
-        <div
-          id="cover-picture"
-          class="max-h-56 w-full overflow-hidden flex items-center justify-center"
-        >
-          <img
-            alt="Form Cover Picture"
-            :src="form.cover_picture"
-            class="w-full"
-          >
-        </div>
-      </div>
-      <div
-        v-if="form.logo_picture"
-        class="w-full p-5 relative mx-auto"
-        :class="{'pt-20':!form.cover_picture, 'md:w-3/5 lg:w-1/2 md:max-w-2xl': form.width === 'centered', 'max-w-7xl': (form.width === 'full' && !isIframe) }"
-        :style="{ 'direction': form?.layout_rtl ? 'rtl' : 'ltr' }"
-      >
-        <img
-          alt="Logo Picture"
-          :src="form.logo_picture"
-          :class="{'top-5':!form.cover_picture, '-top-10':form.cover_picture}"
-          class="w-20 h-20 object-contain absolute transition-all"
-        >
-      </div>
-    </div>
-    <div
-      class="w-full mx-auto px-4"
-      :class="{'mt-6':!isIframe, 'md:w-3/5 lg:w-1/2 md:max-w-2xl': form && (form.width === 'centered'), 'max-w-7xl': (form && form.width === 'full' && !isIframe)}"
-    >
+    <div class="w-full mx-auto flex flex-col grow h-full">
       <div v-if="!formLoading && !form">
         <NotFoundForm />
       </div>
@@ -46,7 +16,7 @@
         <OpenCompleteForm
           ref="openCompleteForm"
           :form="form"
-          class="mb-20"
+          class="w-full grow min-h-0"
           :dark-mode="darkMode"
           :mode="FormMode.LIVE"
           @password-entered="passwordEntered"
@@ -92,6 +62,7 @@ if (import.meta.server) {
 const openCompleteForm = ref(null)
 
 const passwordEntered = function (password) {
+  console.log('passwordEntered', password)
   const cookie = useCookie('password-' + slug, {
     maxAge: 60 * 60 * 7,
     sameSite: 'none',
@@ -100,6 +71,7 @@ const passwordEntered = function (password) {
   cookie.value = sha256(password)
   nextTick(() => {
     refetchForm().then(() => {
+      console.log('form.value', form.value)
       if (form.value?.is_password_protected) {
         openCompleteForm.value.addPasswordError(t('forms.invalid_password'))
       } else {
