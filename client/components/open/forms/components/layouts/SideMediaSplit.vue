@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full flex z-10 flex-col @3xl:flex-row">
+  <div class="w-full flex z-10 flex-col @3xl:flex-row overflow-hidden">
     <!-- Mobile: media as background on top, content dictates scroll -->
     <div class="relative block @3xl:hidden w-full">
       <!-- Spacer for 50vh visual band -->
@@ -11,7 +11,7 @@
     </div>
 
     <!-- Desktop: media on the left -->
-    <div v-if="isLeft" class="hidden @3xl:block w-1/2 relative overflow-hidden h-screen">
+    <div v-if="isLeft" class="hidden @3xl:block w-1/2 relative overflow-hidden h-[100cqh]">
       <BlockMediaLayout :image="image" :fallback-height="null" />
     </div>
 
@@ -23,7 +23,7 @@
     </div>
 
     <!-- Desktop: media on the right -->
-    <div v-if="!isLeft" class="hidden @3xl:block w-1/2 relative overflow-hidden h-screen">
+    <div v-if="!isLeft" class="hidden @3xl:block w-1/2 relative overflow-hidden h-[100cqh]">
       <BlockMediaLayout :image="image" :fallback-height="null" />
     </div>
   </div>

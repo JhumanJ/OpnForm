@@ -6,8 +6,8 @@
     </div>
 
     <!-- Fixed logo in top-left -->
-    <div v-if="form.logo_picture" class="absolute top-10 left-10 z-10">
-      <img :src="form.logo_picture" :alt="form.seo_meta?.site_name ? `${form.seo_meta.site_name} logo` : 'Form logo'" class="size-16 object-contain">
+    <div v-if="form.logo_picture" class="absolute top-10 left-10 z-20">
+      <img :src="form.logo_picture" :alt="form.seo_meta?.site_name ? `${form.seo_meta.site_name} logo` : 'Form logo'" class="size-8 md:size-16 object-contain">
     </div>
 
     <!-- Progressbar -->
