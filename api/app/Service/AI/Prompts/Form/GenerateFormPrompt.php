@@ -48,6 +48,7 @@ class GenerateFormPrompt extends Prompt
         - nf-page-break: Page break for multi-page forms
         - nf-divider: Visual divider (not an input field)
         - nf-image: Image element
+        - nf-video: Video element
         - nf-code: Code block
         
         HTML formatting for nf-text:
@@ -154,6 +155,7 @@ class GenerateFormPrompt extends Prompt
                         ['$ref' => '#/definitions/nfPageBreakProperty'],
                         ['$ref' => '#/definitions/nfDividerProperty'],
                         ['$ref' => '#/definitions/nfImageProperty'],
+                        ['$ref' => '#/definitions/nfVideoProperty'],
                         ['$ref' => '#/definitions/nfCodeProperty']
                     ]
                 ]

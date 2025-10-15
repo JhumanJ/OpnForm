@@ -144,6 +144,30 @@
             class="max-w-full inline-block rounded-lg"
           >
         </div>
+        <div
+          v-if="field.type === 'nf-video' && (field.video_block || !isPublicFormPage)"
+          :id="field.id"
+          :key="field.id"
+          class="my-4 w-full px-2"
+          :class="[getFieldAlignClasses(field)]"
+          @dblclick="editFieldOptions"
+        >
+          <div
+            v-if="!field.video_block"
+            class="p-4 border border-dashed text-center"
+          >
+            <a
+              href="#"
+              class="text-blue-800 dark:text-blue-200"
+              @click.prevent="editFieldOptions"
+            >Open block settings to add video URL.</a>
+          </div>
+          <EmbedMedia
+            v-else
+            :src="field.video_block"
+            :is-dark="darkMode"
+          />
+        </div>
       </template>
       <div
         class="hidden group-hover/nffield:flex translate-x-full absolute right-0 top-0 h-full w-5 flex-col justify-center pl-1 pt-3"
