@@ -28,7 +28,7 @@
       class="my-4"
     >
       <template #label>
-        <InputLabel>Accent Color - <a
+        <InputLabel label="">Accent Color - <a
           href="#" class="text-blue-500"
           @click.prevent="form.color = DEFAULT_COLOR"
         >Reset</a></InputLabel>
@@ -192,7 +192,7 @@
 
     <toggle-switch-input
       v-if="isFocused"
-      name="settings.navigation_arrows"
+      v-model="navigationArrows"
       :form="form"
       class="mt-2"
       label="Show navigation arrows"
@@ -258,6 +258,19 @@ const isFocused = computed(() => form.value?.presentation_style === 'focused')
 
 const availableLocales = computed(() => {
   return $i18n.locales?.value.map(locale => ({ name: locale.name, value: locale.code })) ?? []
+})
+
+// Bind navigation arrows robustly even if settings is missing
+const navigationArrows = computed({
+  get() {
+    return form.value?.settings?.navigation_arrows ?? true
+  },
+  set(val) {
+    if (!form.value) return
+    const currentSettings = form.value.settings ?? {}
+    // Reassign the whole settings object to ensure reactivity
+    form.value.settings = { ...currentSettings, navigation_arrows: val }
+  }
 })
 
 onMounted(() => {

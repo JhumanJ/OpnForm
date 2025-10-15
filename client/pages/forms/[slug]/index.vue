@@ -254,7 +254,7 @@ useHead({
   link: headLinks.value,
   meta: pageMeta.value.page_favicon ? [
     {
-      name: 'apple-mobile-web-app-capable',
+      name: 'mobile-web-app-capable',
       content: 'yes'
     },
     {

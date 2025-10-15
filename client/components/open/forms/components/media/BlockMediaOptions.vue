@@ -1,6 +1,6 @@
 <template>
   <div v-if="isFocusedMode" class="px-4 mt-6">
-    <EditorSectionHeader icon="i-heroicons-photo" title="Media & Layout" />
+    <EditorSectionHeader icon="i-heroicons-photo" :icon-class="headerIconClass" title="Image" />
 
     <!-- Unified image input with settings popover (focus/brightness/alt) -->
     <ImageWithSettings :form="model" name="image.url" label="Image" kind="block" />
@@ -30,6 +30,9 @@ const props = defineProps({
 })
 
 const isFocusedMode = computed(() => (props.form?.presentation_style || 'classic') === 'focused')
+
+const isEmpty = computed(() => !props.model?.image || !props.model.image?.url)
+const headerIconClass = computed(() => isEmpty.value ? 'text-blue-500! animate-pulse' : '')
 
 // DRY icon classes
 const iconBaseClass = 'w-[70px] h-[50px] rounded transition-colors duration-150 ease-out [--icon-fg:#737373] [--icon-muted:#D4D4D4] group-hover:[--icon-fg:#3b82f6] group-hover:[--icon-muted:#60a5fa] text-neutral-500 group-hover:text-blue-500 group-aria-selected:[--icon-fg:#3b82f6] group-aria-selected:[--icon-muted:#60a5fa] group-[aria-selected=true]:[--icon-fg:#3b82f6] group-[aria-selected=true]:[--icon-muted:#60a5fa] group-aria-selected:text-blue-500 group-[aria-selected=true]:text-blue-500'

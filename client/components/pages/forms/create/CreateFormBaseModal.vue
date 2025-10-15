@@ -81,39 +81,40 @@
                 />
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <div
-                  v-track.select_form_base="{ base: 'contact-form' }"
-                  role="button"
-                  class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
-                  @click="$emit('close')"
-                >
-                  <div class="p-4">
-                    <UIcon
-                      name="i-heroicons-envelope"
-                      class="w-8 h-8 text-blue-500"
-                    />
+                <TrackClick name="select_form_base" :properties="{ base: 'contact-form' }">
+                  <div
+                    role="button"
+                    class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
+                    @click="$emit('close')"
+                  >
+                    <div class="p-4">
+                      <UIcon
+                        name="i-heroicons-envelope"
+                        class="w-8 h-8 text-blue-500"
+                      />
+                    </div>
+                    <p class="font-medium">
+                      Simple contact form
+                    </p>
                   </div>
-                  <p class="font-medium">
-                    Simple contact form
-                  </p>
-                </div>
-                <div
-                  v-if="useFeatureFlag('ai_features')"
-                  v-track.select_form_base="{ base: 'ai' }"
-                  class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
-                  role="button"
-                  @click="currentStep = 3"
-                >
-                  <div class="p-4">
-                    <UIcon
-                      name="i-heroicons-bolt"
-                      class="w-8 h-8 text-blue-500"
-                    />
+                </TrackClick>
+                <TrackClick v-if="useFeatureFlag('ai_features')" name="select_form_base" :properties="{ base: 'ai' }">
+                  <div
+                    class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50"
+                    role="button"
+                    @click="currentStep = 3"
+                  >
+                    <div class="p-4">
+                      <UIcon
+                        name="i-heroicons-bolt"
+                        class="w-8 h-8 text-blue-500"
+                      />
+                    </div>
+                    <p class="font-medium text-blue-700">
+                      AI Form Generator
+                    </p>
                   </div>
-                  <p class="font-medium text-blue-700">
-                    AI Form Generator
-                  </p>
-                </div>
+                </TrackClick>
                 <div
                   class="rounded-md border p-6 flex flex-col items-center cursor-pointer hover:bg-neutral-50 relative"
                 >
@@ -126,11 +127,12 @@
                   <p class="font-medium">
                     Browse templates <Icon name="heroicons:arrow-top-right-on-square-20-solid" class="w-3 h-3 text-neutral-500" />
                   </p>
-                  <NuxtLink
-                    v-track.select_form_base="{ base: 'template' }"
-                    :to="{ name: 'templates' }"
-                    class="absolute inset-0"
-                  />
+                  <TrackClick name="select_form_base" :properties="{ base: 'template' }">
+                    <NuxtLink
+                      :to="{ name: 'templates' }"
+                      class="absolute inset-0"
+                    />
+                  </TrackClick>
                 </div>
               </div>
             </div>
@@ -191,6 +193,7 @@ import SlidingTransition from '~/components/global/transitions/SlidingTransition
 import AIFormLoadingMessages from "~/components/open/forms/components/AIFormLoadingMessages.vue"
 import { formsApi } from "~/api/forms"
 import { useElementSize } from '@vueuse/core'
+import TrackClick from '~/components/global/TrackClick.vue'
 
 const props = defineProps({
   show: { type: Boolean, required: true },
