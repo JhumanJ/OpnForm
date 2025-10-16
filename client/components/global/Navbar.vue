@@ -129,7 +129,7 @@
                         :src="user.photo_url"
                         class="rounded-full w-6 h-6"
                       >
-                      <p class="ml-2 hidden sm:inline">
+                      <p class="ml-2 hidden sm:inline max-w-20 truncate">
                         {{ user.name }}
                       </p>
                     </button>

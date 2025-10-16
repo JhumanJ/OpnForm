@@ -18,6 +18,8 @@ class AiGenerateFieldsRequest extends FormRequest
         return [
             'fields_prompt' => 'required|string|max:' . $maxLength,
             'current_form_structure' => 'nullable|array',
+            'generation_params' => 'nullable|array',
+            'generation_params.presentation_style' => 'nullable|in:classic,focused',
         ];
     }
 }

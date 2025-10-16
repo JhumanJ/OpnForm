@@ -47,6 +47,25 @@ it('can fetch a form', function () {
         ]);
 });
 
+it('does not leak workspace details on public form fetch', function () {
+    $user = \App\Models\User::factory()->create();
+    $workspace = $this->createUserWorkspace($user);
+    $form = $this->createForm($user, $workspace);
+
+    $response = $this->getJson(route('forms.show', $form->slug))
+        ->assertSuccessful()
+        ->assertJsonPath('id', $form->id)
+        ->assertJsonPath('workspace_id', $workspace->id)
+        ->assertJsonPath('workspace.id', $workspace->id)
+        ->assertJsonPath('workspace.max_file_size', $workspace->max_file_size / 1000000);
+
+    $response->assertJsonMissingPath('workspace.users');
+    $response->assertJsonMissingPath('workspace.settings');
+    $response->assertJsonMissingPath('workspace.is_admin');
+    $response->assertJsonMissingPath('workspace.is_readonly');
+    $response->assertJsonMissingPath('workspace.users_count');
+});
+
 it('can update a form', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);

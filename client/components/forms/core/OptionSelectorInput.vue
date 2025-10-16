@@ -24,7 +24,7 @@
         :class="optionClasses(isSelected(option))"
       >
         <button
-          class="flex flex-col items-center justify-center transition-colors focus:outline-hidden w-full h-full"
+          class="group flex flex-col items-center justify-center transition-colors focus:outline-hidden w-full h-full"
           :class="[buttonClasses(disabled || option.disabled), option.class ? (typeof option.class === 'function' ? option.class(isSelected(option)) : option.class) : {}, isSelected(option) ? 'text-form-color' : 'text-inherit']"
           :aria-selected="isSelected(option) ? 'true' : 'false'"
           :tabindex="disabled || option.disabled ? -1 : 0"
@@ -38,11 +38,13 @@
             <Icon
               v-if="option.icon"
               :name="isSelected(option) && option.selectedIcon ? option.selectedIcon : option.icon"
+              mode="svg"
               :class="[
                 'w-4 h-4',
                 option.label ? 'mb-1' : '',
                 isSelected(option) ? 'text-form-color' : 'text-inherit',
-                option.iconClass ? (typeof option.iconClass === 'function' ? option.iconClass(isSelected(option)) : option.iconClass) : {}
+                option.iconClass ? (typeof option.iconClass === 'function' ? option.iconClass(isSelected(option)) : option.iconClass) : {},
+                isSelected(option) && option.iconSelectedClass ? (typeof option.iconSelectedClass === 'function' ? option.iconSelectedClass(true) : option.iconSelectedClass) : {}
               ]"
             />
           </slot>
@@ -97,7 +99,8 @@ const props = defineProps({
   multiple: { type: Boolean, default: false },
   optionKey: { type: String, default: 'name' },
   columns: { type: Number, default: 3 },
-  seamless: { type: Boolean, default: false }
+  seamless: { type: Boolean, default: false },
+  clearable: { type: Boolean, default: false }
 })
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
@@ -150,13 +153,22 @@ function selectOption(option) {
     let newValue = Array.isArray(compVal.value) ? [...compVal.value] : []
     const idx = newValue.indexOf(option[props.optionKey])
     if (idx > -1) {
+      // If removing would result in empty selection and not clearable, block
+      const nextLen = newValue.length - 1
+      if (!props.clearable && nextLen < 1) return
       newValue.splice(idx, 1)
     } else {
       newValue.push(option[props.optionKey])
     }
     compVal.value = newValue
   } else {
-    compVal.value = isSelected(option) ? null : option[props.optionKey]
+    // Only allow clearing (setting to null) if clearable is true
+    if (isSelected(option)) {
+      if (!props.clearable) return
+      compVal.value = null
+    } else {
+      compVal.value = option[props.optionKey]
+    }
   }
 }
 

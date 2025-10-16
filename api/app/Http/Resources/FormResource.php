@@ -48,17 +48,24 @@ class FormResource extends JsonResource
         }
 
         return array_merge(parent::toArray($request), $ownerData, [
+            'settings' => $this->settings ?? new \stdClass(),
             'is_pro' => $this->workspaceIsPro(),
             'is_trialing' => $this->workspaceIsTrialing(),
             'workspace_id' => $this->workspace_id,
-            'workspace' => new WorkspaceResource($this->workspace),
+            'workspace' => $this->userIsFormOwner()
+                ? new WorkspaceResource($this->workspace)
+                : (new WorkspaceResource($this->workspace))->restrictForGuest(),
             'is_closed' => $this->is_closed,
+            'size' => $this->size,
             'is_password_protected' => false,
             'has_password' => $this->has_password,
             'max_number_of_submissions_reached' => $this->max_number_of_submissions_reached,
             'form_pending_submission_key' => $this->form_pending_submission_key,
             'max_file_size' => $this->workspace->max_file_size / 1000000,
             'auto_save' => $this->getAutoSave(),
+            'presentation_style' => $this->presentation_style ?? 'classic',
+            'cover_settings' => $this->cover_settings ?? new \stdClass(),
+            'translations' => $this->translations ?? new \stdClass(),
         ]);
     }
 
@@ -84,6 +91,7 @@ class FormResource extends JsonResource
             'language' => $this->language,
             'theme' => $this->theme,
             'is_password_protected' => true,
+            'presentation_style' => $this->presentation_style,
             'has_password' => $this->has_password,
             'width' => 'centered',
             'layout_rtl' => $this->layout_rtl,
@@ -92,7 +100,7 @@ class FormResource extends JsonResource
             'logo_picture' => $this->logo_picture,
             'seo_meta' => $this->seo_meta,
             'cover_picture' => $this->cover_picture,
-
+            'cover_settings' => $this->cover_settings ?? new \stdClass(),
         ];
     }
 

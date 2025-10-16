@@ -112,19 +112,28 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'language' => ['required', Rule::in(Form::LANGUAGES)],
             'font_family' => 'string|nullable',
             'theme' => ['required', Rule::in(Form::THEMES)],
+            'presentation_style' => ['required', Rule::in(Form::PRESENTATION_STYLES)],
             'width' => ['required', Rule::in(Form::WIDTHS)],
             'size' => ['required', Rule::in(Form::SIZES)],
             'layout_rtl' => 'boolean',
             'border_radius' => ['required', Rule::in(Form::BORDER_RADIUS)],
-            'cover_picture' => 'url|nullable',
-            'logo_picture' => 'url|nullable',
             'dark_mode' => ['required', Rule::in(Form::DARK_MODE_VALUES)],
             'color' => 'required|string',
             'uppercase_labels' => 'required|boolean',
             'no_branding' => 'required|boolean',
             'transparent_background' => 'required|boolean',
+            'translations' => 'nullable|array',
             'closes_at' => 'date|nullable',
             'closed_text' => 'string|nullable',
+            'logo_picture' => 'url|nullable',
+
+            // Cover
+            'cover_picture' => 'url|nullable',
+            'cover_settings' => 'nullable|array',
+            'cover_settings.focal_point' => 'sometimes|nullable|array',
+            'cover_settings.focal_point.x' => 'sometimes|nullable|numeric|min:0|max:100',
+            'cover_settings.focal_point.y' => 'sometimes|nullable|numeric|min:0|max:100',
+            'cover_settings.brightness' => 'sometimes|nullable|integer|min:-100|max:100',
 
             // Custom Code
             'custom_code' => 'string|nullable',
@@ -164,6 +173,23 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             'properties.*.align' => ['sometimes', Rule::in(['left', 'center', 'right', 'justify'])],
             'properties.*.allowed_file_types' => 'sometimes|nullable',
             'properties.*.use_toggle_switch' => 'boolean|nullable',
+
+            // Media (Focused mode only)
+            'properties.*.image' => 'sometimes|nullable|array',
+            'properties.*.image.url' => 'sometimes|nullable|url',
+            'properties.*.image.alt' => 'sometimes|nullable|string|max:125',
+            'properties.*.image.layout' => ['sometimes', 'nullable', Rule::in([
+                'between',
+                'left-small',
+                'right-small',
+                'left-split',
+                'right-split',
+                'background'
+            ])],
+            'properties.*.image.focal_point' => 'sometimes|nullable|array',
+            'properties.*.image.focal_point.x' => 'sometimes|nullable|numeric|min:0|max:100',
+            'properties.*.image.focal_point.y' => 'sometimes|nullable|numeric|min:0|max:100',
+            'properties.*.image.brightness' => 'sometimes|nullable|integer|min:-100|max:100',
 
             // Logic
             'properties.*.logic' => ['array', 'nullable', new FormPropertyLogicRule()],
@@ -207,6 +233,10 @@ abstract class UserFormRequest extends \Illuminate\Foundation\Http\FormRequest
             // Custom SEO
             'seo_meta' => 'nullable|array',
             'custom_domain' => 'sometimes|nullable|regex:' . CustomDomainRequest::CUSTOM_DOMAINS_REGEX,
+
+            // Settings
+            'settings' => 'nullable|array',
+            'settings.navigation_arrows' => 'sometimes|boolean',
         ];
     }
 

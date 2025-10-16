@@ -25,6 +25,7 @@ export const inputProps = {
   helpPosition: {type: String, default: "below_input"},
   color: {type: String, default: "#3B82F6"},
   wrapperClass: { type: String, default: "" },
+  media: { type: Object, default: null },
   isDark: { type: Boolean, default: false },
   locale: { type: String, default: "en" },
   isAdminPreview: { type: Boolean, default: false }
