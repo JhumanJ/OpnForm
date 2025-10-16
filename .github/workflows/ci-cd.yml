@@ -61,7 +61,7 @@ jobs:
 
   client_lint:
     runs-on: ubuntu-latest
-    name: Run client linters
+    name: Run client linters + tests
     defaults:
       run:
         working-directory: ./client
@@ -87,6 +87,9 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint
+
+      - name: Run front-end tests
+        run: npm run test -- --run
 
   tests:
     runs-on: ubuntu-latest
