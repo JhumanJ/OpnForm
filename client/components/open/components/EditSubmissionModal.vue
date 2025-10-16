@@ -1,7 +1,7 @@
 <template>
   <UModal
     v-model:open="isModalOpen"
-    :ui="{ content: 'sm:max-w-2xl' }"
+    :ui="{ content: 'sm:max-w-2xl', body: 'p-0!' }"
   >
     <template #header>
       <div class="flex items-center justify-between w-full">

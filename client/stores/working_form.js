@@ -21,11 +21,21 @@ export const useWorkingFormStore = defineStore("working_form", {
     
     // Structure service instance - will be set from useFormManager
     structureService: null,
+    
+    // Animation state
+    sidebarBounce: false,
   }),
   getters: {
     // Get all blocks/properties in the form
     formBlocks() {
       return this.content?.properties || []
+    },
+    // Whether custom code is allowed for the current form/context
+    isCustomCodeAllowed() {
+      const hasCustomDomain = !!this.content?.custom_domain
+      const selfHosted = !!useFeatureFlag('self_hosted')
+      const allowSelfHosted = !!useFeatureFlag('custom_code.enable_self_hosted')
+      return hasCustomDomain || (selfHosted && allowSelfHosted)
     },
 
     // Get page count using structure service
@@ -37,10 +47,35 @@ export const useWorkingFormStore = defineStore("working_form", {
     // Current page index from structure service
     formPageIndex() {
       if (!this.structureService) return 0
-      return this.structureService.currentPage
+      const cp = this.structureService.currentPage
+      return (typeof cp === 'number') ? cp : (cp?.value || 0)
     }
   },
   actions: {
+    // Unified alert for disallowed custom code
+    showCustomCodeDisabledAlert() {
+      const selfHosted = !!useFeatureFlag('self_hosted')
+      const actions = []
+      let message = ''
+      if (selfHosted) {
+        // Self-hosted: safety notice + docs
+        message = 'Custom code is disabled for safety on self-hosted. See technical docs to learn more.'
+        actions.push({
+          label: 'View docs',
+          icon: 'i-heroicons-book-open',
+          onclick: () => { if (import.meta.client) window.open('https://docs.opnform.com/introduction', '_blank') }
+        })
+      } else {
+        // Cloud: require custom domain + Crisp help
+        message = 'Your form needs to be using a custom domain to add a code block.'
+        actions.push({
+          label: 'Help',
+          icon: 'i-heroicons-question-mark-circle',
+          onclick: () => { try { useCrisp().openHelpdeskArticle('how-do-i-add-custom-code-to-my-form-1amadj3') } catch { /* noop */ } }
+        })
+      }
+      useAlert().error(message, 10000, { title: 'Custom code disabled', actions })
+    },
     set(form) {
       this.content = form
       // Don't reset structure service here - it's externally managed now
@@ -68,9 +103,15 @@ export const useWorkingFormStore = defineStore("working_form", {
     setEditingField(field) {
       this.selectedFieldIndex = this.objectToIndex(field)
     },
-    openSettingsForField(field) {
+    openSettingsForField(field, triggerBounce = false) {
       const targetIndex = this.objectToIndex(field)
       const previousIndex = this.selectedFieldIndex
+      
+      // Check if sidebar is already open for the same field and bounce is requested
+      if (triggerBounce && this.showEditFieldSidebar && targetIndex === previousIndex) {
+        this.triggerSidebarBounce()
+        return
+      }
       
       this.selectedFieldIndex = targetIndex
       this.showEditFieldSidebar = true
@@ -97,6 +138,11 @@ export const useWorkingFormStore = defineStore("working_form", {
     },
     closeAddFieldSidebar() {
       this.selectedFieldIndex = null
+      this.showAddFieldSidebar = false
+    },
+    closeAllSidebars() {
+      this.selectedFieldIndex = null
+      this.showEditFieldSidebar = false
       this.showAddFieldSidebar = false
     },
     reset() {
@@ -181,6 +227,12 @@ export const useWorkingFormStore = defineStore("working_form", {
       const effectiveType = originalBlockDefinition?.actual_input || type
       const effectiveBlockDefinition = blocksTypes[effectiveType]
 
+      // Block adding custom code blocks unless allowed (custom domain or self-hosted with explicit enable)
+      if (effectiveType === 'nf-code' && !this.isCustomCodeAllowed) {
+        this.showCustomCodeDisabledAlert()
+        return
+      }
+
       if (originalBlockDefinition?.self_hosted !== undefined && !originalBlockDefinition.self_hosted && useFeatureFlag('self_hosted')) {
         useAlert().error(block?.title + ' is not allowed on self hosted. Please use our hosted version.')
         return
@@ -238,6 +290,19 @@ export const useWorkingFormStore = defineStore("working_form", {
     removeField(field) {
       this.internalRemoveField(field)
     },
+    duplicateField(fieldOrIndex) {
+      if (!this.content?.properties) return
+      const index = this.objectToIndex(fieldOrIndex)
+      if (index === -1) return
+      const fields = clonedeep(this.content.properties)
+      const source = fields[index]
+      const cloned = clonedeep(source)
+      cloned.id = generateUUID()
+      if (cloned.name) cloned.name = `Copy of ${cloned.name}`
+      fields.splice(index + 1, 0, cloned)
+      this.setProperties(fields)
+      this.openSettingsForField(index + 1)
+    },
     internalRemoveField(field) {
       const index = this.objectToIndex(field)
 
@@ -269,6 +334,15 @@ export const useWorkingFormStore = defineStore("working_form", {
       
       newFields.splice(validNewIndex, 0, field)
       this.setProperties(newFields)
+    },
+    
+    // Trigger sidebar bounce animation
+    triggerSidebarBounce() {
+      this.sidebarBounce = true
+      // Reset after animation duration
+      setTimeout(() => {
+        this.sidebarBounce = false
+      }, 600)
     }
   },
   history: {

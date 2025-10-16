@@ -1,5 +1,8 @@
 <template>
-  <div>
+  <div 
+    :class="{ 'sidebar-bounce': sidebarBounce }"
+    class="sidebar-container"
+  >
     <div class="p-2 border-b sticky top-0 z-20 bg-white">
       <UButton
         v-if="!field"
@@ -33,7 +36,8 @@
             
             <UDropdownMenu
               :items="dropdownItems"
-              :popper="{ placement: 'bottom-start' }"
+              :content="{ side: 'bottom', align: 'start' }"
+              arrow
             >
               <UButton
                 color="neutral"
@@ -95,17 +99,15 @@
 
 <script setup>
 import { storeToRefs } from 'pinia'
-import clonedeep from 'clone-deep'
 import FieldOptions from './components/FieldOptions.vue'
 import BlockOptions from './components/BlockOptions.vue'
 import BlockTypeIcon from '../components/BlockTypeIcon.vue'
 import blocksTypes from '~/data/blocks_types.json'
 import FormBlockLogicEditor from '../components/form-logic-components/FormBlockLogicEditor.vue'
 import CustomFieldValidation from '../components/CustomFieldValidation.vue'
-import { generateUUID } from '~/lib/utils'
 
 const workingFormStore = useWorkingFormStore()
-const { content: form } = storeToRefs(workingFormStore)
+const { content: form, sidebarBounce } = storeToRefs(workingFormStore)
 
 const selectedFieldIndex = computed(() => workingFormStore.selectedFieldIndex)
 
@@ -221,14 +223,7 @@ const dropdownItems = computed(() => {
       label: 'Duplicate',
       icon: 'i-heroicons-document-duplicate-20-solid',
       kbds: ['meta', 'd'],
-      onClick: () => {
-        const newField = clonedeep(field.value)
-        newField.id = generateUUID()
-        newField.name = 'Copy of ' + newField.name
-        const newFields = [...form.value.properties]
-        newFields.splice(selectedFieldIndex.value + 1, 0, newField)
-        form.value.properties = newFields
-      }
+      onClick: () => workingFormStore.duplicateField(field.value)
     }]
   ]
 
@@ -275,3 +270,37 @@ const tabItems = computed(() => {
 })
 
 </script>
+
+<style scoped>
+.sidebar-container {
+  transition: transform 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.sidebar-bounce {
+  animation: bounce-left 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes bounce-left {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-6px);
+  }
+  40% {
+    transform: translateX(0);
+  }
+  60% {
+    transform: translateX(-3px);
+  }
+  80% {
+    transform: translateX(0);
+  }
+  90% {
+    transform: translateX(-1px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+</style>

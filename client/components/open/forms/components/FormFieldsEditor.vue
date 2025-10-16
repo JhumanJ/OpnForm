@@ -13,15 +13,16 @@
     </div>
 
     <div class="p-4">
-      <Draggable
+      <VueDraggable
         v-model="form.properties"
-        item-key="id"
         class="mx-auto w-full overflow-hidden rounded-md border border-neutral-300 bg-white transition-colors dark:bg-notion-dark-light"
         ghost-class="bg-blue-100"
         :animation="200"
       >
-        <template #item="{ element, index }">
+        <template #default>
           <div
+            v-for="(element, index) in form.properties"
+            :key="element.id || index"
             class="mx-auto w-full border-neutral-300 transition-colors cursor-grab"
             :class="{
               'bg-neutral-100 ': element.hidden && !isBeingEdited(index),
@@ -52,7 +53,7 @@
                 </EditableTag>
               </div>
 
-              <UTooltip :text="element.hidden ? 'Show Block' : 'Hide Block'">
+              <UTooltip arrow :text="element.hidden ? 'Show Block' : 'Hide Block'">
                 <button
                   class="hidden !cursor-pointer rounded-sm p-1 transition-colors hover:bg-blue-100 items-center justify-center"
                   :class="{
@@ -78,6 +79,7 @@
               <UTooltip
                 v-if="!element.type.startsWith('nf-')"
                 :text="element.required ? 'Make it optional' : 'Make it required'"
+                arrow
               >
                 <button
                   class="hidden cursor-pointer rounded-sm p-0.5 transition-colors hover:bg-blue-100 items-center px-1 justify-center"
@@ -94,32 +96,34 @@
                   </div>
                 </button>
               </UTooltip>
-              <button
-                class="cursor-pointer rounded-sm p-1 transition-colors hover:bg-blue-100 text-neutral-300 hover:text-blue-500 flex items-center justify-center"
-                @click="editOptions(index)"
-              >
-                <Icon
-                  name="heroicons:cog-8-tooth-solid"
-                  class="h-5 w-5"
-                />
-              </button>
+              <UTooltip arrow text="Open settings">
+                <button
+                  class="cursor-pointer rounded-sm p-1 transition-colors hover:bg-blue-100 text-neutral-300 hover:text-blue-500 flex items-center justify-center field-settings-button"
+                  @click="editOptions(index)"
+                >
+                  <Icon
+                    name="heroicons:cog-8-tooth-solid"
+                    class="h-5 w-5"
+                  />
+                </button>
+              </UTooltip>
             </div>
           </div>
         </template>
-      </Draggable>
+      </VueDraggable>
     </div>
   </div>
 </template>
 
 <script>
-import draggable from 'vuedraggable'
+import { VueDraggable } from 'vue-draggable-plus'
 import EditableTag from '~/components/app/EditableTag.vue'
 import BlockTypeIcon from './BlockTypeIcon.vue'
 
 export default {
   name: 'FormFieldsEditor',
   components: {
-    Draggable: draggable,
+    VueDraggable,
     EditableTag,
     BlockTypeIcon
   },

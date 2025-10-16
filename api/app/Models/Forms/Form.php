@@ -38,11 +38,13 @@ class Form extends Model implements CachableAttributes
 
     public const THEMES = ['default', 'simple', 'notion', 'minimal'];
 
+    public const PRESENTATION_STYLES = ['classic', 'focused'];
+
     public const WIDTHS = ['centered', 'full'];
 
     public const VISIBILITY = ['public', 'draft', 'closed'];
 
-    public const LANGUAGES = ['en', 'fr', 'hi', 'es', 'ar', 'zh', 'ja', 'bn', 'pt', 'ru', 'ur', 'pa', 'de', 'jv', 'ko', 'vi', 'te', 'mr', 'ta', 'tr', 'sk', 'cs', 'eu', 'gl', 'ca', 'sv', 'pl'];
+    public const LANGUAGES = ['en', 'fr', 'hi', 'es', 'ar', 'zh', 'ja', 'bn', 'pt', 'ru', 'ur', 'pa', 'de', 'jv', 'ko', 'vi', 'te', 'mr', 'ta', 'tr', 'sk', 'cs', 'eu', 'gl', 'ca', 'sv', 'pl', 'nl', 'sr', 'uk'];
 
     protected $fillable = [
         'workspace_id',
@@ -61,18 +63,25 @@ class Form extends Model implements CachableAttributes
         'size',
         'border_radius',
         'theme',
+        'presentation_style',
         'width',
         'layout_rtl',
         'cover_picture',
+        'cover_settings',
         'logo_picture',
         'dark_mode',
         'color',
         'uppercase_labels',
         'no_branding',
         'transparent_background',
+        'translations',
+
+        // Settings
+        'settings',
 
         // Custom Code
         'custom_code',
+        'custom_css',
 
         // Submission
         'submit_button_text',
@@ -113,9 +122,13 @@ class Form extends Model implements CachableAttributes
             'tags' => 'array',
             'removed_properties' => 'array',
             'seo_meta' => 'object',
+            'cover_settings' => 'array',
+            'translations' => 'array',
             'enable_partial_submissions' => 'boolean',
             'enable_ip_tracking' => 'boolean',
             'auto_save' => 'boolean',
+            'presentation_style' => 'string',
+            'settings' => 'array',
         ];
     }
 

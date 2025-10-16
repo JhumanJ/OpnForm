@@ -119,6 +119,15 @@ class LoginController extends Controller
     }
 
     /**
+     * Customize throttling to be per-credential (email) instead of IP-based, to avoid X-Forwarded-For spoofing bypasses.
+     */
+    protected function throttleKey(Request $request)
+    {
+        $email = strtolower((string) $request->input($this->username()));
+        return 'login:' . sha1($email !== '' ? $email : 'unknown');
+    }
+
+    /**
      * Log the user out of the application.
      *
      * @return \Illuminate\Http\Response

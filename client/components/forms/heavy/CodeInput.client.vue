@@ -10,7 +10,7 @@
 
     <div :class="ui.container()">
       <!-- Fullscreen button -->
-      <UTooltip text="Open in fullscreen" :popper="{ placement: 'left' }">
+      <UTooltip text="Open in fullscreen" :content="{ side: 'left' }" arrow>
         <UButton
           v-if="allowFullscreen"
           @click="openFullscreen"
@@ -91,11 +91,16 @@
 <script setup>
 import { Codemirror } from "vue-codemirror"
 import { html } from "@codemirror/lang-html"
+import { css as cssLang } from "@codemirror/lang-css"
 import { inputProps, useFormInput } from "../useFormInput.js"
 import { codeInputTheme } from '~/lib/forms/themes/code-input.theme.js'
 
 const props = defineProps({
   ...inputProps,
+  languageMode: {
+    type: String,
+    default: 'html', // 'html' | 'css'
+  },
   allowFullscreen: {
     type: Boolean,
     default: false,
@@ -104,7 +109,9 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
-const extensions = [html()]
+const extensions = computed(() => {
+  return props.languageMode === 'css' ? [cssLang()] : [html()]
+})
 const isFullscreen = ref(false)
 
 const openFullscreen = () => {

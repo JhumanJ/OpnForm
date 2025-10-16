@@ -34,14 +34,15 @@
         >
           <div class="flex-grow">
             <img
-              :src="tmpFile ?? currentUrl"
+              :src="currentUrl"
               class="h-5 rounded-sm shadow-sm border"
             >
           </div>
+          <slot name="left-action" />
           <a
             href="#"
             class="text-neutral-500 hover:text-red-500 flex items-center"
-            @click.prevent="clearUrl"
+            @click.stop.prevent="clearUrl"
           >
             <Icon
               name="heroicons:trash"

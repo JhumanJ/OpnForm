@@ -41,6 +41,12 @@
       :form="form"
       label="Password"
       :required="true"
+      @focus="isPasswordFocused = true"
+      @blur="isPasswordFocused = false"
+    />
+    <PasswordStrengthIndicator 
+      v-show="isPasswordFocused" 
+      :password="form.password" 
     />
 
     <!-- Password Confirmation-->
@@ -193,6 +199,9 @@ const form = useForm({
 
 const disableEmail = ref(false)
 const captcha = ref(null)
+
+// Password field focus state
+const isPasswordFocused = ref(false)
 
 // Computed
 const reCaptchaSiteKey = computed(() => {

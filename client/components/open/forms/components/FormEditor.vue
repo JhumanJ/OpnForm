@@ -175,7 +175,7 @@ const {
   startResize
 } = useResizable({
   storageKey: 'formEditorSidebarWidth',
-  defaultWidth: 320,
+  defaultWidth: 315,
   direction: 'left',
   maxWidth: () => Math.min(600, window.innerWidth * 0.6)
 })
@@ -224,9 +224,9 @@ const displayFormModificationAlert = (responseData) => {
     responseData.form.cleanings &&
     Object.keys(responseData.form.cleanings).length > 0
   ) {
-    alert.warning(responseData.message)
+    alert.warning(responseData.message, 10000, { form: responseData.form })
   } else if (responseData.message) {
-    alert.success(responseData.message)
+    alert.success(responseData.message, 10000, { form: responseData.form })
   }
 }
 
@@ -385,10 +385,9 @@ const saveFormGuest = () => {
   emit("openRegister")
 }
 
-
-
 defineExpose({
-  saveFormCreate
+  saveFormCreate,
+  showValidationErrors
 })
 
 // Lifecycle hooks

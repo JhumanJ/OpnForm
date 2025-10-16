@@ -17,8 +17,6 @@ services:
       FRONT_URL: http://localhost:3000
       APP_KEY: base64:dD8AFEB45nKZ0VWmIPiW495rDYb+ywRJnCCSdycw0pI=
       JWT_SECRET: 38hjE96gYu4ceKSSHNnzgeynMr2m3WkNBN2u7zzpVeiITtxFEloxAjcr7TCKuiiy
-      # Self-hosted configuration
-      SELF_HOSTED: "true"
       # Database settings
       DB_HOST: db
       DB_DATABASE: ${DB_DATABASE:-forge}
@@ -52,6 +50,9 @@ services:
   ui:
     image: jhumanj/opnform-client:dev
     container_name: opnform-client
+    depends_on:
+      api:
+        condition: service_started
     command: sh -c "
       if [ ! -f node_modules/.install-complete ] || [ package.json -nt node_modules/.install-complete ]; then
       echo 'Installing dependencies...';

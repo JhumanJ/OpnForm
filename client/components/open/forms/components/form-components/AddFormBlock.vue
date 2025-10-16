@@ -22,8 +22,8 @@
       <p class="text-neutral-500 text-xs font-medium my-2">
         Input Blocks
       </p>
-      <draggable
-        :list="inputBlocks"
+      <VueDraggable
+        :model-value="inputBlocks"
         :group="{ name: 'form-elements', pull: 'clone', put: false }"
         class="flex flex-col -mx-2"
         :sort="false"
@@ -33,16 +33,16 @@
         @start="workingFormStore.draggingNewBlock=true"
         @end="workingFormStore.draggingNewBlock=false"
       >
-        <template #item="{element}">
+        <template #default>
           <div
+            v-for="element in inputBlocks"
+            :key="element.id || element.name"
             class="flex hover:bg-neutral-50 rounded-md items-center gap-2 p-2 group"
             role="button"
             @click.prevent="addBlock(element.name)"
           >
             <BlockTypeIcon :type="element.name" />
-            <p
-              class="w-full text-sm text-neutral-500"
-            >
+            <p class="w-full text-sm text-neutral-500">
               {{ element.title }}
             </p>
             <Icon
@@ -52,14 +52,14 @@
             />
           </div>
         </template>
-      </draggable>
+      </VueDraggable>
     </div>
     <div class="px-4 border-t mb-4">
       <p class="text-sm font-medium my-2">
         Layout Blocks
       </p>
-      <draggable
-        :list="layoutBlocks"
+      <VueDraggable
+        :model-value="layoutBlocks"
         :group="{ name: 'form-elements', pull: 'clone', put: false }"
         class="flex flex-col -mx-2"
         :sort="false"
@@ -69,16 +69,16 @@
         @start="workingFormStore.draggingNewBlock=true"
         @end="workingFormStore.draggingNewBlock=false"
       >
-        <template #item="{element}">
+        <template #default>
           <div
+            v-for="element in layoutBlocks"
+            :key="element.id || element.name"
             class="flex hover:bg-neutral-50 rounded-md items-center gap-2 p-2"
             role="button"
             @click.prevent="addBlock(element.name)"
           >
             <BlockTypeIcon :type="element.name" />
-            <p
-              class="w-full text-sm text-neutral-500"
-            >
+            <p class="w-full text-sm text-neutral-500">
               {{ element.title }}
             </p>
             <Icon
@@ -88,13 +88,13 @@
             />
           </div>
         </template>
-      </draggable>
+      </VueDraggable>
     </div>
   </div>
 </template>
 
 <script setup>
-import draggable from 'vuedraggable'
+import { VueDraggable } from 'vue-draggable-plus'
 import blocksTypes from '~/data/blocks_types.json'
 import BlockTypeIcon from '../BlockTypeIcon.vue'
 import AiFieldGenerator from './components/AiFieldGenerator.vue'
@@ -102,8 +102,18 @@ import AiFieldGenerator from './components/AiFieldGenerator.vue'
 const workingFormStore = useWorkingFormStore()
 const { isAuthenticated: authenticated } = useIsAuthenticated()
 
-const inputBlocks = computed(() => Object.values(blocksTypes).filter(block => !block.name.startsWith('nf-')))
-const layoutBlocks = computed(() => Object.values(blocksTypes).filter(block => block.name.startsWith('nf-')))
+const formStyle = computed(() => workingFormStore.content?.presentation_style || 'classic')
+
+const allowedBlocks = computed(() => {
+  const all = Object.values(blocksTypes)
+  return all.filter(block => {
+    const modes = block.available_in || ['classic', 'focused']
+    return modes.includes(formStyle.value)
+  })
+})
+
+const inputBlocks = computed(() => allowedBlocks.value.filter(block => !block.name.startsWith('nf-')))
+const layoutBlocks = computed(() => allowedBlocks.value.filter(block => block.name.startsWith('nf-')))
 
 const closeSidebar = () => {
   workingFormStore.closeAddFieldSidebar()

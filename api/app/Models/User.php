@@ -146,6 +146,10 @@ class User extends Authenticatable implements JWTSubject, CachableAttributes
 
     public function getIsSubscribedAttribute()
     {
+        if (!pricing_enabled()) {
+            return true;
+        }
+
         return $this->remember('is_subscribed', 5 * 60, function (): bool {
             return $this->subscribed()
                 || in_array($this->email, config('opnform.extra_pro_users_emails'))

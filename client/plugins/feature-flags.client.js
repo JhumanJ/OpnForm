@@ -1,3 +1,5 @@
+import { contentApi } from '~/api/content'
+
 export default defineNuxtPlugin((nuxtApp) => {
   // Access the same state that was set on server
   const featureFlagsState = useState('featureFlags', () => ({}))
@@ -6,7 +8,9 @@ export default defineNuxtPlugin((nuxtApp) => {
   nuxtApp.provide('refreshFeatureFlags', async () => {
     try {
       // Force fresh fetch by adding cache-busting timestamp
-      const flags = await $fetch(`/api/feature-flags?t=${Date.now()}`)
+      const flags = await contentApi.featureFlags.list({
+        query: { t: Date.now() }
+      })
       featureFlagsState.value = flags
       return flags
     } catch (error) {

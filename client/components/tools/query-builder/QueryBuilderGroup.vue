@@ -28,7 +28,7 @@
           
           <UDropdownMenu
             :items="getRuleMenuItems(index)"
-            :popper="{ placement: 'bottom-end' }"
+            :content="{align: 'start', side: 'bottom'}"
             size="sm"
           >
             <UButton
@@ -81,7 +81,7 @@
           
           <UDropdownMenu
             :items="getGroupMenuItems(index)"
-            :popper="{ placement: 'bottom-end' }"
+            :content="{align: 'start', side: 'bottom'}"
             size="sm"
           >
             <UButton

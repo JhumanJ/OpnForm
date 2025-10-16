@@ -20,6 +20,7 @@
       </ClientOnly>
 
       <ClientOnly>
+        <Clarity />
         <FeatureBase />
         <SubscriptionModal />
         <QuickRegister />
@@ -30,6 +31,7 @@
 
 <script setup>
 import FeatureBase from "~/components/vendor/FeatureBase.vue"
+import Clarity from "~/components/vendor/Clarity.vue"
 
 const config = useRuntimeConfig()
 
@@ -50,7 +52,7 @@ useHead({
   },
   meta: [
     {
-      name: 'apple-mobile-web-app-capable',
+      name: 'mobile-web-app-capable',
       content: 'yes'
     },
     {

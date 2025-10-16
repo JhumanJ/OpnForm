@@ -10,12 +10,22 @@
         </div>
       </div>
 
-      <TextInput
-        name="submit_button_text"
-        :form="form"
-        class="max-w-xs"
-        label="Submit button text"
-      />
+      <div class="flex flex-wrap items-end gap-4">
+        <TextInput
+          name="submit_button_text"
+          :form="form"
+          class="max-w-xs"
+          label="Submit button text"
+        />
+        <TextInput
+          v-if="isFocused"
+          v-model="focusedNextText"
+          name="focused_next_button_text"
+          class="max-w-xs"
+          label="Next button text"
+          :placeholder="$t('forms.buttons.next')"
+        />
+      </div>
       <ToggleSwitchInput
         name="auto_save"
         :form="form"
@@ -187,6 +197,8 @@
             :form="form"
             label="Success page text"
             :required="false"
+            :max-char-limit="10000"
+            :show-char-limit="true"
           />
           <div class="flex items-center flex-wrap gap-x-4">
             <toggle-switch-input
@@ -203,35 +215,34 @@
               label="Text of re-start button"
             />
           </div>
-
-          <div class="flex items-center flex-wrap gap-x-4">
-            <toggle-switch-input
-              name="editable_submissions"
-              class="w-full max-w-sm"
-              help="Allows users to edit submissions via unique URL"
-              :form="form"
-            >
-              <template #label>
-                <span class="text-sm">
-                  Editable submissions
-                </span>
-                <ProTag
-                  class="ml-1"
-                  upgrade-modal-title="Upgrade to use Editable Submissions"
-                  upgrade-modal-description="On the Free plan, you can try out all paid features only within the form editor. Upgrade your plan to allow users to update their submissions via a unique URL, and much more. Gain full access to all advanced features."
-                />
-              </template>
-            </toggle-switch-input>
-            <text-input
-              v-if="form.editable_submissions"
-              name="editable_submissions_button_text"
-              class="w-full max-w-64"
-              :form="form"
-              label="Edit submission button text"
-              :required="true"
-            />
-          </div>
         </template>
+        <div class="flex items-center flex-wrap gap-x-4">
+          <toggle-switch-input
+            name="editable_submissions"
+            class="w-full max-w-sm"
+            help="Allows users to edit submissions via unique URL"
+            :form="form"
+          >
+            <template #label>
+              <span class="text-sm">
+                Editable submissions
+              </span>
+              <ProTag
+                class="ml-1"
+                upgrade-modal-title="Upgrade to use Editable Submissions"
+                upgrade-modal-description="On the Free plan, you can try out all paid features only within the form editor. Upgrade your plan to allow users to update their submissions via a unique URL, and much more. Gain full access to all advanced features."
+              />
+            </template>
+          </toggle-switch-input>
+          <text-input
+            v-if="form.editable_submissions"
+            name="editable_submissions_button_text"
+            class="w-full max-w-64"
+            :form="form"
+            label="Edit submission button text"
+            :required="true"
+          />
+        </div>
       </div>
     </div>
   </VForm>
@@ -279,5 +290,28 @@ watch(submissionOptions, (val) => {
 
 const hasPaymentBlock = computed(() => {
   return form.value.properties.some(property => property.type === 'payment')
+})
+
+const isFocused = computed(() => form.value?.presentation_style === 'focused')
+
+onMounted(() => {
+  // Ensure translations is a plain, writable object (avoid writing into readonly proxies)
+  const t = form.value?.translations
+  if (!t || typeof t !== 'object' || Array.isArray(t)) {
+    form.value.translations = {}
+  } else {
+    form.value.translations = { ...t }
+  }
+})
+
+const focusedNextText = computed({
+  get() {
+    return form.value?.translations?.focused_next_button_text || ''
+  },
+  set(val) {
+    const current = form.value?.translations && typeof form.value.translations === 'object' ? form.value.translations : {}
+    // Replace the entire translations object to avoid setting into a readonly proxy
+    form.value.translations = { ...current, focused_next_button_text: val }
+  }
 })
 </script>
