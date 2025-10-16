@@ -60,6 +60,7 @@
 <script setup>
 import blocksTypes from '~/data/blocks_types.json'
 import BlockTypeIcon from '../BlockTypeIcon.vue'
+import seedFocusedFirstBlockImage from '~/lib/forms/seed-focused-image'
 
 const workingFormStore = useWorkingFormStore()
 const formRef = storeToRefs(workingFormStore).content
@@ -101,6 +102,8 @@ const modalDescription = computed(() => {
     : 'Switch to Focused style.'
 })
 
+// Use shared helper to seed first block image for focused mode
+
 function onSelectStyle(newVal) {
   if (!form.value) return
   const oldVal = currentStyle.value
@@ -134,6 +137,8 @@ function onSelectStyle(newVal) {
     form.value.presentation_style = 'focused'
     // Ensure large input size in focused mode
     form.value.size = 'lg'
+    // Seed first block with an abstract image to highlight focused mode
+    seedFocusedFirstBlockImage(form.value)
     workingFormStore.closeAllSidebars()
     return
   }
@@ -158,6 +163,8 @@ function confirmSwitch() {
   // Ensure large input size in focused mode
   if (target === 'focused') {
     form.value.size = 'lg'
+    // Seed first block with an abstract image to highlight focused mode
+    seedFocusedFirstBlockImage(form.value)
   } else if (target === 'classic') {
     // Reset input size when returning to classic
     form.value.size = 'md'
