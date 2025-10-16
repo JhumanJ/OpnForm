@@ -4,11 +4,14 @@
     :class="ui.label()"
   >
     <slot>
-      {{ label }}
+      <span class="align-baseline">{{ label }}</span>
       <span
         v-if="required"
         :class="ui.requiredDot()"
-      >*</span>
+        aria-hidden="true"
+      >
+        <Icon name="i-ix-mandatory" />
+      </span>
     </slot>
   </label>
 </template>
