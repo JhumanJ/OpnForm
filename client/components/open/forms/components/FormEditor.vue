@@ -224,9 +224,9 @@ const displayFormModificationAlert = (responseData) => {
     responseData.form.cleanings &&
     Object.keys(responseData.form.cleanings).length > 0
   ) {
-    alert.warning(responseData.message)
+    alert.warning(responseData.message, 10000, { form: responseData.form })
   } else if (responseData.message) {
-    alert.success(responseData.message)
+    alert.success(responseData.message, 10000, { form: responseData.form })
   }
 }
 

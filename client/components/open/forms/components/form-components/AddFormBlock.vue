@@ -102,8 +102,18 @@ import AiFieldGenerator from './components/AiFieldGenerator.vue'
 const workingFormStore = useWorkingFormStore()
 const { isAuthenticated: authenticated } = useIsAuthenticated()
 
-const inputBlocks = computed(() => Object.values(blocksTypes).filter(block => !block.name.startsWith('nf-')))
-const layoutBlocks = computed(() => Object.values(blocksTypes).filter(block => block.name.startsWith('nf-')))
+const formStyle = computed(() => workingFormStore.content?.presentation_style || 'classic')
+
+const allowedBlocks = computed(() => {
+  const all = Object.values(blocksTypes)
+  return all.filter(block => {
+    const modes = block.available_in || ['classic', 'focused']
+    return modes.includes(formStyle.value)
+  })
+})
+
+const inputBlocks = computed(() => allowedBlocks.value.filter(block => !block.name.startsWith('nf-')))
+const layoutBlocks = computed(() => allowedBlocks.value.filter(block => block.name.startsWith('nf-')))
 
 const closeSidebar = () => {
   workingFormStore.closeAddFieldSidebar()

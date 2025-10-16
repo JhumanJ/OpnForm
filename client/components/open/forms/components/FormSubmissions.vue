@@ -4,6 +4,7 @@
       <OpenTable
         v-if="form"
         ref="table"
+        class="border-b"
         :data="submissions"
         :loading="isLoading || isFetching"
         :form="form"

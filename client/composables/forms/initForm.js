@@ -4,12 +4,13 @@ export const DEFAULT_COLOR = '#3B82F6'
 
 export const initForm = (defaultValue = {}, withDefaultProperties = false) => {
   return useForm({
-    title: "My Form",
+    title: "Contact Form",
     visibility: "public",
     workspace_id: null,
     properties: withDefaultProperties ? getDefaultProperties() : [],
 
     // Customization
+    presentation_style: 'classic',
     language: 'en',
     font_family: null,
     theme: "default",
@@ -56,7 +57,7 @@ function getDefaultProperties() {
   return [
     {
       type: "nf-text",
-      content: "<h1>My Form</h1>",
+      content: "<h1>Contact Form</h1><p>Please fill out this form to contact us.</p>",
       name: "Title",
       id: generateUUID(),
     },
