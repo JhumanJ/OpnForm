@@ -253,12 +253,8 @@ function selectStyle(style) {
     if (style === 'focused') {
       workingFormStore.content.size = 'lg'
       // Ensure navigation arrows are enabled by default in focused mode
-      if (!workingFormStore.content.settings) {
-        workingFormStore.content.settings = {}
-      }
-      if (workingFormStore.content.settings.navigation_arrows === undefined) {
-        workingFormStore.content.settings.navigation_arrows = true
-      }
+      const currentSettings = workingFormStore.content.settings ?? {}
+      workingFormStore.content.settings = { ...currentSettings, navigation_arrows: true }
       // Seed first block image to highlight focused mode
       seedFocusedFirstBlockImage(workingFormStore.content)
     }
