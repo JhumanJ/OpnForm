@@ -353,13 +353,16 @@ const triggerSubmit = () => {
     })
 }
 
-const restart = () => {
+const restart = async () => {
   if (!formManager) return
-  formManager.restart().then(() => {
-    submittedData.value = null
-    submissionId.value = null
-    emit('restarted', true)
+  submittedData.value = null
+  submissionId.value = null
+  const queryString = route.fullPath.split('?')[1] || ''
+  await formManager.restart({
+    urlParams: new URLSearchParams(queryString),
+    submissionId: null
   })
+  emit('restarted', true)
 }
 
 const editSubmission = () => {
