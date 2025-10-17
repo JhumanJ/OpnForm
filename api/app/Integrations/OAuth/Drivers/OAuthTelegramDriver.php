@@ -55,11 +55,33 @@ class OAuthTelegramDriver implements WidgetOAuthDriver
 
     public function verifyWidgetData(array $data): bool
     {
-        $checkHash = $data['hash'];
-        unset($data['hash']);
+        // As per Telegram docs, the hash must be computed from exactly the fields provided by Telegram.
+        // Ignore any extra fields we might add client-side (e.g. intent, utm, invite_token, etc.).
+        $checkHash = $data['hash'] ?? null;
+        if (!$checkHash) {
+            return false;
+        }
+
+        // Whitelist allowed keys from Telegram Login Widget
+        $allowedKeys = [
+            'id',
+            'first_name',
+            'last_name',
+            'username',
+            'photo_url',
+            'auth_date',
+        ];
+
+        // Build data-check-string from allowed fields only
+        $filtered = [];
+        foreach ($allowedKeys as $key) {
+            if (array_key_exists($key, $data)) {
+                $filtered[$key] = $data[$key];
+            }
+        }
 
         $dataCheckArr = [];
-        foreach ($data as $key => $value) {
+        foreach ($filtered as $key => $value) {
             $dataCheckArr[] = $key . '=' . $value;
         }
 

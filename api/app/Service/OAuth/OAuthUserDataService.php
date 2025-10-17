@@ -54,15 +54,18 @@ class OAuthUserDataService
     private function normalizeUserData(array $userData): array
     {
         // Ensure required fields exist
-        $required = ['email', 'name', 'provider_user_id'];
+        $required = ['name', 'provider_user_id'];
         foreach ($required as $field) {
             if (empty($userData[$field])) {
                 abort(400, "Missing required field: {$field}");
             }
         }
 
-        // Normalize email to lowercase
-        $userData['email'] = strtolower($userData['email']);
+        // Email is optional (e.g., Telegram widget doesn't provide it)
+        if (isset($userData['email']) && !empty($userData['email'])) {
+            // Normalize email to lowercase
+            $userData['email'] = strtolower($userData['email']);
+        }
 
         // Set defaults for optional fields
         $userData['avatar'] = $userData['avatar'] ?? null;
