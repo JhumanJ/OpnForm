@@ -108,7 +108,7 @@ class OAuthFlowOrchestrator
         // Clear the context after use
         $this->contextService->clearContext($stateToken);
 
-        return $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail);
+        return $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail, $context);
     }
 
     /**
@@ -147,7 +147,8 @@ class OAuthFlowOrchestrator
         OAuthProviderService $providerService,
         array $userData,
         ?string $inviteToken = null,
-        ?string $invitedEmail = null
+        ?string $invitedEmail = null,
+        ?array $context = null
     ): array {
         return match ($intent) {
             self::INTENT_AUTH => $this->handleAuthenticationFlow(
@@ -158,7 +159,8 @@ class OAuthFlowOrchestrator
             ),
             self::INTENT_INTEGRATION => $this->handleIntegrationFlow(
                 $providerService,
-                $userData
+                $userData,
+                $context
             ),
             default => abort(400, 'Invalid intent')
         };
@@ -190,7 +192,7 @@ class OAuthFlowOrchestrator
     /**
      * Handle integration flow (connect OAuth provider to existing user)
      */
-    private function handleIntegrationFlow(OAuthProviderService $providerService, array $userData): array
+    private function handleIntegrationFlow(OAuthProviderService $providerService, array $userData, ?array $context = null): array
     {
         if (!Auth::check()) {
             abort(401, 'Authentication required for integration connections');
@@ -206,8 +208,8 @@ class OAuthFlowOrchestrator
             $userData
         );
 
-        // Get cached context for additional response data
-        $context = $this->contextService->getContext() ?? [];
+        // Use the passed context to get response data
+        $context = $context ?? [];
 
         return [
             'provider' => OAuthProviderResource::make($oauthProvider),

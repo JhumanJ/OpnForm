@@ -59,6 +59,9 @@ const dataForm = computed(() => props.formManager?.form || {})
 const darkMode = computed(() => props.formManager?.darkMode?.value || false)
 const strategy = computed(() => props.formManager?.strategy?.value || {})
 
+// Use centralized fieldState from manager
+const fieldState = computed(() => props.formManager?.fieldState)
+
 const { getFormComponent } = useComponentRegistry()
 
 const componentInfo = computed(() => {
@@ -133,11 +136,13 @@ const shouldInjectBetweenMedia = computed(() => (
 const boundProps = computed(() => {
   const field = props.block
   if (!field) return {}
+  const unified = fieldState.value?.getState(field) || { required: !!field?.required, effectiveDisabled: !!field?.disabled, hiddenIndicator: !!field?.hidden }
+
   const inputProperties = {
     key: field.id,
     name: field.id,
     form: dataForm.value,
-    label: (field.hide_field_name) ? null : field.name + ((field.hidden) ? ' (Hidden Field)' : ''),
+    label: (field.hide_field_name) ? null : field.name + (unified.hiddenIndicator ? ' (Hidden Field)' : ''),
     color: form.value.color,
     placeholder: field.placeholder,
     help: field.help,
@@ -149,9 +154,8 @@ const boundProps = computed(() => {
     locale: (form.value?.language) ? form.value.language : 'en',
     media: shouldInjectBetweenMedia.value ? field.image : null,
     presentation: form.value?.presentation_style || 'classic',
-    required: field.required || false,
-    // Respect global disable flag from form mode (e.g., READ_ONLY)
-    disabled: (strategy.value?.display?.disableFields === true) || (field.disabled || false)
+    required: !!unified.required,
+    disabled: !!unified.effectiveDisabled
   }
 
   if (field.type === 'matrix') {

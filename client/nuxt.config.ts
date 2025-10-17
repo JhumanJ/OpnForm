@@ -7,7 +7,8 @@ export default defineNuxtConfig({
   devtools: {enabled: true},
   css: ['~/css/app.css'],
 
-  modules: [
+  // Disable certain plugins during testing
+  modules: process.env.VITEST ? [] : [
       '@pinia/nuxt', 
       '@vueuse/nuxt', 
       '@vueuse/motion/nuxt', 
@@ -18,6 +19,13 @@ export default defineNuxtConfig({
       '@nuxt/icon', 
       '@sentry/nuxt/module',
       '@zadigetvoltaire/nuxt-gtm',
+  ],
+
+  // Skip plugin initialization during tests
+  plugins: process.env.VITEST ? [
+      // Only include plugins safe for testing
+  ] : [
+      // Full plugin list for production/dev
   ],
 
   build: {
