@@ -88,6 +88,7 @@ export function createFormModeStrategy(mode) {
       strategy.display.showHiddenFields = true
       strategy.display.enableDisabledFields = true
       strategy.display.showBranding = false
+      strategy.display.forceClassicPresentation = true
       break
 
     case FormMode.EDIT:
