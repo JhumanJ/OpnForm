@@ -2,6 +2,7 @@
 
 namespace App\Integrations\OAuth\Drivers;
 
+use App\Exceptions\OAuth\InvalidWidgetDataException;
 use App\Integrations\OAuth\Drivers\Contracts\WidgetOAuthDriver;
 use Laravel\Socialite\Contracts\User;
 
@@ -59,7 +60,7 @@ class OAuthTelegramDriver implements WidgetOAuthDriver
         // Ignore any extra fields we might add client-side (e.g. intent, utm, invite_token, etc.).
         $checkHash = $data['hash'] ?? null;
         if (!$checkHash) {
-            return false;
+            throw new InvalidWidgetDataException('Missing Telegram hash');
         }
 
         // Whitelist allowed keys from Telegram Login Widget
@@ -87,10 +88,17 @@ class OAuthTelegramDriver implements WidgetOAuthDriver
 
         sort($dataCheckArr);
         $dataCheckString = implode("\n", $dataCheckArr);
-        $secretKey = hash('sha256', config('services.telegram.bot_token'), true);
+        $botToken = config('services.telegram.bot_token');
+        if (!$botToken) {
+            throw new InvalidWidgetDataException('Telegram bot token not configured');
+        }
+        $secretKey = hash('sha256', $botToken, true);
         $hash = hash_hmac('sha256', $dataCheckString, $secretKey);
+        if (!hash_equals($hash, $checkHash)) {
+            throw new InvalidWidgetDataException('Invalid Telegram signature');
+        }
 
-        return hash_equals($hash, $checkHash);
+        return true;
     }
 
     public function getUserFromWidgetData(array $data): array

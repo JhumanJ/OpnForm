@@ -2,6 +2,7 @@
 
 namespace App\Service\OAuth;
 
+use App\Exceptions\OAuth\InvalidWidgetDataException;
 use App\Integrations\OAuth\OAuthProviderService;
 use App\Integrations\OAuth\Drivers\Contracts\WidgetOAuthDriver;
 use Illuminate\Http\Request;
@@ -39,8 +40,10 @@ class OAuthUserDataService
             abort(400, 'This provider does not support widget authentication');
         }
 
-        if (!$driver->verifyWidgetData($request->all())) {
-            abort(400, 'Invalid widget data');
+        try {
+            $driver->verifyWidgetData($request->all());
+        } catch (InvalidWidgetDataException $e) {
+            abort(400, $e->getMessage());
         }
 
         return $this->normalizeUserData(
