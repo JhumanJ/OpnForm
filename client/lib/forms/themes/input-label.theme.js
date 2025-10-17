@@ -8,7 +8,7 @@ export const inputLabelTheme = {
       'input-label inline align-baseline',
       'text-neutral-700 dark:text-neutral-300'
     ],
-    requiredDot: 'text-red-500 rounded-full bg-red-100 required-dot inline-flex items-center align-middle ml-1 *:size-4 *:-m-0.5'
+    requiredDot: 'text-red-500 dark:text-red-400 rounded-full bg-red-100 dark:bg-red-500/20 required-dot inline-flex items-center align-middle ml-1 *:size-4 *:-m-0.5'
   },
   variants: {
     presentation: {
@@ -40,7 +40,7 @@ export const inputLabelTheme = {
       },
       md: {
         label: 'text-sm',
-        requiredDot: 'mt-[-1px]!'
+        requiredDot: 'mt-[-2px]!'
       },
       lg: {
         label: 'text-base',
