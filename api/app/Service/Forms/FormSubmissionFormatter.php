@@ -112,13 +112,13 @@ class FormSubmissionFormatter
             $fields = $fields->merge($removeFields);
         }
         $fields = $fields->filter(function ($field) {
-            return !in_array($field['type'], ['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image']);
+            return !in_array($field['type'], ['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image', 'nf-video']);
         })->values();
 
         $returnArray = [];
         foreach ($fields as $field) {
 
-            if (in_array($field['id'], ['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image'])) {
+            if (in_array($field['id'], ['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image', 'nf-video'])) {
                 continue;
             }
 
