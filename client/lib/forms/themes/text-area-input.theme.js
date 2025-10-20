@@ -11,7 +11,7 @@ export const textAreaInputTheme = {
       'placeholder-neutral-400 dark:placeholder-neutral-500',
       'focus:outline-hidden',
       'disabled:cursor-not-allowed disabled:opacity-75',
-      'resize-y block'
+      'min-h-[100px] resize-y block'
     ],
     help: 'text-neutral-500'
   },
