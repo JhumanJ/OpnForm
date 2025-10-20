@@ -7,6 +7,19 @@ use App\Integrations\OAuth\OAuthProviderService;
 use App\Integrations\OAuth\Drivers\Contracts\WidgetOAuthDriver;
 use Illuminate\Http\Request;
 
+/**
+ * OAuthUserDataService
+ *
+ * Extracts and normalizes user data from OAuth providers.
+ * Handles:
+ * - Redirect-based OAuth flows (authorization code grant)
+ * - Widget-based OAuth flows (Google One Tap)
+ * - User data validation and normalization
+ * - Missing field detection
+ *
+ * Normalizes data from different OAuth providers into a consistent format
+ * for downstream processing by OAuthUserService.
+ */
 class OAuthUserDataService
 {
     /**

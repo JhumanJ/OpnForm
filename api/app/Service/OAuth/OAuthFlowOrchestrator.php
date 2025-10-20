@@ -9,6 +9,23 @@ use App\Service\OAuth\OAuthProviderService as OAuthProviderServiceClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * OAuthFlowOrchestrator
+ *
+ * Orchestrates the OAuth authentication and integration flows.
+ * Handles:
+ * - OAuth redirect initiation with state token generation
+ * - OAuth callback processing (authorization code exchange)
+ * - Widget-based OAuth flows (Google One Tap)
+ * - Intent routing (auth vs integration)
+ * - Error handling and validation
+ *
+ * Delegates specific responsibilities to specialized services:
+ * - OAuthContextService: Context/metadata storage
+ * - OAuthUserDataService: User data extraction
+ * - OAuthUserService: User creation/lookup
+ * - OAuthInviteService: Invite validation
+ */
 class OAuthFlowOrchestrator
 {
     use ManagesJWT;
@@ -28,6 +45,7 @@ class OAuthFlowOrchestrator
 
     /**
      * Process OAuth redirect request
+     * Stores context with UTM data and generates state token for security
      */
     public function processRedirect(string $provider, array $params): array
     {
@@ -81,6 +99,7 @@ class OAuthFlowOrchestrator
 
     /**
      * Process OAuth callback
+     * Retrieves context from state token and creates/authenticates user
      */
     public function processCallback(string $provider, array $params): array
     {
@@ -113,6 +132,8 @@ class OAuthFlowOrchestrator
 
     /**
      * Process widget-based OAuth callback
+     * Handles widget flows (Google One Tap) that don't use state tokens
+     * Extracts and stores context for user creation
      */
     public function processWidgetCallback(string $service, Request $request): array
     {
@@ -135,6 +156,15 @@ class OAuthFlowOrchestrator
 
         // Get user data from widget
         $userData = $this->userDataService->extractFromWidget($providerService, $request);
+
+        // Store widget context for later retrieval during user creation
+        $context = [
+            'intent' => $intent,
+            'utm_data' => $request->input('utm_data'),
+            'invite_token' => $inviteToken,
+            'invited_email' => $invitedEmail,
+        ];
+        $this->contextService->storeWidgetContext($context);
 
         return $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail);
     }
@@ -178,11 +208,14 @@ class OAuthFlowOrchestrator
         // Generic email validation (no provider-specific logic)
         $this->inviteService->validateEmailRestrictions($userData['email'], $invitedEmail);
 
-        // Find or create user with invite context
+        // Find or create user
         $user = $this->oauthUserService->findOrCreateUser($userData, $providerService, $inviteToken);
 
         // Create/update OAuth provider record
         $this->oauthProviderService->createOrUpdateProvider($user, $providerService, $userData);
+
+        // Clear widget context if it exists
+        $this->contextService->clearWidgetContext();
 
         // Return JWT token for authentication
         $response = $this->sendLoginResponse($user);

@@ -6,6 +6,20 @@ use App\Models\UserInvite;
 use App\Integrations\OAuth\Drivers\Contracts\OAuthDriver;
 use App\Integrations\OAuth\Drivers\Contracts\SupportsEmailRestrictions;
 
+/**
+ * OAuthInviteService
+ *
+ * Manages OAuth authentication with workspace invitations.
+ * Responsibilities:
+ * - Validating invitation tokens
+ * - Checking token expiration
+ * - Extracting invited email addresses
+ * - Configuring OAuth drivers with email restrictions
+ * - Enforcing email address restrictions during authentication
+ *
+ * Ensures that users registering via OAuth invitations authenticate
+ * with the email address that was invited, preventing unauthorized access.
+ */
 class OAuthInviteService
 {
     /**

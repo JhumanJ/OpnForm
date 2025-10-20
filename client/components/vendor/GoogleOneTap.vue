@@ -139,7 +139,8 @@ const handleCredentialResponse = (response) => {
   const route = useRoute()
   const inviteToken = route.query.invite_token
 
-  // Prepare request data
+  // Prepare request data with UTM data
+  const { $utm } = useNuxtApp()
   const requestData = { 
     credential: response.credential,
     intent: 'auth'
@@ -148,6 +149,11 @@ const handleCredentialResponse = (response) => {
   // Add invite token if present
   if (inviteToken) {
     requestData.invite_token = inviteToken
+  }
+
+  // Add UTM data if available
+  if ($utm?.value) {
+    requestData.utm_data = $utm.value
   }
 
   // Send JWT to backend widget callback
