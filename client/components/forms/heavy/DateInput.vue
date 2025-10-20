@@ -12,7 +12,7 @@
     >
       <button
         ref="triggerButton"
-        class="cursor-pointer overflow-hidden"
+        class="overflow-hidden"
         :class="ui.input()"
         :disabled="props.disabled"
         :aria-expanded="pickerOpen"
@@ -135,10 +135,7 @@ const {
   compVal,
   inputWrapperProps
 } = useFormInput(props, getCurrentInstance(), {
-  variants: dateInputTheme,
-  additionalVariants: {
-    disabled: props.disabled
-  }
+  variants: dateInputTheme
 })
 const fromDate = ref(null)
 const toDate = ref(null)
