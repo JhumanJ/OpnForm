@@ -24,7 +24,7 @@ export function useTableState(form, withActions = false) {
 
       const baseColumns = form.value.properties
         .filter((field) => {
-          return !['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image'].includes(field.type)
+          return !['nf-text', 'nf-code', 'nf-page-break', 'nf-divider', 'nf-image', 'nf-video'].includes(field.type)
         })
         .map(col => {
           const { columns: matrixColumns, ...rest } = col

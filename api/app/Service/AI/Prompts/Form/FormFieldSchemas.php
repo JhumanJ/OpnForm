@@ -362,6 +362,15 @@ class FormFieldSchemas
                 'core' => ['$ref' => '#/definitions/baseProperty'],
             ]
         ],
+        'nfVideoProperty' => [
+            'type' => 'object',
+            'required' => ['core', 'type'],
+            'additionalProperties' => false,
+            'properties' => [
+                'type' => ['type' => 'string', 'enum' => ['nf-video']],
+                'core' => ['$ref' => '#/definitions/baseProperty'],
+            ]
+        ],
         'nfCodeProperty' => [
             'type' => 'object',
             'required' => ['core', 'type'],
