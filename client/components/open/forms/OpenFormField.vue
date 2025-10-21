@@ -130,8 +130,6 @@ const isAdminPreview = computed(() => strategy.value?.admin?.showAdminControls |
 // Computed properties
 // Field rendering is delegated to BlockRenderer
 
-const isPublicFormPage = computed(() => useRoute().name === 'forms-slug')
-
 const isFieldHidden = computed(() => !showHidden.value && shouldBeHidden.value)
 
 const shouldBeHidden = computed(() => 
@@ -171,17 +169,6 @@ function openAddFieldSidebar() {
 function removeField() {
   if (!isAdminPreview.value) return
   workingFormStore.removeField(props.field)
-}
-
-function getFieldAlignClasses(field) {
-  if (!field.align || field.align === 'left') return 'text-left'
-  else if (field.align === 'right') {
-    return 'text-right'
-  } else if (field.align === 'center') {
-    return 'text-center'
-  } else if (field.align === 'justify') {
-    return 'text-justify'
-  }
 }
 
 /**
