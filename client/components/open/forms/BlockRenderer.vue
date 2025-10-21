@@ -41,6 +41,31 @@
       :key="'divider-' + block.id"
       class="border-b my-4 w-full mx-2"
     />
+    <div
+      v-else-if="block.type === 'nf-image'"
+      :id="block.id"
+      :key="block.id"
+      class="my-4 w-full px-2"
+      :class="[getFieldAlignClasses(block)]"
+      @dblclick="editFieldOptions"
+    >
+      <div
+        v-if="!block.image_block"
+        class="p-4 border border-dashed text-center"
+      >
+        <a
+          href="#"
+          class="text-blue-800 dark:text-blue-200"
+          @click.prevent="editFieldOptions"
+        >Open block settings to upload image.</a>
+      </div>
+      <img
+        v-else
+        :alt="block.name"
+        :src="block.image_block"
+        class="max-w-full inline-block rounded-lg"
+      >
+    </div>
   </div>
 </template>
 
@@ -53,6 +78,8 @@ const props = defineProps({
   block: { type: Object, required: false, default: null },
   formManager: { type: Object, required: true }
 })
+
+const workingFormStore = useWorkingFormStore()
 
 const form = computed(() => props.formManager?.config?.value || {})
 const dataForm = computed(() => props.formManager?.form || {})
@@ -217,6 +244,10 @@ const boundProps = computed(() => {
 
   return inputProperties
 })
+
+const editFieldOptions = () => {
+  workingFormStore.openSettingsForField(props.block, true)
+}
 </script>
 
 
