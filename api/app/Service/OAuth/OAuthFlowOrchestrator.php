@@ -124,10 +124,10 @@ class OAuthFlowOrchestrator
         $invitedEmail = $context['invited_email'] ?? null;
         $inviteToken = $params['invite_token'] ?? $context['invite_token'] ?? null;
 
-        // Clear the context after use
+        $result = $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail);
         $this->contextService->clearContext($stateToken);
 
-        return $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail, $context);
+        return $result;
     }
 
     /**
@@ -166,7 +166,10 @@ class OAuthFlowOrchestrator
         ];
         $this->contextService->storeWidgetContext($context);
 
-        return $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail);
+        $result = $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail);
+        $this->contextService->clearWidgetContext();
+
+        return $result;
     }
 
     /**
@@ -177,8 +180,7 @@ class OAuthFlowOrchestrator
         OAuthProviderService $providerService,
         array $userData,
         ?string $inviteToken = null,
-        ?string $invitedEmail = null,
-        ?array $context = null
+        ?string $invitedEmail = null
     ): array {
         return match ($intent) {
             self::INTENT_AUTH => $this->handleAuthenticationFlow(
@@ -189,8 +191,7 @@ class OAuthFlowOrchestrator
             ),
             self::INTENT_INTEGRATION => $this->handleIntegrationFlow(
                 $providerService,
-                $userData,
-                $context
+                $userData
             ),
             default => abort(400, 'Invalid intent')
         };
@@ -198,6 +199,7 @@ class OAuthFlowOrchestrator
 
     /**
      * Handle authentication flow (create user + authenticate)
+     * OAuthUserService will retrieve UTM data directly from context service
      */
     private function handleAuthenticationFlow(
         OAuthProviderService $providerService,
@@ -214,9 +216,6 @@ class OAuthFlowOrchestrator
         // Create/update OAuth provider record
         $this->oauthProviderService->createOrUpdateProvider($user, $providerService, $userData);
 
-        // Clear widget context if it exists
-        $this->contextService->clearWidgetContext();
-
         // Return JWT token for authentication
         $response = $this->sendLoginResponse($user);
         return $response->getData(true);
@@ -225,7 +224,7 @@ class OAuthFlowOrchestrator
     /**
      * Handle integration flow (connect OAuth provider to existing user)
      */
-    private function handleIntegrationFlow(OAuthProviderService $providerService, array $userData, ?array $context = null): array
+    private function handleIntegrationFlow(OAuthProviderService $providerService, array $userData): array
     {
         if (!Auth::check()) {
             abort(401, 'Authentication required for integration connections');
@@ -241,8 +240,8 @@ class OAuthFlowOrchestrator
             $userData
         );
 
-        // Use the passed context to get response data
-        $context = $context ?? [];
+        // Retrieve context data (autoClose and intention from stored context)
+        $context = $this->contextService->getContext() ?? [];
 
         return [
             'provider' => OAuthProviderResource::make($oauthProvider),

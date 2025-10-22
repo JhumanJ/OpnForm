@@ -70,7 +70,9 @@ class OAuthUserService
             abort(422, 'User registration is not allowed.');
         }
 
-        // Get UTM data from context service (works for both redirect and widget flows)
+        // Retrieve UTM data from context service (works for both redirect and widget flows)
+        // For redirect flows: gets from state token
+        // For widget flows: gets from session context
         $utmData = $this->contextService->getUtmData() ?? $this->contextService->getWidgetContext()['utm_data'] ?? null;
 
         $user = User::create([
