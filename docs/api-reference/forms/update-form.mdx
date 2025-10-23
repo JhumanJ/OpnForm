@@ -22,32 +22,68 @@ Authorization: Bearer <token>
 ### Path Parameters
 
 | Parameter | Type   | Description                    |
-|-----------|--------|--------------------------------|
+| --------- | ------ | ------------------------------ |
 | id        | number | Numeric ID of the form to edit |
 
 ### Body Parameters (partial)
 
-All fields from the [Create Form](./create-form) endpoint may be supplied. Only the fields you include will be updated; omitting a field leaves its current value unchanged.
+All fields from the [Create Form](./create-form) endpoint may be supplied. However, **certain fields are required** for form updates to succeed:
+
+| Field                  | Type    | Required | Description                                                          |
+| ---------------------- | ------- | -------- | -------------------------------------------------------------------- |
+| title                  | string  | Yes      | Form title (max 60 characters)                                       |
+| visibility             | string  | Yes      | Form visibility state (`"public"`, `"closed"`, `"draft"`)            |
+| language               | string  | Yes      | Two-letter ISO language code (e.g. `en`)                             |
+| theme                  | string  | Yes      | Form theme                                                           |
+| presentation_style     | string  | Yes      | How the form is presented                                            |
+| width                  | string  | Yes      | Form container width                                                 |
+| size                   | string  | Yes      | Form text size                                                       |
+| border_radius          | string  | Yes      | Form border radius                                                   |
+| dark_mode              | string  | Yes      | Dark mode setting                                                    |
+| color                  | string  | Yes      | Primary color (hex format)                                           |
+| uppercase_labels       | boolean | Yes      | Whether labels should be uppercase                                   |
+| no_branding            | boolean | Yes      | Hide OpenForm branding                                               |
+| transparent_background | boolean | Yes      | Use transparent background                                           |
+| properties             | array   | Yes      | Array of form fields/blocks (can be empty `[]` but must be included) |
+| …other fields          | mixed   | No       | All other fields from Create Form (description, logo_picture, etc.)  |
+
+<Warning>
+    Omitting any of the required fields or the `properties` array will result in
+    a validation error. You must always include these fields in your update
+    request, even if you're only changing one optional field.
+</Warning>
 
 Important:
 
-* Passing a new `slug` will regenerate the form URL (self-hosted only).
-* The `workspace_id` can **not** be changed via this endpoint—use `/open/forms/{id}/workspace/{workspace_id}` instead.
+-   Passing a new `slug` will regenerate the form URL (self-hosted only).
+-   The `workspace_id` can **not** be changed via this endpoint—use `/open/forms/{id}/workspace/{workspace_id}` instead.
 
-Example:
+Example updating only title and visibility (with required fields):
 
 ```json
 {
-  "title": "Customer Feedback (v2)",
-  "visibility": "draft",
-  "properties": [
-    {
-      "id": "field-1",
-      "type": "short_text",
-      "name": "First name",
-      "required": true
-    }
-  ]
+    "title": "Customer Feedback (v2)",
+    "visibility": "closed",
+    "language": "en",
+    "theme": "light",
+    "presentation_style": "default",
+    "width": "normal",
+    "size": "medium",
+    "border_radius": "medium",
+    "dark_mode": "off",
+    "color": "#3b82f6",
+    "uppercase_labels": false,
+    "no_branding": false,
+    "transparent_background": false,
+    "properties": [
+        {
+            "id": "field-1",
+            "type": "short_text",
+            "name": "First name",
+            "required": true
+        }
+    ],
+    "closed_text": "Form is currently closed"
 }
 ```
 

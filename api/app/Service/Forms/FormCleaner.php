@@ -226,6 +226,11 @@ class FormCleaner
 
     private function cleanProperties(array &$data, $simulation = false): void
     {
+        // Safely skip if properties are not present
+        if (!isset($data['properties']) || !is_array($data['properties'])) {
+            return;
+        }
+
         foreach ($data['properties'] as $key => &$property) {
             /*
             // Remove pro custom blocks
