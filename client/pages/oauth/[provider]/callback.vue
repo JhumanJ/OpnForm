@@ -45,8 +45,7 @@ const handleCallback = async () => {
   
   try {
     let payloadData = {
-      code: route.query.code,
-      utm_data: $utm.value
+      code: route.query.code
     }
     
     // Get state token from URL query parameters (OAuth provider includes it)

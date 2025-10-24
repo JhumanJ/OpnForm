@@ -319,11 +319,9 @@ const showOAuthError = (error) => {
 
 const signInwithGoogle = () => {
   try {
-    // Pass invite token if available through guestConnect
-    const { $utm } = useNuxtApp()
+    // guestConnect now always captures and sends utm_data
     const additionalData = {
-      ...(form.invite_token ? { invite_token: form.invite_token } : {}),
-      ...(Object.keys($utm?.value || {}).length ? { utm_data: $utm.value } : {})
+      ...(form.invite_token ? { invite_token: form.invite_token } : {})
     }
     oAuth.guestConnect('google', true, additionalData)
   } catch (error) {

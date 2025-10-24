@@ -141,13 +141,15 @@ export function useOAuth() {
   // Guest connect method
   const guestConnect = (service, redirect = false, additionalData = {}) => {
     const intention = new URL(window.location.href).pathname
+    const { $utm } = useNuxtApp()
 
     // Open synchronously to avoid popup blockers
     const popupWindow = preOpenPopupIfNeeded(true, service)
 
     return oauthApi.redirect(service, {
       ...redirect ? { intention } : {},
-      ...additionalData
+      ...additionalData,
+      utm_data: $utm.value
     })
       .then((data) => {
         // If we have invite_token in additionalData store it in localStorage
