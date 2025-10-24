@@ -71,7 +71,7 @@ export function useFocusedStructure(formConfig, managerState, formData, fieldSta
     return pageIndex
   }
 
-  const getTargetDropIndex = (relativeDropIndex, targetPageIndex) => {
+  const getTargetDropIndex = (relativeDropIndex, _targetPageIndex) => {
     // In focused mode, the VueDraggable renders ALL form.properties (not filtered)
     // So the indices from Vue Draggable are ALREADY absolute indices!
     // We just need to clamp them to valid range

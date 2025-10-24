@@ -15,7 +15,24 @@ class PresentationRules
             return [
                 'mode' => self::MODE_FOCUSED,
                 'allowedFieldTypes' => [
-                    'text','rich_text','date','url','phone_number','email','checkbox','select','multi_select','matrix','number','rating','scale','slider','files','signature','barcode','nf-text'
+                    'text',
+                    'rich_text',
+                    'date',
+                    'url',
+                    'phone_number',
+                    'email',
+                    'checkbox',
+                    'select',
+                    'multi_select',
+                    'matrix',
+                    'number',
+                    'rating',
+                    'scale',
+                    'slider',
+                    'files',
+                    'signature',
+                    'barcode',
+                    'nf-text'
                 ],
                 'constraintsText' => implode("\n", [
                     'Focused mode (Typeform-like):',
@@ -31,7 +48,28 @@ class PresentationRules
         return [
             'mode' => self::MODE_CLASSIC,
             'allowedFieldTypes' => [
-                'text','rich_text','date','url','phone_number','email','checkbox','select','multi_select','matrix','number','rating','scale','slider','files','signature','barcode','nf-text','nf-page-break','nf-divider','nf-image','nf-code'
+                'text',
+                'rich_text',
+                'date',
+                'url',
+                'phone_number',
+                'email',
+                'checkbox',
+                'select',
+                'multi_select',
+                'matrix',
+                'number',
+                'rating',
+                'scale',
+                'slider',
+                'files',
+                'signature',
+                'barcode',
+                'nf-text',
+                'nf-page-break',
+                'nf-divider',
+                'nf-image',
+                'nf-code'
             ],
             'constraintsText' => 'Classic mode: you can use layout widths and optional page breaks.'
         ];
