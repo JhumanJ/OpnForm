@@ -27,11 +27,9 @@
 </template>
 
 <script setup>
-import { useNuxtApp } from "nuxt/app"
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
 import { authApi } from "~/api"
 
-const { $utm } = useNuxtApp()
 const router = useRouter()
 const route = useRoute()
 const loading = ref(true)
