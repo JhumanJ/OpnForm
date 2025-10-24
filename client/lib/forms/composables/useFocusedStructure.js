@@ -72,9 +72,13 @@ export function useFocusedStructure(formConfig, managerState, formData, fieldSta
   }
 
   const getTargetDropIndex = (relativeDropIndex, targetPageIndex) => {
-    // In focused mode each page has exactly one field; drop index maps directly
-    const properties = visibleProperties.value || []
-    return Math.max(0, Math.min(targetPageIndex, properties.length))
+    // In focused mode, the VueDraggable renders ALL form.properties (not filtered)
+    // So the indices from Vue Draggable are ALREADY absolute indices!
+    // We just need to clamp them to valid range
+    const properties = form.value.properties || []
+    
+    const absoluteIndex = Math.max(0, Math.min(relativeDropIndex, properties.length))
+    return absoluteIndex
   }
 
   const determineInsertIndex = (selectedFieldIndex, currentPageIndex, explicitIndex = null, _insertOnSamePage = false) => {
