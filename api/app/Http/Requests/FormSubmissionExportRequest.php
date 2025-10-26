@@ -22,7 +22,7 @@ class FormSubmissionExportRequest extends FormRequest
             $this->form->removed_properties ?? []
         ))->pluck('id')->toArray();
         $validColumns[] = 'created_at';
-        
+
         // Add status column if partial submissions are enabled
         if ($this->form->enable_partial_submissions) {
             $validColumns[] = 'status';

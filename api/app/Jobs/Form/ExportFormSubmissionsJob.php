@@ -39,7 +39,7 @@ class ExportFormSubmissionsJob implements ShouldQueue
         // Build query with status filter
         $query = $this->form->submissions();
         $exportService->applyStatusFilter($query, $this->statusFilter);
-        
+
         // Get total submission count
         $totalSubmissions = $query->count();
 

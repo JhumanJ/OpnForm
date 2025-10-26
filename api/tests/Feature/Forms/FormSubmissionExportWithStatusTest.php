@@ -1,7 +1,6 @@
 <?php
 
 use App\Models\Forms\FormSubmission;
-use App\Models\User;
 
 it('can export form submissions with status column when partial submissions are enabled', function () {
     $user = $this->actingAsProUser();

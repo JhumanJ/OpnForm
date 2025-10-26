@@ -144,7 +144,7 @@ class FormSubmissionController extends Controller
         // Build query with status filter
         $query = $form->submissions();
         $exportService->applyStatusFilter($query, $statusFilter);
-        
+
         // Use query builder with orderBy for consistency with async export
         foreach ($query->orderByDesc('created_at')->get() as $submission) {
             $allRows[] = $exportService->formatSubmissionForExport($form, $submission, $displayColumns);

@@ -1,6 +1,5 @@
 <?php
 
-use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
 use App\Service\Forms\FormExportService;
 use App\Models\User;
@@ -126,7 +125,7 @@ it('applies status filter correctly for completed submissions', function () {
     $exportService = new FormExportService();
     
     // Mock query builder
-    $mockQuery = new class {
+    $mockQuery = new class() {
         public $whereCalls = [];
         
         public function where($column, $operator, $value = null) {
@@ -145,7 +144,7 @@ it('applies status filter correctly for partial submissions', function () {
     $exportService = new FormExportService();
     
     // Mock query builder
-    $mockQuery = new class {
+    $mockQuery = new class() {
         public $whereCalls = [];
         
         public function where($column, $operator, $value = null) {
@@ -164,7 +163,7 @@ it('does not apply status filter for all or null', function () {
     $exportService = new FormExportService();
     
     // Mock query builder
-    $mockQuery = new class {
+    $mockQuery = new class() {
         public $whereCalls = [];
         
         public function where($column, $operator, $value = null) {
