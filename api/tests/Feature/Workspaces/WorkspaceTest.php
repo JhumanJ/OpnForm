@@ -172,6 +172,47 @@ it('allows same workspace to update its own custom domain', function () {
     expect($workspace->custom_domains)->toBe(['example.com']);
 });
 
+it('accepts multi-part TLD domains like .co.uk', function () {
+    $user = $this->actingAsProUser();
+    $workspace = $this->createUserWorkspace($user);
+
+    // Test .co.uk domain
+    $this->putJson(route('open.workspaces.save-custom-domains', $workspace), [
+        'custom_domains' => ['example.co.uk']
+    ])
+        ->assertSuccessful();
+
+    $workspace->refresh();
+    expect($workspace->custom_domains)->toBe(['example.co.uk']);
+
+    // Test .co.nz domain
+    $this->putJson(route('open.workspaces.save-custom-domains', $workspace), [
+        'custom_domains' => ['test.co.nz']
+    ])
+        ->assertSuccessful();
+
+    $workspace->refresh();
+    expect($workspace->custom_domains)->toBe(['test.co.nz']);
+
+    // Test .com.au domain
+    $this->putJson(route('open.workspaces.save-custom-domains', $workspace), [
+        'custom_domains' => ['domain.com.au']
+    ])
+        ->assertSuccessful();
+
+    $workspace->refresh();
+    expect($workspace->custom_domains)->toBe(['domain.com.au']);
+
+    // Test subdomain with multi-part TLD
+    $this->putJson(route('open.workspaces.save-custom-domains', $workspace), [
+        'custom_domains' => ['subdomain.example.co.uk']
+    ])
+        ->assertSuccessful();
+
+    $workspace->refresh();
+    expect($workspace->custom_domains)->toBe(['subdomain.example.co.uk']);
+});
+
 it('includes users_count attribute', function () {
     $user = $this->actingAsUser();
     $workspace = $this->createUserWorkspace($user);

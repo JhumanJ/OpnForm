@@ -126,10 +126,11 @@ const addDomain = () => {
       .replace(/^https?:\/\//i, '')
       .split('/')[0]
 
-    // Basic domain validation
-    const domainRegex = /^((?!-))(xn--)?[a-z0-9][a-z0-9-_]{0,61}[a-z0-9]{0,1}\.(xn--)?([a-z0-9-]{1,61}|[a-z0-9-]{1,30}\.[a-z]{2,})$/i
+    // Domain validation - matches backend regex: /^[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,20}$/
+    // Supports: example.com, test.co.uk, subdomain.example.co.uk, etc.
+    const domainRegex = /^[a-z0-9]+([-.][a-z0-9]+)*\.[a-z]{2,20}$/i
     if (!domainRegex.test(cleanedDomain)) {
-      return alert.error('Invalid domain format. Please use a format like "domain.com".')
+      return alert.error('Invalid domain format. Please use a format like "domain.com" or "subdomain.example.co.uk".')
     }
 
     if (domains.value.includes(cleanedDomain)) {
