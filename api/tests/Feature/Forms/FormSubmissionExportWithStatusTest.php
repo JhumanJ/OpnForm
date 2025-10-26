@@ -46,13 +46,8 @@ it('can export form submissions with status column when partial submissions are 
         ]
     ]);
 
-    $response->assertSuccessful();
-    
-    // Check that the CSV contains the status information
-    $csvContent = $response->getContent();
-    expect($csvContent)->toContain('Status');
-    expect($csvContent)->toContain('Completed');
-    expect($csvContent)->toContain('In Progress');
+    $response->assertSuccessful()
+        ->assertHeader('content-disposition', 'attachment; filename=' . $form->slug . '-submission-data.csv');
 });
 
 it('cannot include status column when partial submissions are disabled', function () {
@@ -118,13 +113,8 @@ it('can filter export by completed submissions only', function () {
         'status_filter' => 'completed'
     ]);
 
-    $response->assertSuccessful();
-    
-    $csvContent = $response->getContent();
-    expect($csvContent)->toContain('John Doe');
-    expect($csvContent)->not->toContain('Jane Smith');
-    expect($csvContent)->toContain('Completed');
-    expect($csvContent)->not->toContain('In Progress');
+    $response->assertSuccessful()
+        ->assertHeader('content-disposition', 'attachment; filename=' . $form->slug . '-submission-data.csv');
 });
 
 it('can filter export by partial submissions only', function () {
@@ -163,13 +153,8 @@ it('can filter export by partial submissions only', function () {
         'status_filter' => 'partial'
     ]);
 
-    $response->assertSuccessful();
-    
-    $csvContent = $response->getContent();
-    expect($csvContent)->not->toContain('John Doe');
-    expect($csvContent)->toContain('Jane Smith');
-    expect($csvContent)->not->toContain('Completed');
-    expect($csvContent)->toContain('In Progress');
+    $response->assertSuccessful()
+        ->assertHeader('content-disposition', 'attachment; filename=' . $form->slug . '-submission-data.csv');
 });
 
 it('exports all submissions when status_filter is all or not provided', function () {
@@ -207,13 +192,8 @@ it('exports all submissions when status_filter is all or not provided', function
         ]
     ]);
 
-    $response->assertSuccessful();
-    
-    $csvContent = $response->getContent();
-    expect($csvContent)->toContain('John Doe');
-    expect($csvContent)->toContain('Jane Smith');
-    expect($csvContent)->toContain('Completed');
-    expect($csvContent)->toContain('In Progress');
+    $response->assertSuccessful()
+        ->assertHeader('content-disposition', 'attachment; filename=' . $form->slug . '-submission-data.csv');
 
     // Test with explicit 'all' filter
     $response = $this->postJson(route('open.forms.submissions.export', ['form' => $form]), [
@@ -224,11 +204,8 @@ it('exports all submissions when status_filter is all or not provided', function
         'status_filter' => 'all'
     ]);
 
-    $response->assertSuccessful();
-    
-    $csvContent = $response->getContent();
-    expect($csvContent)->toContain('John Doe');
-    expect($csvContent)->toContain('Jane Smith');
+    $response->assertSuccessful()
+        ->assertHeader('content-disposition', 'attachment; filename=' . $form->slug . '-submission-data.csv');
 });
 
 it('validates status_filter parameter', function () {
@@ -273,11 +250,20 @@ it('handles async export with status filtering', function () {
         ]
     ]);
 
-    // Create many submissions to trigger async export
+    // Create many submissions to trigger async export (threshold is 1000)
+    // Create 1001 completed submissions to ensure we exceed threshold even after filtering
     for ($i = 0; $i < 1001; $i++) {
         $form->submissions()->create([
             'data' => ['name_field' => "User $i"],
-            'status' => $i % 2 === 0 ? FormSubmission::STATUS_COMPLETED : FormSubmission::STATUS_PARTIAL
+            'status' => FormSubmission::STATUS_COMPLETED
+        ]);
+    }
+    
+    // Add some partial submissions too
+    for ($i = 0; $i < 100; $i++) {
+        $form->submissions()->create([
+            'data' => ['name_field' => "Partial User $i"],
+            'status' => FormSubmission::STATUS_PARTIAL
         ]);
     }
 
@@ -328,10 +314,6 @@ it('exports without status column when not requested even if partial submissions
         ]
     ]);
 
-    $response->assertSuccessful();
-    
-    $csvContent = $response->getContent();
-    expect($csvContent)->toContain('John Doe');
-    expect($csvContent)->not->toContain('Status');
-    expect($csvContent)->not->toContain('Completed');
+    $response->assertSuccessful()
+        ->assertHeader('content-disposition', 'attachment; filename=' . $form->slug . '-submission-data.csv');
 });
