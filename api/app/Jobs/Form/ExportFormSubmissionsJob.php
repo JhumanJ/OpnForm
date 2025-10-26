@@ -26,7 +26,8 @@ class ExportFormSubmissionsJob implements ShouldQueue
         public Form $form,
         public array $columns,
         public string $jobId,
-        public int $userId
+        public int $userId,
+        public ?string $statusFilter = null
     ) {
     }
 
@@ -35,8 +36,12 @@ class ExportFormSubmissionsJob implements ShouldQueue
         // Initialize job status in cache
         $this->updateJobStatus('processing', 0);
 
+        // Build query with status filter
+        $query = $this->form->submissions();
+        $exportService->applyStatusFilter($query, $this->statusFilter);
+        
         // Get total submission count
-        $totalSubmissions = $this->form->submissions()->count();
+        $totalSubmissions = $query->count();
 
         if ($totalSubmissions === 0) {
             $this->updateJobStatus('failed', 0, 'No submissions to export');
@@ -48,8 +53,7 @@ class ExportFormSubmissionsJob implements ShouldQueue
         $processedCount = 0;
         $allRows = [];
 
-        $this->form->submissions()
-            ->orderBy('created_at', 'desc')
+        $query->orderBy('created_at', 'desc')
             ->chunk($chunkSize, function ($submissions) use (&$processedCount, &$allRows, $totalSubmissions, $exportService) {
                 foreach ($submissions as $submission) {
                     $formattedRow = $exportService->formatSubmissionForExport(

@@ -4,6 +4,7 @@ namespace App\Service\Forms;
 
 use App\Models\Forms\Form;
 use App\Models\Forms\FormSubmission;
+use App\Service\Forms\FormSubmissionFormatter;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -18,9 +19,27 @@ class FormExportService
     /**
      * Determine if export should be processed synchronously or asynchronously
      */
-    public function shouldExportAsync(Form $form): bool
+    public function shouldExportAsync(Form $form, ?string $statusFilter = null): bool
     {
-        return $form->submissions()->count() > self::SYNC_EXPORT_THRESHOLD;
+        $query = $form->submissions();
+        $this->applyStatusFilter($query, $statusFilter);
+        return $query->count() > self::SYNC_EXPORT_THRESHOLD;
+    }
+
+    /**
+     * Apply status filter to submissions query
+     */
+    public function applyStatusFilter($query, ?string $statusFilter = null): void
+    {
+        if (!$statusFilter || $statusFilter === 'all') {
+            return;
+        }
+
+        if ($statusFilter === 'completed') {
+            $query->where('status', FormSubmission::STATUS_COMPLETED);
+        } elseif ($statusFilter === 'partial') {
+            $query->where('status', FormSubmission::STATUS_PARTIAL);
+        }
     }
 
     /**
@@ -49,6 +68,11 @@ class FormExportService
 
         if (isset($displayColumns['created_at']) && $displayColumns['created_at'] === true) {
             $filteredData['created_at'] = $submission->created_at->format('Y-m-d H:i');
+        }
+
+        // Add status column if partial submissions are enabled and status column is requested
+        if ($form->enable_partial_submissions && isset($displayColumns['status']) && $displayColumns['status'] === true) {
+            $filteredData['status'] = $submission->status === FormSubmission::STATUS_COMPLETED ? 'Completed' : 'In Progress';
         }
 
         return $filteredData;

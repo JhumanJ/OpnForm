@@ -22,6 +22,11 @@ class FormSubmissionExportRequest extends FormRequest
             $this->form->removed_properties ?? []
         ))->pluck('id')->toArray();
         $validColumns[] = 'created_at';
+        
+        // Add status column if partial submissions are enabled
+        if ($this->form->enable_partial_submissions) {
+            $validColumns[] = 'status';
+        }
 
         return [
             'columns' => 'required|array',
@@ -33,6 +38,7 @@ class FormSubmissionExportRequest extends FormRequest
                     $fail('The columns contain invalid values: ' . implode(', ', $invalidColumns));
                 }
             }],
+            'status_filter' => 'sometimes|string|in:all,completed,partial',
         ];
     }
 }

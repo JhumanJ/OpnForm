@@ -95,14 +95,15 @@ class FormSubmissionController extends Controller
         $this->authorize('view', $form);
 
         $displayColumns = collect($request->columns)->filter(fn ($value, $key) => $value === true)->toArray();
+        $statusFilter = $request->validated('status_filter', 'all');
 
         // Check if we should process asynchronously
-        if ($exportService->shouldExportAsync($form)) {
-            return $this->startAsyncExport($form, $displayColumns, $exportService);
+        if ($exportService->shouldExportAsync($form, $statusFilter)) {
+            return $this->startAsyncExport($form, $displayColumns, $exportService, $statusFilter);
         }
 
         // Process synchronously for small exports
-        return $this->processSyncExport($form, $displayColumns, $exportService);
+        return $this->processSyncExport($form, $displayColumns, $exportService, $statusFilter);
     }
 
     public function exportStatus(Form $form, string $jobId, FormExportService $exportService)
@@ -124,11 +125,11 @@ class FormSubmissionController extends Controller
         return new ExportJobStatusResource($jobData);
     }
 
-    private function startAsyncExport(Form $form, array $displayColumns, FormExportService $exportService)
+    private function startAsyncExport(Form $form, array $displayColumns, FormExportService $exportService, ?string $statusFilter = null)
     {
         $jobId = $exportService->initializeAsyncExport($form, Auth::id());
 
-        ExportFormSubmissionsJob::dispatch($form, $displayColumns, $jobId, Auth::id());
+        ExportFormSubmissionsJob::dispatch($form, $displayColumns, $jobId, Auth::id(), $statusFilter);
 
         return $this->success([
             'message' => 'Export started. Large export will be processed in the background.',
@@ -137,11 +138,15 @@ class FormSubmissionController extends Controller
         ]);
     }
 
-    private function processSyncExport(Form $form, array $displayColumns, FormExportService $exportService)
+    private function processSyncExport(Form $form, array $displayColumns, FormExportService $exportService, ?string $statusFilter = null)
     {
         $allRows = [];
+        // Build query with status filter
+        $query = $form->submissions();
+        $exportService->applyStatusFilter($query, $statusFilter);
+        
         // Use query builder with orderBy for consistency with async export
-        foreach ($form->submissions()->orderByDesc('created_at')->get() as $submission) {
+        foreach ($query->orderByDesc('created_at')->get() as $submission) {
             $allRows[] = $exportService->formatSubmissionForExport($form, $submission, $displayColumns);
         }
 
