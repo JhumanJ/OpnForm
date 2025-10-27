@@ -127,7 +127,8 @@ export function useFormSubmissions() {
       // Actions
       setSearch,
       setStatus,
-      setPage
+      setPage,
+      refetch: query.refetch
     }
   }
 
