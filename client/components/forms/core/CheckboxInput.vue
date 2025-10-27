@@ -28,17 +28,11 @@
           </InputHelp>
         </slot>
         <slot name="label">
-          <label
-            :aria-label="id ? id : name"
-            :for="id ? id : name"
-            :class="ui.label()"
-          >
-            {{ label }}
-            <span
-              v-if="required"
-              class="text-red-500 required-dot"
-            >*</span>
-          </label>
+          <InputLabel
+            :label="label"
+            :required="required"
+            :theme="theme"
+          />
         </slot>
         <slot
           v-if="helpPosition === 'below_input'"
