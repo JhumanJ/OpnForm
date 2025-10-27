@@ -48,13 +48,26 @@
         :columns="columnVisibility"
       />
 
-      <UButton  
-        size="sm"
-        color="neutral"
-        variant="ghost"
-        :icon="isExpanded ? 'i-heroicons-arrows-pointing-in' : 'i-heroicons-arrows-pointing-out'"
-        @click="toggleExpanded"
-      />
+      <UTooltip text="Refresh" arrow>
+        <UButton
+          size="sm"
+          color="neutral"
+          variant="ghost"
+          icon="i-heroicons-arrow-path"
+          :loading="loading"
+          @click="$emit('refresh')"
+        />
+      </UTooltip>
+
+      <UTooltip arrow :text="isExpanded ? 'Exit fullscreen' : 'Fullscreen'">
+        <UButton  
+          size="sm"
+          color="neutral"
+          variant="ghost"
+          :icon="isExpanded ? 'i-heroicons-arrows-pointing-in' : 'i-heroicons-arrows-pointing-out'"
+          @click="toggleExpanded"
+        />
+      </UTooltip>
 
       <!-- Add pagination section -->
       <UPagination
@@ -200,7 +213,7 @@ const props = defineProps({
   },
 })
 
-const emit = defineEmits(["search", "filter", "page-change"])
+const emit = defineEmits(["search", "filter", "page-change", "refresh"])
 
 // Get workspace for table state
 const { current: workspace } = useCurrentWorkspace()
