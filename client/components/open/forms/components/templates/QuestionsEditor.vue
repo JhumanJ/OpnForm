@@ -1,17 +1,10 @@
 <template>
   <div :class="inputWrapperProps.wrapperClass">
-    <label
-      v-if="inputWrapperProps.label"
-      :for="inputWrapperProps.id || inputWrapperProps.name"
-      class="text-neutral-700 dark:text-neutral-300 font-semibold"
-      :class="{ 'uppercase text-xs': inputWrapperProps.uppercaseLabels, 'text-sm': !inputWrapperProps.uppercaseLabels }"
-    >
-      {{ inputWrapperProps.label }}
-      <span
-        v-if="inputWrapperProps.required"
-        class="text-red-500 required-dot"
-      >*</span>
-    </label>
+    <InputLabel
+      :label="inputWrapperProps.label"
+      :required="inputWrapperProps.required"
+      :theme="inputWrapperProps.theme"
+    />
 
     <Loader
       v-if="loading"
