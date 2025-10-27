@@ -198,21 +198,21 @@ Route::group(['middleware' => 'auth.multi'], function () {
             Route::get(
                 '/{form}/integrations',
                 [FormIntegrationsController::class, 'index']
-            )->name('integrations');
+            )->name('integrations.index');
             Route::post(
-                '/{form}/integration',
+                '/{form}/integrations',
                 [FormIntegrationsController::class, 'create']
-            )->name('integration.create');
+            )->name('integrations.create');
             Route::put(
-                '/{form}/integration/{integrationid}',
+                '/{form}/integrations/{integrationid}',
                 [FormIntegrationsController::class, 'update']
-            )->name('integration.update');
+            )->name('integrations.update');
             Route::delete(
-                '/{form}/integration/{integrationid}',
+                '/{form}/integrations/{integrationid}',
                 [FormIntegrationsController::class, 'destroy']
-            )->name('integration.destroy');
+            )->name('integrations.destroy');
             Route::get(
-                '/{form}/integration/{integrationid}/events',
+                '/{form}/integrations/{integrationid}/events',
                 [FormIntegrationsEventController::class, 'index']
             )->name('integrations.events');
         });
