@@ -42,7 +42,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
-const { compVal, inputWrapperProps, ui } = useFormInput(props, { emit }, {
+const { compVal, inputWrapperProps } = useFormInput(props, { emit }, {
   variants: colorInputTheme
 })
 </script>
