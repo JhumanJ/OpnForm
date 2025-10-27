@@ -11,9 +11,7 @@ use Illuminate\Support\Facades\Log;
 
 class FormSpamService
 {
-    public function __construct(protected UserActionService $userActionService)
-    {
-    }
+    public function __construct(protected UserActionService $userActionService) {}
 
     public function checkForm(Form $form): void
     {
@@ -39,6 +37,11 @@ class FormSpamService
 
     private function shouldCheck(Form $form): bool
     {
+        // Check if creator exists before accessing its properties
+        if (!$form->creator) {
+            return false;
+        }
+
         if ($form->creator->is_blocked || $form->creator->admin || $form->creator->moderator) {
             return false;
         }

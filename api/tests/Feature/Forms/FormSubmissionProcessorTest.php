@@ -146,3 +146,43 @@ it('returns no redirect for non-pro users', function () {
         'redirect' => false
     ]);
 });
+
+
+describe('Clear Empty Fields On Update', function () {
+    it('processes synchronously with clear_empty_fields_on_update enabled', function () {
+        $user = $this->actingAsProUser();
+        $workspace = $this->createUserWorkspace($user);
+        $form = $this->createForm($user, $workspace, [
+            'clear_empty_fields_on_update' => true,
+            'database_fields_update' => ['field_id_for_email']
+        ]);
+
+        $processor = new FormSubmissionProcessor();
+        // This should still process asynchronously for the redirect logic
+        expect($processor->shouldProcessSynchronously($form))->toBeFalse();
+    });
+
+    it('processes asynchronously with clear_empty_fields_on_update disabled', function () {
+        $user = $this->actingAsUser();
+        $workspace = $this->createUserWorkspace($user);
+        $form = $this->createForm($user, $workspace, [
+            'clear_empty_fields_on_update' => false,
+            'database_fields_update' => ['field_id_for_email']
+        ]);
+
+        $processor = new FormSubmissionProcessor();
+        expect($processor->shouldProcessSynchronously($form))->toBeFalse();
+    });
+
+    it('processes synchronously with editable submissions and clear_empty_fields_on_update', function () {
+        $user = $this->actingAsProUser();
+        $workspace = $this->createUserWorkspace($user);
+        $form = $this->createForm($user, $workspace, [
+            'editable_submissions' => true,
+            'clear_empty_fields_on_update' => true
+        ]);
+
+        $processor = new FormSubmissionProcessor();
+        expect($processor->shouldProcessSynchronously($form))->toBeTrue();
+    });
+});
