@@ -97,44 +97,6 @@ it('includes status column when partial submissions are enabled', function () {
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace, [
         'enable_partial_submissions' => true,
-<<<<<<< HEAD
-        'properties' => [
-            [
-                'id' => 'name_field',
-                'name' => 'Name',
-                'type' => 'text',
-                'required' => true,
-            ],
-            [
-                'id' => 'email_field',
-                'name' => 'Email',
-                'type' => 'email',
-                'required' => true,
-            ]
-        ]
-    ]);
-
-    // Create a partial submission (In Progress)
-    $partialSubmissionData = $this->generateFormSubmissionData($form, [
-        'name_field' => 'John Partial',
-    ]);
-    $partialSubmissionData['is_partial'] = true;
-    $this->postJson(route('forms.answer', $form->slug), $partialSubmissionData);
-
-    // Create a completed submission
-    $completedSubmissionData = $this->generateFormSubmissionData($form, [
-        'name_field' => 'Jane Complete',
-        'email_field' => 'jane@example.com'
-    ]);
-    $this->postJson(route('forms.answer', $form->slug), $completedSubmissionData);
-
-    // Export with selected columns
-    $response = $this->postJson(route('open.forms.submissions.export', [
-        'form' => $form,
-        'columns' => [
-            'name_field' => true,
-            'email_field' => true,
-=======
     ]);
 
     // Create a partial submission (In Progress)
@@ -166,7 +128,6 @@ it('includes status column when partial submissions are enabled', function () {
         'columns' => [
             $textField['id'] => true,
             $emailField['id'] => true,
->>>>>>> f011505849c7638f8250264957a9b95f1626d0df
         ]
     ]));
 
@@ -174,21 +135,6 @@ it('includes status column when partial submissions are enabled', function () {
         ->assertHeader('content-disposition', 'attachment; filename=' . $form->slug . '-submission-data.csv');
 
     // Verify the exported CSV contains status column and correct values
-<<<<<<< HEAD
-    $content = $response->getContent();
-    $lines = explode("\n", $content);
-
-    // Check that CSV has at least 3 lines (header + 2 data rows)
-    expect(count($lines))->toBeGreaterThanOrEqual(3);
-
-    // Check header contains 'status'
-    $headerLine = trim($lines[0]);
-    expect($headerLine)->toContain('status');
-
-    // Check that data rows contain 'In Progress' or 'Completed'
-    $dataContent = implode("\n", array_slice($lines, 1));
-    expect(str_contains($dataContent, 'In Progress') || str_contains($dataContent, 'Completed'))->toBeTrue();
-=======
     ob_start();
     $response->sendContent();
     $content = ob_get_clean();
@@ -196,7 +142,6 @@ it('includes status column when partial submissions are enabled', function () {
     expect(str_contains($content, 'status'))->toBeTrue();
     expect(str_contains($content, 'In Progress'))->toBeTrue();
     expect(str_contains($content, 'Completed'))->toBeTrue();
->>>>>>> f011505849c7638f8250264957a9b95f1626d0df
 });
 
 it('does not include status column when partial submissions are disabled', function () {
@@ -204,29 +149,6 @@ it('does not include status column when partial submissions are disabled', funct
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace, [
         'enable_partial_submissions' => false,
-<<<<<<< HEAD
-        'properties' => [
-            [
-                'id' => 'name_field',
-                'name' => 'Name',
-                'type' => 'text',
-                'required' => true,
-            ]
-        ]
-    ]);
-
-    // Create a submission
-    $submissionData = $this->generateFormSubmissionData($form, [
-        'name_field' => 'John Doe',
-    ]);
-    $this->postJson(route('forms.answer', $form->slug), $submissionData);
-
-    // Export with selected columns
-    $response = $this->postJson(route('open.forms.submissions.export', [
-        'form' => $form,
-        'columns' => [
-            'name_field' => true,
-=======
     ]);
 
     // Create a submission
@@ -241,20 +163,14 @@ it('does not include status column when partial submissions are disabled', funct
         'form' => $form,
         'columns' => [
             $textField['id'] => true,
->>>>>>> f011505849c7638f8250264957a9b95f1626d0df
         ]
     ]));
 
     $response->assertSuccessful();
 
     // Verify the exported CSV does not contain status column
-<<<<<<< HEAD
-    $content = $response->getContent();
-=======
     ob_start();
     $response->sendContent();
     $content = ob_get_clean();
-
->>>>>>> f011505849c7638f8250264957a9b95f1626d0df
     expect(str_contains($content, 'status'))->toBeFalse();
 });
