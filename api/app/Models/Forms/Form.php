@@ -213,7 +213,7 @@ class Form extends Model implements CachableAttributes
         }
 
         // Fallback to cached calculation for individual access
-        return $this->remember('views_count', 15 * 60, fn() => $this->calculateTotalViews());
+        return $this->remember('views_count', 15 * 60, fn () => $this->calculateTotalViews());
     }
 
     /**
