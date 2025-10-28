@@ -260,7 +260,7 @@ trait TestHelpers
             'settings' => $settings
         ];
 
-        $response = $this->postJson(route('open.forms.integration.create', $formId), $data)
+        $response = $this->postJson(route('open.forms.integrations.create', $formId), $data)
             ->assertSuccessful()
             ->assertJson([
                 'type' => 'success',

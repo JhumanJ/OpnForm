@@ -105,6 +105,29 @@ class FormPolicy
     }
 
     /**
+     * Determine whether the user can manage integrations on the model.
+     * For Sanctum tokens, requires the manage-integrations ability.
+     * For other auth methods, allows if user has write permission.
+     *
+     * @return mixed
+     */
+    public function manageIntegrations(User $user, Form $form)
+    {
+        // First check if user has write permission
+        if (!$this->canPerformWriteOperation($user, $form)) {
+            return false;
+        }
+
+        // If using Sanctum token, ensure it has manage-integrations ability
+        if ($token = $user->currentAccessToken()) {
+            return $token->can('manage-integrations');
+        }
+
+        // For non-Sanctum auth (JWT/session), allow if they can write
+        return true;
+    }
+
+    /**
      * Determine whether the user can permanently delete the model.
      *
      * @return mixed

@@ -17,7 +17,7 @@ class FormIntegrationsController extends Controller
 
     public function index(Form $form)
     {
-        $this->authorize('update', $form);
+        $this->authorize('manageIntegrations', $form);
 
         $integrations = FormIntegration::query()
             ->where('form_id', $form->id)
@@ -29,7 +29,7 @@ class FormIntegrationsController extends Controller
 
     public function create(FormIntegrationsRequest $request, Form $form)
     {
-        $this->authorize('update', $form);
+        $this->authorize('manageIntegrations', $form);
 
         /** @var FormIntegration $formIntegration */
         $formIntegration = FormIntegration::create(
@@ -49,7 +49,7 @@ class FormIntegrationsController extends Controller
 
     public function update(FormIntegrationsRequest $request, Form $form, string $integrationid)
     {
-        $this->authorize('update', $form);
+        $this->authorize('manageIntegrations', $form);
 
         $formIntegration = FormIntegration::findOrFail((int)$integrationid);
         $formIntegration->update($request->toIntegrationData());
@@ -63,7 +63,7 @@ class FormIntegrationsController extends Controller
 
     public function destroy(Form $form, string $integrationid)
     {
-        $this->authorize('update', $form);
+        $this->authorize('manageIntegrations', $form);
 
         $formIntegration = FormIntegration::findOrFail((int)$integrationid);
         $formIntegration->delete();
