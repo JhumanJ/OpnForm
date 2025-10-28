@@ -15,6 +15,13 @@ return [
         'open.forms.submissions.export',
         'open.forms.submissions.destroy',
 
+        // Form Integrations
+        'open.forms.integrations.index',
+        'open.forms.integrations.create',
+        'open.forms.integrations.update',
+        'open.forms.integrations.destroy',
+        'open.forms.integrations.events',
+
         // Workspace CRUD
         'open.workspaces.index',
         'open.workspaces.create',

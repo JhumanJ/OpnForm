@@ -20,7 +20,7 @@ it('can fetch form integration events', function () {
         ]
     ];
 
-    $response = $this->postJson(route('open.forms.integration.create', $form), $data)
+    $response = $this->postJson(route('open.forms.integrations.create', $form), $data)
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
