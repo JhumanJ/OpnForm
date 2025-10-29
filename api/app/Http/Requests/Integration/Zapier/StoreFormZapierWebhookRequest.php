@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Integration;
+namespace App\Http\Requests\Integration\Zapier;
 
 use App\Models\Forms\Form;
 use App\Models\Integration\FormZapierWebhook;

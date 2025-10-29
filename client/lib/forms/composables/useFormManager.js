@@ -334,21 +334,20 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
     }
   }
   
-  /** Resets the form to its initial state for refilling. */
-  const restart = async () => {
+  /** Resets the form to its initial state for refilling with optional URL parameters. */
+  const restart = async (options = {}) => {
     state.isSubmitted = false
     state.currentPage = 0
     state.isProcessing = false
-    form.reset() // Reset vForm data
-    form.errors.clear() // Clear vForm errors
     timer.reset() // Reset timer via composable
     timer.start() // Restart timer
     
-    // Restart partial submission if enabled
-    if (!import.meta.server && toValue(config).enable_partial_submissions && strategy.value.submission.enablePartialSubmissions) {
-      partialSubmissionService.stopSync() // This will sync immediately before stopping
-      partialSubmissionService.startSync() // Start fresh sync
-    }
+    // Reinitialize the form to reapply URL parameters and default values
+    await initialize({
+      urlParams: options.urlParams,
+      submissionId: options.submissionId, // Explicitly pass submissionId (usually null)
+      skipPendingSubmission: true // Don't reload from localStorage on restart
+    })
   }
   
   // Clean up when component using the manager is unmounted

@@ -1,0 +1,88 @@
+---
+openapi: post /open/forms/{form}/integrations
+---
+
+# Create Webhook Integration
+
+Add a new webhook integration to send form submissions to an external endpoint.
+
+## Authentication & Scope
+
+This endpoint requires a **Personal Access Token** with the `manage-integrations` ability.
+
+## Request
+
+<ParamField path="form" type="number" required>
+The ID of the form to which the webhook will be added.
+</ParamField>
+
+<ParamField body="integration_id" type="string" required>
+Must be set to `"webhook"` for webhook integrations.
+</ParamField>
+
+<ParamField body="status" type="string">
+The initial status of the webhook. Allowed values: `"active"` (default), `"inactive"`.
+</ParamField>
+
+<ParamField body="data" type="object" required>
+Configuration object containing webhook details.
+
+<Expandable title="data properties">
+<ParamField body="webhook_url" type="string" required>
+The URL where form submissions will be sent. Must be a valid HTTP/HTTPS URL.
+</ParamField>
+</Expandable>
+</ParamField>
+
+<RequestExample>
+```bash cURL
+curl -X POST 'https://api.opnform.com/open/forms/123/integrations' \
+  -H 'Authorization: Bearer YOUR_PAT' \
+  -H 'Content-Type: application/json' \
+  -d '{
+    "integration_id": "webhook",
+    "status": "active",
+    "data": {
+      "webhook_url": "https://example.com/opnform-hook"
+    }
+  }'
+```
+</RequestExample>
+
+## Response
+
+`200 OK` – Webhook created successfully.
+
+<ResponseExample>
+```json Success
+{
+  "message": "Form Integration was created.",
+  "form_integration": {
+    "id": 42,
+    "form_id": 123,
+    "integration_id": "webhook",
+    "status": "active",
+    "data": {
+      "webhook_url": "https://example.com/opnform-hook"
+    }
+  }
+}
+```
+</ResponseExample>
+
+`403 Forbidden` – The token does not have `manage-integrations` ability or insufficient form permissions.
+
+`404 Not Found` – Form not found.
+
+`422 Unprocessable Entity` – Validation error (e.g., invalid webhook URL).
+
+<ResponseExample>
+```json Error
+{
+  "message": "The webhook url must be a valid URL.",
+  "errors": {
+    "data.webhook_url": ["The webhook url must be a valid URL."]
+  }
+}
+```
+</ResponseExample>

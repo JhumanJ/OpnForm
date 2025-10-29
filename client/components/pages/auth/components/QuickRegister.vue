@@ -105,16 +105,11 @@ onMounted(() => {
     // Handle social login completion
     handleSocialLogin()
   })
-  
-  // Set up after-login listener for component communication
-  afterLoginMessage.listen(() => {
-    afterQuickLogin()
-  })
-  
-  // Reset the unauthorized error flag when component is unmounted
-  onUnmounted(() => {
-    appStore.isUnauthorizedError = false
-  })
+})
+
+// Reset the unauthorized error flag when component is unmounted
+onUnmounted(() => {
+  appStore.isUnauthorizedError = false
 })
 
 // Handle social login completion

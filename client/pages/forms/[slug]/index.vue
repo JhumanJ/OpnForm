@@ -73,7 +73,14 @@ const passwordEntered = function (password) {
     refetchForm().then(() => {
       console.log('form.value', form.value)
       if (form.value?.is_password_protected) {
-        openCompleteForm.value.addPasswordError(t('forms.invalid_password'))
+        // Add another nextTick to ensure the component is fully rendered after refetch
+        nextTick(() => {
+          if (openCompleteForm.value && typeof openCompleteForm.value.addPasswordError === 'function') {
+            openCompleteForm.value.addPasswordError(t('forms.invalid_password'))
+          } else {
+            console.warn('OpenCompleteForm ref not available or addPasswordError method not found')
+          }
+        })
       } else {
         trackFormView()
       }

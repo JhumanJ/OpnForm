@@ -14,10 +14,14 @@
 
     <div class="p-4">
       <VueDraggable
-        v-model="form.properties"
+        :model-value="form.properties"
+        group="form-elements"
+        item-key="id"
         class="mx-auto w-full overflow-hidden rounded-md border border-neutral-300 bg-white transition-colors dark:bg-notion-dark-light"
         ghost-class="bg-blue-100"
         :animation="200"
+        @add="handleDragAdd"
+        @update="handleDragUpdate"
       >
         <template #default>
           <div
@@ -141,6 +145,17 @@ export default {
     }
   },
 
+  computed: {
+    // Expose the form structure service created by useFormManager
+    structure () {
+      return this.workingFormStore?.structureService || null
+    },
+    // Numeric current page index derived from the structure service
+    currentPageIndex () {
+      return this.structure?.currentPage?.value ?? 0
+    }
+  },
+
   mounted() {
     this.init()
   },
@@ -186,6 +201,24 @@ export default {
     isBeingEdited (index) {
       if (!this.workingFormStore?.showEditFieldSidebar) return false
       return index === this.workingFormStore.selectedFieldIndex
+    },
+    getAbsoluteIndex (relativeIndex) {
+      if (!this.structure) return relativeIndex
+      return this.structure.getTargetDropIndex(relativeIndex, this.currentPageIndex)
+    },
+    handleDragAdd (evt) {
+      if (!this.structure) return
+      const targetIndex = this.getAbsoluteIndex(evt.newIndex)
+      const payload = evt?.clonedData
+      this.workingFormStore.addBlock(payload, targetIndex, false)
+    },
+    handleDragUpdate (evt) {
+      if (!this.structure) return
+      const oldTargetIndex = this.getAbsoluteIndex(evt.oldIndex)
+      const newTargetIndex = this.getAbsoluteIndex(evt.newIndex)
+      if (oldTargetIndex !== newTargetIndex) {
+        this.workingFormStore.moveField(oldTargetIndex, newTargetIndex)
+      }
     }
   }
 }

@@ -9,6 +9,23 @@ use App\Service\OAuth\OAuthProviderService as OAuthProviderServiceClass;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
+/**
+ * OAuthFlowOrchestrator
+ *
+ * Orchestrates the OAuth authentication and integration flows.
+ * Handles:
+ * - OAuth redirect initiation with state token generation
+ * - OAuth callback processing (authorization code exchange)
+ * - Widget-based OAuth flows (Google One Tap)
+ * - Intent routing (auth vs integration)
+ * - Error handling and validation
+ *
+ * Delegates specific responsibilities to specialized services:
+ * - OAuthContextService: Context/metadata storage
+ * - OAuthUserDataService: User data extraction
+ * - OAuthUserService: User creation/lookup
+ * - OAuthInviteService: Invite validation
+ */
 class OAuthFlowOrchestrator
 {
     use ManagesJWT;
@@ -28,6 +45,7 @@ class OAuthFlowOrchestrator
 
     /**
      * Process OAuth redirect request
+     * Stores context with UTM data and generates state token for security
      */
     public function processRedirect(string $provider, array $params): array
     {
@@ -81,6 +99,7 @@ class OAuthFlowOrchestrator
 
     /**
      * Process OAuth callback
+     * Retrieves context from state token and creates/authenticates user
      */
     public function processCallback(string $provider, array $params): array
     {
@@ -105,14 +124,16 @@ class OAuthFlowOrchestrator
         $invitedEmail = $context['invited_email'] ?? null;
         $inviteToken = $params['invite_token'] ?? $context['invite_token'] ?? null;
 
-        // Clear the context after use
+        $result = $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail);
         $this->contextService->clearContext($stateToken);
 
-        return $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail);
+        return $result;
     }
 
     /**
      * Process widget-based OAuth callback
+     * Handles widget flows (Google One Tap) that don't use state tokens
+     * Extracts and stores context for user creation
      */
     public function processWidgetCallback(string $service, Request $request): array
     {
@@ -136,7 +157,19 @@ class OAuthFlowOrchestrator
         // Get user data from widget
         $userData = $this->userDataService->extractFromWidget($providerService, $request);
 
-        return $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail);
+        // Store widget context for later retrieval during user creation
+        $context = [
+            'intent' => $intent,
+            'utm_data' => $request->input('utm_data'),
+            'invite_token' => $inviteToken,
+            'invited_email' => $invitedEmail,
+        ];
+        $this->contextService->storeWidgetContext($context);
+
+        $result = $this->handleIntent($intent, $providerService, $userData, $inviteToken, $invitedEmail);
+        $this->contextService->clearWidgetContext();
+
+        return $result;
     }
 
     /**
@@ -166,6 +199,7 @@ class OAuthFlowOrchestrator
 
     /**
      * Handle authentication flow (create user + authenticate)
+     * OAuthUserService will retrieve UTM data directly from context service
      */
     private function handleAuthenticationFlow(
         OAuthProviderService $providerService,
@@ -176,7 +210,7 @@ class OAuthFlowOrchestrator
         // Generic email validation (no provider-specific logic)
         $this->inviteService->validateEmailRestrictions($userData['email'], $invitedEmail);
 
-        // Find or create user with invite context
+        // Find or create user
         $user = $this->oauthUserService->findOrCreateUser($userData, $providerService, $inviteToken);
 
         // Create/update OAuth provider record
@@ -206,7 +240,7 @@ class OAuthFlowOrchestrator
             $userData
         );
 
-        // Get cached context for additional response data
+        // Retrieve context data (autoClose and intention from stored context)
         $context = $this->contextService->getContext() ?? [];
 
         return [

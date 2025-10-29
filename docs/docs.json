@@ -97,6 +97,16 @@
             ]
           },
           {
+            "group": "Integrations",
+            "pages": [
+              "api-reference/integrations/list-form-integrations",
+              "api-reference/integrations/create-webhook-integration",
+              "api-reference/integrations/update-webhook-integration",
+              "api-reference/integrations/delete-webhook-integration",
+              "api-reference/integrations/list-webhook-events"
+            ]
+          },
+          {
             "group": "Zapier",
             "pages": [
               "api-reference/zapier/validate-api-key",

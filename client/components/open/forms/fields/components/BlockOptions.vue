@@ -23,7 +23,7 @@
       <OptionSelectorInput
           v-model="field.width"
           name="width"
-          class="grow"
+          class="grow mt-4"
           :form="field"
           label="Block Width"
           seamless
@@ -43,7 +43,7 @@
           v-if="['nf-text', 'nf-image', 'nf-video'].includes(field.type)"
           v-model="field.align"
           name="align"
-          class="w-2/3"
+          class="mt-4 w-2/3"
           :form="field"
           label="Text Alignment"
           seamless

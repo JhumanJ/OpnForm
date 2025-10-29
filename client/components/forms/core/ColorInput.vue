@@ -14,13 +14,11 @@
         :name="name"
       >
       <slot name="label">
-        <span
-          :class="ui.label()"
-        >{{ label }}
-          <span
-            v-if="required"
-            class="text-red-500 required-dot"
-          >*</span></span>
+        <InputLabel
+          :label="label"
+          :required="required"
+          :theme="theme"
+        />
       </slot>
     </div>
 
@@ -44,7 +42,7 @@ const props = defineProps({
 
 const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
 
-const { compVal, inputWrapperProps, ui } = useFormInput(props, { emit }, {
+const { compVal, inputWrapperProps } = useFormInput(props, { emit }, {
   variants: colorInputTheme
 })
 </script>

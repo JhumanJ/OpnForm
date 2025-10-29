@@ -2,10 +2,24 @@
 
 namespace App\Service\OAuth;
 
+use App\Exceptions\OAuth\InvalidWidgetDataException;
 use App\Integrations\OAuth\OAuthProviderService;
 use App\Integrations\OAuth\Drivers\Contracts\WidgetOAuthDriver;
 use Illuminate\Http\Request;
 
+/**
+ * OAuthUserDataService
+ *
+ * Extracts and normalizes user data from OAuth providers.
+ * Handles:
+ * - Redirect-based OAuth flows (authorization code grant)
+ * - Widget-based OAuth flows (Google One Tap)
+ * - User data validation and normalization
+ * - Missing field detection
+ *
+ * Normalizes data from different OAuth providers into a consistent format
+ * for downstream processing by OAuthUserService.
+ */
 class OAuthUserDataService
 {
     /**
@@ -39,8 +53,10 @@ class OAuthUserDataService
             abort(400, 'This provider does not support widget authentication');
         }
 
-        if (!$driver->verifyWidgetData($request->all())) {
-            abort(400, 'Invalid widget data');
+        try {
+            $driver->verifyWidgetData($request->all());
+        } catch (InvalidWidgetDataException $e) {
+            abort(400, $e->getMessage());
         }
 
         return $this->normalizeUserData(
@@ -54,15 +70,18 @@ class OAuthUserDataService
     private function normalizeUserData(array $userData): array
     {
         // Ensure required fields exist
-        $required = ['email', 'name', 'provider_user_id'];
+        $required = ['name', 'provider_user_id'];
         foreach ($required as $field) {
             if (empty($userData[$field])) {
                 abort(400, "Missing required field: {$field}");
             }
         }
 
-        // Normalize email to lowercase
-        $userData['email'] = strtolower($userData['email']);
+        // Email is optional (e.g., Telegram widget doesn't provide it)
+        if (isset($userData['email']) && !empty($userData['email'])) {
+            // Normalize email to lowercase
+            $userData['email'] = strtolower($userData['email']);
+        }
 
         // Set defaults for optional fields
         $userData['avatar'] = $userData['avatar'] ?? null;

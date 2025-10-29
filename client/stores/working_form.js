@@ -252,7 +252,7 @@ export const useWorkingFormStore = defineStore("working_form", {
       }
       
       this.blockForm.type = effectiveType
-      this.blockForm.name = effectiveBlockDefinition?.default_block_name || 'New Block'
+      this.blockForm.name = originalBlockDefinition?.default_block_name ?? effectiveBlockDefinition?.default_block_name ?? 'New Block'
       const newBlock = this.prefillDefault({ ...this.blockForm.data() })
       newBlock.id = generateUUID()
       newBlock.hidden = false

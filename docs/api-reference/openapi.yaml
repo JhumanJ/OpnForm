@@ -16,6 +16,8 @@ tags:
       description: Manage and retrieve forms.
     - name: Submissions
       description: Access and manage form submissions.
+    - name: Integrations
+      description: Manage form integrations (webhooks) via API.
     - name: Zapier
       description: Legacy endpoints for the Zapier integration.
 paths:
@@ -777,6 +779,231 @@ paths:
                                         example: Record successfully removed.
                 "403":
                     description: "Forbidden – token lacks forms-write ability"
+    "/open/forms/{form}/integrations":
+        get:
+            tags:
+                - Integrations
+            summary: List Form Integrations
+            description: "List all integrations configured for a form. Requires `manage-integrations` ability."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: form
+                  in: path
+                  required: true
+                  schema:
+                      type: number
+                      description: The ID of the form.
+            responses:
+                "200":
+                    description: Successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/FormIntegration"
+                "403":
+                    description: Forbidden – token lacks manage-integrations ability
+                "404":
+                    description: Form not found
+        post:
+            tags:
+                - Integrations
+            summary: Create Webhook Integration
+            description: "Create a new webhook integration for a form. Requires `manage-integrations` ability."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: form
+                  in: path
+                  required: true
+                  schema:
+                      type: number
+                      description: The ID of the form.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - integration_id
+                                - data
+                            properties:
+                                integration_id:
+                                    type: string
+                                    enum: [webhook]
+                                    description: Must be "webhook"
+                                status:
+                                    type: string
+                                    enum: [active, inactive]
+                                    default: active
+                                    description: The initial status of the webhook
+                                data:
+                                    type: object
+                                    required:
+                                        - webhook_url
+                                    properties:
+                                        webhook_url:
+                                            type: string
+                                            format: uri
+                                            description: The URL where submissions will be sent
+            responses:
+                "200":
+                    description: Webhook created successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: "Form Integration was created."
+                                    form_integration:
+                                        $ref: "#/components/schemas/FormIntegration"
+                "403":
+                    description: Forbidden – insufficient permissions
+                "404":
+                    description: Form not found
+                "422":
+                    description: Validation error
+    "/open/forms/{form}/integrations/{integrationid}":
+        put:
+            tags:
+                - Integrations
+            summary: Update Webhook Integration
+            description: "Update an existing webhook integration. Requires `manage-integrations` ability."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: form
+                  in: path
+                  required: true
+                  schema:
+                      type: number
+                      description: The ID of the form.
+                - name: integrationid
+                  in: path
+                  required: true
+                  schema:
+                      type: number
+                      description: The ID of the integration.
+            requestBody:
+                required: true
+                content:
+                    application/json:
+                        schema:
+                            type: object
+                            required:
+                                - integration_id
+                                - data
+                            properties:
+                                integration_id:
+                                    type: string
+                                    enum: [webhook]
+                                    description: Must be "webhook"
+                                status:
+                                    type: string
+                                    enum: [active, inactive]
+                                    description: The status of the webhook
+                                data:
+                                    type: object
+                                    required:
+                                        - webhook_url
+                                    properties:
+                                        webhook_url:
+                                            type: string
+                                            format: uri
+                                            description: The URL where submissions will be sent
+            responses:
+                "200":
+                    description: Webhook updated successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: "Form Integration was updated."
+                                    form_integration:
+                                        $ref: "#/components/schemas/FormIntegration"
+                "403":
+                    description: Forbidden – insufficient permissions
+                "404":
+                    description: Form or integration not found
+                "422":
+                    description: Validation error
+        delete:
+            tags:
+                - Integrations
+            summary: Delete Webhook Integration
+            description: "Delete a webhook integration. Requires `manage-integrations` ability."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: form
+                  in: path
+                  required: true
+                  schema:
+                      type: number
+                      description: The ID of the form.
+                - name: integrationid
+                  in: path
+                  required: true
+                  schema:
+                      type: number
+                      description: The ID of the integration.
+            responses:
+                "200":
+                    description: Webhook deleted successfully
+                    content:
+                        application/json:
+                            schema:
+                                type: object
+                                properties:
+                                    message:
+                                        type: string
+                                        example: "Form Integration was deleted."
+                "403":
+                    description: Forbidden – insufficient permissions
+                "404":
+                    description: Form or integration not found
+    "/open/forms/{form}/integrations/{integrationid}/events":
+        get:
+            tags:
+                - Integrations
+            summary: List Webhook Events
+            description: "List past webhook dispatch events for an integration. Requires `manage-integrations` ability."
+            security:
+                - bearerAuth: []
+            parameters:
+                - name: form
+                  in: path
+                  required: true
+                  schema:
+                      type: number
+                      description: The ID of the form.
+                - name: integrationid
+                  in: path
+                  required: true
+                  schema:
+                      type: number
+                      description: The ID of the integration.
+            responses:
+                "200":
+                    description: Successful
+                    content:
+                        application/json:
+                            schema:
+                                type: array
+                                items:
+                                    $ref: "#/components/schemas/IntegrationEvent"
+                "403":
+                    description: Forbidden – insufficient permissions
+                "404":
+                    description: Form or integration not found
     "/external/zapier/validate":
         get:
             tags:
@@ -1201,6 +1428,62 @@ components:
                     type: string
                     format: date-time
                     description: "Last update timestamp"
+        FormIntegration:
+            type: object
+            properties:
+                id:
+                    type: number
+                    description: Unique identifier for the integration.
+                    readOnly: true
+                form_id:
+                    type: number
+                    description: The ID of the associated form.
+                    readOnly: true
+                integration_id:
+                    type: string
+                    description: Type of integration (currently only "webhook" is exposed via API).
+                    example: "webhook"
+                status:
+                    type: string
+                    enum: [active, inactive]
+                    description: Whether the integration is active.
+                data:
+                    type: object
+                    description: Integration-specific configuration. For webhooks, contains webhook_url.
+                    example:
+                        webhook_url: "https://example.com/opnform-hook"
+        IntegrationEvent:
+            type: object
+            properties:
+                id:
+                    type: number
+                    description: Unique identifier for the event record.
+                    readOnly: true
+                integration_id:
+                    type: number
+                    description: The ID of the webhook integration that generated this event.
+                    readOnly: true
+                event:
+                    type: string
+                    description: The type of event.
+                    example: "submission.created"
+                status:
+                    type: string
+                    enum: [success, failed, timeout]
+                    description: Result of the webhook dispatch.
+                response_code:
+                    type: number
+                    nullable: true
+                    description: HTTP status code returned by the webhook endpoint.
+                error_message:
+                    type: string
+                    nullable: true
+                    description: Error details if the webhook dispatch failed.
+                created_at:
+                    type: string
+                    format: date-time
+                    description: ISO 8601 timestamp of when the webhook was dispatched.
+                    readOnly: true
     securitySchemes:
         bearerAuth:
             type: http
@@ -1214,3 +1497,4 @@ components:
                 "workspace-users-write": "Write access to workspace users"
                 "forms-read": "Read access to forms"
                 "forms-write": "Write access to forms"
+                "manage-integrations": "Manage form integrations (webhooks)"

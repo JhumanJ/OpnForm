@@ -25,13 +25,6 @@ export function useFormInitialization(formConfig, form, pendingSubmission) {
   const initialize = async (options = {}) => {
     const config = toValue(formConfig)
     
-    // Ensure focused mode shows navigation arrows by default when unset
-    if (config?.presentation_style === 'focused') {
-      if (!config.settings) config.settings = {}
-      if (config.settings.navigation_arrows === undefined) {
-        config.settings.navigation_arrows = true
-      }
-    }
 
     // 1. Reset form state
     form.reset()
