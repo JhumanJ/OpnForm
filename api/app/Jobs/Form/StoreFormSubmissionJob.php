@@ -49,7 +49,7 @@ class StoreFormSubmissionJob implements ShouldQueue
     private ?array $formData = null;
     private ?int $completionTime = null;
     private bool $isPartial = false;
-    private bool $isClientProvidedPageId = false;
+    private bool $isClientProvidedSubmissionId = false;
 
     /**
      * Create a new job instance.
@@ -129,7 +129,7 @@ class StoreFormSubmissionJob implements ShouldQueue
 
         $propertyIds = $this->form->database_fields_update;
         $properties = collect($this->form->properties)->filter(function ($property) use ($propertyIds) {
-            $this->isClientProvidedPageId = true;
+            $this->isClientProvidedSubmissionId = true;
             return in_array($property['id'], $propertyIds);
         });
 
@@ -151,7 +151,7 @@ class StoreFormSubmissionJob implements ShouldQueue
         $record = $query->first();
 
         if ($record) {
-            $this->isClientProvidedPageId = true;
+            $this->isClientProvidedSubmissionId = true;
             return $record->id;
         }
         return null;
@@ -205,7 +205,7 @@ class StoreFormSubmissionJob implements ShouldQueue
 
             // For editable submissions, always include empty values to clear fields
             // For field-matching updates, respect the form's clear_empty_fields_on_update setting
-            $shouldSkipEmpty = !$this->isClientProvidedPageId && !($this->form->clear_empty_fields_on_update ?? false);
+            $shouldSkipEmpty = !$this->isClientProvidedSubmissionId && !($this->form->clear_empty_fields_on_update ?? false);
             if ($shouldSkipEmpty && (empty($answerValue) || is_null($answerValue)) && $answerValue !== 0 && $answerValue !== '0' && $answerValue !== false) {
                 continue;
             }

@@ -105,7 +105,8 @@ it('handles file uploads in partial submissions', function () {
     $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace, [
-        'enable_partial_submissions' => true
+        'enable_partial_submissions' => true,
+        'clear_empty_fields_on_update' => true
     ]);
 
     // Create a fake file
@@ -142,7 +143,8 @@ it('handles signature field in partial submissions', function () {
     $user = $this->actingAsProUser();
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace, [
-        'enable_partial_submissions' => true
+        'enable_partial_submissions' => true,
+        'clear_empty_fields_on_update' => true
     ]);
 
     // Create partial submission with signature
