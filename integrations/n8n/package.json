@@ -1,0 +1,51 @@
+{
+  "name": "n8n-nodes-opnform",
+  "version": "0.1.0",
+  "description": "n8n community node to receive OpnForm submissions via webhook subscription",
+  "keywords": [
+    "n8n-community-node-package",
+    "opnform",
+    "forms",
+    "webhook",
+    "trigger"
+  ],
+  "license": "MIT",
+  "homepage": "https://opnform.com",
+  "author": {
+    "name": "OpnForm"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opnform/opnform.git"
+  },
+  "main": "dist/index.js",
+  "files": [
+    "dist"
+  ],
+  "n8n": {
+    "n8nNodesApiVersion": 1,
+    "credentials": [
+      "dist/credentials/OpnformApi.credentials.js"
+    ],
+    "nodes": [
+      "dist/nodes/OpnformTrigger/OpnformTrigger.node.js"
+    ]
+  },
+  "devDependencies": {
+    "@n8n/node-cli": "*",
+    "eslint": "9.32.0",
+    "prettier": "3.6.2",
+    "typescript": "5.9.2"
+  },
+  "peerDependencies": {
+    "n8n-workflow": "*"
+  },
+  "scripts": {
+    "build": "n8n-node build",
+    "build:watch": "tsc --watch",
+    "dev": "n8n-node dev",
+    "lint": "n8n-node lint",
+    "lint:fix": "n8n-node lint --fix"
+  }
+}
+

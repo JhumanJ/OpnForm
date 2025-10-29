@@ -50,6 +50,15 @@
     "is_editable": false,
     "url": "https://zapier.com/apps/opnform/integrations"
   },
+  "n8n": {
+    "name": "n8n",
+    "icon": "simple-icons:n8n",
+    "section_name": "Automation",
+    "is_pro": false,
+    "is_external": true,
+    "is_editable": false,
+    "url": "https://docs.n8n.io/"
+  },
   "google_sheets": {
     "name": "Google Sheets",
     "icon": "mdi:google-spreadsheet",

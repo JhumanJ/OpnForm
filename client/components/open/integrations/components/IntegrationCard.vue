@@ -125,24 +125,46 @@ const actionsComponent = computed(() => {
   return null
 })
 
+const isProviderManaged = computed(() => {
+  const id = props.integration?.integration_id
+  return id === 'n8n' // extend with other providers when needed
+})
+
+const providerUrl = computed(() => {
+  return props.integration?.data?.provider_url || integrationTypeInfo.value?.url || null
+})
+
 const dropdownItems = computed(() => {
   const items = []
 
-  // Edit option
-  if (integrationTypeInfo.value?.is_editable !== false) {
-    items.push({
-      label: 'Edit',
-      icon: 'i-heroicons-pencil',
-      onClick: () => {
-        showIntegrationModal.value = true
-      }
-    })
-  } else if (integrationTypeInfo.value?.url) {
-    items.push({
-      label: `Edit on ${integrationTypeInfo.value.name}`,
-      icon: 'i-heroicons-pencil',
-      to: integrationTypeInfo.value.url
-    })
+  // Provider-managed: no edit/delete, show redirect
+  if (isProviderManaged.value) {
+    if (providerUrl.value) {
+      items.push({
+        label: `Open in ${integrationTypeInfo.value?.name || 'Provider'}`,
+        icon: 'i-heroicons-arrow-top-right-on-square',
+        onClick: () => {
+          window.open(providerUrl.value, '_blank')
+        }
+      })
+    }
+  } else {
+    // Edit option for non provider-managed
+    if (integrationTypeInfo.value?.is_editable !== false) {
+      items.push({
+        label: 'Edit',
+        icon: 'i-heroicons-pencil',
+        onClick: () => {
+          showIntegrationModal.value = true
+        }
+      })
+    } else if (integrationTypeInfo.value?.url) {
+      items.push({
+        label: `Edit on ${integrationTypeInfo.value.name}`,
+        icon: 'i-heroicons-pencil',
+        to: integrationTypeInfo.value.url
+      })
+    }
   }
 
   // Past Events option
@@ -154,15 +176,17 @@ const dropdownItems = computed(() => {
     }
   })
 
-  // Delete option
-  items.push({
-    label: 'Delete Integration',
-    icon: 'i-heroicons-trash',
-    onClick: () => {
-      deleteFormIntegration(props.integration.id)
-    },
-    color: 'error',
-  })
+  // Delete option (hidden for provider-managed)
+  if (!isProviderManaged.value) {
+    items.push({
+      label: 'Delete Integration',
+      icon: 'i-heroicons-trash',
+      onClick: () => {
+        deleteFormIntegration(props.integration.id)
+      },
+      color: 'error',
+    })
+  }
 
   return items
 })
