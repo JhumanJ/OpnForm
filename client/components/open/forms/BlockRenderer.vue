@@ -198,6 +198,7 @@ const boundProps = computed(() => {
     inputProperties.multiple = (field.type === 'multi_select')
     inputProperties.allowCreation = (field.allow_creation === true)
     inputProperties.searchable = (inputProperties.options.length > 4)
+    inputProperties.clearable = field.required ? false : true
     if (field.type === 'multi_select') {
       inputProperties.minSelection = field.min_selection || null
       inputProperties.maxSelection = field.max_selection || null
