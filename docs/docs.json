@@ -63,21 +63,9 @@
             ]
           },
           {
-            "group": "Workspace Users",
-            "pages": [
-              "api-reference/workspace-users/list-workspace-users",
-              "api-reference/workspace-users/list-workspace-invites",
-              "api-reference/workspace-users/add-workspace-user",
-              "api-reference/workspace-users/remove-workspace-user",
-              "api-reference/workspace-users/update-workspace-user-role",
-              "api-reference/workspace-users/leave-workspace",
-              "api-reference/workspace-users/resend-workspace-invite",
-              "api-reference/workspace-users/cancel-workspace-invite"
-            ]
-          },
-          {
             "group": "Forms",
             "pages": [
+              "api-reference/forms/list-workspace-forms",
               "api-reference/forms/list-forms",
               "api-reference/forms/create-form",
               "api-reference/forms/get-form",
@@ -104,6 +92,19 @@
               "api-reference/integrations/update-webhook-integration",
               "api-reference/integrations/delete-webhook-integration",
               "api-reference/integrations/list-webhook-events"
+            ]
+          },
+          {
+            "group": "Workspace Users",
+            "pages": [
+              "api-reference/workspace-users/list-workspace-users",
+              "api-reference/workspace-users/list-workspace-invites",
+              "api-reference/workspace-users/add-workspace-user",
+              "api-reference/workspace-users/remove-workspace-user",
+              "api-reference/workspace-users/update-workspace-user-role",
+              "api-reference/workspace-users/leave-workspace",
+              "api-reference/workspace-users/resend-workspace-invite",
+              "api-reference/workspace-users/cancel-workspace-invite"
             ]
           },
           {

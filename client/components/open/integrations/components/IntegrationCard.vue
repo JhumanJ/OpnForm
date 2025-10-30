@@ -150,20 +150,20 @@ const dropdownItems = computed(() => {
     }
   } else {
     // Edit option for non provider-managed
-    if (integrationTypeInfo.value?.is_editable !== false) {
-      items.push({
-        label: 'Edit',
-        icon: 'i-heroicons-pencil',
-        onClick: () => {
-          showIntegrationModal.value = true
-        }
-      })
-    } else if (integrationTypeInfo.value?.url) {
-      items.push({
-        label: `Edit on ${integrationTypeInfo.value.name}`,
-        icon: 'i-heroicons-pencil',
-        to: integrationTypeInfo.value.url
-      })
+  if (integrationTypeInfo.value?.is_editable !== false) {
+    items.push({
+      label: 'Edit',
+      icon: 'i-heroicons-pencil',
+      onClick: () => {
+        showIntegrationModal.value = true
+      }
+    })
+  } else if (integrationTypeInfo.value?.url) {
+    items.push({
+      label: `Edit on ${integrationTypeInfo.value.name}`,
+      icon: 'i-heroicons-pencil',
+      to: integrationTypeInfo.value.url
+    })
     }
   }
 
@@ -178,14 +178,14 @@ const dropdownItems = computed(() => {
 
   // Delete option (hidden for provider-managed)
   if (!isProviderManaged.value) {
-    items.push({
-      label: 'Delete Integration',
-      icon: 'i-heroicons-trash',
-      onClick: () => {
-        deleteFormIntegration(props.integration.id)
-      },
-      color: 'error',
-    })
+  items.push({
+    label: 'Delete Integration',
+    icon: 'i-heroicons-trash',
+    onClick: () => {
+      deleteFormIntegration(props.integration.id)
+    },
+    color: 'error',
+  })
   }
 
   return items

@@ -47,12 +47,12 @@ export class OpnformTrigger implements INodeType {
 				},
 				default: '',
 				required: true,
+				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 				displayOptions: {
-					show: {
-						workspaceId: ['{not_empty}'],
+					hide: {
+						workspaceId: [''],
 					},
 				},
-				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
 			},
 		],
 		usableAsTool: true,
@@ -73,8 +73,17 @@ export class OpnformTrigger implements INodeType {
 					return [];
 				}
 				const url = `${credentials.baseUrl}/open/workspaces/${workspaceId}/forms`;
-				const fs = await this.helpers.httpRequestWithAuthentication.call(this, 'opnformApi', { url, json: true });
-				return (fs as FormSummary[]).map(f => ({ name: f.name ?? f.title ?? String(f.id), value: String(f.id) }));
+				const response = await this.helpers.httpRequestWithAuthentication.call(this, 'opnformApi', { 
+					url, 
+					qs: { per_page: 100 },
+					json: true 
+				});
+				// Handle paginated response - extract data array
+				const forms = (response?.data ?? response) as FormSummary[];
+				if (!Array.isArray(forms)) {
+					return [];
+				}
+				return forms.map(f => ({ name: f.name ?? f.title ?? String(f.id), value: String(f.id) }));
 			},
 		},
 		webhook: {
