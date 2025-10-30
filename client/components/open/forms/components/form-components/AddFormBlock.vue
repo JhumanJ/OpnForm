@@ -19,11 +19,35 @@
     </div>
 
     <div class="py-2 px-4">
+      <UInput
+        v-model="searchTerm"
+        autofocus
+        variant="outline"
+        class="w-full"
+        placeholder="Search for a block..."
+        icon="i-heroicons-magnifying-glass-solid"
+        :ui="{ trailing: 'pe-1' }"
+      >
+        <template v-if="searchTerm?.length" #trailing>
+          <UButton
+            color="neutral"
+            variant="link"
+            size="sm"
+            icon="i-lucide-circle-x"
+            aria-label="Clear"
+            title="Clear"
+            @click="searchTerm = ''"
+          />
+        </template>
+      </UInput>
+    </div>
+
+    <div class="py-2 px-4">
       <p class="text-neutral-500 text-xs font-medium my-2">
         Input Blocks
       </p>
       <VueDraggable
-        :model-value="inputBlocks"
+        :model-value="filteredInputBlocks"
         :group="{ name: 'form-elements', pull: 'clone', put: false }"
         class="flex flex-col -mx-2"
         :sort="false"
@@ -35,7 +59,7 @@
       >
         <template #default>
           <div
-            v-for="element in inputBlocks"
+            v-for="element in filteredInputBlocks"
             :key="element.id || element.name"
             class="flex hover:bg-neutral-50 rounded-md items-center gap-2 p-2 group"
             role="button"
@@ -51,15 +75,21 @@
               class="text-neutral-400 w-4 h-4"
             />
           </div>
+          <p
+            v-if="searchTerm && filteredInputBlocks.length === 0"
+            class="text-neutral-400 text-xs px-2 py-1"
+          >
+            No input blocks match your search.
+          </p>
         </template>
       </VueDraggable>
     </div>
     <div class="px-4 border-t mb-4">
-      <p class="text-sm font-medium my-2">
+      <p class="text-neutral-500 text-xs font-medium my-2">
         Layout Blocks
       </p>
       <VueDraggable
-        :model-value="layoutBlocks"
+        :model-value="filteredLayoutBlocks"
         :group="{ name: 'form-elements', pull: 'clone', put: false }"
         class="flex flex-col -mx-2"
         :sort="false"
@@ -71,7 +101,7 @@
       >
         <template #default>
           <div
-            v-for="element in layoutBlocks"
+            v-for="element in filteredLayoutBlocks"
             :key="element.id || element.name"
             class="flex hover:bg-neutral-50 rounded-md items-center gap-2 p-2"
             role="button"
@@ -87,6 +117,12 @@
               class="text-neutral-400 w-4 h-4"
             />
           </div>
+          <p
+            v-if="searchTerm && filteredLayoutBlocks.length === 0"
+            class="text-neutral-400 text-xs px-2 py-1"
+          >
+            No layout blocks match your search.
+          </p>
         </template>
       </VueDraggable>
     </div>
@@ -98,6 +134,7 @@ import { VueDraggable } from 'vue-draggable-plus'
 import blocksTypes from '~/data/blocks_types.json'
 import BlockTypeIcon from '../BlockTypeIcon.vue'
 import AiFieldGenerator from './components/AiFieldGenerator.vue'
+import Fuse from 'fuse.js'
 
 const workingFormStore = useWorkingFormStore()
 const { isAuthenticated: authenticated } = useIsAuthenticated()
@@ -114,6 +151,25 @@ const allowedBlocks = computed(() => {
 
 const inputBlocks = computed(() => allowedBlocks.value.filter(block => !block.name.startsWith('nf-')))
 const layoutBlocks = computed(() => allowedBlocks.value.filter(block => block.name.startsWith('nf-')))
+
+const searchTerm = ref('')
+const normalizedSearch = computed(() => searchTerm.value.trim().toLowerCase())
+
+const fuseOptions = {
+  keys: ['title', 'name'],
+  threshold: 0.3,
+  ignoreLocation: true,
+  includeScore: false,
+}
+const filteredInputBlocks = computed(() => {
+  if (!normalizedSearch.value) return inputBlocks.value
+  return new Fuse(inputBlocks.value, fuseOptions).search(normalizedSearch.value).map(r => r.item)
+})
+
+const filteredLayoutBlocks = computed(() => {
+  if (!normalizedSearch.value) return layoutBlocks.value
+  return new Fuse(layoutBlocks.value, fuseOptions).search(normalizedSearch.value).map(r => r.item)
+})
 
 const closeSidebar = () => {
   workingFormStore.closeAddFieldSidebar()
