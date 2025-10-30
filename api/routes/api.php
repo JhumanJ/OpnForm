@@ -56,7 +56,7 @@ Route::group(['middleware' => 'auth.multi'], function () {
         Route::patch('/profile', [ProfileController::class, 'update']);
         Route::patch('/password', [PasswordController::class, 'update']);
 
-        Route::prefix('/tokens')->name('tokens.')->middleware('require-pro')->group(function () {
+        Route::prefix('/tokens')->name('tokens.')->group(function () {
             Route::get('/', [TokenController::class, 'index'])->name('index');
             Route::post('/', [TokenController::class, 'store'])->name('store');
             Route::delete('{token}', [TokenController::class, 'destroy'])->name('destroy');
