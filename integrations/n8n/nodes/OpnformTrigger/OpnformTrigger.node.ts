@@ -159,7 +159,7 @@ export class OpnformTrigger implements INodeType {
 					);
 					
 					return exists;
-				} catch (error) {
+				} catch {
 					// If API call fails, assume it doesn't exist
 					return false;
 				}
@@ -190,7 +190,7 @@ export class OpnformTrigger implements INodeType {
 							url: `${credentials.baseUrl}/open/forms/${staticData.lastFormId}/integrations/${staticData.integrationId}`,
 							json: true,
 						});
-					} catch (error) {
+					} catch {
 						// Continue anyway, don't fail the new creation
 					}
 				}
@@ -198,7 +198,7 @@ export class OpnformTrigger implements INodeType {
 				// Construct provider URL if n8n instance URL is configured
 				let providerUrl: string | undefined;
 				try {
-					let n8nInstanceUrl = (credentials as any).n8nInstanceUrl;
+					let n8nInstanceUrl = (credentials as { baseUrl: string; apiKey: string; n8nInstanceUrl?: string }).n8nInstanceUrl;
 					
 					// If not explicitly configured, extract from webhook URL
 					// Webhook URL format: https://n8n-instance.com/webhook/workflow-id/trigger-name
@@ -213,7 +213,7 @@ export class OpnformTrigger implements INodeType {
 							providerUrl = `${n8nInstanceUrl.replace(/\/$/, '')}/workflow/${workflowId}`;
 						}
 					}
-				} catch (error) {
+				} catch {
 					// Silently fail, provider URL is optional
 				}
 
