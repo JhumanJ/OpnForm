@@ -54,6 +54,8 @@
     "name": "n8n",
     "icon": "simple-icons:n8n",
     "section_name": "Automation",
+    "file_name": "N8nIntegration",
+    "actions_file_name": "N8nIntegrationActions",
     "is_pro": false,
     "is_external": true,
     "is_editable": false,

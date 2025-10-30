@@ -14,14 +14,12 @@ Then in your n8n instance, install this package or load it as a local custom nod
 
 ## Credentials
 
--   Base URL: `https://api.opnform.com` (or your self-hosted URL)
--   API Key: Personal Access Token with `manage-integrations` ability
+- Base URL: `https://api.opnform.com` (or your self-hosted URL)
+- API Key: Personal Access Token with `manage-integrations` ability
 
 ## How it works
 
--   Load options fetch Workspaces and Forms via `/open/workspaces` and `/open/workspaces/{workspaceId}/forms`.
--   On enable, the node subscribes by creating a form integration with `integration_id: 'n8n'` and your webhook URL.
--   On disable, the node deletes the created integration.
--   Incoming webhook payload is forwarded as JSON to the flow.
-
-Optional: Provide a Provider URL (link to your n8n workflow) which OpnForm UI can display for quick navigation.
+- Load options fetch Workspaces and Forms via `/open/workspaces` and `/open/workspaces/{workspaceId}/forms`.
+- On enable, the node subscribes by creating a form integration with `integration_id: 'n8n'` and your webhook URL.
+- On disable, the node deletes the created integration.
+- Incoming webhook payload is forwarded as JSON to the flow.

@@ -55,6 +55,7 @@
       </div>
       <UDropdownMenu
         v-else
+        arrow
         :items="dropdownItems"
         :content="{ side: 'bottom', align: 'end' }"
       >
@@ -125,32 +126,13 @@ const actionsComponent = computed(() => {
   return null
 })
 
-const isProviderManaged = computed(() => {
-  const id = props.integration?.integration_id
-  return id === 'n8n' // extend with other providers when needed
-})
-
-const providerUrl = computed(() => {
-  return props.integration?.data?.provider_url || integrationTypeInfo.value?.url || null
-})
-
 const dropdownItems = computed(() => {
   const items = []
+  const isExternal = integrationTypeInfo.value?.is_external === true
+  const isEditable = integrationTypeInfo.value?.is_editable !== false
 
-  // Provider-managed: no edit/delete, show redirect
-  if (isProviderManaged.value) {
-    if (providerUrl.value) {
-      items.push({
-        label: `Open in ${integrationTypeInfo.value?.name || 'Provider'}`,
-        icon: 'i-heroicons-arrow-top-right-on-square',
-        onClick: () => {
-          window.open(providerUrl.value, '_blank')
-        }
-      })
-    }
-  } else {
-    // Edit option for non provider-managed
-  if (integrationTypeInfo.value?.is_editable !== false) {
+  // Edit option for non-external integrations or editable external ones
+  if (!isExternal && isEditable) {
     items.push({
       label: 'Edit',
       icon: 'i-heroicons-pencil',
@@ -158,13 +140,12 @@ const dropdownItems = computed(() => {
         showIntegrationModal.value = true
       }
     })
-  } else if (integrationTypeInfo.value?.url) {
+  } else if (integrationTypeInfo.value?.url && !isExternal) {
     items.push({
       label: `Edit on ${integrationTypeInfo.value.name}`,
       icon: 'i-heroicons-pencil',
       to: integrationTypeInfo.value.url
     })
-    }
   }
 
   // Past Events option
@@ -176,8 +157,8 @@ const dropdownItems = computed(() => {
     }
   })
 
-  // Delete option (hidden for provider-managed)
-  if (!isProviderManaged.value) {
+  // Delete option (hidden for external/managed integrations)
+  if (!isExternal) {
   items.push({
     label: 'Delete Integration',
     icon: 'i-heroicons-trash',

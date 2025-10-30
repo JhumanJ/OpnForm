@@ -26,6 +26,15 @@ export class OpnformApi implements ICredentialType {
 			type: 'string',
 			default: 'https://api.opnform.com',
 		},
+		{
+			displayName: 'n8n Instance URL',
+			name: 'n8nInstanceUrl',
+			type: 'string',
+			default: '',
+			required: false,
+			description: 'Optional. URL of your n8n instance (auto-detected from webhook URL). Override if needed for self-hosted instances.',
+			placeholder: 'https://n8n.example.com',
+		},
 	];
 
 	authenticate: IAuthenticateGeneric = {
@@ -39,7 +48,7 @@ export class OpnformApi implements ICredentialType {
 
 	test: ICredentialTestRequest = {
 		request: {
-			url: '={{$credentials.baseUrl}}/open/workspaces',
+			url: '={{$credentials.baseUrl.replace(/\\/$/, "").trim()}}/open/workspaces',
 		},
 	};
 }
