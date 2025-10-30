@@ -50,6 +50,15 @@ export const scaleInputTheme = {
           'bg-neutral-100 dark:bg-notion-dark-light'
         ],
         buttonHover: 'hover:bg-neutral-200/50 dark:hover:bg-neutral-900'
+      },
+      transparent: {
+        button: [
+          'border-0 border-b border-neutral-300 dark:border-neutral-600'
+        ],
+        buttonUnselected: [
+          'bg-transparent'
+        ],
+        buttonHover: 'hover:bg-neutral-50 dark:hover:bg-neutral-900'
       }
     },
     size: {

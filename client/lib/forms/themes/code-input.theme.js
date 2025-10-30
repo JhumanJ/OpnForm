@@ -11,7 +11,8 @@ export const codeInputTheme = {
     theme: {
       default: { container: 'border border-neutral-300 dark:border-neutral-600' },
       minimal: { container: 'border-2 border-transparent bg-neutral-100 dark:bg-notion-dark-light' },
-      notion: { container: 'border border-notion-input-border dark:border-notion-input-borderDark' }
+      notion: { container: 'border border-notion-input-border dark:border-notion-input-borderDark' },
+      transparent: { container: 'border-0 border-b border-neutral-300 dark:border-neutral-600 bg-transparent rounded-none shadow-none' }
     },
     size: {
       xs: { container: 'rounded-none' },

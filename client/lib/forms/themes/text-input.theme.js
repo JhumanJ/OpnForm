@@ -46,6 +46,17 @@ export const textInputTheme = {
           'text-neutral-700 dark:text-neutral-300',
           'focus:ring-0 focus:border-form'
         ]
+      },
+      transparent: {
+        input: [
+          'border-0 border-b border-neutral-300 dark:border-neutral-600',
+          'bg-transparent',
+          'text-neutral-700 dark:text-neutral-300',
+          'shadow-none',
+          '!rounded-none',
+          'focus:ring-0 focus:border-form',
+          '!px-0'
+        ]
       }
     },
     size: {

@@ -73,6 +73,23 @@ export const flatSelectInputTheme = {
           'border-neutral-200 dark:border-neutral-700',
           'gap-x-2'
         ]
+      },
+      transparent: {
+        container: [
+          'relative overflow-hidden',
+          'border-0 border-b border-neutral-300 dark:border-neutral-600',
+          'bg-transparent',
+          'text-neutral-700 dark:text-neutral-300',
+          'shadow-none',
+          'rounded-none'
+        ],
+        option: [
+          'relative',
+          'focus-visible:ring-2 focus-visible:ring-form/100 focus-visible:outline-none',
+          'border-neutral-200 dark:border-neutral-700',
+          'gap-x-2',
+          '!px-0'
+        ]
       }
     },
     size: {

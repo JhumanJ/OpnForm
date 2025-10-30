@@ -36,7 +36,7 @@ class Form extends Model implements CachableAttributes
 
     public const BORDER_RADIUS = ['none', 'small', 'full'];
 
-    public const THEMES = ['default', 'simple', 'notion', 'minimal'];
+    public const THEMES = ['default', 'simple', 'notion', 'minimal', 'transparent'];
 
     public const PRESENTATION_STYLES = ['classic', 'focused'];
 
@@ -211,7 +211,7 @@ class Form extends Model implements CachableAttributes
         }
 
         // Fallback to cached calculation for individual access
-        return $this->remember('views_count', 15 * 60, fn () => $this->calculateTotalViews());
+        return $this->remember('views_count', 15 * 60, fn() => $this->calculateTotalViews());
     }
 
     /**
