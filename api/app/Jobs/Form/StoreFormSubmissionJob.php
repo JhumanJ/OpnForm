@@ -50,6 +50,7 @@ class StoreFormSubmissionJob implements ShouldQueue
     private ?array $formData = null;
     private ?int $completionTime = null;
     private bool $isPartial = false;
+    private bool $isClientProvidedSubmissionId = false;
     private ?string $submitterIp = null;
 
     /**
@@ -98,6 +99,7 @@ class StoreFormSubmissionJob implements ShouldQueue
         if (isset($this->submissionData['submission_id']) && $this->submissionData['submission_id']) {
             if (is_numeric($this->submissionData['submission_id'])) {
                 $this->submissionId = (int)$this->submissionData['submission_id'];
+                $this->isClientProvidedSubmissionId = true;
             }
             unset($this->submissionData['submission_id']);
         }
@@ -155,7 +157,11 @@ class StoreFormSubmissionJob implements ShouldQueue
         }
         $record = $query->first();
 
-        return $record ? $record->id : null;
+        if ($record) {
+            $this->isClientProvidedSubmissionId = true;
+            return $record->id;
+        }
+        return null;
     }
 
     /**
@@ -211,6 +217,14 @@ class StoreFormSubmissionJob implements ShouldQueue
             if (!$field) {
                 continue;
             }
+
+            // For editable submissions, always include empty values to clear fields
+            // For field-matching updates, respect the form's clear_empty_fields_on_update setting
+            $shouldSkipEmpty = !$this->isClientProvidedSubmissionId && !($this->form->clear_empty_fields_on_update ?? false);
+            if ($shouldSkipEmpty && (empty($answerValue) || is_null($answerValue)) && $answerValue !== 0 && $answerValue !== '0' && $answerValue !== false) {
+                continue;
+            }
+
 
             // Sanitize only rich text; plain text fields are stored as-is and rendered safely in UI
             if ($field['type'] === 'rich_text') {
