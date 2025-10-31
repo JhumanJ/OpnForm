@@ -343,11 +343,8 @@ class User extends Authenticatable implements JWTSubject, CachableAttributes
 
     public function getIsRiskyAttribute()
     {
-        return $this->created_at->isAfter(now()->subDays(3)) || // created in last 3 days
-            $this->subscriptions()->where(function ($q) {
-                $q->where('stripe_status', 'trialing')
-                    ->orWhere('stripe_status', 'active');
-            })->first()?->onTrial();
+        // created in last 3 days
+        return $this->created_at->isAfter(now()->subDays(3));
     }
 
     public function flushCache()
