@@ -22,7 +22,7 @@
           <div class="w-full">
             <div class="form-group flex flex-wrap w-full max-w-sm mx-auto">
               <div class="relative w-full px-2">
-                <text-input :form="passwordForm" name="password" native-type="password" label="Password" :help="t('forms.password_protected')" />
+                <text-input :form="passwordForm" name="password" native-type="password" label="Password" :help="t('forms.password_protected')" @keydown.enter.prevent="passwordEntered" />
               </div>
             </div>
             <div class="flex flex-wrap justify-center w-full text-center">
