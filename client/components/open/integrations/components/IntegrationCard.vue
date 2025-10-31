@@ -140,7 +140,7 @@ const dropdownItems = computed(() => {
         showIntegrationModal.value = true
       }
     })
-  } else if (integrationTypeInfo.value?.url && !isExternal) {
+  } else if (integrationTypeInfo.value?.url && isExternal) {
     items.push({
       label: `Edit on ${integrationTypeInfo.value.name}`,
       icon: 'i-heroicons-pencil',
