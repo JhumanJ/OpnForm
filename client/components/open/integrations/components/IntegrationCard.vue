@@ -55,6 +55,7 @@
       </div>
       <UDropdownMenu
         v-else
+        arrow
         :items="dropdownItems"
         :content="{ side: 'bottom', align: 'end' }"
       >
@@ -127,9 +128,11 @@ const actionsComponent = computed(() => {
 
 const dropdownItems = computed(() => {
   const items = []
+  const isExternal = integrationTypeInfo.value?.is_external === true
+  const isEditable = integrationTypeInfo.value?.is_editable !== false
 
-  // Edit option
-  if (integrationTypeInfo.value?.is_editable !== false) {
+  // Edit option for non-external integrations or editable external ones
+  if (!isExternal && isEditable) {
     items.push({
       label: 'Edit',
       icon: 'i-heroicons-pencil',
@@ -137,7 +140,7 @@ const dropdownItems = computed(() => {
         showIntegrationModal.value = true
       }
     })
-  } else if (integrationTypeInfo.value?.url) {
+  } else if (integrationTypeInfo.value?.url && isExternal) {
     items.push({
       label: `Edit on ${integrationTypeInfo.value.name}`,
       icon: 'i-heroicons-pencil',
@@ -154,7 +157,8 @@ const dropdownItems = computed(() => {
     }
   })
 
-  // Delete option
+  // Delete option (hidden for external/managed integrations)
+  if (!isExternal) {
   items.push({
     label: 'Delete Integration',
     icon: 'i-heroicons-trash',
@@ -163,6 +167,7 @@ const dropdownItems = computed(() => {
     },
     color: 'error',
   })
+  }
 
   return items
 })
