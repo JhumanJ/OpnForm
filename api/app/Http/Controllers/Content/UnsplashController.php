@@ -27,7 +27,7 @@ class UnsplashController extends Controller
                     'client_id' => $accessKey,
                     'query' => $term,
                 ],
-                fn($json) => $json['results'] ?? []
+                fn ($json) => $json['results'] ?? []
             );
 
             return response()->json($photos);
