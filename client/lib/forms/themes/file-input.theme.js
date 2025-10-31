@@ -17,6 +17,9 @@ export const fileInputTheme = {
       minimal: { container: 'border-2 border-transparent bg-neutral-100 dark:bg-notion-dark-light text-neutral-700 dark:text-neutral-300 focus:ring-2 focus:ring-form/60' },
       notion: {
         container: 'border-notion-input-border dark:border-notion-input-borderDark bg-notion-input-background dark:bg-notion-dark-light text-neutral-900 dark:text-neutral-100'
+      },
+      transparent: {
+        container: 'border-0 border-b border-dashed border-neutral-300 dark:border-neutral-600 bg-transparent rounded-none shadow-none focus:ring-0'
       }
     },
     size: {

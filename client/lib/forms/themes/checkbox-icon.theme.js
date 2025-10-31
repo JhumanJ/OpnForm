@@ -26,6 +26,9 @@ export const checkboxIconTheme = {
       },
       minimal: {
         uncheckedIcon: 'text-neutral-400 dark:text-neutral-600'
+      },
+      transparent: {
+        uncheckedIcon: 'text-neutral-300 dark:text-neutral-600 border-0 border-b border-neutral-300 dark:border-neutral-600'
       }
     },
     size: {

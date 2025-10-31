@@ -49,6 +49,17 @@ export const matrixInputTheme = {
         cell: 'border-transparent',
         cellHover: 'hover:bg-neutral-200/50 dark:hover:bg-neutral-900',
         option: 'border-0 focus-visible:outline focus-visible:outline-2 focus-visible:outline-form focus-visible:outline-offset-[-2px] focus-visible:ring-0'
+      },
+      transparent: {
+        container: [
+          'border-0 border-b border-neutral-300 dark:border-neutral-600',
+          'bg-transparent',
+          'shadow-none',
+          'rounded-none'
+        ],
+        cell: 'border-transparent',
+        cellHover: 'hover:bg-neutral-50 dark:hover:bg-neutral-900',
+        option: 'focus-visible:outline-none focus-visible:ring-0'
       }
     },
     size: {

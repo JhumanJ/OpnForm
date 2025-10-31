@@ -50,6 +50,16 @@ export const phoneInputTheme = {
           'focus:ring-0 focus:border-form'
         ],
         separator: 'ltr:border-l rtl:border-r border-neutral-200 dark:border-neutral-700'
+      },
+      transparent: {
+        input: [
+          'border-0 border-b border-neutral-300 dark:border-neutral-600',
+          'bg-transparent',
+          'text-neutral-700 dark:text-neutral-300',
+          'shadow-none',
+          '!rounded-none',
+          'focus:ring-0 focus:border-form'
+        ]
       }
     },
     size: {

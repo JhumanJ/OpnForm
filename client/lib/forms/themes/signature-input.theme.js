@@ -36,6 +36,9 @@ export const signatureInputTheme = {
           'bg-neutral-100 dark:bg-notion-dark-light',
           'text-neutral-700 dark:text-neutral-300'
         ]
+      },
+      transparent: {
+        container: 'border-0 border-b border-dashed border-neutral-300 dark:border-neutral-600 bg-transparent rounded-none shadow-none focus:ring-0'
       }
     },
     size: {
