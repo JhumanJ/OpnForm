@@ -48,6 +48,9 @@ if (config('app.self_hosted')) {
 Route::group(['middleware' => 'auth.multi'], function () {
     Route::post('logout', [LoginController::class, 'logout'])->name('logout');
 
+    // Unsplash
+    Route::get('/unsplash', [\App\Http\Controllers\Content\UnsplashController::class, 'index'])->name('unsplash.index');
+    Route::post('/unsplash/download', [\App\Http\Controllers\Content\UnsplashController::class, 'download'])->name('unsplash.download');
 
     Route::get('user', [UserController::class, 'current'])->name('user.current');
     Route::delete('user', [UserController::class, 'deleteAccount']);
