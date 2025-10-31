@@ -77,7 +77,7 @@
           />
 
           <div v-if="activeTab === 'upload'" class="sm:grid sm:grid-cols-1 sm:gap-4 sm:items-start">
-            <div class="sm:col-span-2 mb-5">
+            <div class="sm:col-span-2 mb-5 mt-2">
               <div
                 v-cloak
                 class="w-full flex justify-center items-center px-6 pt-5 pb-6 border-2 border-neutral-300 border-dashed rounded-md h-54"
@@ -161,6 +161,7 @@ import { inputProps, useFormInput } from "../useFormInput.js"
 import { storeFile } from "~/lib/file-uploads.js"
 import { formsApi } from '~/api'
 import { imageInputTheme } from '~/lib/forms/themes/image-input.theme.js'
+import { useFeatureFlag } from '~/composables/useFeatureFlag.js'
 
 export default {
   components: {  },
@@ -181,11 +182,6 @@ export default {
   data: () => ({
     showUploadModal: false,
     activeTab: 'upload',
-    tabItems: [
-      { label: 'Upload', value: 'upload' },
-      { label: 'Unsplash', value: 'unsplash' },
-      { label: 'URL', value: 'url' },
-    ],
     urlInput: '',
 
     file: [],
@@ -197,6 +193,16 @@ export default {
   computed: {
     currentUrl() {
       return this.compVal
+    },
+    tabItems() {
+      const baseTabs = [
+        { label: 'Upload', value: 'upload' },
+        { label: 'URL', value: 'url' },
+      ]
+      if (useFeatureFlag('services.unsplash')) {
+        baseTabs.splice(1, 0, { label: 'Unsplash', value: 'unsplash' })
+      }
+      return baseTabs
     },
   },
 

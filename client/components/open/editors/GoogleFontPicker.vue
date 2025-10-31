@@ -57,7 +57,7 @@ import { defineEmits } from "vue"
 import { refDebounced, useElementVisibility } from "@vueuse/core"
 import { useFuse } from '@vueuse/integrations/useFuse'
 import FontCard from './FontCard.vue'
-import { contentApi } from "~/api"
+import { useContent } from '~/composables/query/useContent'
 
 const props = defineProps({
   show: {
@@ -82,14 +82,19 @@ const isOpen = computed({
 
 const emit = defineEmits(['close', 'apply'])
 
-const loading = ref(false)
-const fonts = ref([])
+const { fonts: fontsApi } = useContent()
 const selectedFont = ref(props.font || null)
 const search = ref("")
 const debouncedSearch = refDebounced(search, 500)
+
+// Use TanStack Query for fonts with caching
+const { data: fonts = [], isLoading: loading } = fontsApi.list({
+  enabled: computed(() => props.show)
+})
+
 const { results: fuseResults } = useFuse(
   debouncedSearch,
-  computed(() => Object.values(fonts.value || [])),
+  computed(() => Object.values(fonts || [])),
   {
     fuseOptions: {
       threshold: 0.3,
@@ -126,23 +131,21 @@ const initializeVisibilityTracking = async () => {
   })
 }
 
-const fetchFonts = async () => {
-  if (props.show) {
+watch(() => props.show, (show) => {
+  if (show) {
     selectedFont.value = props.font || null
-    loading.value = true
-    contentApi.fonts.list().then((data) => {
-      fonts.value = data || []
-      loading.value = false
-      initializeVisibilityTracking()
-    })
   }
-}
-watch(() => props.show, fetchFonts)
+})
 
+watch(() => fonts, () => {
+  if (fonts.length > 0) {
+    initializeVisibilityTracking()
+  }
+})
 
 const enrichedFonts = computed(() => {
   return fuseResults.value && fuseResults.value.length > 0
     ? fuseResults.value.map((res) => res.item)
-    : (fonts.value || [])
+    : (fonts || [])
 })
 </script>

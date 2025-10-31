@@ -26,6 +26,7 @@ class UnsplashController extends Controller
                 [
                     'client_id' => $accessKey,
                     'query' => $term,
+                    'per_page' => 9,
                 ],
                 fn ($json) => $json['results'] ?? []
             );
@@ -37,11 +38,31 @@ class UnsplashController extends Controller
         $photos = Cache::remember('unsplash_images', 60 * 60, function () use ($accessKey) {
             return $this->fetchUnsplash(
                 'https://api.unsplash.com/photos',
-                ['client_id' => $accessKey]
+                [
+                    'client_id' => $accessKey,
+                    'per_page' => 9,
+                ]
             );
         });
 
         return response()->json($photos);
+    }
+
+    public function download(Request $request)
+    {
+        $accessKey = config('services.unsplash.access_key');
+        $downloadLocation = $request->get('download_location');
+
+        if (!$accessKey || !$downloadLocation) {
+            return response()->json(['error' => 'Invalid request'], 400);
+        }
+
+        // Trigger download tracking by calling Unsplash download endpoint
+        Http::get($downloadLocation, [
+            'client_id' => $accessKey,
+        ]);
+
+        return response()->json(['success' => true]);
     }
 
     /**
@@ -72,9 +93,13 @@ class UnsplashController extends Controller
                 'id' => $photo['id'],
                 'url' => $photo['urls']['regular'] ?? null,
                 'alt_text' => $photo['alt_description'] ?? null,
+                'photographer_name' => $photo['user']['name'] ?? null,
+                'photographer_username' => $photo['user']['username'] ?? null,
+                'photographer_url' => $photo['user']['links']['html'] ?? null,
+                'download_location' => $photo['links']['download_location'] ?? null,
             ];
         })->filter(function ($photo) {
             return $photo['url'] !== null;
-        })->toArray();
+        })->take(9)->toArray();
     }
 }
