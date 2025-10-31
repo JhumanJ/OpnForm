@@ -1,6 +1,6 @@
 {
   "name": "n8n-nodes-opnform",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "n8n community node to receive OpnForm submissions via webhook subscription",
   "keywords": [
     "n8n-community-node-package",
@@ -48,4 +48,3 @@
     "lint:fix": "n8n-node lint --fix"
   }
 }
-
