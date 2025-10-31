@@ -194,6 +194,7 @@ import AIFormLoadingMessages from "~/components/open/forms/components/AIFormLoad
 import { formsApi } from "~/api/forms"
 import { useElementSize } from '@vueuse/core'
 import TrackClick from '~/components/global/TrackClick.vue'
+import seedFocusedFirstBlockImage from '~/lib/forms/seed-focused-image'
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -252,12 +253,10 @@ function selectStyle(style) {
     if (style === 'focused') {
       workingFormStore.content.size = 'lg'
       // Ensure navigation arrows are enabled by default in focused mode
-      if (!workingFormStore.content.settings) {
-        workingFormStore.content.settings = {}
-      }
-      if (workingFormStore.content.settings.navigation_arrows === undefined) {
-        workingFormStore.content.settings.navigation_arrows = true
-      }
+      const currentSettings = workingFormStore.content.settings ?? {}
+      workingFormStore.content.settings = { ...currentSettings, navigation_arrows: true }
+      // Seed first block image to highlight focused mode
+      seedFocusedFirstBlockImage(workingFormStore.content)
     }
     // Close any open sidebars since layout may change
     workingFormStore.closeAllSidebars()
@@ -297,10 +296,12 @@ const fetchGeneratedForm = (generationId) => {
       .then((data) => {
         if (data.ai_form_completion.status === "completed") {
           useAlert().success(data.message)
-          emit(
-            "form-generated",
-            JSON.parse(data.ai_form_completion.result),
-          )
+          const generated = JSON.parse(data.ai_form_completion.result)
+          // Apply seeding based on user's style choice in the modal
+          if (selectedStyle.value === 'focused') {
+            seedFocusedFirstBlockImage(generated)
+          }
+          emit("form-generated", generated)
           emit("close")
         } else if (data.ai_form_completion.status === "failed") {
           useAlert().error("Something went wrong, please try again.")

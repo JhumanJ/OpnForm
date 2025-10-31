@@ -27,24 +27,23 @@
 </template>
 
 <script setup>
-import { useNuxtApp } from "nuxt/app"
 import { WindowMessageTypes } from "~/composables/useWindowMessage"
 import { authApi } from "~/api"
 
-const { $utm } = useNuxtApp()
 const router = useRouter()
 const route = useRoute()
 const loading = ref(true)
 const authFlow = useAuthFlow()
 
+const loginMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
+const providerMessage = useWindowMessage(WindowMessageTypes.OAUTH_PROVIDER_CONNECTED)
 
 const handleCallback = async () => {
   const provider = route.params.provider
   
   try {
     let payloadData = {
-      code: route.query.code,
-      utm_data: $utm.value
+      code: route.query.code
     }
     
     // Get state token from URL query parameters (OAuth provider includes it)
@@ -61,7 +60,7 @@ const handleCallback = async () => {
 
     // Call the OAuth callback endpoint directly to get the raw response
     const response = await authApi.oauth.callback(provider, payloadData)
-
+    
     // Check if this is an authentication response (has token) or integration response (has provider)
     if (response.token) {
       // Authentication flow - user was not logged in
@@ -71,9 +70,6 @@ const handleCallback = async () => {
         // Handle existing user login
         if (window.opener) {
           try {
-            const loginMessage = useWindowMessage(WindowMessageTypes.LOGIN_COMPLETE)
-            const providerMessage = useWindowMessage(WindowMessageTypes.OAUTH_PROVIDER_CONNECTED)
-            
             await Promise.all([
               loginMessage.send(window.opener, {
                 waitForAcknowledgment: true,
@@ -87,8 +83,7 @@ const handleCallback = async () => {
             
             window.close()
             loading.value = false
-          } catch (err) {
-            console.error("Error in social callback:", err)
+          } catch {
             loading.value = false
           }
         } else {
@@ -103,35 +98,38 @@ const handleCallback = async () => {
       // Integration flow - user was already logged in, provider was connected
       if (window.opener) {
         try {
-          const providerMessage = useWindowMessage(WindowMessageTypes.OAUTH_PROVIDER_CONNECTED)
-          
           await providerMessage.send(window.opener, {
             useMessageChannel: false,
             waitForAcknowledgment: false
           })
           
-          // Auto-close if specified in response
           if (response.autoClose) {
             window.close()
           } else {
             useAlert().success(`${response.provider.name} account connected successfully!`)
             loading.value = false
           }
-        } catch (err) {
-          console.error("Error in integration callback:", err)
-          useAlert().success(`${response.provider.name} account connected successfully!`)
-          loading.value = false
+        } catch {
+          if (!response.autoClose) {
+            useAlert().success(`${response.provider.name} account connected successfully!`)
+            loading.value = false
+          }
         }
       } else {
-        // No opener, show success and redirect
-        useAlert().success(`${response.provider.name} account connected successfully!`)
-        router.push({ name: "home" })
+        // No opener (tab or cross-context) → rely on useWindowMessage (BC under the hood)
+        await providerMessage.send(null, { waitForAcknowledgment: false })
+        if (response.autoClose) {
+          window.close()
+        } else {
+          useAlert().success(`${response.provider.name} account connected successfully!`)
+          router.push({ name: "home" })
+        }
       }
     } else {
       throw new Error("Unexpected response format from OAuth callback")
     }
   } catch (error) {
-    console.error("Social login error:", error)
+    console.error("[OAuth Callback] Social login error:", error)
     useAlert().error(error.response?._data?.message || "Authentication failed")
     loading.value = false
   }

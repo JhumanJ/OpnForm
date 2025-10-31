@@ -41,6 +41,31 @@
       :key="'divider-' + block.id"
       class="border-b my-4 w-full mx-2"
     />
+    <div
+      v-else-if="block.type === 'nf-image'"
+      :id="block.id"
+      :key="block.id"
+      class="my-4 w-full px-2"
+      :class="[getFieldAlignClasses(block)]"
+      @dblclick="editFieldOptions"
+    >
+      <div
+        v-if="!block.image_block"
+        class="p-4 border border-dashed text-center"
+      >
+        <a
+          href="#"
+          class="text-blue-800 dark:text-blue-200"
+          @click.prevent="editFieldOptions"
+        >Open block settings to upload image.</a>
+      </div>
+      <img
+        v-else
+        :alt="block.name"
+        :src="block.image_block"
+        class="max-w-full inline-block rounded-lg"
+      >
+    </div>
   </div>
 </template>
 
@@ -54,10 +79,15 @@ const props = defineProps({
   formManager: { type: Object, required: true }
 })
 
+const workingFormStore = useWorkingFormStore()
+
 const form = computed(() => props.formManager?.config?.value || {})
 const dataForm = computed(() => props.formManager?.form || {})
 const darkMode = computed(() => props.formManager?.darkMode?.value || false)
 const strategy = computed(() => props.formManager?.strategy?.value || {})
+
+// Use centralized fieldState from manager
+const fieldState = computed(() => props.formManager?.fieldState)
 
 const { getFormComponent } = useComponentRegistry()
 
@@ -133,11 +163,13 @@ const shouldInjectBetweenMedia = computed(() => (
 const boundProps = computed(() => {
   const field = props.block
   if (!field) return {}
+  const unified = fieldState.value?.getState(field) || { required: !!field?.required, effectiveDisabled: !!field?.disabled, hiddenIndicator: !!field?.hidden }
+
   const inputProperties = {
     key: field.id,
     name: field.id,
     form: dataForm.value,
-    label: (field.hide_field_name) ? null : field.name + ((field.hidden) ? ' (Hidden Field)' : ''),
+    label: (field.hide_field_name) ? null : field.name + (unified.hiddenIndicator ? ' (Hidden Field)' : ''),
     color: form.value.color,
     placeholder: field.placeholder,
     help: field.help,
@@ -149,9 +181,8 @@ const boundProps = computed(() => {
     locale: (form.value?.language) ? form.value.language : 'en',
     media: shouldInjectBetweenMedia.value ? field.image : null,
     presentation: form.value?.presentation_style || 'classic',
-    required: field.required || false,
-    // Respect global disable flag from form mode (e.g., READ_ONLY)
-    disabled: (strategy.value?.display?.disableFields === true) || (field.disabled || false)
+    required: !!unified.required,
+    disabled: !!unified.effectiveDisabled
   }
 
   if (field.type === 'matrix') {
@@ -167,6 +198,7 @@ const boundProps = computed(() => {
     inputProperties.multiple = (field.type === 'multi_select')
     inputProperties.allowCreation = (field.allow_creation === true)
     inputProperties.searchable = (inputProperties.options.length > 4)
+    inputProperties.clearable = !unified.required
     if (field.type === 'multi_select') {
       inputProperties.minSelection = field.min_selection || null
       inputProperties.maxSelection = field.max_selection || null
@@ -213,6 +245,10 @@ const boundProps = computed(() => {
 
   return inputProperties
 })
+
+const editFieldOptions = () => {
+  workingFormStore.openSettingsForField(props.block, true)
+}
 </script>
 
 

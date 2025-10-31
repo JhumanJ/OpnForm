@@ -244,6 +244,7 @@ const dropdownItems = computed(() => {
     label: 'Remove',
     icon: 'i-heroicons-trash-20-solid',
     color: 'error',
+    kbds: ['meta', 'backspace'],
     onClick: removeBlock
   }])
 

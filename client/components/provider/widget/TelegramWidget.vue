@@ -49,7 +49,8 @@ const handleAuth = () => {
     window.Telegram.Login.auth(
       { bot_id: botId.value, request_access: 'write' },
       (data) => {
-        emit('auth-data', data)
+        // Include intent for integration flow
+        emit('auth-data', { ...data, intent: 'integration' })
       }
     )
   } else {

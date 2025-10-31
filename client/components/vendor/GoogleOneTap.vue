@@ -139,10 +139,12 @@ const handleCredentialResponse = (response) => {
   const route = useRoute()
   const inviteToken = route.query.invite_token
 
-  // Prepare request data
+  // Prepare request data with UTM data
+  const { $utm } = useNuxtApp()
   const requestData = { 
     credential: response.credential,
-    intent: 'auth'
+    intent: 'auth',
+    utm_data: $utm.value
   }
 
   // Add invite token if present

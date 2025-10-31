@@ -46,6 +46,7 @@ class OAuthController extends Controller
         $request->validate([
             'intent' => 'required|in:auth,integration',
             'invite_token' => 'sometimes|string',
+            'utm_data' => 'sometimes|array',
         ]);
 
         $result = $this->flowOrchestrator->processWidgetCallback($service, $request);

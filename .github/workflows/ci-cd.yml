@@ -61,7 +61,7 @@ jobs:
 
   client_lint:
     runs-on: ubuntu-latest
-    name: Run client linters
+    name: Run client linters + tests
     defaults:
       run:
         working-directory: ./client
@@ -87,6 +87,9 @@ jobs:
 
       - name: Run ESLint
         run: npm run lint
+
+      - name: Run front-end tests
+        run: npm run test -- --run
 
   tests:
     runs-on: ubuntu-latest
@@ -304,7 +307,7 @@ jobs:
   publish-docker-images:
     name: Push Docker images to Docker Hub
     needs: [code_lint, client_lint, tests, build-nuxt-app]
-    if: ${{ github.event_name == 'push' && (github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v')) }}
+    if: ${{ github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v') }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -316,10 +319,6 @@ jobs:
             echo "VERSION=${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
             echo "API_TAGS=${{secrets.DOCKER_API_REPO}}:latest,${{secrets.DOCKER_API_REPO}}:${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
             echo "UI_TAGS=${{secrets.DOCKER_UI_REPO}}:latest,${{secrets.DOCKER_UI_REPO}}:${GITHUB_REF#refs/*/v}" >> $GITHUB_ENV
-          else
-            echo "VERSION=dev" >> $GITHUB_ENV
-            echo "API_TAGS=${{secrets.DOCKER_API_REPO}}:dev,${{secrets.DOCKER_API_REPO}}:dev-${GITHUB_SHA::7}" >> $GITHUB_ENV
-            echo "UI_TAGS=${{secrets.DOCKER_UI_REPO}}:dev,${{secrets.DOCKER_UI_REPO}}:dev-${GITHUB_SHA::7}" >> $GITHUB_ENV
           fi
 
       - name: Check out the repo

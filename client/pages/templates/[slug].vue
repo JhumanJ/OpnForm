@@ -340,7 +340,7 @@ const relatedTemplates = computed(() => {
 const showFormTemplateModal = ref(false)
 const { data: user } = useAuth().user()
 const canEditTemplate = computed(
-  () => user.value && (user.value.admin || user.value.template_editor),
+  () => user.value && (user.value.admin || user.value.template_editor || template.value?.creator_id === user.value.id),
 )
 
 const createFormWithTemplateUrl = computed(() => {

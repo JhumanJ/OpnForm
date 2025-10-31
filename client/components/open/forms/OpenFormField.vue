@@ -80,55 +80,7 @@
       <div v-if="field">
         <BlockRenderer :block="field" :form-manager="formManager" />
       </div>
-      <template v-else>
-        <div
-          v-if="field.type === 'nf-text' && field.content"
-          :id="field.id"
-          :key="field.id"
-          class="nf-text w-full my-1.5 break-words whitespace-break-spaces"
-          :class="[getFieldAlignClasses(field)]"
-          v-html="field.content"
-          @dblclick="editFieldOptions"
-        />
-        <div
-          v-if="field.type === 'nf-code' && field.content"
-          :id="field.id"
-          :key="field.id"
-          class="nf-code w-full px-2 my-1.5"
-          v-html="field.content"
-        />
-        <div
-          v-if="field.type === 'nf-divider'"
-          :id="field.id"
-          :key="field.id"
-          class="border-b my-4 w-full mx-2"
-        />
-        <div
-          v-if="field.type === 'nf-image' && (field.image_block || !isPublicFormPage)"
-          :id="field.id"
-          :key="field.id"
-          class="my-4 w-full px-2"
-          :class="[getFieldAlignClasses(field)]"
-          @dblclick="editFieldOptions"
-        >
-          <div
-            v-if="!field.image_block"
-            class="p-4 border border-dashed text-center"
-          >
-            <a
-              href="#"
-              class="text-blue-800 dark:text-blue-200"
-              @click.prevent="editFieldOptions"
-            >Open block settings to upload image.</a>
-          </div>
-          <img
-            v-else
-            :alt="field.name"
-            :src="field.image_block"
-            class="max-w-full inline-block rounded-lg"
-          >
-        </div>
-      </template>
+      
       <div
         class="hidden group-hover/nffield:flex translate-x-full absolute right-0 top-0 h-full w-5 flex-col justify-center pl-1 pt-3"
       >
@@ -178,8 +130,6 @@ const isAdminPreview = computed(() => strategy.value?.admin?.showAdminControls |
 // Computed properties
 // Field rendering is delegated to BlockRenderer
 
-const isPublicFormPage = computed(() => useRoute().name === 'forms-slug')
-
 const isFieldHidden = computed(() => !showHidden.value && shouldBeHidden.value)
 
 const shouldBeHidden = computed(() => 
@@ -219,17 +169,6 @@ function openAddFieldSidebar() {
 function removeField() {
   if (!isAdminPreview.value) return
   workingFormStore.removeField(props.field)
-}
-
-function getFieldAlignClasses(field) {
-  if (!field.align || field.align === 'left') return 'text-left'
-  else if (field.align === 'right') {
-    return 'text-right'
-  } else if (field.align === 'center') {
-    return 'text-center'
-  } else if (field.align === 'justify') {
-    return 'text-justify'
-  }
 }
 
 /**

@@ -51,6 +51,11 @@ class FormExportService
             $filteredData['created_at'] = $submission->created_at->format('Y-m-d H:i');
         }
 
+        // Add status column if partial submissions are enabled
+        if ($form->enable_partial_submissions) {
+            $filteredData['status'] = $submission->status === FormSubmission::STATUS_PARTIAL ? 'In Progress' : 'Completed';
+        }
+
         return $filteredData;
     }
 

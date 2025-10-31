@@ -5,11 +5,38 @@ namespace App\Service\OAuth;
 use App\Integrations\OAuth\OAuthProviderService;
 use App\Models\User;
 use App\Service\WorkspaceInviteService;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Exceptions\HttpResponseException;
 
+/**
+ * OAuthUserService
+ *
+ * Handles OAuth user creation and lookup.
+ * Responsibilities:
+ * - Finding existing users by email and OAuth provider
+ * - Creating new user accounts from OAuth data
+ * - Assigning users to workspaces (default or invited)
+ * - Retrieving and storing UTM tracking data
+ * - Preventing duplicate account creation and account takeover
+ *
+ * Retrieves UTM data from OAuthContextService for consistent tracking
+ * across both redirect-based and widget-based OAuth flows.
+ */
 class OAuthUserService
 {
+    public function __construct(
+        private OAuthContextService $contextService
+    ) {
+    }
+
+    /**
+     * Find existing user or create new one from OAuth data
+     *
+     * @param array $userData OAuth user data (name, email, provider_user_id, etc.)
+     * @param OAuthProviderService $providerService The OAuth provider (Google, GitHub, etc.)
+     * @param string|null $inviteToken Workspace invitation token if applicable
+     * @return User Created or existing user with new_user flag if newly created
+     * @throws HttpResponseException If email already exists under different provider
+     */
     public function findOrCreateUser(array $userData, OAuthProviderService $providerService, ?string $inviteToken = null): User
     {
         $email = strtolower($userData['email']);
@@ -43,9 +70,10 @@ class OAuthUserService
             abort(422, 'User registration is not allowed.');
         }
 
-        // Get UTM data from context
-        $context = Cache::get("oauth-context:auth:" . session()->getId(), []);
-        $utmData = $context['utm_data'] ?? null;
+        // Retrieve UTM data from context service (works for both redirect and widget flows)
+        // For redirect flows: gets from state token
+        // For widget flows: gets from session context
+        $utmData = $this->contextService->getUtmData() ?? $this->contextService->getWidgetContext()['utm_data'] ?? null;
 
         $user = User::create([
             'name' => $userData['name'],

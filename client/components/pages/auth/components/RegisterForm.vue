@@ -319,8 +319,10 @@ const showOAuthError = (error) => {
 
 const signInwithGoogle = () => {
   try {
-    // Pass invite token if available through guestConnect
-    const additionalData = form.invite_token ? { invite_token: form.invite_token } : {}
+    // guestConnect now always captures and sends utm_data
+    const additionalData = {
+      ...(form.invite_token ? { invite_token: form.invite_token } : {})
+    }
     oAuth.guestConnect('google', true, additionalData)
   } catch (error) {
     showOAuthError(error)

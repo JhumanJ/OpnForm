@@ -14,6 +14,7 @@ import { useIsIframe } from '~/composables/useIsIframe'
 import { useAmplitude } from '~/composables/useAmplitude'
 import { useConfetti } from '~/composables/useConfetti'
 import { cloneDeep } from 'lodash'
+import { useFieldState } from './useFieldState'
 
 /**
  * @fileoverview Main orchestrator composable for form operations.
@@ -47,6 +48,9 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
   // Create a reactive reference to the form data for dependent composables to watch
   const formDataRef = computed(() => form.data())
 
+  // Centralized field state (single instance per manager)
+  const fieldState = useFieldState(formDataRef, computed(() => config.value), computed(() => strategy.value))
+
   // Instantiate pending submission service (handles localStorage saving)
   const pendingSubmissionService = usePendingSubmission(config, formDataRef)
   
@@ -63,8 +67,8 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
     const forceClassic = !!strategy.value?.display?.forceClassicPresentation
     const style = forceClassic ? 'classic' : ((toValue(config)?.presentation_style) || 'classic')
     return style === 'focused'
-      ? useFocusedStructure(config, state, form)
-      : useFormStructure(config, state, form)
+      ? useFocusedStructure(config, state, form, fieldState)
+      : useFormStructure(config, state, form, fieldState)
   }
 
   function replaceStructure() {
@@ -329,22 +333,21 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
       throw error
     }
   }
-
-  /** Resets the form to its initial state for refilling. */
-  const restart = async () => {
+  
+  /** Resets the form to its initial state for refilling with optional URL parameters. */
+  const restart = async (options = {}) => {
     state.isSubmitted = false
     state.currentPage = 0
     state.isProcessing = false
-    form.reset() // Reset vForm data
-    form.errors.clear() // Clear vForm errors
     timer.reset() // Reset timer via composable
     timer.start() // Restart timer
     
-    // Restart partial submission if enabled
-    if (!import.meta.server && toValue(config).enable_partial_submissions && strategy.value.submission.enablePartialSubmissions) {
-      partialSubmissionService.stopSync() // This will sync immediately before stopping
-      partialSubmissionService.startSync() // Start fresh sync
-    }
+    // Reinitialize the form to reapply URL parameters and default values
+    await initialize({
+      urlParams: options.urlParams,
+      submissionId: options.submissionId, // Explicitly pass submissionId (usually null)
+      skipPendingSubmission: true // Don't reload from localStorage on restart
+    })
   }
   
   // Clean up when component using the manager is unmounted
@@ -374,6 +377,7 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
 
     // Composables (Expose if direct access needed, often not necessary)
     structure,
+    fieldState,     // Expose centralized field state service
     payment,        // Expose payment service
 
     // Core Methods
