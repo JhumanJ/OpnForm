@@ -136,11 +136,12 @@ class PublicFormController extends Controller
         // Explicitly mark this as a partial submission
         $submissionData['is_partial'] = true;
 
+        // Never trust client-provided submitter_ip
+        unset($submissionData['submitter_ip']);
         // Add IP address for tracking if enabled
         if ($form->enable_ip_tracking && $form->is_pro) {
             $submissionData['submitter_ip'] = $request->ip();
         }
-
         // Use the same job as regular submissions to ensure consistent processing
         $job = new StoreFormSubmissionJob($form, $submissionData);
         $job->handle();
