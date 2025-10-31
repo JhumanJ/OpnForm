@@ -125,6 +125,15 @@
           />
         </template>
       </ToggleSwitchInput>
+      <UAlert
+        v-if="form.enable_ip_tracking"
+        color="neutral"
+        icon="i-heroicons-shield-exclamation"
+        variant="subtle"
+        title="GDPR and Privacy Compliance"
+        description="Ensure your privacy policy discloses IP address collection and obtain proper user consent where required."
+        class="mt-4 max-w-md"
+      />
 
       <!-- Post-Submission Behavior -->
       <h4 class="font-semibold mt-4 border-t pt-4">
