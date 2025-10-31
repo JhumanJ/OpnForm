@@ -9,6 +9,7 @@ use App\Events\Models\FormSubmissionDeleting;
 use App\Events\Forms\FormSaved;
 use App\Events\Models\FormCreated;
 use App\Events\Models\FormIntegrationCreated;
+use App\Events\Models\FormIntegrationSaved;
 use App\Events\Models\FormIntegrationsEventCreated;
 use App\Listeners\Billing\HandleSubscriptionCreated;
 use App\Listeners\Billing\RemoveWorkspaceGuestsIfNeeded;
@@ -18,6 +19,7 @@ use App\Listeners\Forms\FormIntegrationsEventListener;
 use App\Listeners\Forms\NotifyFormSubmission;
 use App\Listeners\Forms\DeleteFormSubmissionFiles;
 use App\Listeners\Forms\FormSpamCheckListener;
+use App\Listeners\Integration\FormIntegrationSpamCheckListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
@@ -48,6 +50,9 @@ class EventServiceProvider extends ServiceProvider
         ],
         FormIntegrationCreated::class => [
             FormIntegrationCreatedHandler::class,
+        ],
+        FormIntegrationSaved::class => [
+            FormIntegrationSpamCheckListener::class,
         ],
         FormIntegrationsEventCreated::class => [
             FormIntegrationsEventListener::class,
