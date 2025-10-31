@@ -6,6 +6,7 @@
           :src="descriptor.src"
           v-bind="iframeAttrs"
           class="w-full h-full rounded-lg"
+          sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
         />
       </div>
 
