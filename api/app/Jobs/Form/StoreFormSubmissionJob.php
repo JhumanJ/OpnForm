@@ -96,6 +96,7 @@ class StoreFormSubmissionJob implements ShouldQueue
         if (isset($this->submissionData['submission_id']) && $this->submissionData['submission_id']) {
             if (is_numeric($this->submissionData['submission_id'])) {
                 $this->submissionId = (int)$this->submissionData['submission_id'];
+                $this->isClientProvidedSubmissionId = true;
             }
             unset($this->submissionData['submission_id']);
         }
@@ -129,7 +130,6 @@ class StoreFormSubmissionJob implements ShouldQueue
 
         $propertyIds = $this->form->database_fields_update;
         $properties = collect($this->form->properties)->filter(function ($property) use ($propertyIds) {
-            $this->isClientProvidedSubmissionId = true;
             return in_array($property['id'], $propertyIds);
         });
 
