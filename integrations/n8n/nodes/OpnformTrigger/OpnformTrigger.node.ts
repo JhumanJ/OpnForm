@@ -73,7 +73,7 @@ export class OpnformTrigger implements INodeType {
 				},
 				default: '',
 				required: true,
-				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'Select the workspace that contains the form you want to monitor. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 			},
 			{
 				displayName: 'Form Name or ID',
@@ -85,7 +85,7 @@ export class OpnformTrigger implements INodeType {
 				},
 				default: '',
 				required: true,
-				description: 'Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>',
+				description: 'Select the form to monitor for new submissions. Choose from the list, or specify an ID using an <a href="https://docs.n8n.io/code/expressions/">expression</a>.',
 				displayOptions: {
 					hide: {
 						workspaceId: [''],
@@ -99,29 +99,49 @@ export class OpnformTrigger implements INodeType {
 	methods = {
 		loadOptions: {
 			async getWorkspaces(this: ILoadOptionsFunctions) {
-				const credentials = await getNormalizedCredentials(this);
-				const url = `${credentials.baseUrl}/open/workspaces`;
-				const ws = await this.helpers.httpRequestWithAuthentication.call(this, 'opnformApi', { url, json: true });
-				return (ws as WorkspaceSummary[]).map(w => ({ name: w.name, value: String(w.id) }));
+				try {
+					const credentials = await getNormalizedCredentials(this);
+					const url = `${credentials.baseUrl}/open/workspaces`;
+					const ws = await this.helpers.httpRequestWithAuthentication.call(this, 'opnformApi', { url, json: true });
+					return (ws as WorkspaceSummary[]).map(w => ({ name: w.name, value: String(w.id) }));
+				} catch {
+					throw new NodeOperationError(
+						this.getNode(),
+						'Could not load workspaces from OpnForm',
+						{
+							description: 'Check that your Personal Access Token has the workspaces-read ability and that the Base URL is correct. Verify your API credentials in the node settings.',
+						}
+					);
+				}
 			},
 			async getForms(this: ILoadOptionsFunctions) {
 				const workspaceId = this.getNodeParameter('workspaceId', 0) as string;
 				if (!workspaceId) {
 					return [];
 				}
-				const credentials = await getNormalizedCredentials(this);
-				const url = `${credentials.baseUrl}/open/workspaces/${workspaceId}/forms`;
-				const response = await this.helpers.httpRequestWithAuthentication.call(this, 'opnformApi', { 
-					url, 
-					qs: { per_page: 100 },
-					json: true 
-				});
-				// Handle paginated response - extract data array
-				const forms = (response?.data ?? response) as FormSummary[];
-				if (!Array.isArray(forms)) {
-					return [];
+				try {
+					const credentials = await getNormalizedCredentials(this);
+					const url = `${credentials.baseUrl}/open/workspaces/${workspaceId}/forms`;
+					const response = await this.helpers.httpRequestWithAuthentication.call(this, 'opnformApi', { 
+						url, 
+						qs: { per_page: 100 },
+						json: true 
+					});
+					// Handle paginated response - extract data array
+					const forms = (response?.data ?? response) as FormSummary[];
+					if (!Array.isArray(forms)) {
+						return [];
+					}
+					return forms.map(f => ({ name: f.name ?? f.title ?? String(f.id), value: String(f.id) }));
+				} catch {
+					throw new NodeOperationError(
+						this.getNode(),
+						'Could not load forms from OpnForm',
+						{
+							description: 'Check that your Personal Access Token has the forms-read ability and that the selected workspace ID is valid. Verify your API credentials in the node settings.',
+						}
+					);
 				}
-				return forms.map(f => ({ name: f.name ?? f.title ?? String(f.id), value: String(f.id) }));
 			},
 		},
 	};
@@ -161,6 +181,7 @@ export class OpnformTrigger implements INodeType {
 					return exists;
 				} catch {
 					// If API call fails, assume it doesn't exist
+					// This is expected behavior when checking if integration exists
 					return false;
 				}
 			},
@@ -170,11 +191,23 @@ export class OpnformTrigger implements INodeType {
 				const hookUrl = this.getNodeWebhookUrl('default');
 
 				if (!formId) {
-					throw new NodeOperationError(this.getNode(), 'Form ID is required');
+					throw new NodeOperationError(
+						this.getNode(),
+						'Form ID is missing. Please select a form from the dropdown or provide a form ID using an expression.',
+						{
+							description: 'Go to the node configuration and select a form from the "Form Name or ID" dropdown. If you need to use a dynamic form ID, use an expression to specify it.',
+						}
+					);
 				}
 
 				if (!hookUrl) {
-					throw new NodeOperationError(this.getNode(), 'Webhook URL is required');
+					throw new NodeOperationError(
+						this.getNode(),
+						'Webhook URL could not be generated. Activate the workflow to generate the webhook URL.',
+						{
+							description: 'Ensure the workflow is activated and that n8n can generate webhook URLs. Check your n8n instance configuration if this persists.',
+						}
+					);
 				}
 
 				const staticData = this.getWorkflowStaticData('node') as { 
@@ -236,7 +269,13 @@ export class OpnformTrigger implements INodeType {
 				const integrationId = (response?.form_integration?.id ?? response?.id) as number | undefined;
 				
 				if (!integrationId) {
-					throw new NodeOperationError(this.getNode(), `Failed to create integration. Response: ${JSON.stringify(response)}`);
+					throw new NodeOperationError(
+						this.getNode(),
+						'Could not create webhook integration in OpnForm. The API response did not include an integration ID.',
+						{
+							description: 'Check that your Personal Access Token has the manage-integrations ability and that you have permission to manage integrations for this form. Verify your API credentials in the node settings.',
+						}
+					);
 				}
 
 				staticData.integrationId = String(integrationId);
@@ -254,11 +293,16 @@ export class OpnformTrigger implements INodeType {
 				
 				const url = `${credentials.baseUrl}/open/forms/${formId}/integrations/${staticData.integrationId}`;
 				
-				await this.helpers.httpRequestWithAuthentication.call(this, 'opnformApi', {
-					method: 'DELETE',
-					url,
-					json: true,
-				});
+				try {
+					await this.helpers.httpRequestWithAuthentication.call(this, 'opnformApi', {
+						method: 'DELETE',
+						url,
+						json: true,
+					});
+				} catch {
+					// If deletion fails, continue anyway as the workflow is being deactivated
+					// The integration may have already been deleted manually
+				}
 				
 				delete staticData.integrationId;
 				return true;
