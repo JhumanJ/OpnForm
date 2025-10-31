@@ -72,7 +72,11 @@
             v-if="!isExpanded && form && form.presentation_style === 'focused'"
             class="absolute top-2 right-2 z-20 flex items-center gap-2"
           >
-            <UTooltip text="Add block">
+            <UTooltip
+              text="Add block"
+              :kbds="['meta', 'B']"
+              arrow
+            >
               <UButton
                 icon="i-heroicons-plus"
                 color="neutral"

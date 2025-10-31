@@ -59,10 +59,10 @@ export const formsApi = {
   // Integrations
   integrations: {
     list: (formId, options) => apiService.get(`/open/forms/${formId}/integrations`, options),
-    create: (formId, data) => apiService.post(`/open/forms/${formId}/integration`, data),
-    update: (formId, integrationId, data) => apiService.put(`/open/forms/${formId}/integration/${integrationId}`, data),
-    delete: (formId, integrationId) => apiService.delete(`/open/forms/${formId}/integration/${integrationId}`),
-    events: (formId, integrationId, options) => apiService.get(`/open/forms/${formId}/integration/${integrationId}/events`, options)
+    create: (formId, data) => apiService.post(`/open/forms/${formId}/integrations`, data),
+    update: (formId, integrationId, data) => apiService.put(`/open/forms/${formId}/integrations/${integrationId}`, data),
+    delete: (formId, integrationId) => apiService.delete(`/open/forms/${formId}/integrations/${integrationId}`),
+    events: (formId, integrationId, options) => apiService.get(`/open/forms/${formId}/integrations/${integrationId}/events`, options)
   },
 
   // Zapier webhooks

@@ -16,7 +16,7 @@ class FormIntegrationsEventController extends Controller
 
     public function index(Form $form, string $integrationid)
     {
-        $this->authorize('update', $form);
+        $this->authorize('manageIntegrations', $form);
 
         return FormIntegrationsEventResource::collection(
             FormIntegrationsEvent::where('integration_id', (int)$integrationid)->orderByDesc('created_at')->get()

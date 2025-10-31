@@ -29,6 +29,7 @@ use Stevebauman\Purify\Facades\Purify;
  * - submission_id: ID of an existing submission to update (must be an integer)
  * - completion_time: Time in seconds it took to complete the form
  * - is_partial: Whether this is a partial submission (will be stored with STATUS_PARTIAL)
+ * - submitter_ip: IP address of the submitter (will be stored in meta if form has IP tracking enabled)
  *   If not specified, submissions are treated as complete by default.
  *
  * These metadata fields will be automatically extracted and removed from the stored form data.
@@ -50,6 +51,7 @@ class StoreFormSubmissionJob implements ShouldQueue
     private ?int $completionTime = null;
     private bool $isPartial = false;
     private bool $isClientProvidedSubmissionId = false;
+    private ?string $submitterIp = null;
 
     /**
      * Create a new job instance.
@@ -86,6 +88,7 @@ class StoreFormSubmissionJob implements ShouldQueue
      * - submission_id
      * - completion_time
      * - is_partial
+     * - submitter_ip
      */
     private function extractMetadata(): void
     {
@@ -103,6 +106,10 @@ class StoreFormSubmissionJob implements ShouldQueue
         if (isset($this->submissionData['is_partial'])) {
             $this->isPartial = (bool)$this->submissionData['is_partial'];
             unset($this->submissionData['is_partial']);
+        }
+        if (isset($this->submissionData['submitter_ip'])) {
+            $this->submitterIp = $this->submissionData['submitter_ip'];
+            unset($this->submissionData['submitter_ip']);
         }
     }
 
@@ -180,6 +187,14 @@ class StoreFormSubmissionJob implements ShouldQueue
         $submission->status = $this->isPartial
             ? FormSubmission::STATUS_PARTIAL
             : FormSubmission::STATUS_COMPLETED;
+
+        // Store IP address in meta if IP tracking is enabled
+        if ($this->form->enable_ip_tracking && $this->form->is_pro && $this->submitterIp) {
+            $existingMeta = $submission->meta ?? [];
+            $existingMeta['ip_address'] = $this->submitterIp;
+            $submission->meta = $existingMeta;
+        }
+
         $submission->save();
         $this->submissionId = $submission->id;
     }

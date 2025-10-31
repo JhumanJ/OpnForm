@@ -116,6 +116,33 @@
         </ToggleSwitchInput>
       </div>
 
+      <ToggleSwitchInput
+        class="mt-4"
+        name="enable_ip_tracking"
+        :form="form"
+        help="Collect and store submitter IP addresses for analytics, fraud prevention, and geographic insights. Helps identify submission patterns and improve security."
+      >
+        <template #label>
+          <span class="text-sm">
+            Collect IP addresses
+          </span>
+          <ProTag
+            class="ml-1"
+            upgrade-modal-title="Upgrade to collect IP addresses"
+            upgrade-modal-description="Automatically capture submitter IP addresses to gain valuable insights into your form traffic. Analyze geographic patterns, detect suspicious activity, and enhance your form security with detailed submission analytics."
+          />
+        </template>
+      </ToggleSwitchInput>
+      <UAlert
+        v-if="form.enable_ip_tracking"
+        color="neutral"
+        icon="i-heroicons-shield-exclamation"
+        variant="subtle"
+        title="GDPR and Privacy Compliance"
+        description="Ensure your privacy policy discloses IP address collection and obtain proper user consent where required."
+        class="mt-4 max-w-md"
+      />
+
       <!-- Post-Submission Behavior -->
       <div class="mb-8">
         <h4 class="font-semibold mt-4 border-t pt-4">

@@ -20,25 +20,25 @@ it('can CRUD form integration', function () {
         ]
     ];
 
-    $response = $this->postJson(route('open.forms.integration.create', $form), $data)
+    $response = $this->postJson(route('open.forms.integrations.create', $form), $data)
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
             'message' => 'Form Integration was created.'
         ]);
 
-    $this->getJson(route('open.forms.integrations', $form))
+    $this->getJson(route('open.forms.integrations.index', $form))
         ->assertSuccessful()
         ->assertJsonCount(1);
 
-    $this->putJson(route('open.forms.integration.update', [$form, $response->json('form_integration.id')]), $data)
+    $this->putJson(route('open.forms.integrations.update', [$form, $response->json('form_integration.id')]), $data)
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
             'message' => 'Form Integration was updated.'
         ]);
 
-    $this->deleteJson(route('open.forms.integration.destroy', [$form, $response->json('form_integration.id')]), $data)
+    $this->deleteJson(route('open.forms.integrations.destroy', [$form, $response->json('form_integration.id')]), $data)
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',
@@ -52,7 +52,7 @@ it('forbids non-admin users from viewing integrations and events', function () {
     $form = $this->createForm($owner, $workspace);
 
     // Create one integration as owner
-    $this->postJson(route('open.forms.integration.create', $form), [
+    $this->postJson(route('open.forms.integrations.create', $form), [
         'status' => true,
         'integration_id' => 'email',
         'logic' => null,
@@ -72,7 +72,7 @@ it('forbids non-admin users from viewing integrations and events', function () {
     $viewer->workspaces()->sync([$workspace->id => ['role' => 'readonly']], false);
     $this->actingAs($viewer, 'api');
 
-    $this->getJson(route('open.forms.integrations', $form))
+    $this->getJson(route('open.forms.integrations.index', $form))
         ->assertStatus(403);
 
     // Events require an integration id; fetch as owner first
@@ -132,7 +132,7 @@ it('can create form integration with checkbox logic', function () {
         ]
     ];
 
-    $this->postJson(route('open.forms.integration.create', $form), $data)
+    $this->postJson(route('open.forms.integrations.create', $form), $data)
         ->assertSuccessful()
         ->assertJson([
             'type' => 'success',

@@ -172,6 +172,5 @@ it('does not include status column when partial submissions are disabled', funct
     ob_start();
     $response->sendContent();
     $content = ob_get_clean();
-
     expect(str_contains($content, 'status'))->toBeFalse();
 });

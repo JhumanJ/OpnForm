@@ -8,7 +8,7 @@ test('free user can create one email integration to their own email', function (
     $form = $this->createForm($user, $workspace);
 
     // First email integration should succeed with user's own email
-    $response = $this->postJson(route('open.forms.integration.create', $form), [
+    $response = $this->postJson(route('open.forms.integrations.create', $form), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
@@ -24,7 +24,7 @@ test('free user can create one email integration to their own email', function (
     expect(FormIntegration::where('form_id', $form->id)->count())->toBe(1);
 
     // Second email integration should fail
-    $response = $this->postJson(route('open.forms.integration.create', $form), [
+    $response = $this->postJson(route('open.forms.integrations.create', $form), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
@@ -49,7 +49,7 @@ test('free user cannot send to other email addresses', function () {
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);
 
-    $response = $this->postJson(route('open.forms.integration.create', $form), [
+    $response = $this->postJson(route('open.forms.integrations.create', $form), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
@@ -78,7 +78,7 @@ test('pro user can create multiple email integrations', function () {
     $form = $this->createForm($user, $workspace);
 
     // First email integration
-    $response = $this->postJson(route('open.forms.integration.create', $form), [
+    $response = $this->postJson(route('open.forms.integrations.create', $form), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
@@ -93,7 +93,7 @@ test('pro user can create multiple email integrations', function () {
     $response->assertSuccessful();
 
     // Second email integration should also succeed for pro users
-    $response = $this->postJson(route('open.forms.integration.create', $form), [
+    $response = $this->postJson(route('open.forms.integrations.create', $form), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
@@ -114,7 +114,7 @@ test('free user cannot add multiple emails', function () {
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);
 
-    $response = $this->postJson(route('open.forms.integration.create', $form), [
+    $response = $this->postJson(route('open.forms.integrations.create', $form), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
@@ -140,7 +140,7 @@ test('pro user can add multiple emails', function () {
     $workspace = $this->createUserWorkspace($user);
     $form = $this->createForm($user, $workspace);
 
-    $response = $this->postJson(route('open.forms.integration.create', $form), [
+    $response = $this->postJson(route('open.forms.integrations.create', $form), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
@@ -167,7 +167,7 @@ test('free user can update their single email integration to their own email', f
     $form = $this->createForm($user, $workspace);
 
     // Create initial integration with user's email
-    $response = $this->postJson(route('open.forms.integration.create', $form), [
+    $response = $this->postJson(route('open.forms.integrations.create', $form), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
@@ -183,7 +183,7 @@ test('free user can update their single email integration to their own email', f
     $integrationId = $response->json('form_integration.id');
 
     // Update the integration - still with user's email
-    $response = $this->putJson(route('open.forms.integration.update', [$form, $integrationId]), [
+    $response = $this->putJson(route('open.forms.integrations.update', [$form, $integrationId]), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
@@ -208,7 +208,7 @@ test('free user cannot update integration to other email addresses', function ()
     $form = $this->createForm($user, $workspace);
 
     // Create initial integration with user's email
-    $response = $this->postJson(route('open.forms.integration.create', $form), [
+    $response = $this->postJson(route('open.forms.integrations.create', $form), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
@@ -224,7 +224,7 @@ test('free user cannot update integration to other email addresses', function ()
     $integrationId = $response->json('form_integration.id');
 
     // Try to update to another email address - should fail
-    $response = $this->putJson(route('open.forms.integration.update', [$form, $integrationId]), [
+    $response = $this->putJson(route('open.forms.integrations.update', [$form, $integrationId]), [
         'integration_id' => 'email',
         'status' => true,
         'settings' => [
