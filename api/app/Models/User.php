@@ -343,7 +343,6 @@ class User extends Authenticatable implements JWTSubject, CachableAttributes
 
     public function getIsRiskyAttribute()
     {
-        // created in last 3 days
         return $this->created_at->isAfter(now()->subDays(3));
     }
 

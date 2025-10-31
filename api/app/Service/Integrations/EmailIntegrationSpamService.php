@@ -22,7 +22,7 @@ class EmailIntegrationSpamService
         try {
             $result = CheckSpamEmailIntegrationPrompt::run($form, $integration);
 
-            if (($result['is_spam'] ?? false) === true) {
+            if (($result['is_spam'] ?? false) === true || ($result['needs_admin_review'] ?? false) === true) {
                 Log::channel('slack_admin')->info('⚠️ Email integration flagged for admin review', [
                     'form_id' => $form->id,
                     'integration_id' => $integration->id,
@@ -53,11 +53,24 @@ class EmailIntegrationSpamService
             return false;
         }
 
-        $user = $form->creator;
-        if ($user->is_blocked || $user->admin || $user->moderator) {
+        // Check if creator exists before accessing its properties
+        if (!$form->creator) {
             return false;
         }
 
-        return $user->is_risky;
+        if ($form->creator->is_blocked || $form->creator->admin || $form->creator->moderator) {
+            return false;
+        }
+
+        if ($form->creator->created_at->diffInMonths(now()) > 3) {
+            return false;
+        }
+
+        if ($form->creator->is_risky) {
+            return true;
+        }
+
+        // Random check for other users
+        return (rand(1, 100) <= config('spam.random_check_percentage', 0));
     }
 }
