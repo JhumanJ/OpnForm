@@ -5,20 +5,30 @@
     title="Google fonts"
   >
     <template #body>
-      <div v-if="loading">
-        <Loader class="h-6 w-6 text-blue-500 mx-auto" />
-      </div>
-      <div v-else>
-        <text-input
-          v-model="search"
-          name="search"
-          placeholder="Search fonts"
-        />
+      <text-input
+        v-model="search"
+        name="search"
+        placeholder="Search fonts"
+      />
 
-        <div
-          ref="scrollContainer"
-          class="grid grid-cols-3 gap-2 p-5 mb-5 overflow-y-scroll max-h-[24rem] border rounded-md bg-neutral-50"
-        >
+      <div
+        ref="scrollContainer"
+        class="grid grid-cols-3 gap-2 p-5 mb-5 overflow-y-scroll max-h-[24rem] border rounded-md bg-neutral-50 mt-3"
+      >
+        <template v-if="loading">
+          <div
+            v-for="i in 9"
+            :key="`skeleton-${i}`"
+            class="flex flex-col p-3 rounded-md shadow border-neutral-200 border-[0.5px] bg-white"
+          >
+            <div class="flex flex-wrap gap-2 mb-3">
+              <USkeleton class="h-5 w-full" />
+              <USkeleton class="h-5 w-3/4" />
+            </div>
+            <USkeleton class="h-3 w-1/2" />
+          </div>
+        </template>
+        <template v-else>
           <FontCard
             v-for="(fontName, index) in enrichedFonts"
             :key="fontName"
@@ -28,7 +38,7 @@
             :is-selected="selectedFont === fontName"
             @select-font="selectedFont = fontName"
           />
-        </div>
+        </template>
       </div>
     </template>
 
@@ -88,13 +98,22 @@ const search = ref("")
 const debouncedSearch = refDebounced(search, 500)
 
 // Use TanStack Query for fonts with caching
-const { data: fonts = [], isLoading: loading } = fontsApi.list({
+const fontsQuery = fontsApi.list({
   enabled: computed(() => props.show)
 })
 
+const fonts = computed(() => {
+  const data = fontsQuery.data.value
+  if (!data) return []
+  // Convert object to array if needed (handles numeric string keys)
+  return Array.isArray(data) ? data : Object.values(data)
+})
+
+const loading = computed(() => fontsQuery.isLoading.value)
+
 const { results: fuseResults } = useFuse(
   debouncedSearch,
-  computed(() => Object.values(fonts || [])),
+  fonts,
   {
     fuseOptions: {
       threshold: 0.3,
@@ -137,8 +156,8 @@ watch(() => props.show, (show) => {
   }
 })
 
-watch(() => fonts, () => {
-  if (fonts.length > 0) {
+watch(fonts, (newFonts) => {
+  if (newFonts && newFonts.length > 0) {
     initializeVisibilityTracking()
   }
 })
@@ -146,6 +165,6 @@ watch(() => fonts, () => {
 const enrichedFonts = computed(() => {
   return fuseResults.value && fuseResults.value.length > 0
     ? fuseResults.value.map((res) => res.item)
-    : (fonts || [])
+    : fonts.value
 })
 </script>
