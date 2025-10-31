@@ -12,11 +12,16 @@
   "license": "MIT",
   "homepage": "https://opnform.com",
   "author": {
-    "name": "OpnForm"
+    "name": "OpnForm",
+    "email": "julien@nahum.net"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jhumanj/opnform.git"
+    "url": "git+https://github.com/jhumanj/opnform.git",
+    "directory": "integrations/n8n"
+  },
+  "bugs": {
+    "url": "https://github.com/jhumanj/opnform/issues"
   },
   "main": "dist/index.js",
   "files": [
