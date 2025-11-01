@@ -125,6 +125,7 @@ class GenerateFormPrompt extends Prompt
                         ['$ref' => '#/definitions/nfPageBreakProperty'],
                         ['$ref' => '#/definitions/nfDividerProperty'],
                         ['$ref' => '#/definitions/nfImageProperty'],
+                        ['$ref' => '#/definitions/nfVideoProperty'],
                         ['$ref' => '#/definitions/nfCodeProperty']
                     ]
                 ]
@@ -218,6 +219,7 @@ class GenerateFormPrompt extends Prompt
             'nf-page-break' => 'nf-page-break: Page break for multi-page forms',
             'nf-divider' => 'nf-divider: Visual divider (not an input field)',
             'nf-image' => 'nf-image: Image element',
+            'nf-video' => 'nf-video: Video element',
             'nf-code' => 'nf-code: Code block',
         ];
 

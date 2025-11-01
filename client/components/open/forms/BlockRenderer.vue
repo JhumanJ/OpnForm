@@ -66,6 +66,30 @@
         class="max-w-full inline-block rounded-lg"
       >
     </div>
+    <div
+      v-if="block.type === 'nf-video'"
+      :id="block.id"
+      :key="block.id"
+      class="my-4 w-full px-2"
+      :class="[getFieldAlignClasses(block)]"
+      @dblclick="editFieldOptions"
+    >
+      <div
+        v-if="!block.video_block"
+        class="p-4 border border-dashed text-center"
+      >
+        <a
+          href="#"
+          class="text-blue-800 dark:text-blue-200"
+          @click.prevent="editFieldOptions"
+        >Open block settings to add video URL.</a>
+      </div>
+      <EmbedMedia
+        v-else
+        :src="block.video_block"
+        :is-dark="darkMode"
+      />
+    </div>
   </div>
 </template>
 
