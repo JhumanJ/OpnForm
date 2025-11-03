@@ -5,7 +5,8 @@
         <iframe
           :src="descriptor.src"
           v-bind="iframeAttrs"
-          class="w-full h-full rounded-lg"
+          class="w-full h-full"
+          :class="roundedClass"
           sandbox="allow-scripts allow-same-origin allow-popups allow-forms"
         />
       </div>
@@ -13,7 +14,8 @@
       <div v-else-if="descriptor.kind === 'video'" :class="wrapperClasses">
         <video
           :src="descriptor.src"
-          class="w-full h-full rounded-lg"
+          class="w-full h-full"
+          :class="roundedClass"
           controls
         />
       </div>
@@ -23,7 +25,7 @@
       </div>
 
       <div v-else-if="descriptor.kind === 'image'" :class="['inline-block', 'max-w-full']">
-        <img :src="descriptor.src" :alt="descriptor.title || ''" class="rounded-lg max-w-full" />
+        <img :src="descriptor.src" :alt="descriptor.title || ''" :class="[roundedClass, 'max-w-full']" />
       </div>
 
       <div v-else>
@@ -83,6 +85,13 @@ const aspectClass = computed(() => {
 })
 
 const wrapperClasses = computed(() => ['w-full', aspectClass.value])
+
+const injectedBorderRadius = inject('formBorderRadius', null)
+const resolvedBorderRadius = computed(() => injectedBorderRadius?.value || 'small')
+const roundedClass = computed(() => {
+  const map = { none: 'rounded-none', small: 'rounded-lg', full: 'rounded-[20px]' }
+  return map[resolvedBorderRadius.value] || 'rounded-lg'
+})
 </script>
 
 

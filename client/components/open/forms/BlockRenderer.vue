@@ -42,10 +42,10 @@
       class="border-b my-4 w-full mx-2"
     />
     <div
-      v-else-if="block.type === 'nf-image'"
+      v-else-if="block.type === 'nf-image' && (isAdminPreview || (!isAdminPreview && block.image_block))"
       :id="block.id"
       :key="block.id"
-      class="my-4 w-full px-2"
+      class="my-4 w-full"
       :class="[getFieldAlignClasses(block)]"
       @dblclick="editFieldOptions"
     >
@@ -63,14 +63,15 @@
         v-else
         :alt="block.name"
         :src="block.image_block"
-        class="max-w-full inline-block rounded-lg"
+        class="max-w-full inline-block"
+        :class="roundedClass"
       >
     </div>
     <div
-      v-if="block.type === 'nf-video'"
+      v-if="block.type === 'nf-video' && (isAdminPreview || (!isAdminPreview && block.video_block))"
       :id="block.id"
       :key="block.id"
-      class="my-4 w-full px-2"
+      class="my-4 w-full"
       :class="[getFieldAlignClasses(block)]"
       @dblclick="editFieldOptions"
     >
@@ -109,6 +110,7 @@ const form = computed(() => props.formManager?.config?.value || {})
 const dataForm = computed(() => props.formManager?.form || {})
 const darkMode = computed(() => props.formManager?.darkMode?.value || false)
 const strategy = computed(() => props.formManager?.strategy?.value || {})
+const isAdminPreview = computed(() => strategy.value?.admin?.showAdminControls || false)
 
 // Use centralized fieldState from manager
 const fieldState = computed(() => props.formManager?.fieldState)
@@ -183,6 +185,16 @@ const shouldInjectBetweenMedia = computed(() => (
   form.value?.presentation_style === 'focused' &&
   !(strategy.value?.display?.forceClassicPresentation === true)
 )) 
+
+const roundedClass = computed(() => {
+  const radius = form.value?.border_radius || 'small'
+  const map = {
+    none: 'rounded-none',
+    small: 'rounded-lg',
+    full: 'rounded-[20px]'
+  }
+  return map[radius] || 'rounded-lg'
+})
 
 const boundProps = computed(() => {
   const field = props.block
