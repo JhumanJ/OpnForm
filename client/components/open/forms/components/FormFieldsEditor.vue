@@ -1,15 +1,21 @@
 <template>
   <div class="relative h-[calc(100vh-55px)] overflow-y-auto">
     <div class="flex gap-2 sticky top-0 bg-white border-b z-10 p-4">
-      <UButton
-        color="neutral"
-        variant="subtle"
-        icon="i-heroicons-plus"
-        class="flex-grow justify-center"
-        @click.prevent="openAddFieldSidebar"
+      <UTooltip
+        text="Shortcut"
+        :kbds="['meta', 'B']"
+        arrow
       >
-        Add Block
-      </UButton>
+        <UButton
+          color="neutral"
+          variant="subtle"
+          icon="i-heroicons-plus"
+          class="flex-grow justify-center"
+          @click.prevent="openAddFieldSidebar"
+        >
+          Add Block
+        </UButton>
+      </UTooltip>
     </div>
 
     <div class="p-4">

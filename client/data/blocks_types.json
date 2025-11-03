@@ -251,6 +251,37 @@
     },
     "actual_input": "barcode"
   },
+  "password": {
+    "name": "password",
+    "title": "Password Input",
+    "icon": "i-heroicons-key",
+    "default_block_name": "Password",
+    "bg_class": "bg-blue-100",
+    "text_class": "text-blue-900",
+    "available_in": ["classic", "focused"],
+    "is_input": true,
+    "default_values": {
+      "secret_input": true,
+      "multi_lines": false,
+      "max_char_limit": 2000,
+      "placeholder": "Enter your password"
+    },
+    "actual_input": "text"
+  },
+  "toggle_switch": {
+    "name": "toggle_switch",
+    "title": "Toggle Switch",
+    "icon": "i-heroicons-adjustments-horizontal",
+    "default_block_name": "Toggle",
+    "bg_class": "bg-red-100",
+    "text_class": "text-red-900",
+    "available_in": ["classic", "focused"],
+    "is_input": true,
+    "default_values": {
+      "use_toggle_switch": true
+    },
+    "actual_input": "checkbox"
+  },
   "payment": {
     "name": "payment",
     "title": "Payment",

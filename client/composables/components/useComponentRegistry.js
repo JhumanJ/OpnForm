@@ -22,6 +22,7 @@ const actionRegistry = new Map([
   ['DiscordIntegrationActions', () => import('~/components/open/integrations/components/DiscordIntegrationActions.vue')],
   ['GoogleSheetsIntegrationActions', () => import('~/components/open/integrations/components/GoogleSheetsIntegrationActions.vue')],
   ['EmailIntegrationActions', () => import('~/components/open/integrations/components/EmailIntegrationActions.vue')],
+  ['N8nIntegrationActions', () => import('~/components/open/integrations/components/N8nIntegrationActions.vue')],
 ])
 
 const providerRegistry = new Map([
