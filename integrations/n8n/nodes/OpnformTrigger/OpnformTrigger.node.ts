@@ -252,8 +252,8 @@ export class OpnformTrigger implements INodeType {
 
 				const body = {
 					integration_id: 'n8n',
-					status: true,
-					settings: {
+					status: 'active',
+					data: {
 						webhook_url: hookUrl,
 						...(providerUrl && { provider_url: providerUrl }),
 					},
