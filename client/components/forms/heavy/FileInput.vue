@@ -28,7 +28,7 @@
       @dragleave.prevent="uploadDragoverEvent=false"
       @drop.prevent="onUploadDropEvent"
       @click="openFileUpload"
-      @keydown.enter.prevent="openFileUpload"
+      @keydown.enter="handleEnterPress"
     >
       <div class="flex w-full items-center justify-center">
         <div
@@ -131,7 +131,8 @@ export default {
     cameraUpload: {type: Boolean, default: false},
     mbLimit: {type: Number, default: 5},
     accept: {type: String, default: ''},
-    moveToFormAssets: {type: Boolean, default: false}
+    moveToFormAssets: {type: Boolean, default: false},
+    preventEnter: {type: Boolean, default: true},
   },
 
   setup(props, context) {
@@ -240,6 +241,12 @@ export default {
 
       for (let i = 0; i < droppedFiles.length; i++) {
         this.uploadFileToServer(droppedFiles.item(i))
+      }
+    },
+    handleEnterPress(event) {
+      if (this.preventEnter) {
+        event.preventDefault()
+        this.openFileUpload()
       }
     },
     openFileUpload() {

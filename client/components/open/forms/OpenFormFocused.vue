@@ -47,7 +47,7 @@
       </template>
       <component v-else :is="currentLayoutComponent" v-bind="currentLayoutProps" :key="currentIndex">
         <div class="relative">
-          <BlockRenderer :block="currentBlock" :form-manager="formManager" />
+          <BlockRenderer :block="currentBlock" :form-manager="formManager" @input-filled="onInputFilled" />
         </div>
         <div class="mt-2 flex gap-2 justify-start" :class="{'flex-col justify-normal! items-center': isLast &&form.use_captcha}">
           <slot name="submit-btn" v-if="isLast" :loading="isProcessing">
@@ -164,6 +164,10 @@ const handleNextClick = () => {
   props.formManager.nextPage().then((moved) => {
     if (moved && import.meta.client && !isTemplateMode.value) window.scrollTo({ top: 0, behavior: 'smooth' })
   })
+}
+
+const onInputFilled = () => {
+  handleNextClick()
 }
 
 const coverMedia = computed(() => ({

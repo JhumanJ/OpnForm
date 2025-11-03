@@ -4,6 +4,7 @@
       <component
         :is="componentVal"
         v-bind="boundProps"
+        @input-filled="$emit('input-filled', { blockId: block?.id })"
       />
       <template #fallback>
         <USkeleton class="w-full h-16 my-1.5" />

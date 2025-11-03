@@ -180,7 +180,11 @@ export default {
       } else {
         // For single select, only change value if it's different or clearable
         if (this.compVal !== value || this.clearable) {
-          this.compVal = this.compVal === value && this.clearable ? null : value
+          const nextVal = this.compVal === value && this.clearable ? null : value
+          this.compVal = nextVal
+          if (nextVal !== null && nextVal !== undefined) {
+            this.$emit('input-filled')
+          }
         }
       }
     },

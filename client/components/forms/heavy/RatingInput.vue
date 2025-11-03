@@ -103,6 +103,9 @@ export default {
         this.compVal = 0
       } else {
         this.compVal = val
+        if (val && val > 0) {
+          this.$emit('input-filled')
+        }
       }
     },
     handleKeydown(event, currentStar) {

@@ -13,6 +13,7 @@
       :style="inputStyle"
       :placeholder="placeholder"
       :maxlength="maxCharLimit"
+      @keydown.enter="onEnterPress"
     />
 
     <template
@@ -52,6 +53,7 @@ export default {
   props: {
     ...inputProps,
     maxCharLimit: {type: Number, required: false, default: null},
+    preventEnter: {type: Boolean, default: false},
   },
 
   setup(props, context) {
@@ -59,8 +61,16 @@ export default {
       variants: textAreaInputTheme
     })
 
+    const onEnterPress = (event) => {
+      if (props.preventEnter) {
+        event.preventDefault()
+        return false
+      }
+    }
+
     return {
-      ...formInput
+      ...formInput,
+      onEnterPress
     }
   },
 

@@ -20,7 +20,7 @@
       :max="max"
       :maxlength="maxCharLimit"
       @change="onChange"
-      @keydown.enter.prevent="onEnterPress"
+      @keydown.enter="onEnterPress"
       @focus="onFocus"
       @blur="onBlur"
     >
@@ -67,6 +67,7 @@ export default {
     autocomplete: {type: [Boolean, String, Object], default: null},
     maxCharLimit: {type: Number, required: false, default: null},
     pattern: {type: String, default: null},
+    preventEnter: {type: Boolean, default: true},
   },
 
   setup(props, context) {
@@ -88,7 +89,10 @@ export default {
     }
 
     const onEnterPress = (event) => {
-      event.preventDefault()
+      if (props.preventEnter) {
+        event.preventDefault()
+      }
+      context.emit('input-filled')
       return false
     }
 

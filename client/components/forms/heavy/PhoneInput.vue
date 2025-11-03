@@ -75,6 +75,7 @@
         :placeholder="placeholder"
         :style="inputStyle"
         @input="onInput"
+        @keydown.enter="onEnterPress"
       >
     </div>
 
@@ -97,13 +98,14 @@ import { phoneInputTheme } from '~/lib/forms/themes/phone-input.theme.js'
 import { useElementSize } from '@vueuse/core'
 
 // Emits
-const emit = defineEmits(['update:modelValue', 'focus', 'blur'])
+const emit = defineEmits(['update:modelValue', 'focus', 'blur', 'input-filled'])
 
 // Props
 const props = defineProps({
   ...inputProps,
   canOnlyCountry: { type: Boolean, default: false },
-  unavailableCountries: { type: Array, default: () => [] }
+  unavailableCountries: { type: Array, default: () => [] },
+  preventEnter: { type: Boolean, default: true }
 })
 
 // Composables
@@ -140,6 +142,14 @@ const getCountryBy = (code = 'US', type = 'code') => {
 
 const onInput = (event) => {
   inputVal.value = event?.target?.value.replace(/[^0-9]/g, '')
+}
+
+const onEnterPress = (event) => {
+  if (props.preventEnter) {
+    event.preventDefault()
+  }
+  emit('input-filled')
+  return false
 }
 
 const onChangeCountryCode = () => {

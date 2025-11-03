@@ -47,7 +47,7 @@
       role="button"
       aria-label="Click to open a camera"
       @click="startScanning"
-      @keydown.enter.prevent="startScanning"
+      @keydown.enter="handleEnterPress"
     >
       <div class="flex w-full items-center justify-center">
         <div class="text-center">
@@ -87,7 +87,8 @@ export default {
     decoders: {
       type: Array,
       default: () => []
-    }
+    },
+    preventEnter: {type: Boolean, default: true},
   },
 
   setup(props, context) {
@@ -118,6 +119,12 @@ export default {
   },
 
   methods: {
+    handleEnterPress(event) {
+      if (this.preventEnter) {
+        event.preventDefault()
+        this.startScanning()
+      }
+    },
     startScanning() {
       if (this.disabled) return
       this.isScanning = true

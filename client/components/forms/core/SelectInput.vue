@@ -204,6 +204,10 @@ export default {
     updateModelValue(newValues) {
       if (newValues === null) newValues = []
       this.selectedValues = newValues
+      if (!this.multiple) {
+        const hasValue = newValues !== null && newValues !== undefined && newValues !== ''
+        if (hasValue) this.$emit('input-filled')
+      }
     },
     updateOptions(newItem) {
       if (newItem) {

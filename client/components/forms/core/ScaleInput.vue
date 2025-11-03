@@ -130,6 +130,9 @@ export default {
         this.compVal = null
       } else {
         this.compVal = val
+        if (val !== null && val !== undefined) {
+          this.$emit('input-filled')
+        }
       }
     },
     handleKeydown(event, currentIndex) {
