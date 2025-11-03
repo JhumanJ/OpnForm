@@ -6,9 +6,9 @@
   >
     <text-input
       :form="integrationData"
-      name="settings.webhook_url"
+      name="data.webhook_url"
       class="mt-4"
-      label="Webhook url"
+      label="Webhook URL"
       help="We will post form submissions to this endpoint"
       required
     />

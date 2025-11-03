@@ -8,7 +8,7 @@
         color="neutral"
         variant="ghost"
         size="sm"
-        :to="`${providerUrl}?utm_source=opnform-edit`"
+        :href="`${providerUrl}?utm_source=opnform-edit`"
         target="_blank"
         external
       >

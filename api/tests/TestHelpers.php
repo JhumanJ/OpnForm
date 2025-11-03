@@ -254,10 +254,10 @@ trait TestHelpers
     public function createFormIntegration($integrationId, $formId, $settings = [])
     {
         $data = [
-            'status' => true,
+            'status' => 'active',
             'integration_id' => $integrationId,
             'logic' => null,
-            'settings' => $settings
+            'data' => $settings
         ];
 
         $response = $this->postJson(route('open.forms.integrations.create', $formId), $data)

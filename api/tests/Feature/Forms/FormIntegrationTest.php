@@ -6,10 +6,10 @@ it('can CRUD form integration', function () {
     $form = $this->createForm($user, $workspace);
 
     $data = [
-        'status' => true,
+        'status' => 'active',
         'integration_id' => 'email',
         'logic' => null,
-        'settings' => [
+        'data' => [
             'send_to' => 'test@test.com',
             'sender_name' => 'OpnForm',
             'subject' => 'New form submission',
@@ -53,10 +53,10 @@ it('forbids non-admin users from viewing integrations and events', function () {
 
     // Create one integration as owner
     $this->postJson(route('open.forms.integrations.create', $form), [
-        'status' => true,
+        'status' => 'active',
         'integration_id' => 'email',
         'logic' => null,
-        'settings' => [
+        'data' => [
             'send_to' => 'test@test.com',
             'sender_name' => 'OpnForm',
             'subject' => 'Subject',
@@ -104,7 +104,7 @@ it('can create form integration with checkbox logic', function () {
     ]);
 
     $data = [
-        'status' => true,
+        'status' => 'active',
         'integration_id' => 'email',
         'logic' => [
             'operatorIdentifier' => 'and',
@@ -121,7 +121,7 @@ it('can create form integration with checkbox logic', function () {
                 ],
             ],
         ],
-        'settings' => [
+        'data' => [
             'send_to' => 'test@test.com',
             'sender_name' => 'OpnForm',
             'subject' => 'New form submission with checkbox logic',

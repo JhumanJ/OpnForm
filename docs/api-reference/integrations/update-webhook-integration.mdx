@@ -13,19 +13,19 @@ This endpoint requires a **Personal Access Token** with the `manage-integrations
 ## Request
 
 <ParamField path="form" type="number" required>
-The ID of the form containing the webhook.
+    The ID of the form containing the webhook.
 </ParamField>
 
 <ParamField path="integrationid" type="number" required>
-The ID of the webhook integration to update.
+    The ID of the webhook integration to update.
 </ParamField>
 
 <ParamField body="integration_id" type="string" required>
-Must be set to `"webhook"`.
+    Must be set to `"webhook"`.
 </ParamField>
 
 <ParamField body="status" type="string">
-The status of the webhook. Allowed values: `"active"`, `"inactive"`.
+    The status of the webhook. Allowed values: `"active"`, `"inactive"`.
 </ParamField>
 
 <ParamField body="data" type="object" required>
