@@ -93,7 +93,7 @@
       <CaptchaWrapper v-if="form.use_captcha" :form-manager="formManager" />
 
       <!--  Submit, Next and previous buttons  -->
-      <div v-if="!form?.is_password_protected && !isSubmitted" class="flex flex-wrap justify-center w-full">
+      <div v-if="!form?.is_password_protected && !isSubmitted && !form.is_closed && form.visibility!=='closed' && !form.max_number_of_submissions_reached" class="flex flex-wrap justify-center w-full">
         <open-form-button
           v-if="formPageIndex>0 && previousFieldsPageBreak"
           native-type="button"
