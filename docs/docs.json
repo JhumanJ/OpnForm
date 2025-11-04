@@ -91,7 +91,8 @@
               "api-reference/integrations/create-webhook-integration",
               "api-reference/integrations/update-webhook-integration",
               "api-reference/integrations/delete-webhook-integration",
-              "api-reference/integrations/list-webhook-events"
+              "api-reference/integrations/list-webhook-events",
+              "api-reference/integrations/webhook-security"
             ]
           },
           {

@@ -59,7 +59,7 @@ class EmailIntegration extends AbstractIntegrationHandler
                 ->count();
             if ($existingEmailIntegrations > 0) {
                 throw ValidationException::withMessages([
-                    'settings.send_to' => ['Free users are limited to 1 email integration per form.']
+                    'data.send_to' => ['Free users are limited to 1 email integration per form.']
                 ]);
             }
         }

@@ -6,7 +6,7 @@
     <div class="flex justify-between">
       <slot name="status">
         <toggle-switch-input
-          v-model="modelValue.status"
+          v-model="statusToggle"
           name="status"
           label="Enabled"
         />
@@ -71,6 +71,13 @@ const props = defineProps({
 
 defineEmits(["close"])
 const showLogic = ref(!!props.modelValue.logic)
+
+const statusToggle = computed({
+  get: () => props.modelValue.status === 'active',
+  set: (value) => {
+    props.modelValue.status = value ? 'active' : 'inactive'
+  }
+})
 </script>
 
 <style lang="scss">
