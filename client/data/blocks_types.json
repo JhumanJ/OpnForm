@@ -339,6 +339,16 @@
     "is_input": false,
     "default_values": {}
   },
+  "nf-video": {
+    "name": "nf-video",
+    "title": "Video",
+    "icon": "i-heroicons-video-camera",
+    "default_block_name": "Video Block",
+    "bg_class": "bg-yellow-100",
+    "text_class": "text-yellow-900",
+    "is_input": false,
+    "default_values": {}
+  },
   "nf-code": {
     "name": "nf-code",
     "title": "Code",
