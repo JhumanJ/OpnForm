@@ -53,3 +53,5 @@ If you need help or have questions, please join our [Discord community](https://
 ## License
 
 OpnForm is open-source under the GNU Affero General Public License Version 3 (AGPLv3) or any later version. You can find it [here](https://github.com/JhumanJ/OpnForm/blob/main/LICENSE).
+
+**Note**: The `/integrations` directory is licensed under MIT License to comply with third-party platform requirements (e.g., n8n requires MIT-licensed community nodes). See [integrations/LICENSE](integrations/LICENSE) for details.

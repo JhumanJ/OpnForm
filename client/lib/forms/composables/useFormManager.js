@@ -341,12 +341,17 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
     state.isProcessing = false
     timer.reset() // Reset timer via composable
     timer.start() // Restart timer
+
+    // Use resetAndFill with empty object to properly clear originalData and all fields
+    form.resetAndFill({})    
+    pendingSubmissionService?.clear()
     
     // Reinitialize the form to reapply URL parameters and default values
     await initialize({
       urlParams: options.urlParams,
       submissionId: options.submissionId, // Explicitly pass submissionId (usually null)
-      skipPendingSubmission: true // Don't reload from localStorage on restart
+      skipPendingSubmission: true, // Don't reload from localStorage on restart
+      skipUrlParams: options.skipUrlParams // Pass through the skipUrlParams option
     })
   }
   
