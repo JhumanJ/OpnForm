@@ -44,7 +44,7 @@
     <div
       v-else-if="block.type === 'nf-image' && (isAdminPreview || (!isAdminPreview && block.image_block))"
       :id="block.id"
-      :key="block.id"
+      :key="'image-' + block.id"
       class="my-4 w-full"
       :class="[getFieldAlignClasses(block)]"
       @dblclick="editFieldOptions"
@@ -68,9 +68,9 @@
       >
     </div>
     <div
-      v-if="block.type === 'nf-video' && (isAdminPreview || (!isAdminPreview && block.video_block))"
+      v-else-if="block.type === 'nf-video' && (isAdminPreview || (!isAdminPreview && block.video_block))"
       :id="block.id"
-      :key="block.id"
+      :key="'video-' + block.id"
       class="my-4 w-full"
       :class="[getFieldAlignClasses(block)]"
       @dblclick="editFieldOptions"
