@@ -19,7 +19,7 @@ export const fileInputTheme = {
         container: 'border-notion-input-border dark:border-notion-input-borderDark bg-notion-input-background dark:bg-notion-dark-light text-neutral-900 dark:text-neutral-100'
       },
       transparent: {
-        container: 'border-0 bg-transparent text-neutral-700 dark:text-neutral-300 rounded-none shadow-[inset_0_-1px_0_0_rgb(212_212_212)] dark:shadow-[inset_0_-1px_0_0_rgb(82_82_82)] transition-shadow duration-200 focus:ring-0 focus-within:ring-0 focus-within:shadow-[inset_0_-2px_0_0_var(--color-form)]'
+        container: 'bg-transparent text-neutral-700 dark:text-neutral-300 border-neutral-300 dark:border-neutral-600 hover:bg-neutral-50 dark:hover:bg-notion-dark-light'
       }
     },
     size: {
