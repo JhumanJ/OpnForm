@@ -49,7 +49,7 @@
         <div class="relative">
           <BlockRenderer :block="currentBlock" :form-manager="formManager" />
         </div>
-        <div class="mt-2 flex gap-2 justify-start" :class="{'flex-col justify-normal! items-center': isLast &&form.use_captcha}">
+        <div v-if="!props.formManager?.state.isSubmitted" class="mt-2 flex gap-2 justify-start" :class="{'flex-col justify-normal! items-center': isLast &&form.use_captcha}">
           <slot name="submit-btn" v-if="isLast" :loading="isProcessing">
             <CaptchaWrapper v-if="form.use_captcha" :form-manager="formManager" />
             <open-form-button :form="form" class="mt-0.5 px-6" :loading="isProcessing" @click.prevent="emit('submit')">

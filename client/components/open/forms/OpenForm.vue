@@ -90,7 +90,7 @@
       </transition>
 
       <!-- Captcha -->
-      <CaptchaWrapper v-if="form.use_captcha" :form-manager="formManager" />
+      <CaptchaWrapper v-if="form.use_captcha && !isSubmitted" :form-manager="formManager" />
 
       <!--  Submit, Next and previous buttons  -->
       <div v-if="shouldDisplayForm" class="flex flex-wrap justify-center w-full">
@@ -242,7 +242,7 @@ const isProcessing = computed(() => props.formManager.state.isProcessing)
 const isSubmitted = computed(() => !!props.formManager?.state.isSubmitted)
 const shouldDisplayForm = computed(() => {
   const showAdminControls = !!props.formManager?.strategy?.value?.admin?.showAdminControls
-  return (!form.value?.is_closed && !form.value?.max_number_of_submissions_reached) || showAdminControls
+  return (!isSubmitted.value && !form.value?.is_closed && !form.value?.max_number_of_submissions_reached) || showAdminControls
 })
 const submittedData = computed(() => props.formManager?.form?.data?.() ?? null)
 
