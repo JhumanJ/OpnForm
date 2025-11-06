@@ -49,7 +49,7 @@
         <div class="relative">
           <BlockRenderer :block="currentBlock" :form-manager="formManager" />
         </div>
-        <div v-if="!props.formManager?.state.isSubmitted" class="mt-2 flex gap-2 justify-start" :class="{'flex-col justify-normal! items-center': isLast &&form.use_captcha}">
+        <div v-if="!props.formManager?.state.isSubmitted" class="mt-2 flex gap-2" :class="[getFieldAlignClasses(currentBlock), {'flex-col justify-normal! items-center': isLast &&form.use_captcha}]">
           <slot name="submit-btn" v-if="isLast" :loading="isProcessing">
             <CaptchaWrapper v-if="form.use_captcha" :form-manager="formManager" />
             <open-form-button :form="form" class="mt-0.5 px-6" :loading="isProcessing" @click.prevent="emit('submit')">
@@ -219,4 +219,12 @@ const goPrev = () => {
   }
 }
 const goNext = () => { if (!isLast.value) handleNextClick() }
+
+// If block is text block, or any other block that has an align property, use the align property to determine the justify class
+function getFieldAlignClasses(field) {
+  if (!field?.align || field.align === 'left') return 'justify-start'
+  else if (field.align === 'right') return 'justify-end'
+  else if (field.align === 'center') return 'justify-center'
+  else return 'justify-start'
+}
 </script>
