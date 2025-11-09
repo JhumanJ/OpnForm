@@ -25,7 +25,7 @@
             >
               <div class="text-center mb-4">
                 <h2 class="text-xl font-bold text-slate-800">Choose a form style</h2>
-                <p class="text-slate-500 text-sm">Choose how your form appears to respondents.</p>
+                <p class="text-slate-500 text-sm">Choose how your form appears to respondents.<br/>You can change this later.</p>
               </div>
               <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div
@@ -253,13 +253,14 @@ function selectStyle(style) {
     if (style === 'focused') {
       workingFormStore.content.size = 'lg'
       // Ensure navigation arrows are enabled by default in focused mode
-      const currentSettings = workingFormStore.content.settings ?? {}
-      workingFormStore.content.settings = { ...currentSettings, navigation_arrows: true }
+      // Ensure settings object is initialized as a writable object
+      if (!workingFormStore.content.settings || typeof workingFormStore.content.settings !== 'object') {
+        workingFormStore.content.settings = {}
+      }
+      workingFormStore.content.settings.navigation_arrows = true
       // Seed first block image to highlight focused mode
       seedFocusedFirstBlockImage(workingFormStore.content)
     }
-    // Close any open sidebars since layout may change
-    workingFormStore.closeAllSidebars()
   }
   currentStep.value = 2
 }

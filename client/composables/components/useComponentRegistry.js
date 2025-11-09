@@ -14,6 +14,7 @@ const clientOnlyHeavyFormComponentsRegistry = new Map([
   ['RichTextAreaInput', () => import('~/components/forms/heavy/RichTextAreaInput.client.vue')],
   ['PaymentInput', () => import('~/components/forms/heavy/PaymentInput.client.vue')],
   ['CodeInput', () => import('~/components/forms/heavy/CodeInput.client.vue')],
+  ['EmbedMedia', () => import('~/components/forms/heavy/components/EmbedMedia.vue')],
 ])
 
 const actionRegistry = new Map([

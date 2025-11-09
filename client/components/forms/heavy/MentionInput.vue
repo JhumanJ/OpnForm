@@ -164,8 +164,21 @@ const restoreSelection = () => {
   }
 }
 
+const getPlainText = (html) => {
+  if (!html) return ''
+  // Create a temporary div to parse HTML
+  const temp = document.createElement('div')
+  temp.innerHTML = html
+  // Get text content and trim
+  return temp.textContent.trim()
+}
+
 const updateCompVal = () => {
-  compVal.value = editableDiv.value.innerHTML
+  const html = editableDiv.value.innerHTML
+  const plainText = getPlainText(html)
+  
+  // If plain text is empty, store empty string; otherwise store HTML
+  compVal.value = plainText ? html : ''
 }
 
 const onInput = () => {

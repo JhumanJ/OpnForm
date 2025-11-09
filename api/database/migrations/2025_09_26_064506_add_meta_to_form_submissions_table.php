@@ -10,9 +10,11 @@ return new class () extends Migration {
      */
     public function up(): void
     {
-        Schema::table('form_submissions', function (Blueprint $table) {
-            $table->json('meta')->nullable();
-        });
+        if (!Schema::hasColumn('form_submissions', 'meta')) {
+            Schema::table('form_submissions', function (Blueprint $table) {
+                $table->json('meta')->nullable();
+            });
+        }
     }
 
     /**
@@ -20,8 +22,10 @@ return new class () extends Migration {
      */
     public function down(): void
     {
-        Schema::table('form_submissions', function (Blueprint $table) {
-            $table->dropColumn('meta');
-        });
+        if (Schema::hasColumn('form_submissions', 'meta')) {
+            Schema::table('form_submissions', function (Blueprint $table) {
+                $table->dropColumn('meta');
+            });
+        }
     }
 };

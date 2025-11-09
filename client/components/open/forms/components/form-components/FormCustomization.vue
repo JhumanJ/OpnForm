@@ -192,7 +192,7 @@
 
     <toggle-switch-input
       v-if="isFocused"
-      v-model="navigationArrows"
+      name="settings.navigation_arrows"
       :form="form"
       class="mt-2"
       label="Show navigation arrows"
@@ -258,19 +258,6 @@ const isFocused = computed(() => form.value?.presentation_style === 'focused')
 
 const availableLocales = computed(() => {
   return $i18n.locales?.value.map(locale => ({ name: locale.name, value: locale.code })) ?? []
-})
-
-// Bind navigation arrows robustly even if settings is missing
-const navigationArrows = computed({
-  get() {
-    return form.value?.settings?.navigation_arrows ?? true
-  },
-  set(val) {
-    if (!form.value) return
-    const currentSettings = form.value.settings ?? {}
-    // Reassign the whole settings object to ensure reactivity
-    form.value.settings = { ...currentSettings, navigation_arrows: val }
-  }
 })
 
 onMounted(() => {
