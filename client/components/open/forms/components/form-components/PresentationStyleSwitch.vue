@@ -61,6 +61,7 @@
 import blocksTypes from '~/data/blocks_types.json'
 import BlockTypeIcon from '../BlockTypeIcon.vue'
 import seedFocusedFirstBlockImage from '~/lib/forms/seed-focused-image'
+import { ensureSettingsObject } from '@/composables/forms/initForm'
 
 const workingFormStore = useWorkingFormStore()
 const formRef = storeToRefs(workingFormStore).content
@@ -137,6 +138,12 @@ function onSelectStyle(newVal) {
     form.value.presentation_style = 'focused'
     // Ensure large input size in focused mode
     form.value.size = 'lg'
+    // Ensure settings object is initialized
+    ensureSettingsObject(form.value)
+    // Enable navigation arrows by default in focused mode
+    if (form.value.settings.navigation_arrows === undefined) {
+      form.value.settings.navigation_arrows = true
+    }
     // Seed first block with an abstract image to highlight focused mode
     seedFocusedFirstBlockImage(form.value)
     workingFormStore.closeAllSidebars()
@@ -163,6 +170,12 @@ function confirmSwitch() {
   // Ensure large input size in focused mode
   if (target === 'focused') {
     form.value.size = 'lg'
+    // Ensure settings object is initialized
+    ensureSettingsObject(form.value)
+    // Enable navigation arrows by default in focused mode
+    if (form.value.settings.navigation_arrows === undefined) {
+      form.value.settings.navigation_arrows = true
+    }
     // Seed first block with an abstract image to highlight focused mode
     seedFocusedFirstBlockImage(form.value)
   } else if (target === 'classic') {

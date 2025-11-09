@@ -28,6 +28,7 @@
           @click.stop="toggleDropdown"
           @focus="onFocus"
           @blur="onBlur"
+          @keydown="handleButtonKeydown"
         >
           <div
             :class="variantSlots.buttonInner()"
@@ -104,16 +105,20 @@
           :class="variantSlots.dropdown()"
           class="w-(--reka-popper-anchor-width)"
           :style="popoverContentStyle"
+          :aria-activedescendant="highlightedIndex >= 0 ? `option-${highlightedIndex}` : undefined"
+          @keydown="handleDropdownKeydown"
         >
           <div
             v-if="isSearchable"
             :class="variantSlots.searchContainer()"
           >
             <input
+              ref="searchInput"
               v-model="searchTerm"
               type="text"
               :class="variantSlots.searchInput()"
               :placeholder="allowCreation ? $t('forms.select.searchOrTypeToCreateNew') : $t('forms.select.search')"
+              @keydown="handleSearchKeydown"
             >
             <div
               v-if="!searchTerm"
@@ -154,6 +159,7 @@
               <div
                 v-for="virtualItem in virtualizer.getVirtualItems()"
                 :key="filteredOptions[virtualItem.index] ? filteredOptions[virtualItem.index][optionKey] : virtualItem.index"
+                :id="`option-${virtualItem.index}`"
                 role="option"
                 :aria-selected="filteredOptions[virtualItem.index] ? isSelected(filteredOptions[virtualItem.index]) : false"
                 :data-index="virtualItem.index"
@@ -173,10 +179,12 @@
                   { 'pr-9': multiple},
                   { 
                     'opacity-50 cursor-not-allowed': filteredOptions[virtualItem.index] && disabledOptionsMap[filteredOptions[virtualItem.index][optionKey]],
-                    'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': filteredOptions[virtualItem.index] && !disabledOptionsMap[filteredOptions[virtualItem.index][optionKey]]
+                    'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': filteredOptions[virtualItem.index] && !disabledOptionsMap[filteredOptions[virtualItem.index][optionKey]],
+                    'bg-gray-100 dark:bg-gray-900': highlightedIndex === virtualItem.index
                   }
                 ]"
                 @click.stop="filteredOptions[virtualItem.index] && select(filteredOptions[virtualItem.index])"
+                @mouseenter="highlightedIndex = virtualItem.index"
               >
                 <slot
                   v-if="filteredOptions[virtualItem.index]"
@@ -188,8 +196,9 @@
             </div>
             <div v-else>
               <div
-                v-for="option in filteredOptions"
+                v-for="(option, index) in filteredOptions"
                 :key="option[optionKey]"
+                :id="`option-${index}`"
                 role="option"
                 :aria-selected="isSelected(option)"
                 :style="optionStyle"
@@ -199,10 +208,12 @@
                   { 'pr-9': multiple},
                   { 
                     'opacity-50 cursor-not-allowed': disabledOptionsMap[option[optionKey]],
-                    'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': !disabledOptionsMap[option[optionKey]]
+                    'cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-900': !disabledOptionsMap[option[optionKey]],
+                    'bg-gray-100 dark:bg-gray-900': highlightedIndex === index
                   }
                 ]"
                 @click.stop="select(option)"
+                @mouseenter="highlightedIndex = index"
               >
                 <slot
                   name="option"
@@ -303,7 +314,8 @@ export default {
         virtualizer: null,
         fuse: null,
         fuseIndex: null,
-        updateDebouncedTerm: null
+        updateDebouncedTerm: null,
+        highlightedIndex: -1
     }
   },
   computed: {
@@ -444,10 +456,21 @@ export default {
       if (val) {
         this.$nextTick(() => {
           this.setupVirtualizer()
+          // Focus the search input or dropdown for keyboard navigation
+          if (this.isSearchable && this.$refs.searchInput) {
+            this.$refs.searchInput.focus()
+          } else if (this.$refs.scrollRef) {
+            this.$refs.scrollRef.focus()
+          }
         })
+      } else {
+        // Reset highlighted index when closing
+        this.highlightedIndex = -1
       }
     },
     filteredOptions () {
+      // Reset highlighted index when options change
+      this.highlightedIndex = -1
       if (this.isOpen) {
         this.$nextTick(() => {
           this.setupVirtualizer()
@@ -630,6 +653,222 @@ export default {
         this.select(newItem)
         this.searchTerm = ''
       }
+    },
+    handleButtonKeydown (event) {
+      if (this.disabled) return
+
+      // ArrowDown or ArrowUp: Open dropdown and highlight first/last option
+      if (event.key === 'ArrowDown' || event.key === 'ArrowUp') {
+        event.preventDefault()
+        if (!this.isOpen) {
+          this.isOpen = true
+          this.$nextTick(() => {
+            if (event.key === 'ArrowDown') {
+              this.highlightedIndex = 0
+            } else {
+              this.highlightedIndex = this.filteredOptions.length - 1
+            }
+            this.scrollToHighlighted()
+          })
+        }
+      }
+      
+      // Space or Enter: Toggle dropdown
+      if (event.key === ' ' || event.key === 'Enter') {
+        event.preventDefault()
+        this.toggleDropdown()
+      }
+      
+      // Escape: Close dropdown
+      if (event.key === 'Escape' && this.isOpen) {
+        event.preventDefault()
+        this.isOpen = false
+      }
+    },
+    handleSearchKeydown (event) {
+      // Handle arrow keys in search input for option navigation
+      if (event.key === 'ArrowDown') {
+        event.preventDefault()
+        if (this.highlightedIndex < 0) {
+          this.highlightedIndex = 0
+        } else {
+          this.highlightNext()
+        }
+      } else if (event.key === 'ArrowUp') {
+        event.preventDefault()
+        if (this.highlightedIndex < 0) {
+          this.highlightedIndex = this.filteredOptions.length - 1
+        } else {
+          this.highlightPrevious()
+        }
+      } else if (event.key === 'Enter') {
+        event.preventDefault()
+        if (this.highlightedIndex >= 0 && this.filteredOptions[this.highlightedIndex]) {
+          const option = this.filteredOptions[this.highlightedIndex]
+          if (!this.disabledOptionsMap[option[this.optionKey]]) {
+            this.select(option)
+          }
+        } else if (this.allowCreation && this.searchTerm) {
+          // Create new option if allowCreation is enabled
+          this.createOption(this.searchTerm)
+        }
+      } else if (event.key === 'Escape') {
+        event.preventDefault()
+        if (this.searchTerm) {
+          this.searchTerm = ''
+        } else {
+          this.isOpen = false
+        }
+      } else if (event.key === 'Home') {
+        // Don't prevent default for Home/End in text input (cursor movement)
+        // But highlight first option
+        if (event.ctrlKey || event.metaKey) {
+          event.preventDefault()
+          this.highlightedIndex = 0
+          this.scrollToHighlighted()
+        }
+      } else if (event.key === 'End') {
+        if (event.ctrlKey || event.metaKey) {
+          event.preventDefault()
+          this.highlightedIndex = this.filteredOptions.length - 1
+          this.scrollToHighlighted()
+        }
+      }
+    },
+    handleDropdownKeydown (event) {
+      if (!this.isOpen || this.filteredOptions.length === 0) return
+
+      // If search input is focused, don't handle arrow keys (let user type)
+      if (this.isSearchable && document.activeElement?.tagName === 'INPUT') {
+        // Only handle Escape and Enter when search is focused
+        if (event.key === 'Escape') {
+          event.preventDefault()
+          this.isOpen = false
+          return
+        }
+        if (event.key === 'Enter' && this.highlightedIndex >= 0) {
+          event.preventDefault()
+          const option = this.filteredOptions[this.highlightedIndex]
+          if (option && !this.disabledOptionsMap[option[this.optionKey]]) {
+            this.select(option)
+          }
+          return
+        }
+        return
+      }
+
+      switch (event.key) {
+        case 'ArrowDown':
+          event.preventDefault()
+          this.highlightNext()
+          break
+        case 'ArrowUp':
+          event.preventDefault()
+          this.highlightPrevious()
+          break
+        case 'Home':
+          event.preventDefault()
+          this.highlightedIndex = 0
+          this.scrollToHighlighted()
+          break
+        case 'End':
+          event.preventDefault()
+          this.highlightedIndex = this.filteredOptions.length - 1
+          this.scrollToHighlighted()
+          break
+        case 'Enter':
+        case ' ':
+          event.preventDefault()
+          if (this.highlightedIndex >= 0) {
+            const option = this.filteredOptions[this.highlightedIndex]
+            if (option && !this.disabledOptionsMap[option[this.optionKey]]) {
+              this.select(option)
+            }
+          }
+          break
+        case 'Escape':
+          event.preventDefault()
+          this.isOpen = false
+          break
+        case 'Tab':
+          // Allow tab to close dropdown and move focus
+          this.isOpen = false
+          break
+      }
+    },
+    highlightNext () {
+      if (this.filteredOptions.length === 0) return
+      
+      let nextIndex = this.highlightedIndex + 1
+      // Skip disabled options
+      while (nextIndex < this.filteredOptions.length) {
+        const option = this.filteredOptions[nextIndex]
+        if (!this.disabledOptionsMap[option[this.optionKey]]) {
+          this.highlightedIndex = nextIndex
+          this.scrollToHighlighted()
+          return
+        }
+        nextIndex++
+      }
+      // If we've reached the end, wrap to beginning
+      if (this.highlightedIndex >= this.filteredOptions.length - 1) {
+        nextIndex = 0
+        while (nextIndex < this.filteredOptions.length) {
+          const option = this.filteredOptions[nextIndex]
+          if (!this.disabledOptionsMap[option[this.optionKey]]) {
+            this.highlightedIndex = nextIndex
+            this.scrollToHighlighted()
+            return
+          }
+          nextIndex++
+        }
+      }
+    },
+    highlightPrevious () {
+      if (this.filteredOptions.length === 0) return
+      
+      let prevIndex = this.highlightedIndex <= 0 ? this.filteredOptions.length - 1 : this.highlightedIndex - 1
+      // Skip disabled options
+      while (prevIndex >= 0) {
+        const option = this.filteredOptions[prevIndex]
+        if (!this.disabledOptionsMap[option[this.optionKey]]) {
+          this.highlightedIndex = prevIndex
+          this.scrollToHighlighted()
+          return
+        }
+        prevIndex--
+      }
+      // If we've reached the beginning, wrap to end
+      if (prevIndex < 0) {
+        prevIndex = this.filteredOptions.length - 1
+        while (prevIndex >= 0) {
+          const option = this.filteredOptions[prevIndex]
+          if (!this.disabledOptionsMap[option[this.optionKey]]) {
+            this.highlightedIndex = prevIndex
+            this.scrollToHighlighted()
+            return
+          }
+          prevIndex--
+        }
+      }
+    },
+    scrollToHighlighted () {
+      this.$nextTick(() => {
+        const scrollContainer = this.$refs.scrollRef
+        if (!scrollContainer) return
+
+        if (this.virtualizer) {
+          // For virtualized list, use virtualizer's scrollToIndex
+          this.virtualizer.scrollToIndex(this.highlightedIndex, { align: 'center' })
+        } else {
+          // For non-virtualized list, manually scroll the highlighted element into view
+          const options = scrollContainer.querySelectorAll('[role="option"]')
+          const highlightedOption = options[this.highlightedIndex]
+          if (highlightedOption) {
+            highlightedOption.scrollIntoView({ block: 'nearest', behavior: 'smooth' })
+          }
+        }
+      })
     }
   }
 }

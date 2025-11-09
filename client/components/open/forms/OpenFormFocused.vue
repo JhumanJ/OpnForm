@@ -181,6 +181,46 @@ const borderRadius = computed(() => form.value?.border_radius || 'small')
 // Preload images used by the form (cover/logo/blocks)
 useFormImagePreloader(form, state)
 
+// Auto-focus the input field after page transition
+const focusCurrentInput = () => {
+  if (import.meta.server || isTemplateMode.value || !form.value?.auto_focus) return
+  
+  nextTick(() => {
+    // Wait for transition to complete (500ms as defined in SlidingTransition)
+    setTimeout(() => {
+      // Find the first focusable input element in the current block
+      const focusableSelectors = [
+        'input:not([type="hidden"]):not([disabled])',
+        'textarea:not([disabled])',
+        'select:not([disabled])',
+        'button[aria-haspopup="listbox"]:not([disabled])', // VSelect dropdown trigger
+        '[contenteditable="true"]',
+        'button[role="radio"]:not([disabled])',
+        'button[role="checkbox"]:not([disabled])'
+      ]
+      
+      const firstFocusable = document.querySelector(focusableSelectors.join(', '))
+      if (firstFocusable && typeof firstFocusable.focus === 'function') {
+        firstFocusable.focus()
+      }
+    }, 550) // Slightly longer than transition speed to ensure it's complete
+  })
+}
+
+// Watch for page changes and auto-focus (only if auto_focus is enabled)
+watch(currentIndex, () => {
+  if (form.value?.auto_focus) {
+    focusCurrentInput()
+  }
+})
+
+// Focus on initial mount (only if auto_focus is enabled)
+onMounted(() => {
+  if (form.value?.auto_focus) {
+    focusCurrentInput()
+  }
+})
+
 // Slots/utilities
 const slots = useSlots()
 
