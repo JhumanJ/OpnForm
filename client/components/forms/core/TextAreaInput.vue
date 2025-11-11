@@ -8,7 +8,7 @@
       :id="id ? id : name"
       v-model="compVal"
       :disabled="disabled ? true : null"
-      :class="ui.input()"
+      :class="ui.input({ class: props.ui?.slots?.input })"
       :name="name"
       :style="inputStyle"
       :placeholder="placeholder"
@@ -27,7 +27,7 @@
       v-if="maxCharLimit && showCharLimit"
       #bottom_after_help
     >
-      <small :class="ui.help()">
+      <small :class="ui.help({ class: props.ui?.slots?.help })">
         {{ charCount }}/{{ maxCharLimit }}
       </small>
     </template>
@@ -70,7 +70,8 @@ export default {
 
     return {
       ...formInput,
-      onEnterPress
+      onEnterPress,
+      props
     }
   },
 

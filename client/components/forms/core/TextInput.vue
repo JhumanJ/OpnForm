@@ -12,7 +12,7 @@
       :autocomplete="autocomplete"
       :pattern="pattern"
       :style="inputStyle"
-      :class="ui.input()"
+      :class="ui.input({ class: props.ui?.slots?.input })"
       :name="name"
       :accept="accept"
       :placeholder="placeholder"
@@ -36,7 +36,7 @@
       v-if="maxCharLimit && showCharLimit"
       #bottom_after_help
     >
-      <small :class="ui.help()">
+      <small :class="ui.help({ class: props.ui?.slots?.help })">
         {{ charCount }}/{{ maxCharLimit }}
       </small>
     </template>
@@ -99,7 +99,8 @@ export default {
     return {
       ...formInput,
       onEnterPress,
-      onChange
+      onChange,
+      props
     }
   },
   computed: {

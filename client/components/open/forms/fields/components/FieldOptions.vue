@@ -334,6 +334,13 @@
         @update:model-value="onFieldOptionsChange"
       />
       <toggle-switch-input
+        v-if="isFocused"
+        :model-value="field.use_focused_selector === false"
+        label="Use dropdown instead"
+        help="Use classic dropdown instead of focused selector with keyboard shortcuts"
+        @update:model-value="onFieldUseDropdownInFocusedChange"
+      />
+      <toggle-switch-input
         v-if="!isFocusedSelectorActive"
         :form="field"
         name="allow_creation"
@@ -347,13 +354,6 @@
         label="Always show all select options"
         help="Options won't be in a dropdown anymore, but will all be visible"
         @update:model-value="onFieldWithoutDropdownChange"
-      />
-      <toggle-switch-input
-        v-if="isFocused"
-        :model-value="field.use_focused_selector === false"
-        label="Use dropdown instead"
-        help="Use classic dropdown instead of focused selector with keyboard shortcuts"
-        @update:model-value="onFieldUseDropdownInFocusedChange"
       />
       
       <!-- Min/Max Selection Constraints for multi_select only -->

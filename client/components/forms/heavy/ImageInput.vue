@@ -11,7 +11,7 @@
         aria-expanded="true"
         aria-labelledby="listbox-label"
         class="cursor-pointer relative w-full"
-        :class="ui.button()"
+        :class="ui.button({ class: props.ui?.slots?.button })"
         :style="inputStyle"
         @click.prevent="showUploadModal = true"
       >
@@ -175,7 +175,8 @@ export default {
       variants: imageInputTheme
     })
     return {
-      ...formInput
+      ...formInput,
+      props
     }
   },
 

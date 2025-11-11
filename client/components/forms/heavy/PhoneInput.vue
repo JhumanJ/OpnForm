@@ -41,20 +41,20 @@
               class="-mt-[9px]! rounded"
               :country="props.option.code"
             />
-            <span class="truncate" :class="ui.option()">{{ props.option.name }}</span>
-            <span class="text-gray-500 whitespace-nowrap" :class="ui.option()">{{ props.option.dial_code && props.option.dial_code.startsWith('+') ? props.option.dial_code : '+' + props.option.dial_code }}</span>
+            <span class="truncate" :class="ui.option({ class: props.ui?.slots?.option })">{{ props.option.name }}</span>
+            <span class="text-gray-500 whitespace-nowrap" :class="ui.option({ class: props.ui?.slots?.option })">{{ props.option.dial_code && props.option.dial_code.startsWith('+') ? props.option.dial_code : '+' + props.option.dial_code }}</span>
           </div>
         </template>
         <template #selected="props">
           <div
             class="flex items-center gap-2 w-full overflow-hidden ltr-only:pr-1 rtl-only:pl-1"
-            :class="[ui.selectedMaxHeight(), ui.selected()]"
+            :class="[ui.selectedMaxHeight({ class: props.ui?.slots?.selectedMaxHeight }), ui.selected({ class: props.ui?.slots?.selected })]"
           >
-            <span class="whitespace-nowrap shrink-0" :class="ui.selected()">{{ props.option.dial_code && props.option.dial_code.startsWith('+') ? props.option.dial_code : '+' + props.option.dial_code }}</span>
+            <span class="whitespace-nowrap shrink-0" :class="ui.selected({ class: props.ui?.slots?.selected })">{{ props.option.dial_code && props.option.dial_code.startsWith('+') ? props.option.dial_code : '+' + props.option.dial_code }}</span>
             <country-flag
               :size="countryFlagSize"
               class="rounded-lg! ms-auto shrink-0"
-              :class="ui.flag()"
+              :class="ui.flag({ class: props.ui?.slots?.flag })"
               :country="props.option.code"
             />
           </div>
@@ -62,7 +62,7 @@
       </v-select>
       <div
         v-if="resolvedTheme === 'minimal'"
-        :class="ui.separator()"
+        :class="ui.separator({ class: props.ui?.slots?.separator })"
         class="w-0 self-stretch"
         aria-hidden="true"
       />
@@ -71,7 +71,7 @@
         type="text"
         class="w-full min-w-0 ltr-only:border-l-0 ltr-only:!rounded-l-none rtl:border-r-0 rtl:rounded-r-none"
         :disabled="disabled?true:null"
-        :class="ui.input()"
+        :class="ui.input({ class: props.ui?.slots?.input })"
         :placeholder="placeholder"
         :style="inputStyle"
         @input="onInput"

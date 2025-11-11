@@ -17,7 +17,7 @@
           ref="range"
           v-model.number="compVal"
           type="range"
-          :class="[ui.slider(), 'slider']"
+          :class="[ui.slider({ class: props.ui?.slots?.slider }), 'slider']"
           :style="{ '--thumb-color': color }"
           :disabled="disabled"
           :min="minSlider"
@@ -28,7 +28,7 @@
             <div
               v-for="(i, idx) in sliderLabelsList"
               :key="i.label ?? idx"
-              :class="[ui.stepLabel(), i.style]"
+              :class="[ui.stepLabel({ class: props.ui?.slots?.stepLabel }), i.style]"
             >
               {{ i.label }}
             </div>
@@ -70,7 +70,8 @@ export default {
     })
 
     return {
-      ...formInput
+      ...formInput,
+      props
     }
   },
   data() {

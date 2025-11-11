@@ -6,7 +6,7 @@
     <div
       v-if="cameraUpload && isInWebcam"
       class="hidden sm:block w-full"
-      :class="ui.container()"
+      :class="ui.container({ class: props.ui?.slots?.container })"
     >
       <ClientOnly>
       <CameraUpload
@@ -20,7 +20,7 @@
       v-else
       :style="inputStyle"
       class="cursor-pointer"
-      :class="ui.container()"
+      :class="ui.container({ class: props.ui?.slots?.container })"
       tabindex="0"
       role="button"
       :aria-label="multiple ? 'Choose files or drag here' : 'Choose a file or drag here'"
@@ -140,7 +140,8 @@ export default {
       variants: fileInputTheme
     })
     return {
-      ...formInput
+      ...formInput,
+      props
     }
   },
 

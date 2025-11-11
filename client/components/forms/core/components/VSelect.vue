@@ -1,7 +1,7 @@
 <template>
   <div
     ref="select"
-    :class="variantSlots.container()"
+    :class="variantSlots.container({ class: ui?.slots?.container })"
   >
     <UPopover
       v-model:open="isOpen"
@@ -17,21 +17,21 @@
       <template #anchor>
         <div
           :style="inputStyle"
-          :class="[variantSlots.anchor(), inputClass]"
+          :class="[variantSlots.anchor({ class: ui?.slots?.anchor }), inputClass]"
         >
         <button
           type="button"
           aria-haspopup="listbox"
           :aria-expanded="isOpen"
           aria-labelledby="listbox-label"
-          :class="variantSlots.button()"
+          :class="variantSlots.button({ class: ui?.slots?.button })"
           @click.stop="toggleDropdown"
           @focus="onFocus"
           @blur="onBlur"
           @keydown="handleButtonKeydown"
         >
           <div
-            :class="variantSlots.buttonInner()"
+            :class="variantSlots.buttonInner({ class: ui?.slots?.buttonInner })"
           >
             <transition
               name="fade"
@@ -60,7 +60,7 @@
                 <slot name="placeholder">
                   <div
                     :class="[
-                      variantSlots.placeholder(),
+                      variantSlots.placeholder({ class: ui?.slots?.placeholder }),
                       { 'py-1': multiple && !loading }
                     ]"
                   >
@@ -71,25 +71,25 @@
             </transition>
           </div>
           <div
-            :class="variantSlots.chevronGradient()"
+            :class="variantSlots.chevronGradient({ class: ui?.slots?.chevronGradient })"
           />
           <span
-            :class="variantSlots.chevronContainer()"
+            :class="variantSlots.chevronContainer({ class: ui?.slots?.chevronContainer })"
           >
             <Icon
               name="heroicons:chevron-up-down-16-solid" 
-              :class="variantSlots.chevronIcon()"
+              :class="variantSlots.chevronIcon({ class: ui?.slots?.chevronIcon })"
             />
           </span>
         </button>
         <button
           v-if="clearable && showClearButton && !disabled && !isEmpty"
-          :class="variantSlots.clearButton()"
+          :class="variantSlots.clearButton({ class: ui?.slots?.clearButton })"
           @click.stop.prevent="clear()"
         >
           <Icon
             name="heroicons:x-mark-20-solid"
-            :class="variantSlots.clearIcon()"
+            :class="variantSlots.clearIcon({ class: ui?.slots?.clearIcon })"
             width="2em"
             dynamic
           />
@@ -102,7 +102,7 @@
           tabindex="-1"
           role="listbox"
           ref="scrollRef"
-          :class="variantSlots.dropdown()"
+          :class="variantSlots.dropdown({ class: ui?.slots?.dropdown })"
           class="w-(--reka-popper-anchor-width)"
           :style="popoverContentStyle"
           :aria-activedescendant="highlightedIndex >= 0 ? `option-${highlightedIndex}` : undefined"
@@ -110,34 +110,34 @@
         >
           <div
             v-if="isSearchable"
-            :class="variantSlots.searchContainer()"
+            :class="variantSlots.searchContainer({ class: ui?.slots?.searchContainer })"
           >
             <input
               ref="searchInput"
               v-model="searchTerm"
               type="text"
-              :class="variantSlots.searchInput()"
+              :class="variantSlots.searchInput({ class: ui?.slots?.searchInput })"
               :placeholder="allowCreation ? $t('forms.select.searchOrTypeToCreateNew') : $t('forms.select.search')"
               @keydown="handleSearchKeydown"
             >
             <div
               v-if="!searchTerm"
-              :class="variantSlots.searchIconContainer()"
+              :class="variantSlots.searchIconContainer({ class: ui?.slots?.searchIconContainer })"
             >
               <Icon
                 name="heroicons:magnifying-glass-solid"
-                :class="variantSlots.searchIcon()"
+                :class="variantSlots.searchIcon({ class: ui?.slots?.searchIcon })"
               />
             </div>
             <div
               v-else
               role="button"
-              :class="variantSlots.searchClearContainer()"
+              :class="variantSlots.searchClearContainer({ class: ui?.slots?.searchClearContainer })"
               @click.stop="searchTerm = ''"
             >
               <Icon
                 name="heroicons:backspace"
-                :class="variantSlots.searchClearIcon()"
+                :class="variantSlots.searchClearIcon({ class: ui?.slots?.searchClearIcon })"
               />
             </div>
           </div>
@@ -149,7 +149,7 @@
           </div>
           <div
             v-if="filteredOptions.length > 0"
-            :class="variantSlots.optionsContainer()"
+            :class="variantSlots.optionsContainer({ class: ui?.slots?.optionsContainer })"
           >
             <div
               v-if="virtualizer"
@@ -174,7 +174,7 @@
                   }
                 ]"
                 :class="[
-                  variantSlots.option(),
+                  variantSlots.option({ class: ui?.slots?.option }),
                   dropdownClass,
                   { 'pr-9': multiple},
                   { 
@@ -203,7 +203,7 @@
                 :aria-selected="isSelected(option)"
                 :style="optionStyle"
                 :class="[
-                  variantSlots.option(),
+                  variantSlots.option({ class: ui?.slots?.option }),
                   dropdownClass,
                   { 'pr-9': multiple},
                   { 
@@ -228,7 +228,7 @@
             name="empty-placeholder"
           >
             <p
-              :class="variantSlots.emptyMessage()"
+              :class="variantSlots.emptyMessage({ class: ui?.slots?.emptyMessage })"
             >
               {{ (allowCreation ? $t('forms.select.typeSomethingToAddAnOption') : $t('forms.select.noOptionAvailable')) }}.
             </p>
@@ -241,13 +241,13 @@
               role="option"
               :style="optionStyle"
               :class="[
-                variantSlots.createOption(),
+                variantSlots.createOption({ class: ui?.slots?.createOption }),
                 { 'px-3 pr-9': multiple, 'px-3': !multiple },
                 dropdownClass
               ]"
               @click.stop="createOption(searchTerm)"
             >
-              {{ $t('forms.select.create') }} <span :class="variantSlots.createLabel()">{{
+              {{ $t('forms.select.create') }} <span :class="variantSlots.createLabel({ class: ui?.slots?.createLabel })">{{
                 searchTerm
               }}</span>
             </div>

@@ -160,7 +160,7 @@ const optionClasses = (option) => {
     selected,
     animating: isAnimating,
     disabled: props.disabled
-  }).option()
+  }).option({ class: props.ui?.slots?.option })
 }
 
 const buttonClasses = (selected, isDisabled) => focusedSelectorVariants.value({
@@ -168,16 +168,16 @@ const buttonClasses = (selected, isDisabled) => focusedSelectorVariants.value({
   size: resolvedSize.value,
   selected,
   disabled: isDisabled
-}).optionButton()
+}).optionButton({ class: props.ui?.slots?.optionButton })
 
 const labelClasses = (selected) => focusedSelectorVariants.value({
   theme: resolvedTheme.value,
   size: resolvedSize.value,
   borderRadius: resolvedBorderRadius.value,
   selected
-}).label()
+}).label({ class: props.ui?.slots?.label })
 
-const textClasses = () => variantSlots.value.optionText()
+const textClasses = () => variantSlots.value.optionText({ class: props.ui?.slots?.optionText })
 
 const checkmarkClasses = (option) => {
   const selected = isSelected(option)
@@ -187,7 +187,7 @@ const checkmarkClasses = (option) => {
     size: resolvedSize.value,
     selected,
     animating: isAnimating
-  }).checkmark()
+  }).checkmark({ class: props.ui?.slots?.checkmark })
 }
 
 // Methods

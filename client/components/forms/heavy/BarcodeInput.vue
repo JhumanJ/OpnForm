@@ -42,7 +42,7 @@
       v-else
       :style="inputStyle"
       class="cursor-pointer"
-      :class="ui.container()"
+      :class="ui.container({ class: props.ui?.slots?.container })"
       tabindex="0"
       role="button"
       aria-label="Click to open a camera"
@@ -96,7 +96,8 @@ export default {
       variants: fileInputTheme
     })
     return {
-      ...formInput
+      ...formInput,
+      props
     }
   },
 
