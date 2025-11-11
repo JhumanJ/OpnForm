@@ -21,6 +21,8 @@ use Spatie\Sluggable\SlugOptions;
 use Stevebauman\Purify\Facades\Purify;
 use Carbon\Carbon;
 use App\Events\Forms\FormSaved;
+use App\Models\Version;
+use Mpociot\Versionable\VersionableTrait;
 
 class Form extends Model implements CachableAttributes
 {
@@ -29,6 +31,20 @@ class Form extends Model implements CachableAttributes
     use HasFactory;
     use HasSlug;
     use SoftDeletes;
+    use VersionableTrait;
+
+    // Configure versioning
+    protected $versionClass = Version::class;
+    protected $keepOldVersions = 5;
+    protected $dontVersionFields = [
+        'created_at',
+        'updated_at',
+        'deleted_at',
+        'workspace_id',
+        'creator_id',
+        'removed_properties'
+    ];
+
 
     public const DARK_MODE_VALUES = ['auto', 'light', 'dark'];
 
@@ -215,7 +231,7 @@ class Form extends Model implements CachableAttributes
         }
 
         // Fallback to cached calculation for individual access
-        return $this->remember('views_count', 15 * 60, fn () => $this->calculateTotalViews());
+        return $this->remember('views_count', 15 * 60, fn() => $this->calculateTotalViews());
     }
 
     /**
