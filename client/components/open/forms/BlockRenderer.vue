@@ -124,7 +124,11 @@ const componentInfo = computed(() => {
   let componentName
   if (field.type === 'text' && field.multi_lines) componentName = 'TextAreaInput'
   else if (field.type === 'url' && field.file_upload) componentName = 'FileInput'
+  // In focused mode, use FocusedSelectorInput by default unless explicitly disabled
+  else if (['select','multi_select'].includes(field.type) && form.value.presentation_style === 'focused' && field.use_focused_selector !== false) componentName = 'FocusedSelectorInput'
   else if (['select','multi_select'].includes(field.type) && field.without_dropdown) componentName = 'FlatSelectInput'
+  // In focused mode, use FocusedToggleInput by default unless explicitly disabled
+  else if (field.type === 'checkbox' && form.value.presentation_style === 'focused' && field.use_focused_toggle !== false) componentName = 'FocusedToggleInput'
   else if (field.type === 'checkbox' && field.use_toggle_switch) componentName = 'ToggleSwitchInput'
   else if (field.type === 'signature') componentName = 'SignatureInput'
   else if (field.type === 'phone_number' && !field.use_simple_text_input) componentName = 'PhoneInput'

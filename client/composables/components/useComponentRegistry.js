@@ -42,6 +42,11 @@ const heavyFormComponentsRegistry = new Map([
   ['RatingInput', () => import('~/components/forms/heavy/RatingInput.vue')],
 ])
 
+const coreFormComponentsRegistry = new Map([
+  ['FocusedSelectorInput', () => import('~/components/forms/core/FocusedSelectorInput.vue')],
+  ['FocusedToggleInput', () => import('~/components/forms/core/FocusedToggleInput.vue')],
+])
+
 // Component loading cache to avoid duplicate imports
 const componentCache = new Map()
 
@@ -183,6 +188,15 @@ export function useComponentRegistry() {
         clientOnly: false
       }
     }
+
+    if (coreFormComponentsRegistry.has(componentName)) {
+      const loader = coreFormComponentsRegistry.get(componentName)
+      return {
+        component: createAsyncComponent(loader),
+        clientOnly: false
+      }
+    }
+
     return {
       component: componentName,
       clientOnly: false

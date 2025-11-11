@@ -196,12 +196,13 @@ const focusCurrentInput = () => {
         'button[aria-haspopup="listbox"]:not([disabled])', // VSelect dropdown trigger
         '[contenteditable="true"]',
         'button[role="radio"]:not([disabled])',
-        'button[role="checkbox"]:not([disabled])'
+        'button[role="checkbox"]:not([disabled])',
+        '[role="listbox"][tabindex="0"]' // FocusedSelectorInput container
       ]
       
       const firstFocusable = document.querySelector(focusableSelectors.join(', '))
       if (firstFocusable && typeof firstFocusable.focus === 'function') {
-        firstFocusable.focus()
+        firstFocusable.focus({ preventScroll: true })
       }
     }, 550) // Slightly longer than transition speed to ensure it's complete
   })
