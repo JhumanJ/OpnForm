@@ -95,10 +95,10 @@ const { data: images = [], isLoading: loading } = unsplash.list(debouncedTerm, {
 
 const selectImage = async (image) => {
   // Trigger download tracking as per Unsplash API guidelines
-  if (image.id) {
+  if (image.download_location) {
     try {
-      // Fire-and-forget - pass only the photo ID, backend constructs the URL
-      contentApi.unsplash.download(image.id)
+      // Fire-and-forget - pass the full download_location URL with ixid parameter
+      contentApi.unsplash.download(image.download_location)
     } catch (error) {
       // Silently fail - don't block image selection if download tracking fails
       console.warn('Failed to track Unsplash download:', error)

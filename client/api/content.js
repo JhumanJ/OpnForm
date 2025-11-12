@@ -14,6 +14,6 @@ export const contentApi = {
   // Unsplash
   unsplash: {
     list: (options) => apiService.get('/unsplash', options),
-    download: (photoId) => apiService.post('/unsplash/download', { photo_id: photoId })
+    download: (downloadLocation) => apiService.post('/unsplash/download', { download_location: downloadLocation })
   }
 }
