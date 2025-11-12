@@ -46,10 +46,11 @@ class VersionController extends Controller
             ]);
         }
 
-        $version->revert();
+        // $version->revert();
 
         return $this->success([
-            'message' => 'Version restored successfully. Please publish form to save the changes.',
+            'model_data' => $version->model_data_array,
+            'message' => 'Version restored successfully on editor. Please publish form to save the changes.',
         ]);
     }
 }

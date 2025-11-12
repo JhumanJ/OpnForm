@@ -42,7 +42,8 @@ class Form extends Model implements CachableAttributes
         'deleted_at',
         'workspace_id',
         'creator_id',
-        'removed_properties'
+        'removed_properties',
+        'share_url'
     ];
 
 

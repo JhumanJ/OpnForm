@@ -19,15 +19,16 @@
     v-model:open="isHistoryModalOpen"
     title="Form History"
     description="View the history of changes to your form"
-    :ui="{ content: 'sm:max-w-2xl' }"
+    :ui="{ content: 'sm:max-w-3xl' }"
     @close="isHistoryModalOpen = false"
   >
     <template #body>
-      <div class="space-y-4">
+      <div class="space-y-2">
         <div
-          v-for="version in versions"
+          v-for="(version, index) in versions"
           :key="version.id"
-          class="flex items-start gap-3 p-3 border rounded-lg"
+          class="flex items-start gap-3 py-1 border-b"
+          :class="{ '!border-b-0': index === versions.length - 1 }"
         >
           <img
             :src="version.user.photo_url"
@@ -45,6 +46,7 @@
                 </div>
               </div>
               <UButton
+                size="sm"
                 variant="outline"
                 label="Restore"
                 icon="i-heroicons-arrow-path"
@@ -53,7 +55,12 @@
             </div>
 
             <div class="mt-2 text-sm text-neutral-800">
-              Edited form
+              <template v-if="getTags(version).length > 0">
+                {{ getTags(version).length }} changes made
+              </template>
+              <template v-else>
+                No changes made
+              </template>
             </div>
 
             <div class="mt-2 flex flex-wrap gap-2">
@@ -106,19 +113,11 @@ const formatDate = (val) => {
 }
 
 const getTags = (version) => {
-  const diff = version?.diff || {}
   const tags = []
-  const entries = Object.entries(diff)
-  if (!entries.length) {
-    tags.push({ key: 'no-changes', label: 'No visible changes' })
-    return tags
-  }
-
-  for (const [key, change] of entries) {
+  for (const [key, change] of Object.entries(version?.diff || {})) {
     const label = humanizeKey(key, change)
     tags.push({ key, label })
   }
-
   return tags
 }
 
@@ -142,8 +141,10 @@ const onRestore = async (version) => {
 
 const restoreVersion = async (version) => {
   await versionsApi.restore(version.id).then((response) => {
+    form.value = response.model_data
     useAlert().success(response.message)
-    fetchVersions()
+    isHistoryModalOpen.value = false
+    // fetchVersions()
   })
   .catch((error) => {
     console.error(error)
