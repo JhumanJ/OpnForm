@@ -5,9 +5,9 @@
 </p>
 
 <p align="center">
-<a href="https://github.com/OpnForm/OpnForm/stargazers"><img src="https://img.shields.io/github/stars/JhumanJ/OpnForm" alt="Github Stars"></a>
+<a href="https://github.com/OpnForm/OpnForm/stargazers"><img src="https://img.shields.io/github/stars/OpnForm/OpnForm" alt="Github Stars"></a>
 </a>
-<a href="https://github.com/OpnForm/OpnForm/pulse"><img src="https://img.shields.io/github/commit-activity/m/JhumanJ/OpnForm" alt="Commits per month"></a>
+<a href="https://github.com/OpnForm/OpnForm/pulse"><img src="https://img.shields.io/github/commit-activity/m/OpnForm/OpnForm" alt="Commits per month"></a>
 <a href="https://hub.docker.com/r/jhumanj/opnform-api">
 <img src="https://img.shields.io/docker/pulls/jhumanj/opnform-api">
 </a>
