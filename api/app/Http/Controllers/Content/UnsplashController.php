@@ -50,17 +50,32 @@ class UnsplashController extends Controller
 
     public function download(Request $request)
     {
-        $accessKey = config('services.unsplash.access_key');
-        $downloadLocation = $request->get('download_location');
+        $request->validate([
+            'photo_id' => 'required|string|min:1|max:255',
+        ]);
 
-        if (!$accessKey || !$downloadLocation) {
+        $accessKey = config('services.unsplash.access_key');
+
+        if (!$accessKey) {
             return response()->json(['error' => 'Invalid request'], 400);
         }
 
-        // Trigger download tracking by calling Unsplash download endpoint
-        Http::get($downloadLocation, [
+        $photoId = $request->input('photo_id');
+
+        // Construct the URL on the backend - only one place to maintain it
+        $downloadLocation = "https://api.unsplash.com/photos/{$photoId}/download";
+
+        // Trigger download tracking with proper headers
+        $response = Http::withHeaders([
+            'Accept-Version' => 'v1',
+            'User-Agent' => 'OpnForm (https://opnform.com)',
+        ])->get($downloadLocation, [
             'client_id' => $accessKey,
         ]);
+
+        if (!$response->successful()) {
+            return response()->json(['error' => 'Failed to track download'], 500);
+        }
 
         return response()->json(['success' => true]);
     }

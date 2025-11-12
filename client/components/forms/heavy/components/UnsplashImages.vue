@@ -2,6 +2,7 @@
   <div class="unsplash-images-container">
     <div class="py-2">
       <UInput
+        ref="searchInput"
         v-model="searchTerm"
         variant="outline"
         class="w-full mb-1"
@@ -9,6 +10,7 @@
         icon="i-heroicons-magnifying-glass-solid"
         :disabled="!isFeatureEnabled"
         :ui="{ trailing: 'pe-1' }"
+        autofocus
       >
         <template v-if="searchTerm?.length" #trailing>
           <UButton
@@ -93,10 +95,10 @@ const { data: images = [], isLoading: loading } = unsplash.list(debouncedTerm, {
 
 const selectImage = async (image) => {
   // Trigger download tracking as per Unsplash API guidelines
-  if (image.download_location) {
+  if (image.id) {
     try {
-      // Fire-and-forget - no need for mutation wrapper
-      contentApi.unsplash.download(image.download_location)
+      // Fire-and-forget - pass only the photo ID, backend constructs the URL
+      contentApi.unsplash.download(image.id)
     } catch (error) {
       // Silently fail - don't block image selection if download tracking fails
       console.warn('Failed to track Unsplash download:', error)
