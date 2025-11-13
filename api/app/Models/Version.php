@@ -14,6 +14,18 @@ class Version extends BaseVersion
     }
 
     /**
+     * Accessor: expose stored snapshot as an array.
+     */
+    public function getModelDataArrayAttribute(): array
+    {
+        $modelData = is_resource($this->model_data)
+            ? stream_get_contents($this->model_data, -1, 0)
+            : $this->model_data;
+
+        return unserialize($modelData) ?: [];
+    }
+
+    /**
      * Compute a structured diff between this snapshot and another (or the current model).
      * Returns an associative array of changed attributes:
      * [
@@ -76,23 +88,6 @@ class Version extends BaseVersion
 
         ksort($diff);
         return $diff;
-    }
-
-    /**
-     * Safely unserialize the stored model_data into an array for internal use.
-     */
-    private function getModelData(): array
-    {
-        $raw = is_resource($this->model_data)
-            ? stream_get_contents($this->model_data, -1, 0)
-            : $this->model_data;
-
-        if ($raw === null || $raw === '') {
-            return [];
-        }
-
-        $data = @unserialize($raw);
-        return is_array($data) ? $data : [];
     }
 
     /**
