@@ -23,7 +23,9 @@ class CustomFieldValidationRule implements ValidationRule
      *
      * @return void
      */
-    public function __construct(public array $validation, public array $formData, public ?Form $form = null) {}
+    public function __construct(public array $validation, public array $formData, public ?Form $form = null)
+    {
+    }
 
     /**
      * Determine if the validation rule passes.
