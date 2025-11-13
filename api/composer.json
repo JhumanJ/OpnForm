@@ -72,7 +72,13 @@
       "extra": {
         "laravel": {
           "dont-discover": [
-            "laravel/dusk"
+            "laravel/dusk",
+            "nunomaduro/collision",
+            "pestphp/pest-plugin-laravel",
+            "spatie/laravel-ignition",
+            "barryvdh/laravel-ide-helper",
+            "laravel/pint",
+            "laravel/sail"
           ]
         },
         "google/apiclient-services": [
