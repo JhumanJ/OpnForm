@@ -369,11 +369,6 @@
                 answer:
                   'The OpnForm Pro Plan is designed to meet the advanced needs of teams and creators. It includes features like form confirmation emails, Slack and Discord notifications, editable submissions, custom domain, custom code integration, larger file uploads, removal of OpnForm branding, priority support, and more.',
               },
-              // {
-              //   question: 'Can I try the Pro Plan before subscribing?',
-              //   answer:
-              //     'Absolutely! We offer a free 3-day trial of the OpnForm Pro Plan. This allows you to explore all the empowering features and experience the value it brings to your form-building process. The trial is automatically applied.',
-              // },
               {
                 question: 'Is there a discount for annual plans?',
                 answer:
