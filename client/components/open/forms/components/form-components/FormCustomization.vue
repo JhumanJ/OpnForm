@@ -232,7 +232,7 @@ import EditorSectionHeader from "./EditorSectionHeader.vue"
 import { useWorkingFormStore } from "../../../../../stores/working_form"
 import GoogleFontPicker from "../../../editors/GoogleFontPicker.vue"
 import ProTag from "~/components/app/ProTag.vue"
-import { DEFAULT_COLOR } from "@/composables/forms/initForm"
+import { DEFAULT_COLOR, ensureSettingsObject } from "@/composables/forms/initForm"
 import PresentationStyleSwitch from "./PresentationStyleSwitch.vue"
 import ImageWithSettings from "../media/ImageWithSettings.vue"
 
@@ -262,6 +262,14 @@ const availableLocales = computed(() => {
 
 onMounted(() => {
   isMounted.value = true
+  
+  // Ensure settings is a plain, writable object (avoid writing into readonly proxies)
+  ensureSettingsObject(form.value)
+  
+  // Set default value for navigation_arrows in focused mode if not defined
+  if (isFocused.value && form.value.settings.navigation_arrows === undefined) {
+    form.value.settings.navigation_arrows = true
+  }
 })
 
 const onChangeConfettiOnSubmission = (val) => {

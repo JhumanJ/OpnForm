@@ -195,6 +195,7 @@ import { formsApi } from "~/api/forms"
 import { useElementSize } from '@vueuse/core'
 import TrackClick from '~/components/global/TrackClick.vue'
 import seedFocusedFirstBlockImage from '~/lib/forms/seed-focused-image'
+import { ensureSettingsObject } from '~/composables/forms/initForm'
 
 const props = defineProps({
   show: { type: Boolean, required: true },
@@ -252,11 +253,9 @@ function selectStyle(style) {
     workingFormStore.content.presentation_style = style
     if (style === 'focused') {
       workingFormStore.content.size = 'lg'
-      // Ensure navigation arrows are enabled by default in focused mode
-      // Ensure settings object is initialized as a writable object
-      if (!workingFormStore.content.settings || typeof workingFormStore.content.settings !== 'object') {
-        workingFormStore.content.settings = {}
-      }
+      // Ensure settings object is initialized
+      ensureSettingsObject(workingFormStore.content)
+      // Enable navigation arrows by default in focused mode
       workingFormStore.content.settings.navigation_arrows = true
       // Seed first block image to highlight focused mode
       seedFocusedFirstBlockImage(workingFormStore.content)
