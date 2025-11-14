@@ -69,12 +69,14 @@ function getDefaultProperties() {
       type: "text",
       hidden: false,
       required: true,
+      placeholder: "Enter your full name",
       id: generateUUID(),
     },
     {
       name: "Email",
       type: "email",
       hidden: false,
+      placeholder: "Enter your email address",
       id: generateUUID(),
     },
     {
@@ -82,6 +84,7 @@ function getDefaultProperties() {
       type: "text",
       hidden: false,
       multi_lines: true,
+      placeholder: "Type your message here",
       id: generateUUID(),
     },
   ]

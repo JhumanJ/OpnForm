@@ -178,7 +178,7 @@
       },
       {
         "label": "GitHub",
-        "href": "https://github.com/JhumanJ/OpnForm"
+        "href": "https://github.com/OpnForm/OpnForm"
       }
     ],
     "primary": {
@@ -190,7 +190,7 @@
   "footer": {
     "socials": {
       "twitter": "https://twitter.com/opnform",
-      "github": "https://github.com/JhumanJ/OpnForm"
+      "github": "https://github.com/OpnForm/OpnForm"
     }
   }
 }

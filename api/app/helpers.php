@@ -8,7 +8,26 @@ if (!function_exists('front_url')) {
             return $path;
         }
 
-        return rtrim($baseUrl, '/') . '/' . ltrim($path, '/');
+        // Ensure baseUrl has a protocol (defaults to https for security)
+        if (! preg_match('~^https?://~i', $baseUrl)) {
+            $baseUrl = 'https://' . $baseUrl;
+        }
+
+        // Validate URL format
+        if (filter_var($baseUrl, FILTER_VALIDATE_URL) === false) {
+            return $path;
+        }
+
+        // Remove trailing slash from base URL
+        $cleanBaseUrl = rtrim($baseUrl, '/');
+
+        // Return base URL if no path provided
+        if (! $path) {
+            return $cleanBaseUrl;
+        }
+
+        // Combine base URL with path, ensuring single forward slash
+        return $cleanBaseUrl . '/' . ltrim($path, '/');
     }
 }
 
