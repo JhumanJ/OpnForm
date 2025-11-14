@@ -7,7 +7,6 @@ use Mpociot\Versionable\Version as BaseVersion;
 
 class Version extends BaseVersion
 {
-
     public function user()
     {
         return $this->belongsTo(User::class);
