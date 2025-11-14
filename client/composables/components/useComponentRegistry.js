@@ -24,6 +24,7 @@ const actionRegistry = new Map([
   ['GoogleSheetsIntegrationActions', () => import('~/components/open/integrations/components/GoogleSheetsIntegrationActions.vue')],
   ['EmailIntegrationActions', () => import('~/components/open/integrations/components/EmailIntegrationActions.vue')],
   ['N8nIntegrationActions', () => import('~/components/open/integrations/components/N8nIntegrationActions.vue')],
+  ['ActivepiecesIntegrationActions', () => import('~/components/open/integrations/components/ActivepiecesIntegrationActions.vue')],
 ])
 
 const providerRegistry = new Map([
