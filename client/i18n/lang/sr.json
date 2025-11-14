@@ -70,8 +70,8 @@
         "validation_error": "Greška pri validaciji",
         "validation_error_with_count": "Greška pri validaciji ({count} polja)",
         "toggle": {
-            "yes": "Да",
-            "no": "Не"
+            "yes": "Da",
+            "no": "Ne"
         }
     }
 }

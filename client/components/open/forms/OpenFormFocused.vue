@@ -1,5 +1,5 @@
 <template>
-  <form v-if="form" @submit.prevent="" class="@container w-full relative overflow-hidden flex flex-col min-h-full">
+  <form ref="formElement" v-if="form" @submit.prevent="" class="@container w-full relative overflow-hidden flex flex-col min-h-full">
     <!-- Fixed fullscreen background from form cover -->
     <div v-if="form.cover_picture" class="absolute inset-0 pointer-events-none">
       <BlockMediaLayout :image="coverMedia" alt="Form cover image" />
@@ -182,13 +182,16 @@ const borderRadius = computed(() => form.value?.border_radius || 'small')
 useFormImagePreloader(form, state)
 
 // Auto-focus the input field after page transition
+const formElement = ref(null)
 const focusCurrentInput = () => {
   if (import.meta.server || isTemplateMode.value || !form.value?.auto_focus) return
   
   nextTick(() => {
     // Wait for transition to complete (500ms as defined in SlidingTransition)
     setTimeout(() => {
-      // Find the first focusable input element in the current block
+      // Find the first visible focusable input element in the current form
+      if (!formElement.value) return
+      
       const focusableSelectors = [
         'input:not([type="hidden"]):not([disabled])',
         'textarea:not([disabled])',
@@ -200,9 +203,26 @@ const focusCurrentInput = () => {
         '[role="listbox"][tabindex="0"]' // FocusedSelectorInput container
       ]
       
-      const firstFocusable = document.querySelector(focusableSelectors.join(', '))
-      if (firstFocusable && typeof firstFocusable.focus === 'function') {
-        firstFocusable.focus({ preventScroll: true })
+      const focusableElements = formElement.value.querySelectorAll(focusableSelectors.join(', '))
+      
+      // Find the first truly visible focusable element
+      let firstVisible = null
+      for (const element of focusableElements) {
+        // Skip if element has hidden attribute
+        if (element.hasAttribute('hidden')) continue
+        
+        // Skip if element has aria-hidden="true"
+        if (element.getAttribute('aria-hidden') === 'true') continue
+        
+        // Check visibility: element is visible if it has layout (offsetParent) or client rects
+        if (element.offsetParent !== null || element.getClientRects().length > 0) {
+          firstVisible = element
+          break
+        }
+      }
+      
+      if (firstVisible && typeof firstVisible.focus === 'function') {
+        firstVisible.focus({ preventScroll: true })
       }
     }, 550) // Slightly longer than transition speed to ensure it's complete
   })
