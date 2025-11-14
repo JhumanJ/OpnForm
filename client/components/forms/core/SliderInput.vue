@@ -84,7 +84,8 @@ export default {
       const ratio =
         (Number(this.compVal) - this.minSlider) / (this.maxSlider - this.minSlider)
       const width = this.inputWidth || (this.$refs.range ? this.$refs.range.offsetWidth : 0)
-      const x = (ratio * (width - this.thumbSize)) + (this.thumbSize / 2)
+      let x = (ratio * (width - this.thumbSize)) + (this.thumbSize / 2)
+      if (x < 0) x = 0
       return {
         left: `${x}px`,
         transform: 'translateX(-50%)',
