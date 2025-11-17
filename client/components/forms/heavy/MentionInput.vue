@@ -10,7 +10,7 @@
         :contenteditable="!disabled"
         class="mention-input"
         :style="inputStyle"
-        :class="ui.input()"
+        :class="ui.input({ class: props.ui?.slots?.input })"
         :placeholder="placeholder"
         @input="onInput"
       />

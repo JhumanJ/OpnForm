@@ -26,7 +26,7 @@
     <VTransition name="fadeHeight">
       <InputHelp
         :help="help"
-        :help-classes="ui.help()"
+        :help-classes="ui.help({ class: props.ui?.slots?.help })"
       >
         <template #after-help v-if="!!$slots['bottom_after_help']">
           <slot name="bottom_after_help" />
@@ -35,12 +35,12 @@
     </VTransition>
     </slot>
     <template v-if="media && media.url">
-      <div :class="ui.media()">
+      <div :class="ui.media({ class: props.ui?.slots?.media })">
         <BlockMediaLayout
           :image="media"
           :fallback-height="''"
-          :class="ui.mediaComponent()"
-          :img-class="ui.mediaImg()"
+          :class="ui.mediaComponent({ class: props.ui?.slots?.mediaComponent })"
+          :img-class="ui.mediaImg({ class: props.ui?.slots?.mediaImg })"
         />
       </div>
     </template>
@@ -54,7 +54,7 @@
     <VTransition name="fadeHeightDown">
       <InputHelp
         :help="help"
-        :help-classes="ui.help()"
+        :help-classes="ui.help({ class: props.ui?.slots?.help })"
       >
         <template #after-help v-if="!!$slots['bottom_after_help']">
           <slot name="bottom_after_help" />
@@ -69,7 +69,7 @@
         :form="form"
         :field-id="name"
         :field-name="label"
-        :error-classes="ui.error()"
+        :error-classes="ui.error({ class: props.ui?.slots?.error })"
       />
     </VTransition>
     </slot>

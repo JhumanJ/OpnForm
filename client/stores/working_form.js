@@ -120,6 +120,11 @@ export const useWorkingFormStore = defineStore("working_form", {
       if (this.selectedFieldIndex !== -1 && previousIndex !== this.selectedFieldIndex) {
         // Find which page contains the selected field and set to that page
         if (this.structureService) {
+          // Skip if the selected field is hidden
+          const field = this.content?.properties?.[this.selectedFieldIndex]
+          if (field && typeof this.structureService.isFieldHidden === 'function' && this.structureService.isFieldHidden(field)) {
+            return
+          }
           this.structureService.setPageForField(this.selectedFieldIndex)
         }
       }

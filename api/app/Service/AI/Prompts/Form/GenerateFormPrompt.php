@@ -175,6 +175,10 @@ class GenerateFormPrompt extends Prompt
             $formData['title'] = preg_replace('/^["\'](.*)["\']$/', '$1', $formData['title']);
         }
 
+        // Optimize fields for focused mode
+        $mode = $this->params['presentation_style'] ?? PresentationRules::MODE_CLASSIC;
+        $formData = FocusedFormOptimizer::optimizeFormProperties($formData, $mode);
+
         return $formData;
     }
 

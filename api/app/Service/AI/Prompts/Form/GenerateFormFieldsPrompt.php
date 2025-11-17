@@ -210,7 +210,15 @@ class GenerateFormFieldsPrompt extends Prompt
     public function processOutput(array $formFields): array
     {
         $properties = $formFields['properties'] ?? [];
+        $processedFields = FormFieldSchemas::processFields($properties);
 
-        return FormFieldSchemas::processFields($properties);
+        // Optimize fields for focused mode
+        $mode = $this->params['presentation_style'] ?? PresentationRules::MODE_CLASSIC;
+        $optimizedFormData = FocusedFormOptimizer::optimizeFormProperties(
+            ['properties' => $processedFields],
+            $mode
+        );
+
+        return $optimizedFormData['properties'];
     }
 }

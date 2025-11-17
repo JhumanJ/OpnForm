@@ -1,13 +1,13 @@
 <template>
   <label
     :for="nativeFor"
-    :class="ui.label()"
+    :class="ui.label({ class: props.ui?.slots?.label })"
   >
     <slot>
       <span class="align-baseline">{{ label }}</span>
       <span
         v-if="required"
-        :class="ui.requiredDot()"
+        :class="ui.requiredDot({ class: props.ui?.slots?.requiredDot })"
         aria-hidden="true"
       >
         <Icon name="i-ix-mandatory" />

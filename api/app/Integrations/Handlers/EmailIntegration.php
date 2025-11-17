@@ -88,7 +88,7 @@ class EmailIntegration extends AbstractIntegrationHandler
         // This is a per-workspace limit for risky workspaces
         if ($this->form->workspace->is_risky) {
             if ($this->form->workspace->submissions_count >= self::RISKY_USERS_LIMIT) {
-                Log::channel('slack_errors')->error('🚨 Dangerous new user detected! Attempting many email sending.', [
+                Log::channel('slack_alerts')->error('🚨 Dangerous new user detected! Attempting many email sending.', [
                     'form_id' => $this->form->id,
                     'workspace_id' => $this->form->workspace->id,
                 ]);
