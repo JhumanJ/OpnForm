@@ -157,8 +157,7 @@ const dropdownItems = computed(() => {
     }
   })
 
-  // Delete option (hidden for external/managed integrations)
-  if (!isExternal) {
+  // Delete option
   items.push({
     label: 'Delete Integration',
     icon: 'i-heroicons-trash',
@@ -167,7 +166,6 @@ const dropdownItems = computed(() => {
     },
     color: 'error',
   })
-  }
 
   return items
 })
@@ -175,7 +173,13 @@ const dropdownItems = computed(() => {
 const deleteIntegrationMutation = deleteIntegration()
 
 const deleteFormIntegration = (integrationid) => {
-  alert.confirm("Do you really want to delete this form integration?", () => {
+  const isExternal = integrationTypeInfo.value?.is_external === true
+  let msg = 'Do you really want to delete this form integration?'
+  if (isExternal) {
+    msg += ' This might be affect on your '+ integrationTypeInfo.value.name +' workflow.'
+  }
+
+  alert.confirm(msg, () => {
     loadingDelete.value = true
     deleteIntegrationMutation.mutateAsync({
       formId: props.form.id,
