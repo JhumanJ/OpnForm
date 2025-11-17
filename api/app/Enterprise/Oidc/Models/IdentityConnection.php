@@ -44,6 +44,10 @@ class IdentityConnection extends Model
         'enabled',
     ];
 
+    protected $hidden = [
+        'client_secret',
+    ];
+
     protected function casts(): array
     {
         return [
