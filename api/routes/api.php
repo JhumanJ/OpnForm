@@ -140,6 +140,15 @@ Route::group(['middleware' => 'auth.multi'], function () {
                 Route::put('/', [WorkspaceController::class, 'update'])->name('update');
                 Route::delete('/', [WorkspaceController::class, 'delete'])->name('delete');
 
+                // OIDC Connections
+                Route::prefix('oidc-connections')->name('oidc-connections.')->group(function () {
+                    Route::get('/', [\App\Http\Controllers\Settings\OidcConnectionController::class, 'index'])->name('index');
+                    Route::post('/', [\App\Http\Controllers\Settings\OidcConnectionController::class, 'store'])->name('store');
+                    Route::get('/{connection}', [\App\Http\Controllers\Settings\OidcConnectionController::class, 'show'])->name('show');
+                    Route::patch('/{connection}', [\App\Http\Controllers\Settings\OidcConnectionController::class, 'update'])->name('update');
+                    Route::delete('/{connection}', [\App\Http\Controllers\Settings\OidcConnectionController::class, 'destroy'])->name('destroy');
+                });
+
                 Route::middleware('pro-form')->group(function () {
                     Route::get('form-stats/{form}', [FormStatsController::class, 'getFormStats'])->name('form.stats');
                     Route::get('form-stats-details/{form}', [FormStatsController::class, 'getFormStatsDetails'])->name('form.stats-details');
@@ -288,6 +297,9 @@ Route::group(['middleware' => 'guest:api'], function () {
 
     Route::post('email/verify/{user}', [VerificationController::class, 'verify'])->name('verification.verify');
     Route::post('email/resend', [VerificationController::class, 'resend']);
+
+    // OIDC email lookup endpoint (for login flow)
+    Route::post('auth/oidc/options', [\App\Http\Controllers\Auth\SsoController::class, 'getOptionsForEmail'])->name('sso.options');
 });
 
 Route::group(['prefix' => 'appsumo'], function () {
@@ -302,6 +314,14 @@ Route::prefix('oauth')->name('oauth.')->group(function () {
     Route::post('/connect/{provider}', [OAuthController::class, 'redirect'])->name('redirect');
     Route::post('/{provider}/callback', [OAuthController::class, 'callback'])->name('callback');
     Route::post('/widget-callback/{provider}', [OAuthController::class, 'handleWidgetCallback'])->name('widget.callback');
+});
+
+/*
+ * OIDC SSO routes (public - authentication handled in controller)
+ */
+Route::prefix('auth')->name('sso.')->middleware('throttle:10,1')->group(function () {
+    Route::get('/{slug}/redirect', [\App\Http\Controllers\Auth\SsoController::class, 'redirect'])->name('redirect');
+    Route::get('/{slug}/callback', [\App\Http\Controllers\Auth\SsoController::class, 'callback'])->name('callback');
 });
 
 /*

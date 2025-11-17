@@ -17,10 +17,13 @@
         label="Email"
         :required="true"
         placeholder="Your email address"
+        @blur="checkOidcOptions"
       />
 
-      <!-- Password -->
+      <!-- Password - hidden if OIDC available and not forced to show -->
       <text-input
+        v-if="showPasswordField"
+        ref="passwordInputRef"
         native-type="password"
         placeholder="Your password"
         name="password"
@@ -29,8 +32,8 @@
         :required="true"
       />
 
-      <!-- Remember Me -->
-      <div class="relative flex items-center mt-3">
+      <!-- Remember Me & Forgot Password - only show when password field is visible -->
+      <div v-if="showPasswordField" class="relative flex items-center mt-3">
         <CheckboxInput
           :form="form"
           class="w-full md:w-1/2"
@@ -57,7 +60,7 @@
         size="lg"
         :loading="form.busy"
         type="submit"
-        label="Log in to continue"
+        :label="oidcAvailable && !showPasswordField ? 'Continue' : 'Log in to continue'"
       />
 
       <UButton
@@ -124,6 +127,10 @@ const oAuth = useOAuth()
 const router = useRouter()
 const { login: loginMutationFactory } = useAuth()
 
+// Feature flags
+const oidcAvailable = computed(() => useFeatureFlag('oidc.available', false))
+const oidcForced = computed(() => useFeatureFlag('oidc.forced', false))
+
 // Reactive data
 const form = useForm({
   email: "",
@@ -133,6 +140,20 @@ const form = useForm({
 
 const loginMutation = loginMutationFactory()
 const showForgotModal = ref(false)
+const showPasswordField = ref(!oidcAvailable.value || oidcForced.value)
+const passwordInputRef = ref(null)
+
+// Watch for password field visibility to focus it
+watch(showPasswordField, async (newValue) => {
+  if (newValue) {
+    await nextTick()
+    // Find the password input element by name/id
+    const passwordInput = document.querySelector('input[name="password"][type="password"]')
+    if (passwordInput) {
+      passwordInput.focus()
+    }
+  }
+})
 
 // Lifecycle
 onMounted(() => {
@@ -146,7 +167,48 @@ onMounted(() => {
 })
 
 // Methods
+const checkOidcOptions = async () => {
+  if (!oidcAvailable.value || !form.email || form.busy) {
+    return
+  }
+
+  form.post('/auth/oidc/options', { body: { email: form.email } })
+    .then((response) => {
+      if (response.action === 'redirect') {
+        // Redirect to OIDC provider
+        window.location.href = response.url
+        return
+      } else if (response.action === 'blocked') {
+        // OIDC is forced but no connection found
+        useAlert().error('OIDC authentication is required. Please contact your administrator.')
+        return
+      } else {
+        // Fallback to password login
+        showPasswordField.value = true
+      }
+    })
+    .catch((error) => {
+      // Form automatically handles 422 validation errors (invalid email, etc.)
+      // Only show password field as fallback for non-validation errors
+      if (error.response?.status !== 422) {
+        showPasswordField.value = true
+      }
+    })
+}
+
 const login = () => {
+  // If OIDC is available and password field is hidden, check OIDC options first
+  if (oidcAvailable.value && !showPasswordField.value && form.email) {
+    checkOidcOptions()
+    return
+  }
+
+  // Normal password login
+  if (!form.password && showPasswordField.value) {
+    useAlert().error('Password is required')
+    return
+  }
+
   form.mutate(loginMutation).then(() => {
     redirect()
   }).catch((error) => {

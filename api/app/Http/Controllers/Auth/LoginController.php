@@ -30,6 +30,19 @@ class LoginController extends Controller
      */
     protected function attemptLogin(Request $request)
     {
+        // Block password-based login if OIDC force_login is enabled
+        if (config('oidc.force_login', false)) {
+            $hasOidcConnection = \App\Enterprise\Oidc\Models\IdentityConnection::enabled()
+                ->where('type', \App\Enterprise\Oidc\Models\IdentityConnection::TYPE_OIDC)
+                ->exists();
+
+            if ($hasOidcConnection) {
+                throw ValidationException::withMessages([
+                    $this->username() => ['Password-based login is disabled. Please use OIDC authentication.'],
+                ]);
+            }
+        }
+
         // Only set custom TTL if remember me is checked
         $guard = $this->guard();
 

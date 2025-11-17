@@ -37,6 +37,7 @@ export const inputLabelTheme = {
       },
       sm: {
         label: 'text-xs',
+        requiredDot: 'mb-[1px]!'
       },
       md: {
         label: 'text-sm',

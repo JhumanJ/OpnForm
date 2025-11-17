@@ -5,7 +5,7 @@
 export const inputWrapperTheme = {
   slots: {
     wrapper: [
-      'relative flex flex-col gap-1'
+      'relative'
     ],
     help: 'text-neutral-500',
     error: 'has-error text-xs text-red-500 mt-1 break-words whitespace-break-spaces',
