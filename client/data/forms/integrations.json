@@ -68,7 +68,7 @@
   },
   "activepieces": {
     "name": "Activepieces",
-    "icon": "simple-icons:n8n",
+    "icon": "opnform:activepieces",
     "section_name": "Automation",
     "file_name": "ActivepiecesIntegration",
     "actions_file_name": "ActivepiecesIntegrationActions",
