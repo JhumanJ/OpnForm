@@ -173,11 +173,29 @@ const checkOidcOptions = async () => {
   }
 
   form.post('/auth/oidc/options', { body: { email: form.email } })
-    .then((response) => {
+    .then(async (response) => {
       if (response.action === 'redirect') {
-        // Redirect to OIDC provider
-        window.location.href = response.url
-        return
+        // Get the redirect URL from the backend
+        try {
+          const redirectResponse = await form.post(`/auth/${response.slug}/redirect`)
+          
+          if (redirectResponse.redirect_url) {
+            // Redirect to OIDC provider
+            window.location.href = redirectResponse.redirect_url
+            return
+          } else if (redirectResponse.error) {
+            // Handle error from redirect endpoint
+            useAlert().error(redirectResponse.error || 'Failed to initiate OIDC authentication')
+            showPasswordField.value = true
+            return
+          }
+        } catch (error) {
+          // Handle network or server errors
+          const errorMessage = error.response?._data?.error || error.response?._data?.message || 'Failed to initiate OIDC authentication'
+          useAlert().error(errorMessage)
+          showPasswordField.value = true
+          return
+        }
       } else if (response.action === 'blocked') {
         // OIDC is forced but no connection found
         useAlert().error('OIDC authentication is required. Please contact your administrator.')

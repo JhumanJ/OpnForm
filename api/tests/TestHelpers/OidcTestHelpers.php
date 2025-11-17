@@ -28,10 +28,15 @@ if (!function_exists('createValidIdTokenClaims')) {
 }
 
 if (!function_exists('createMockIdToken')) {
-    function createMockIdToken(array $claims): string
+    function createMockIdToken(array $claims, ?string $kid = 'test-kid'): string
     {
         // Create a simple mock JWT token (header.payload.signature)
-        $header = base64_encode(json_encode(['alg' => 'RS256', 'typ' => 'JWT']));
+        // Include kid in header for signature verification
+        $header = base64_encode(json_encode([
+            'alg' => 'RS256',
+            'typ' => 'JWT',
+            'kid' => $kid,
+        ]));
         $payload = base64_encode(json_encode($claims));
         $signature = 'mock-signature';
         return "{$header}.{$payload}.{$signature}";

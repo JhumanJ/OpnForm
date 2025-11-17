@@ -104,73 +104,40 @@ const connectionForm = useForm({
   }
 })
 
-const createMutation = create({
-  onSuccess: () => {
-    alert.success('OIDC connection created successfully')
-    showCreateModal.value = false
-    connectionForm.reset()
-  },
-})
-
-const updateMutation = update({
-  onSuccess: () => {
-    alert.success('OIDC connection updated successfully')
-    showCreateModal.value = false
-    cancelEdit()
-  },
-})
-
-const deleteMutation = remove({
-  onSuccess: () => {
-    alert.success('OIDC connection deleted successfully')
-  },
-  onError: (error) => {
-    alert.error(error.response?._data?.message ?? 'Failed to delete connection')
-  },
-})
-
-// Create wrapper mutations that work with form.mutate()
-const createMutationWrapper = {
-  mutateAsync: (formData) => {
-    return createMutation.mutateAsync({
-      ...formData,
-      workspace_id: workspaceId.value,
-    })
-  },
-}
-
-const updateMutationWrapper = {
-  mutateAsync: (formData) => {
-    return updateMutation.mutateAsync({
-      connectionId: editingConnection.value.id,
-      data: formData,
-    })
-  },
-}
+// Create mutations following useWorkspaces.js pattern
+const createMutation = create()
+const deleteMutation = remove()
 
 const saveConnection = () => {
   if (editingConnection.value) {
-    connectionForm.mutate(updateMutationWrapper)
+    // Update existing connection
+    const updateMutation = update(editingConnection.value.id)
+    connectionForm.mutate(updateMutation)
       .then(() => {
-        // Success handled in mutation onSuccess
+        alert.success('OIDC connection updated successfully')
+        showCreateModal.value = false
+        cancelEdit()
       })
       .catch((error) => {
         // Form handles validation errors automatically
         if (error.response?.status !== 422) {
           alert.error(error.response?._data?.message ?? 'Failed to update connection')
         }
-    })
+      })
   } else {
-    connectionForm.mutate(createMutationWrapper)
+    // Create new connection
+    connectionForm.mutate(createMutation)
       .then(() => {
-        // Success handled in mutation onSuccess
+        alert.success('OIDC connection created successfully')
+        showCreateModal.value = false
+        connectionForm.reset()
       })
       .catch((error) => {
         // Form handles validation errors automatically
         if (error.response?.status !== 422) {
           alert.error(error.response?._data?.message ?? 'Failed to create connection')
         }
-    })
+      })
   }
 }
 
@@ -199,7 +166,13 @@ const deleteConnection = (connection) => {
   alert.confirm(
     `Are you sure you want to delete "${connection.name}"?`,
     () => {
-      deleteMutation.mutate(connection.id)
+      deleteMutation.mutateAsync(connection.id)
+        .then(() => {
+          alert.success('OIDC connection deleted successfully')
+        })
+        .catch((error) => {
+          alert.error(error.response?._data?.message ?? 'Failed to delete connection')
+        })
     }
   )
 }

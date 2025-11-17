@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Enterprise\Oidc\ConnectionManager;
+use App\Enterprise\Oidc\IdTokenVerifier;
 use App\Http\Controllers\Controller;
 use App\Enterprise\Oidc\ProvisioningService;
 use Illuminate\Http\Request;
@@ -14,38 +15,51 @@ class SsoController extends Controller
 {
     public function __construct(
         private ConnectionManager $connectionManager,
-        private ProvisioningService $provisioningService
+        private ProvisioningService $provisioningService,
+        private IdTokenVerifier $idTokenVerifier
     ) {
     }
 
     /**
-     * Redirect user to OIDC provider for authentication.
+     * Get redirect URL for OIDC provider authentication.
+     * Returns JSON response so frontend can handle redirect and errors.
      */
     public function redirect(string $slug)
     {
         $connection = $this->connectionManager->getConnectionBySlug($slug);
 
         if (!$connection || !$connection->enabled) {
-            abort(404, 'OIDC connection not found or disabled');
+            return response()->json([
+                'error' => 'OIDC connection not found or disabled',
+            ], 404);
         }
 
         // Verify HTTPS in production
         if (config('app.env') === 'production' && !request()->secure()) {
-            abort(400, 'HTTPS is required for OIDC authentication');
+            return response()->json([
+                'error' => 'HTTPS is required for OIDC authentication',
+            ], 400);
         }
 
         try {
             $driver = $this->connectionManager->buildDriver($connection);
             $redirectUrl = $driver->getRedirectUrl();
 
-            return redirect($redirectUrl);
+            return response()->json([
+                'redirect_url' => $redirectUrl,
+            ]);
         } catch (\Exception $e) {
             Log::error('OIDC redirect failed', [
                 'slug' => $slug,
                 'error' => $e->getMessage(),
             ]);
 
-            abort(500, 'Failed to initiate OIDC authentication');
+            ray($e);
+
+            return response()->json([
+                'error' => 'Failed to initiate OIDC authentication',
+                'message' => $e->getMessage(),
+            ], 500);
         }
     }
 
@@ -76,6 +90,9 @@ class SsoController extends Controller
             $idToken = $driver->getIdToken();
             $idTokenClaims = [];
             if ($idToken) {
+                // Verify ID token signature before processing
+                $this->idTokenVerifier->verifySignature($connection, $idToken);
+
                 // Decode ID token payload
                 [$header, $payload, $signature] = explode('.', $idToken);
                 $idTokenClaims = json_decode(base64_decode(str_pad(
@@ -237,7 +254,7 @@ class SsoController extends Controller
 
         return response()->json([
             'action' => 'redirect',
-            'url' => route('sso.redirect', ['slug' => $connection->slug]),
+            'slug' => $connection->slug,
         ]);
     }
 

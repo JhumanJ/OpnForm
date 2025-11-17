@@ -320,7 +320,7 @@ Route::prefix('oauth')->name('oauth.')->group(function () {
  * OIDC SSO routes (public - authentication handled in controller)
  */
 Route::prefix('auth')->name('sso.')->middleware('throttle:10,1')->group(function () {
-    Route::get('/{slug}/redirect', [\App\Http\Controllers\Auth\SsoController::class, 'redirect'])->name('redirect');
+    Route::post('/{slug}/redirect', [\App\Http\Controllers\Auth\SsoController::class, 'redirect'])->name('redirect');
     Route::get('/{slug}/callback', [\App\Http\Controllers\Auth\SsoController::class, 'callback'])->name('callback');
 });
 

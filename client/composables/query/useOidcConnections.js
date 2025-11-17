@@ -3,7 +3,6 @@ import { oidcApi } from '~/api/oidc'
 
 export function useOidcConnections(workspaceId) {
   const queryClient = useQueryClient()
-  const alert = useAlert()
 
   // Resolve workspaceId value (handles both refs and plain values)
   const workspaceIdValue = computed(() => {
@@ -39,7 +38,7 @@ export function useOidcConnections(workspaceId) {
     })
   }
 
-  // Mutations
+  // Mutations - following useWorkspaces.js pattern
   const create = (options = {}) => {
     return useMutation({
       mutationFn: (data) => {
@@ -49,28 +48,44 @@ export function useOidcConnections(workspaceId) {
           : oidcApi.createGlobal(data)
       },
       onSuccess: (newConnection) => {
-        // Invalidate connections list
-        queryClient.invalidateQueries({ queryKey: ['oidc-connections', workspaceIdValue] })
+        const queryKey = ['oidc-connections', workspaceIdValue]
+        
         // Cache individual connection
         queryClient.setQueryData(['oidc-connections', workspaceIdValue, newConnection.id], newConnection)
+        
+        // Optimistically update list cache
+        queryClient.setQueryData(queryKey, (old) => {
+          if (!old) return [newConnection]
+          if (!Array.isArray(old)) return old
+          return [...old, newConnection]
+        })
       },
       ...options
     })
   }
 
-  const update = (options = {}) => {
+  const update = (connectionId, options = {}) => {
     return useMutation({
-      mutationFn: ({ connectionId, data }) => {
+      mutationFn: (data) => {
         const id = workspaceIdValue.value
         return id
-          ? oidcApi.update(id, connectionId, data)
-          : oidcApi.updateGlobal(connectionId, data)
+          ? oidcApi.update(id, toValue(connectionId), data)
+          : oidcApi.updateGlobal(toValue(connectionId), data)
       },
       onSuccess: (updatedConnection) => {
+        const connId = toValue(connectionId)
+        const queryKey = ['oidc-connections', workspaceIdValue]
+        
         // Update individual connection cache
-        queryClient.setQueryData(['oidc-connections', workspaceIdValue, updatedConnection.id], updatedConnection)
-        // Invalidate connections list
-        queryClient.invalidateQueries({ queryKey: ['oidc-connections', workspaceIdValue] })
+        queryClient.setQueryData(['oidc-connections', workspaceIdValue, connId], updatedConnection)
+        
+        // Optimistically update list cache
+        queryClient.setQueryData(queryKey, (old) => {
+          if (!Array.isArray(old)) return old
+          return old.map(conn => 
+            conn.id === connId ? { ...conn, ...updatedConnection } : conn
+          )
+        })
       },
       ...options
     })
@@ -85,13 +100,23 @@ export function useOidcConnections(workspaceId) {
           : oidcApi.deleteGlobal(connectionId)
       },
       onSuccess: (_, deletedConnectionId) => {
+        const queryKey = ['oidc-connections', workspaceIdValue]
+        
         // Remove from individual cache
         queryClient.removeQueries({ queryKey: ['oidc-connections', workspaceIdValue, deletedConnectionId] })
-        // Invalidate connections list
-        queryClient.invalidateQueries({ queryKey: ['oidc-connections', workspaceIdValue] })
+        
+        // Remove from list cache
+        queryClient.setQueryData(queryKey, (old) => {
+          if (!Array.isArray(old)) return old
+          return old.filter(conn => conn.id !== deletedConnectionId)
+        })
       },
       ...options
     })
+  }
+
+  const invalidate = () => {
+    queryClient.invalidateQueries({ queryKey: ['oidc-connections', workspaceIdValue] })
   }
 
   return {
@@ -103,6 +128,9 @@ export function useOidcConnections(workspaceId) {
     create,
     update,
     remove,
+    
+    // Utilities
+    invalidate,
   }
 }
 

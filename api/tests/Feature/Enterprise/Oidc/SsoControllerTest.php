@@ -17,7 +17,7 @@ afterEach(function () {
 });
 
 describe('SsoController - Redirect', function () {
-    it('redirects to OIDC provider for enabled connection', function () {
+    it('returns redirect URL for enabled connection', function () {
         $connection = IdentityConnection::factory()->create([
             'slug' => 'test-sso',
             'enabled' => true,
@@ -37,9 +37,12 @@ describe('SsoController - Redirect', function () {
 
         $this->app->instance(\App\Enterprise\Oidc\ConnectionManager::class, $mockConnectionManager);
 
-        $response = $this->get("/auth/test-sso/redirect");
+        $response = $this->postJson("/auth/test-sso/redirect");
 
-        $response->assertRedirect('https://idp.example.com/authorize');
+        $response->assertSuccessful();
+        $response->assertJson([
+            'redirect_url' => 'https://idp.example.com/authorize',
+        ]);
     });
 
     it('returns 404 for non-existent connection', function () {
@@ -50,9 +53,12 @@ describe('SsoController - Redirect', function () {
 
         $this->app->instance(\App\Enterprise\Oidc\ConnectionManager::class, $mockConnectionManager);
 
-        $response = $this->get("/auth/non-existent/redirect");
+        $response = $this->postJson("/auth/non-existent/redirect");
 
         $response->assertNotFound();
+        $response->assertJson([
+            'error' => 'OIDC connection not found or disabled',
+        ]);
     });
 
     it('returns 404 for disabled connection', function () {
@@ -68,9 +74,12 @@ describe('SsoController - Redirect', function () {
 
         $this->app->instance(\App\Enterprise\Oidc\ConnectionManager::class, $mockConnectionManager);
 
-        $response = $this->get("/auth/disabled-sso/redirect");
+        $response = $this->postJson("/auth/disabled-sso/redirect");
 
         $response->assertNotFound();
+        $response->assertJson([
+            'error' => 'OIDC connection not found or disabled',
+        ]);
     });
 
     it('requires HTTPS in production', function () {
@@ -98,11 +107,14 @@ describe('SsoController - Redirect', function () {
 
         // Force HTTP scheme and simulate non-HTTPS request
         URL::forceScheme('http');
-        $response = $this->get("/auth/test-sso/redirect", [
+        $response = $this->postJson("/auth/test-sso/redirect", [
             'HTTP_X_FORWARDED_PROTO' => 'http',
         ]);
 
         $response->assertStatus(400);
+        $response->assertJson([
+            'error' => 'HTTPS is required for OIDC authentication',
+        ]);
 
         // Restore original env and scheme
         config(['app.env' => $originalEnv]);
@@ -125,8 +137,8 @@ describe('SsoController - Get Options For Email', function () {
         $response->assertSuccessful();
         $response->assertJson([
             'action' => 'redirect',
+            'slug' => 'company-sso',
         ]);
-        expect($response->json('url'))->toContain('company-sso');
     });
 
     it('returns fallback action when no connection exists for domain', function () {
@@ -230,7 +242,14 @@ describe('SsoController - Callback', function () {
             ->with($connection)
             ->andReturn($mockDriver);
 
+        // Mock IdTokenVerifier to skip signature verification in tests
+        $mockIdTokenVerifier = Mockery::mock(\App\Enterprise\Oidc\IdTokenVerifier::class);
+        $mockIdTokenVerifier->shouldReceive('verifySignature')
+            ->with($connection, $idToken)
+            ->andReturnNull();
+
         $this->app->instance(\App\Enterprise\Oidc\ConnectionManager::class, $mockConnectionManager);
+        $this->app->instance(\App\Enterprise\Oidc\IdTokenVerifier::class, $mockIdTokenVerifier);
 
         $response = $this->getJson("/auth/test-sso/callback", [
             'Accept' => 'application/json',
@@ -293,12 +312,19 @@ describe('SsoController - Callback', function () {
             ->with($connection)
             ->andReturn($mockDriver);
 
+        // Mock IdTokenVerifier to skip signature verification in tests
+        $mockIdTokenVerifier = Mockery::mock(\App\Enterprise\Oidc\IdTokenVerifier::class);
+        $mockIdTokenVerifier->shouldReceive('verifySignature')
+            ->with($connection, $idToken)
+            ->andReturnNull();
+
         // Mock ProvisioningService to throw exception (simulating provisioning error)
         $mockProvisioningService = Mockery::mock(\App\Enterprise\Oidc\ProvisioningService::class);
         $mockProvisioningService->shouldReceive('provisionUser')
             ->andThrow(new \Exception('Provisioning failed: Invalid claims'));
 
         $this->app->instance(\App\Enterprise\Oidc\ConnectionManager::class, $mockConnectionManager);
+        $this->app->instance(\App\Enterprise\Oidc\IdTokenVerifier::class, $mockIdTokenVerifier);
         $this->app->instance(\App\Enterprise\Oidc\ProvisioningService::class, $mockProvisioningService);
 
         $response = $this->getJson("/auth/test-sso/callback", [
@@ -362,6 +388,12 @@ describe('SsoController - Callback', function () {
             ->with($connection)
             ->andReturn($mockDriver);
 
+        // Mock IdTokenVerifier to skip signature verification in tests
+        $mockIdTokenVerifier = Mockery::mock(\App\Enterprise\Oidc\IdTokenVerifier::class);
+        $mockIdTokenVerifier->shouldReceive('verifySignature')
+            ->with($connection, $idToken)
+            ->andReturnNull();
+
         // Mock ProvisioningService to return the blocked user directly
         // Refresh user to ensure blocked_at is loaded
         $user->refresh();
@@ -370,6 +402,7 @@ describe('SsoController - Callback', function () {
             ->andReturn($user);
 
         $this->app->instance(\App\Enterprise\Oidc\ConnectionManager::class, $mockConnectionManager);
+        $this->app->instance(\App\Enterprise\Oidc\IdTokenVerifier::class, $mockIdTokenVerifier);
         $this->app->instance(\App\Enterprise\Oidc\ProvisioningService::class, $mockProvisioningService);
 
         $response = $this->getJson("/auth/test-sso/callback", [
