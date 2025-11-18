@@ -1,7 +1,7 @@
 <?php
 
+use App\Enums\SettingsKey;
 use App\Models\Setting;
-use App\Models\SettingsKey;
 use Tests\TestCase;
 
 uses(TestCase::class);

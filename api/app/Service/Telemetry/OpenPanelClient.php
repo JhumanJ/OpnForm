@@ -7,32 +7,37 @@ use Illuminate\Support\Facades\Log;
 
 class OpenPanelClient
 {
+    public function __construct(
+        private string $endpoint,
+        private ?string $clientId,
+        private ?string $clientSecret
+    ) {
+    }
+
     /**
      * Send an event to OpenPanel.
      *
      * @param string $eventName
      * @param array $properties
-     * @param string $endpoint
-     * @param string|null $clientId
-     * @param string|null $clientSecret
      * @param string|null $instanceId
      * @return bool
      */
     public function sendEvent(
         string $eventName,
         array $properties,
-        string $endpoint,
-        ?string $clientId,
-        ?string $clientSecret,
         ?string $instanceId
     ): bool {
-        if (!$clientId || !$clientSecret) {
+        if (!$this->clientId || !$this->clientSecret) {
             Log::warning('Telemetry skipped: missing client credentials');
             return false;
         }
 
+        if (!$instanceId) {
+            Log::warning('Telemetry skipped: instance_id not found');
+            return false;
+        }
+
         try {
-            // OpenPanel API format: https://openpanel.dev/docs/api/track
             $payload = [
                 'type' => 'track',
                 'payload' => [
@@ -45,10 +50,10 @@ class OpenPanelClient
 
             $response = Http::timeout(5)
                 ->withHeaders([
-                    'openpanel-client-id' => $clientId,
-                    'openpanel-client-secret' => $clientSecret,
+                    'openpanel-client-id' => $this->clientId,
+                    'openpanel-client-secret' => $this->clientSecret,
                 ])
-                ->post($endpoint, $payload);
+                ->post($this->endpoint, $payload);
 
             if (!$response->successful()) {
                 Log::warning('Telemetry event failed to send', [

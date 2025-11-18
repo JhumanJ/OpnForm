@@ -1,7 +1,7 @@
 <?php
 
+use App\Enums\SettingsKey;
 use App\Models\Setting;
-use App\Models\SettingsKey;
 use App\Service\Telemetry\TelemetryService;
 use Illuminate\Support\Facades\Config;
 use Tests\TestCase;
@@ -31,20 +31,20 @@ describe('TelemetryService', function () {
         expect($this->service->shouldSendTelemetry())->toBeFalse();
     });
 
-    it('returns true when in production environment', function () {
+    it('returns false when only in production environment (needs self-hosted too)', function () {
         Config::set('telemetry.enabled', true);
         Config::set('app.self_hosted', false);
         app()->detectEnvironment(fn () => 'production');
 
-        expect($this->service->shouldSendTelemetry())->toBeTrue();
+        expect($this->service->shouldSendTelemetry())->toBeFalse();
     });
 
-    it('returns true when self-hosted mode is enabled', function () {
+    it('returns false when only self-hosted mode is enabled (needs production too)', function () {
         Config::set('telemetry.enabled', true);
         Config::set('app.self_hosted', true);
         app()->detectEnvironment(fn () => 'local');
 
-        expect($this->service->shouldSendTelemetry())->toBeTrue();
+        expect($this->service->shouldSendTelemetry())->toBeFalse();
     });
 
     it('returns true when both production and self-hosted', function () {

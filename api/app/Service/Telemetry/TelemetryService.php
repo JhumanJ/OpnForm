@@ -2,8 +2,9 @@
 
 namespace App\Service\Telemetry;
 
+use App\Enums\SettingsKey;
 use App\Models\Setting;
-use App\Models\SettingsKey;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Cache;
 
 class TelemetryService
@@ -11,8 +12,8 @@ class TelemetryService
     /**
      * Check if telemetry should be sent.
      *
-     * Telemetry only runs in production environment or when self-hosted mode
-     * is enabled. It can be explicitly disabled via OPNFORM_ANONYMOUS_TELEMETRY_DISABLED.
+     * Telemetry only runs when BOTH production environment AND self-hosted mode
+     * are enabled. It can be explicitly disabled via OPNFORM_ANONYMOUS_TELEMETRY_DISABLED.
      *
      * @return bool
      */
@@ -23,11 +24,11 @@ class TelemetryService
             return false;
         }
 
-        // Only enable in production or self-hosted mode
-        $isProduction = app()->environment('production');
+        // Only enable in production AND self-hosted mode
+        $isProduction = App::isProduction();
         $isSelfHosted = config('app.self_hosted', false);
 
-        return $isProduction || $isSelfHosted;
+        return $isProduction && $isSelfHosted;
     }
 
     /**
@@ -73,5 +74,19 @@ class TelemetryService
     public function getClientSecret(): ?string
     {
         return config('telemetry.client_secret');
+    }
+
+    /**
+     * Create a configured OpenPanel client instance.
+     *
+     * @return OpenPanelClient
+     */
+    public function createClient(): OpenPanelClient
+    {
+        return new OpenPanelClient(
+            $this->getEndpoint(),
+            $this->getClientId(),
+            $this->getClientSecret()
+        );
     }
 }

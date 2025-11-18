@@ -1,7 +1,7 @@
 <?php
 
+use App\Enums\SettingsKey;
 use App\Models\Setting;
-use App\Models\SettingsKey;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Queue;

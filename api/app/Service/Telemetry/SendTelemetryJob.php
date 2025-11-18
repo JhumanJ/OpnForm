@@ -28,7 +28,7 @@ class SendTelemetryJob implements ShouldQueue
     /**
      * Execute the job.
      */
-    public function handle(TelemetryService $telemetryService, OpenPanelClient $client): void
+    public function handle(TelemetryService $telemetryService): void
     {
         if (!$telemetryService->shouldSendTelemetry()) {
             return;
@@ -42,16 +42,11 @@ class SendTelemetryJob implements ShouldQueue
                 return;
             }
 
-            $endpoint = $telemetryService->getEndpoint();
-            $clientId = $telemetryService->getClientId();
-            $clientSecret = $telemetryService->getClientSecret();
+            $client = $telemetryService->createClient();
 
             $client->sendEvent(
                 $this->eventName,
                 $this->properties,
-                $endpoint,
-                $clientId,
-                $clientSecret,
                 $instanceId
             );
         } catch (\Exception $e) {

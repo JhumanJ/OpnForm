@@ -1,7 +1,7 @@
 <?php
 
+use App\Enums\SettingsKey;
 use App\Models\Setting;
-use App\Models\SettingsKey;
 use App\Service\Telemetry\SendTelemetryJob;
 use App\Service\Telemetry\TelemetryEvent;
 use App\Service\Telemetry\TelemetryService;
@@ -15,6 +15,8 @@ describe('SendTelemetryJob', function () {
         Config::set('telemetry.endpoint', 'https://test-endpoint.com/track');
         Config::set('telemetry.client_id', 'test-client-id');
         Config::set('telemetry.client_secret', 'test-client-secret');
+        // Set production environment (telemetry requires both production AND self-hosted)
+        app()->detectEnvironment(fn () => 'production');
     });
 
     it('sends event when telemetry is enabled', function () {
@@ -31,8 +33,7 @@ describe('SendTelemetryJob', function () {
         );
 
         $job->handle(
-            app(TelemetryService::class),
-            app(\App\Service\Telemetry\OpenPanelClient::class)
+            app(TelemetryService::class)
         );
 
         Http::assertSent(function ($request) {
@@ -55,8 +56,7 @@ describe('SendTelemetryJob', function () {
         );
 
         $job->handle(
-            app(TelemetryService::class),
-            app(\App\Service\Telemetry\OpenPanelClient::class)
+            app(TelemetryService::class)
         );
 
         Http::assertNothingSent();
@@ -73,8 +73,7 @@ describe('SendTelemetryJob', function () {
         );
 
         $job->handle(
-            app(TelemetryService::class),
-            app(\App\Service\Telemetry\OpenPanelClient::class)
+            app(TelemetryService::class)
         );
 
         Http::assertNothingSent();
@@ -94,8 +93,7 @@ describe('SendTelemetryJob', function () {
         );
 
         $job->handle(
-            app(TelemetryService::class),
-            app(\App\Service\Telemetry\OpenPanelClient::class)
+            app(TelemetryService::class)
         );
 
         Http::assertSent(function ($request) use ($instanceId) {
@@ -119,8 +117,7 @@ describe('SendTelemetryJob', function () {
         );
 
         $job->handle(
-            app(TelemetryService::class),
-            app(\App\Service\Telemetry\OpenPanelClient::class)
+            app(TelemetryService::class)
         );
 
         // Should not throw exception

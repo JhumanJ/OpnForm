@@ -8,25 +8,30 @@ use Tests\TestCase;
 uses(TestCase::class);
 
 describe('OpenPanelClient', function () {
-    beforeEach(function () {
-        $this->client = new OpenPanelClient();
-    });
-
     it('can be instantiated', function () {
-        expect($this->client)->toBeInstanceOf(OpenPanelClient::class);
+        $client = new OpenPanelClient(
+            'https://test-endpoint.com/track',
+            'client-id',
+            'client-secret'
+        );
+
+        expect($client)->toBeInstanceOf(OpenPanelClient::class);
     });
 
     it('sends event successfully with valid credentials', function () {
+        $client = new OpenPanelClient(
+            'https://test-endpoint.com/track',
+            'client-id',
+            'client-secret'
+        );
+
         Http::fake([
             'test-endpoint.com/track' => Http::response([], 200),
         ]);
 
-        $result = $this->client->sendEvent(
+        $result = $client->sendEvent(
             'test.event',
             ['foo' => 'bar'],
-            'https://test-endpoint.com/track',
-            'client-id',
-            'client-secret',
             'instance-id'
         );
 
@@ -44,12 +49,15 @@ describe('OpenPanelClient', function () {
     });
 
     it('returns false when client id is missing', function () {
-        $result = $this->client->sendEvent(
-            'test.event',
-            [],
+        $client = new OpenPanelClient(
             'https://test-endpoint.com/track',
             null,
-            'client-secret',
+            'client-secret'
+        );
+
+        $result = $client->sendEvent(
+            'test.event',
+            [],
             'instance-id'
         );
 
@@ -57,12 +65,15 @@ describe('OpenPanelClient', function () {
     });
 
     it('returns false when client secret is missing', function () {
-        $result = $this->client->sendEvent(
-            'test.event',
-            [],
+        $client = new OpenPanelClient(
             'https://test-endpoint.com/track',
             'client-id',
-            null,
+            null
+        );
+
+        $result = $client->sendEvent(
+            'test.event',
+            [],
             'instance-id'
         );
 
@@ -70,18 +81,21 @@ describe('OpenPanelClient', function () {
     });
 
     it('handles HTTP errors gracefully', function () {
+        $client = new OpenPanelClient(
+            'https://test-endpoint.com/track',
+            'client-id',
+            'client-secret'
+        );
+
         Log::spy();
 
         Http::fake([
             'test-endpoint.com/track' => Http::response(['error' => 'Unauthorized'], 401),
         ]);
 
-        $result = $this->client->sendEvent(
+        $result = $client->sendEvent(
             'test.event',
             [],
-            'https://test-endpoint.com/track',
-            'client-id',
-            'client-secret',
             'instance-id'
         );
 
@@ -92,18 +106,21 @@ describe('OpenPanelClient', function () {
     });
 
     it('handles exceptions gracefully', function () {
+        $client = new OpenPanelClient(
+            'https://test-endpoint.com/track',
+            'client-id',
+            'client-secret'
+        );
+
         Log::spy();
 
         Http::fake(function () {
             throw new \Exception('Network error');
         });
 
-        $result = $this->client->sendEvent(
+        $result = $client->sendEvent(
             'test.event',
             [],
-            'https://test-endpoint.com/track',
-            'client-id',
-            'client-secret',
             'instance-id'
         );
 
@@ -114,16 +131,19 @@ describe('OpenPanelClient', function () {
     });
 
     it('includes instance id in event properties', function () {
+        $client = new OpenPanelClient(
+            'https://test-endpoint.com/track',
+            'client-id',
+            'client-secret'
+        );
+
         Http::fake([
             'test-endpoint.com/track' => Http::response([], 200),
         ]);
 
-        $this->client->sendEvent(
+        $client->sendEvent(
             'test.event',
             ['custom' => 'property'],
-            'https://test-endpoint.com/track',
-            'client-id',
-            'client-secret',
             'test-instance-id'
         );
 
@@ -134,24 +154,21 @@ describe('OpenPanelClient', function () {
         });
     });
 
-    it('works without instance id', function () {
-        Http::fake([
-            'test-endpoint.com/track' => Http::response([], 200),
-        ]);
-
-        $result = $this->client->sendEvent(
-            'test.event',
-            [],
+    it('returns false when instance id is missing', function () {
+        $client = new OpenPanelClient(
             'https://test-endpoint.com/track',
             'client-id',
-            'client-secret',
+            'client-secret'
+        );
+
+        Http::fake();
+
+        $result = $client->sendEvent(
+            'test.event',
+            [],
             null
         );
 
-        expect($result)->toBeTrue();
-
-        Http::assertSent(function ($request) {
-            return $request['payload']['properties']['instance_id'] === null;
-        });
+        expect($result)->toBeFalse();
     });
 });
