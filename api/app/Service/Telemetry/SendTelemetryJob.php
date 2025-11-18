@@ -17,6 +17,20 @@ class SendTelemetryJob implements ShouldQueue
     use SerializesModels;
 
     /**
+     * The number of times the job may be attempted.
+     *
+     * @var int
+     */
+    public $tries = 1;
+
+    /**
+     * The number of seconds the job can run before timing out.
+     *
+     * @var int
+     */
+    public $timeout = 10;
+
+    /**
      * Create a new job instance.
      */
     public function __construct(
