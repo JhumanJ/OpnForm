@@ -24,7 +24,7 @@ export function useTableState(form, withActions = false) {
 
       const baseColumns = form.value.properties
         .filter((field) => {
-          return !field.type.startsWith('nf-')
+          return field.type && typeof field.type === 'string' && !field.type.startsWith('nf-')
         })
         .map(col => {
           const { columns: matrixColumns, ...rest } = col
