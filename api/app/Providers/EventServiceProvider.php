@@ -66,6 +66,15 @@ class EventServiceProvider extends ServiceProvider
     ];
 
     /**
+     * The subscriber classes to register.
+     *
+     * @var array
+     */
+    protected $subscribe = [
+        \App\Service\Telemetry\TelemetrySubscriber::class,
+    ];
+
+    /**
      * Register any events for your application.
      *
      * @return void
