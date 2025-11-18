@@ -3,19 +3,28 @@
 return [
     /*
     |--------------------------------------------------------------------------
-    | Telemetry Enabled
+    | Anonymous Telemetry Enabled
     |--------------------------------------------------------------------------
     |
-    | This value determines if telemetry is enabled. Telemetry only runs in
-    | production environment or when self-hosted mode is enabled. It can be
-    | explicitly disabled by setting OPNFORM_TELEMETRY_DISABLED to true.
+    | OpnForm collects anonymous usage data to help improve the product. This
+    | telemetry is completely anonymous and contains no personally identifiable
+    | information (PII). None of your customer data, form content, submission
+    | data, or user emails are ever transmitted.
+    |
+    | It can be explicitly disabled by setting
+    | OPNFORM_ANONYMOUS_TELEMETRY_DISABLED to true.
+    |
+    | What is collected:
+    | - Basic usage metrics (form creation, submissions, workspace creation, user additions)
+    | - Anonymous instance identifier (UUID)
+    | - No PII, form content, submission data, or user emails
     |
     | Note: The actual check for production/self-hosted is done in
     | TelemetryService::shouldSendTelemetry().
     |
     */
 
-    'enabled' => !env('OPNFORM_TELEMETRY_DISABLED', false),
+    'enabled' => !env('OPNFORM_ANONYMOUS_TELEMETRY_DISABLED', false),
 
     /*
     |--------------------------------------------------------------------------

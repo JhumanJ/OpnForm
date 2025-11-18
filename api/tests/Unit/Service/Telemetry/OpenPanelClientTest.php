@@ -72,7 +72,7 @@ describe('OpenPanelClient', function () {
 
     it('handles HTTP errors gracefully', function () {
         Log::spy();
-        
+
         Http::fake([
             'test-endpoint.com/track' => Http::response(['error' => 'Unauthorized'], 401),
         ]);
@@ -94,7 +94,7 @@ describe('OpenPanelClient', function () {
 
     it('handles exceptions gracefully', function () {
         Log::spy();
-        
+
         Http::fake(function () {
             throw new \Exception('Network error');
         });
@@ -157,4 +157,3 @@ describe('OpenPanelClient', function () {
         });
     });
 });
-
