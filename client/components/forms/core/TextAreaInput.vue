@@ -62,6 +62,14 @@ export default {
     })
 
     const onEnterPress = (event) => {
+      // Command+Enter (Mac) or Ctrl+Enter (Windows/Linux) emits input-filled event
+      if (event.metaKey || event.ctrlKey) {
+        event.preventDefault()
+        context.emit('input-filled')
+        return false
+      }
+      
+      // Regular Enter behavior
       if (props.preventEnter) {
         event.preventDefault()
         return false
