@@ -15,4 +15,3 @@ enum TelemetryEvent: string
         return $this->value;
     }
 }
-

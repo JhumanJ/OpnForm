@@ -39,8 +39,7 @@ describe('OpenPanelClient', function () {
                 && $request['type'] === 'track'
                 && $request['payload']['name'] === 'test.event'
                 && $request['payload']['properties']['foo'] === 'bar'
-                && $request['payload']['properties']['instance_id'] === 'instance-id'
-                && isset($request['payload']['properties']['__identify']['profileId']);
+                && $request['payload']['properties']['instance_id'] === 'instance-id';
         });
     });
 
@@ -114,7 +113,7 @@ describe('OpenPanelClient', function () {
             ->once();
     });
 
-    it('includes instance identification in event', function () {
+    it('includes instance id in event properties', function () {
         Http::fake([
             'test-endpoint.com/track' => Http::response([], 200),
         ]);
@@ -131,7 +130,6 @@ describe('OpenPanelClient', function () {
         Http::assertSent(function ($request) {
             $properties = $request['payload']['properties'];
             return $properties['instance_id'] === 'test-instance-id'
-                && $properties['__identify']['profileId'] === 'test-instance-id'
                 && $properties['custom'] === 'property';
         });
     });
@@ -153,7 +151,7 @@ describe('OpenPanelClient', function () {
         expect($result)->toBeTrue();
 
         Http::assertSent(function ($request) {
-            return !isset($request['payload']['properties']['__identify']);
+            return $request['payload']['properties']['instance_id'] === null;
         });
     });
 });

@@ -1,7 +1,5 @@
 <?php
 
-use App\Models\Setting;
-use App\Models\SettingsKey;
 use App\Service\Telemetry\TelemetryEvent;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Queue;
@@ -32,12 +30,15 @@ describe('telemetry helper function', function () {
         });
     });
 
-    it('does not dispatch job when telemetry is disabled', function () {
+    it('dispatches job even when telemetry is disabled (job handles the check)', function () {
         Config::set('telemetry.enabled', false);
 
         telemetry(TelemetryEvent::FORM_CREATED);
 
-        Queue::assertNothingPushed();
+        // Job is dispatched, but will check and return early in handle()
+        Queue::assertPushed(\App\Service\Telemetry\SendTelemetryJob::class, function ($job) {
+            return $job->eventName === TelemetryEvent::FORM_CREATED->value();
+        });
     });
 
     it('works with all event types', function () {
@@ -56,4 +57,3 @@ describe('telemetry helper function', function () {
         Queue::assertPushed(\App\Service\Telemetry\SendTelemetryJob::class, 5);
     });
 });
-

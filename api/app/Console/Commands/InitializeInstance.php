@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Models\Setting;
 use App\Models\SettingsKey;
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
 
 class InitializeInstance extends Command
@@ -44,6 +45,9 @@ class InitializeInstance extends Command
 
         // Store instance_created_at timestamp
         Setting::set(SettingsKey::INSTANCE_CREATED_AT, now()->toIso8601String());
+
+        // Clear cache so the new instance ID is picked up immediately
+        Cache::forget('telemetry.instance_id');
 
         $this->info('Instance initialized successfully. Instance ID: ' . $uuid);
 

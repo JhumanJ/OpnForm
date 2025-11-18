@@ -26,7 +26,7 @@ describe('TelemetryService', function () {
     it('returns false when not in production and not self-hosted', function () {
         Config::set('telemetry.enabled', true);
         Config::set('app.self_hosted', false);
-        app()->detectEnvironment(fn() => 'local');
+        app()->detectEnvironment(fn () => 'local');
 
         expect($this->service->shouldSendTelemetry())->toBeFalse();
     });
@@ -34,7 +34,7 @@ describe('TelemetryService', function () {
     it('returns true when in production environment', function () {
         Config::set('telemetry.enabled', true);
         Config::set('app.self_hosted', false);
-        app()->detectEnvironment(fn() => 'production');
+        app()->detectEnvironment(fn () => 'production');
 
         expect($this->service->shouldSendTelemetry())->toBeTrue();
     });
@@ -42,7 +42,7 @@ describe('TelemetryService', function () {
     it('returns true when self-hosted mode is enabled', function () {
         Config::set('telemetry.enabled', true);
         Config::set('app.self_hosted', true);
-        app()->detectEnvironment(fn() => 'local');
+        app()->detectEnvironment(fn () => 'local');
 
         expect($this->service->shouldSendTelemetry())->toBeTrue();
     });
@@ -50,7 +50,7 @@ describe('TelemetryService', function () {
     it('returns true when both production and self-hosted', function () {
         Config::set('telemetry.enabled', true);
         Config::set('app.self_hosted', true);
-        app()->detectEnvironment(fn() => 'production');
+        app()->detectEnvironment(fn () => 'production');
 
         expect($this->service->shouldSendTelemetry())->toBeTrue();
     });

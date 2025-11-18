@@ -7,8 +7,6 @@ use App\Service\Telemetry\TelemetryEvent;
 use App\Service\Telemetry\TelemetryService;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Queue;
 
 describe('SendTelemetryJob', function () {
     beforeEach(function () {
@@ -64,23 +62,23 @@ describe('SendTelemetryJob', function () {
         Http::assertNothingSent();
     });
 
-        it('does not send event when instance id is missing', function () {
-            Setting::where('key', SettingsKey::INSTANCE_ID->value)->delete();
+    it('does not send event when instance id is missing', function () {
+        Setting::where('key', SettingsKey::INSTANCE_ID->value)->delete();
 
-            Http::fake();
+        Http::fake();
 
-            $job = new SendTelemetryJob(
-                TelemetryEvent::FORM_CREATED->value(),
-                []
-            );
+        $job = new SendTelemetryJob(
+            TelemetryEvent::FORM_CREATED->value(),
+            []
+        );
 
-            $job->handle(
-                app(TelemetryService::class),
-                app(\App\Service\Telemetry\OpenPanelClient::class)
-            );
+        $job->handle(
+            app(TelemetryService::class),
+            app(\App\Service\Telemetry\OpenPanelClient::class)
+        );
 
-            Http::assertNothingSent();
-        });
+        Http::assertNothingSent();
+    });
 
     it('includes instance id in event properties', function () {
         $instanceId = 'test-instance-id';
@@ -129,4 +127,3 @@ describe('SendTelemetryJob', function () {
         expect(true)->toBeTrue();
     });
 });
-

@@ -4,6 +4,7 @@ namespace App\Service\Telemetry;
 
 use App\Models\Setting;
 use App\Models\SettingsKey;
+use Illuminate\Support\Facades\Cache;
 
 class TelemetryService
 {
@@ -32,11 +33,16 @@ class TelemetryService
     /**
      * Get the instance ID from settings.
      *
+     * Instance ID is cached since it's read frequently (on every telemetry event)
+     * but only set once during initialization and never changes.
+     *
      * @return string|null
      */
     public function getInstanceId(): ?string
     {
-        return Setting::get(SettingsKey::INSTANCE_ID);
+        return Cache::rememberForever('telemetry.instance_id', function () {
+            return Setting::get(SettingsKey::INSTANCE_ID);
+        });
     }
 
     /**

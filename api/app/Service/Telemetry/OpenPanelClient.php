@@ -43,13 +43,6 @@ class OpenPanelClient
                 ],
             ];
 
-            // If we have an instance_id, identify it in the event
-            if ($instanceId) {
-                $payload['payload']['properties']['__identify'] = [
-                    'profileId' => $instanceId,
-                ];
-            }
-
             $response = Http::timeout(5)
                 ->withHeaders([
                     'openpanel-client-id' => $clientId,
@@ -78,4 +71,3 @@ class OpenPanelClient
         }
     }
 }
-
