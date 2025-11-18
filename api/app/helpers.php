@@ -37,3 +37,26 @@ if (!function_exists('pricing_enabled')) {
         return !is_null(config('cashier.key')) && !config('app.self_hosted');
     }
 }
+
+if (!function_exists('telemetry')) {
+    /**
+     * Send a telemetry event asynchronously.
+     *
+     * @param \App\Service\Telemetry\TelemetryEvent $event
+     * @param array $properties
+     * @return void
+     */
+    function telemetry(\App\Service\Telemetry\TelemetryEvent $event, array $properties = []): void
+    {
+        $telemetryService = app(\App\Service\Telemetry\TelemetryService::class);
+
+        if (!$telemetryService->shouldSendTelemetry()) {
+            return;
+        }
+
+        \App\Service\Telemetry\SendTelemetryJob::dispatch(
+            $event->value(),
+            $properties
+        );
+    }
+}

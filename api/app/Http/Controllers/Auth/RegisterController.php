@@ -128,6 +128,7 @@ class RegisterController extends Controller
         // Clear feature flags cache when first user is created (affects setup_required flag)
         if (config('app.self_hosted') && $user->id === 1) {
             \Illuminate\Support\Facades\Cache::forget('feature_flags');
+            telemetry(\App\Service\Telemetry\TelemetryEvent::USER_CREATED);
         }
 
         return $user;

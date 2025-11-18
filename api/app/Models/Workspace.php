@@ -28,6 +28,10 @@ class Workspace extends Model implements CachableAttributes
         'settings'
     ];
 
+    protected $dispatchesEvents = [
+        'created' => \App\Events\Models\WorkspaceCreated::class,
+    ];
+
     protected $appends = [
         'is_pro',
         'is_trialing',
@@ -226,7 +230,7 @@ class Workspace extends Model implements CachableAttributes
 
     public function billingOwners(): Collection
     {
-        return $this->owners->filter(fn ($owner) => $owner->is_subscribed);
+        return $this->owners->filter(fn($owner) => $owner->is_subscribed);
     }
 
     public function forms()
