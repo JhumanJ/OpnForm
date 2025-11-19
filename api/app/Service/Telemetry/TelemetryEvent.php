@@ -5,6 +5,7 @@ namespace App\Service\Telemetry;
 enum TelemetryEvent: string
 {
     case INSTANCE_CREATED = 'instance.created';
+    case INSTANCE_PING = 'instance.ping';
     case USER_CREATED = 'user.created';
     case FORM_CREATED = 'form.created';
     case WORKSPACE_CREATED = 'workspace.created';

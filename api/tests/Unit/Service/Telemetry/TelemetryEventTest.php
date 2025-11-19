@@ -4,7 +4,7 @@ use App\Service\Telemetry\TelemetryEvent;
 
 describe('TelemetryEvent', function () {
     it('has all required event cases', function () {
-        expect(TelemetryEvent::cases())->toHaveCount(5);
+        expect(TelemetryEvent::cases())->toHaveCount(6);
     });
 
     it('has INSTANCE_CREATED case with correct value', function () {
@@ -25,6 +25,10 @@ describe('TelemetryEvent', function () {
 
     it('has FORM_SUBMISSION case with correct value', function () {
         expect(TelemetryEvent::FORM_SUBMISSION->value)->toBe('form.submission');
+    });
+
+    it('has INSTANCE_PING case with correct value', function () {
+        expect(TelemetryEvent::INSTANCE_PING->value)->toBe('instance.ping');
     });
 
     it('value method returns the enum value', function () {

@@ -77,6 +77,16 @@ class TelemetryService
     }
 
     /**
+     * Get the application version.
+     *
+     * @return string|null
+     */
+    public function getAppVersion(): ?string
+    {
+        return config('app.docker_version');
+    }
+
+    /**
      * Create a configured OpenPanel client instance.
      *
      * @return OpenPanelClient
