@@ -13,7 +13,7 @@
       <button
         ref="triggerButton"
         class="overflow-hidden"
-        :class="ui.input({ class: props.ui?.slots?.input })"
+        :class="ui.input({ class: props.ui?.slots?.input, isOpen: pickerOpen })"
         :disabled="props.disabled"
         :aria-expanded="pickerOpen"
         :aria-haspopup="true"

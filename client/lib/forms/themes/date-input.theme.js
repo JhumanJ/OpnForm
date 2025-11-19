@@ -55,6 +55,12 @@ export const dateInputTheme = {
         inner: '!px-0'
       }
     },
+    // Open state styling used when popover is open (even if trigger is not focused)
+    isOpen: {
+      true: {
+        input: 'ring-2 ring-form/100 outline-none'
+      }
+    },
     size: {
       xs: { input: 'text-xs', inner: 'px-2.5 py-1.5 text-xs' },
       sm: { input: 'text-sm', inner: 'px-2 py-1.5 text-sm' },
@@ -78,6 +84,14 @@ export const dateInputTheme = {
       }
     }
   },
+  // Ensure transparent theme uses bottom-only highlight when open
+  compoundVariants: [
+    {
+      theme: 'transparent',
+      isOpen: true,
+      class: { input: 'ring-0 shadow-[inset_0_-2px_0_0_var(--color-form)] outline-none' }
+    }
+  ],
   defaultVariants: {
     theme: 'default',
     size: 'md',
