@@ -56,12 +56,15 @@ class EmailIntegrationSpamService
             return false;
         }
 
+        // Get creator from form
+        $creator = $form->creator;
+
         // Check if creator exists before accessing its properties
-        if (!$form->creator) {
+        if (!$creator) {
             return false;
         }
 
-        if ($form->creator->is_blocked || $form->creator->admin || $form->creator->moderator) {
+        if ($creator->is_blocked || $creator->admin || $creator->moderator) {
             return false;
         }
 
@@ -70,14 +73,20 @@ class EmailIntegrationSpamService
             return false;
         }
 
+        // Skip if send to is not the creator's email
+        $data = (array) ($integration->data ?? (object) []);
+        if (!$data || !isset($data['send_to']) || $data['send_to'] !== $creator->email) {
+            return false;
+        }
+
         // Skip if user account is too old (user is established)
-        if ($form->creator->created_at->diffInMonths(now()) > 3) {
+        if ($creator->created_at->diffInMonths(now()) > 3) {
             return false;
         }
 
         // Skip checking users who were manually unblocked by admin in the past 7 days
         // This saves AI costs and prevents immediate re-blocking of reviewed users
-        if ($this->wasRecentlyManuallyUnblocked($form->creator, 7)) {
+        if ($this->wasRecentlyManuallyUnblocked($creator, 7)) {
             return false;
         }
 
@@ -87,7 +96,7 @@ class EmailIntegrationSpamService
         }
 
         // Check risky users (unsubscribed + new)
-        if ($this->isRiskyUser($form->creator)) {
+        if ($this->isRiskyUser($creator)) {
             return true;
         }
 
