@@ -28,6 +28,7 @@ class CheckSpamEmailIntegrationPrompt extends Prompt
         <formContext>
         Form title: {formTitle}
         Form description: {formDescription}
+        Form appears to be default/dummy: {isDefaultForm}
         </formContext>
 
         <userInformation>
@@ -35,10 +36,24 @@ class CheckSpamEmailIntegrationPrompt extends Prompt
         User is subscribed: {isSubscribed}
         </userInformation>
 
-        Guidelines:
-        - BLOCK immediately if email content is phishing, brand impersonation, login credential harvesting, or clearly unrelated to the form context.
-        - FLAG FOR ADMIN REVIEW only when borderline suspicious, but not clearly malicious.
-        - ALLOW by default for normal notifications about the form or its submissions.
+        {blockingHistory}
+
+        **CRITICAL ABUSE PATTERN - HIGH PRIORITY:**
+        🚨 Watch for: Default/dummy forms (e.g., "Contact Form" with no description) paired with phishing emails.
+        This is a common abuse pattern: attacker creates dummy form, then sets up phishing email integration to mass-send to random people.
+
+        **BLOCK IMMEDIATELY (is_spam: true):**
+        - Phishing or brand impersonation content (login pages, credential harvesting, fake support)
+        - Clear mismatch: default/generic form with targeted phishing email
+        - Non-subscribed user with obvious phishing setup
+
+        **FLAG FOR ADMIN REVIEW (needs_admin_review: true):**
+        - Borderline contextual mismatch between form and email
+        - Unsubscribed user with suspicious (but not clearly malicious) email setup
+
+        **ALLOW (both false) - DEFAULT:**
+        - Email content matches form context (e.g., contact form with contact confirmation email)
+        - Subscribed users with legitimate integration setup
 
         Respond with JSON: {"is_spam": boolean, "needs_admin_review": boolean, "reason": "brief explanation"}
     EOD;
@@ -85,6 +100,9 @@ class CheckSpamEmailIntegrationPrompt extends Prompt
 
         $userRegisteredSince = $this->form->creator->created_at->diffInDays(now());
         $isSubscribed = $this->form->creator->is_subscribed ? 'yes' : 'no';
+        $isDefaultForm = $this->isDefaultDummyForm() ? 'yes' : 'no';
+
+        $blockingHistory = $this->buildBlockingHistoryContext();
 
         return Str::of($template)
             ->replace('{subject}', $subject)
@@ -96,6 +114,52 @@ class CheckSpamEmailIntegrationPrompt extends Prompt
             ->replace('{formDescription}', (string) $this->form->description)
             ->replace('{userRegisteredSince}', (string) $userRegisteredSince)
             ->replace('{isSubscribed}', $isSubscribed)
+            ->replace('{isDefaultForm}', $isDefaultForm)
+            ->replace('{blockingHistory}', $blockingHistory)
             ->toString();
+    }
+
+    private function isDefaultDummyForm(): bool
+    {
+        // Detect if form appears to be a default/dummy form (hasn't been customized)
+        $form = $this->form;
+
+        // Check if title is the default contact form title and description is empty/default
+        $isDefaultTitle = $form->title === 'Contact Form' || $form->title === 'Untitled Form';
+        $hasNoDescription = empty($form->description) || $form->description === '';
+
+        // Check if form has very few fields (just the default ones)
+        $defaultFieldCount = count($form->properties ?? []) <= 4;
+
+        return $isDefaultTitle && $hasNoDescription && $defaultFieldCount;
+    }
+
+    private function buildBlockingHistoryContext(): string
+    {
+        $blockingHistory = $this->form->creator->meta['blocking_history'] ?? [];
+
+        if (empty($blockingHistory)) {
+            return '';
+        }
+
+        $lastBlock = end($blockingHistory);
+        if (!$lastBlock) {
+            return '';
+        }
+
+        // Only mention if user was recently manually unblocked
+        if (!is_null($lastBlock['unblocked_by']) && !is_null($lastBlock['unblocked_at'])) {
+            $daysSinceUnblock = \Carbon\Carbon::parse($lastBlock['unblocked_at'])->diffInDays(now());
+
+            if ($daysSinceUnblock <= 30) {
+                return "
+**⚠️ USER WAS MANUALLY UNBLOCKED BY ADMIN:**
+This user was unblocked {$daysSinceUnblock} days ago. Respect prior admin decision - only re-block for EXTREME violations (obvious phishing/credential theft).
+Use 'needs_admin_review' instead if borderline.
+";
+            }
+        }
+
+        return '';
     }
 }

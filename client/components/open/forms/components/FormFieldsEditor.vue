@@ -47,6 +47,7 @@
               class="group flex items-center gap-x-0.5 py-1.5 pr-1"
             >
               <BlockTypeIcon
+                v-if="element.type && typeof element.type === 'string'"
                 :type="element.type"
                 class="ml-2"
               />
@@ -87,7 +88,7 @@
                 </button>
               </UTooltip>
               <UTooltip
-                v-if="!element.type.startsWith('nf-')"
+                v-if="element.type && typeof element.type === 'string' && !element.type.startsWith('nf-')"
                 :text="element.required ? 'Make it optional' : 'Make it required'"
                 arrow
               >

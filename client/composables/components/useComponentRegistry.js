@@ -24,6 +24,7 @@ const actionRegistry = new Map([
   ['GoogleSheetsIntegrationActions', () => import('~/components/open/integrations/components/GoogleSheetsIntegrationActions.vue')],
   ['EmailIntegrationActions', () => import('~/components/open/integrations/components/EmailIntegrationActions.vue')],
   ['N8nIntegrationActions', () => import('~/components/open/integrations/components/N8nIntegrationActions.vue')],
+  ['ActivepiecesIntegrationActions', () => import('~/components/open/integrations/components/ActivepiecesIntegrationActions.vue')],
 ])
 
 const providerRegistry = new Map([
@@ -40,6 +41,11 @@ const heavyFormComponentsRegistry = new Map([
   ['MatrixInput', () => import('~/components/forms/heavy/MatrixInput.vue')],
   ['PhoneInput', () => import('~/components/forms/heavy/PhoneInput.vue')],
   ['RatingInput', () => import('~/components/forms/heavy/RatingInput.vue')],
+])
+
+const focusedFormComponentsRegistry = new Map([
+  ['FocusedSelectorInput', () => import('~/components/forms/core/FocusedSelectorInput.vue')],
+  ['FocusedToggleInput', () => import('~/components/forms/core/FocusedToggleInput.vue')],
 ])
 
 // Component loading cache to avoid duplicate imports
@@ -183,6 +189,15 @@ export function useComponentRegistry() {
         clientOnly: false
       }
     }
+
+    if (focusedFormComponentsRegistry.has(componentName)) {
+      const loader = focusedFormComponentsRegistry.get(componentName)
+      return {
+        component: createAsyncComponent(loader),
+        clientOnly: false
+      }
+    }
+
     return {
       component: componentName,
       clientOnly: false

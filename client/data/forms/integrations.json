@@ -66,6 +66,17 @@
     "is_editable": false,
     "url": "https://n8n.io/"
   },
+  "activepieces": {
+    "name": "Activepieces",
+    "icon": "opnform:activepieces",
+    "section_name": "Automation",
+    "file_name": "ActivepiecesIntegration",
+    "actions_file_name": "ActivepiecesIntegrationActions",
+    "is_pro": false,
+    "is_external": true,
+    "is_editable": false,
+    "url": "https://www.activepieces.com/pieces/opnform"
+  },
   "google_sheets": {
     "name": "Google Sheets",
     "icon": "mdi:google-spreadsheet",

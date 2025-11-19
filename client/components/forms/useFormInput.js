@@ -85,7 +85,30 @@ export function useFormInput(props, context, options = {}) {
     },
     set: (val) => {
       if (props.form) {
-        _set(props.form, (composableOptions.formPrefixKey || "") + props.name, val)
+        const fullPath = (composableOptions.formPrefixKey || "") + props.name
+        const pathParts = fullPath.split('.')
+        
+        // Ensure all parent objects exist before setting nested properties.
+        // This is necessary for deeply nested form field paths (e.g., 'address.street.number')
+        // where intermediate objects may not exist yet. Without this, lodash _set() would fail
+        // or create the nested structure incorrectly on some form backends.
+        // 
+        // Edge case handling:
+        // - If a path segment exists but is not an object (null, primitive value), it gets
+        //   replaced with an empty object so the nested structure can be created.
+        // - This ensures the form data structure is always valid for deeply nested fields.
+        if (pathParts.length > 1) {
+          let current = props.form
+          for (let i = 0; i < pathParts.length - 1; i++) {
+            const part = pathParts[i]
+            if (!current[part] || typeof current[part] !== 'object') {
+              current[part] = {}
+            }
+            current = current[part]
+          }
+        }
+        
+        _set(props.form, fullPath, val)
       } else {
         content.value = val
       }
@@ -111,11 +134,15 @@ export function useFormInput(props, context, options = {}) {
   })
 
   // CENTRALIZED VARIANTS: Single computed property for all tailwind-variants
-  // Following Nuxt UI pattern - only computed when variants config is provided
+  // Following Nuxt UI pattern: tv handles all merging via slot class parameter
   const ui = computed(() => {
     if (!composableOptions.variants) return {}
     
-    return tv(composableOptions.variants, props.ui)({
+    // tv() slot functions handle ui merging via their class parameter
+    // Components pass props.ui?.slots?.slotName via class: [ui.slot({ class: props.ui?.slots?.slotName })]
+    return tv(composableOptions.variants, {
+      twMerge: true  // Enabled by default, ensures conflict resolution
+    })({
       theme: resolvedTheme.value,        // props.theme resolved with injection
       size: resolvedSize.value,
       borderRadius: resolvedBorderRadius.value,

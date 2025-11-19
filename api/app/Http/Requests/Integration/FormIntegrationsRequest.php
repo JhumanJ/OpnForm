@@ -50,11 +50,6 @@ class FormIntegrationsRequest extends FormRequest
             'data' => [
                 'present',
                 'array',
-                function ($attribute, $value, $fail) {
-                    if (empty($value)) {
-                        $fail('The data field cannot be empty.');
-                    }
-                }
             ],
             'status' => ['required', Rule::in([FormIntegration::STATUS_ACTIVE, FormIntegration::STATUS_INACTIVE])],
             'logic' => [new IntegrationLogicRule()],
