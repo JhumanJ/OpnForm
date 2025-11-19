@@ -48,6 +48,10 @@ class User extends Authenticatable implements JWTSubject, CachableAttributes
         'blocked_at'
     ];
 
+    protected $dispatchesEvents = [
+        'created' => \App\Events\Models\UserCreated::class,
+    ];
+
     /**
      * The attributes that should be hidden for arrays.
      *

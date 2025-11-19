@@ -52,7 +52,13 @@
         <div v-if="!props.formManager?.state.isSubmitted" class="mt-2 flex gap-2" :class="[getFieldAlignClasses(currentBlock), {'flex-col justify-normal! items-center': isLast &&form.use_captcha}]">
           <slot name="submit-btn" v-if="isLast" :loading="isProcessing">
             <CaptchaWrapper v-if="form.use_captcha" :form-manager="formManager" />
-            <open-form-button :form="form" class="mt-0.5 px-6" :loading="isProcessing" @click.prevent="emit('submit')">
+            <open-form-button 
+              native-type="button" 
+              :form="form" 
+              class="mt-0.5 px-6" 
+              :loading="isProcessing" 
+              @click.prevent.stop="handleSubmitClick"
+            >
               {{ form.submit_button_text || $t('forms.buttons.submit') }}
             </open-form-button>
           </slot>
@@ -167,6 +173,17 @@ const handleNextClick = () => {
 }
 
 const onInputFilled = () => {
+  // On last page, submit the form instead of advancing
+  if (isLast.value) {
+    // Don't submit if already processing
+    if (isProcessing.value) {
+      return
+    }
+    emit('submit')
+    return
+  }
+  
+  // On non-last pages, advance to next page
   handleNextClick()
 }
 
@@ -283,6 +300,16 @@ const goPrev = () => {
     }
   }
 }
+const handleSubmitClick = (event) => {
+  // Prevent form submission if button is disabled/processing
+  if (isProcessing.value) {
+    event?.preventDefault()
+    return
+  }
+  
+  emit('submit')
+}
+
 const goNext = () => { if (!isLast.value) handleNextClick() }
 
 // If block is text block, or any other block that has an align property, use the align property to determine the justify class
