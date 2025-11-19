@@ -8,6 +8,7 @@ export const dateInputTheme = {
       'text-neutral-700 dark:text-neutral-300',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:border-transparent'
     ],
+    clearButton: 'hover:bg-neutral-50 dark:hover:bg-neutral-900 ltr:border-l rtl:border-r px-2 flex items-center focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-form/100 focus-visible:ring-inset',
     inner: ''
   },
   variants: {
@@ -50,6 +51,7 @@ export const dateInputTheme = {
           'transition-shadow duration-200',
           'focus-visible:ring-0 focus-visible:shadow-[inset_0_-2px_0_0_var(--color-form)]'
         ],
+        clearButton: 'border-none',
         inner: '!px-0'
       }
     },
