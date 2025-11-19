@@ -54,7 +54,6 @@ class SsoController extends Controller
                 'error' => $e->getMessage(),
             ]);
 
-            ray($e);
 
             return response()->json([
                 'error' => 'Failed to initiate OIDC authentication',
