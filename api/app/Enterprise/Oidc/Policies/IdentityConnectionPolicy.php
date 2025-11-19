@@ -51,7 +51,12 @@ class IdentityConnectionPolicy
         }
 
         // Workspace-scoped connection - check if user is workspace admin
-        return (new WorkspacePolicy())->adminAction($user, $workspace);
+        if (!(new WorkspacePolicy())->adminAction($user, $workspace)) {
+            return false;
+        }
+
+        // For cloud (non-self-hosted), require Pro subscription for creation
+        return $this->hasProAccess($workspace);
     }
 
     /**
@@ -59,13 +64,7 @@ class IdentityConnectionPolicy
      */
     public function update(User $user, IdentityConnection $identityConnection): bool
     {
-        if ($identityConnection->workspace_id === null) {
-            // Global connection - only admins can update
-            return $user->admin;
-        }
-
-        // Workspace-scoped connection - check if user is workspace admin
-        return (new WorkspacePolicy())->adminAction($user, $identityConnection->workspace);
+        return $this->canModify($user, $identityConnection);
     }
 
     /**
@@ -73,12 +72,39 @@ class IdentityConnectionPolicy
      */
     public function delete(User $user, IdentityConnection $identityConnection): bool
     {
+        return $this->canModify($user, $identityConnection);
+    }
+
+    /**
+     * Check if user can modify (update/delete) a workspace-scoped connection.
+     */
+    protected function canModify(User $user, IdentityConnection $identityConnection): bool
+    {
         if ($identityConnection->workspace_id === null) {
-            // Global connection - only admins can delete
+            // Global connection - only admins can modify
             return $user->admin;
         }
 
         // Workspace-scoped connection - check if user is workspace admin
-        return (new WorkspacePolicy())->adminAction($user, $identityConnection->workspace);
+        if (!(new WorkspacePolicy())->adminAction($user, $identityConnection->workspace)) {
+            return false;
+        }
+
+        // For cloud (non-self-hosted), require Pro subscription for modifications
+        return $this->hasProAccess($identityConnection->workspace);
+    }
+
+    /**
+     * Check if workspace has Pro access (always true for self-hosted).
+     */
+    protected function hasProAccess(Workspace $workspace): bool
+    {
+        // Self-hosted installations don't require Pro
+        if (!pricing_enabled()) {
+            return true;
+        }
+
+        // Cloud installations require Pro subscription
+        return $workspace->is_pro;
     }
 }

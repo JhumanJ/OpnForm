@@ -1,6 +1,7 @@
 <?php
 
 use App\Enterprise\Oidc\Models\IdentityConnection;
+use App\Models\User;
 use App\Models\Workspace;
 
 uses()->group('oidc', 'feature');
@@ -66,8 +67,15 @@ describe('OidcConnectionController - List Connections', function () {
 });
 
 describe('OidcConnectionController - Create Connection', function () {
+    beforeEach(function () {
+        // Set self-hosted mode to bypass Pro checks in tests
+        config(['app.self_hosted' => true]);
+    });
+
     it('creates workspace-scoped connection', function () {
-        $user = $this->actingAsUser();
+        $user = User::factory()->create(['email' => 'user@company.com']);
+        $this->actingAs($user);
+
         $workspace = Workspace::factory()->create();
         $user->workspaces()->attach($workspace->id, ['role' => 'admin']);
 
@@ -159,20 +167,24 @@ describe('OidcConnectionController - Create Connection', function () {
     });
 
     it('enforces single connection per workspace', function () {
-        $user = $this->actingAsUser();
+        $user = User::factory()->create(['email' => 'user@company.com']);
+        $this->actingAs($user);
+
         $workspace = Workspace::factory()->create();
         $user->workspaces()->attach($workspace->id, ['role' => 'admin']);
 
         IdentityConnection::factory()->create([
             'workspace_id' => $workspace->id,
             'type' => IdentityConnection::TYPE_OIDC,
+            'domain' => 'company.com',
         ]);
 
+        // Try to create second connection with different domain (should still fail)
         $data = [
             'name' => 'Second Connection',
             'slug' => 'second-connection',
-            'domain' => 'other.com',
-            'issuer' => 'https://idp.other.com',
+            'domain' => 'mail.company.com', // Different domain, but same workspace
+            'issuer' => 'https://idp.company.com',
             'client_id' => 'client-123',
             'client_secret' => 'secret-456',
         ];
@@ -182,17 +194,178 @@ describe('OidcConnectionController - Create Connection', function () {
         $response->assertStatus(422);
         expect($response->json('message'))->toContain('already has an OIDC connection');
     });
+
+    it('validates domain matches user email domain', function () {
+        $user = User::factory()->create(['email' => 'user@company.com']);
+        $this->actingAs($user);
+
+        $workspace = Workspace::factory()->create();
+        $user->workspaces()->attach($workspace->id, ['role' => 'admin']);
+
+        $data = [
+            'name' => 'Company SSO',
+            'slug' => 'company-sso',
+            'domain' => 'company.com',
+            'issuer' => 'https://idp.company.com',
+            'client_id' => 'client-123',
+            'client_secret' => 'secret-456',
+        ];
+
+        $response = $this->postJson("/open/workspaces/{$workspace->id}/oidc-connections", $data);
+
+        $response->assertStatus(201);
+    });
+
+    it('rejects domain that does not match user email domain', function () {
+        $user = User::factory()->create(['email' => 'user@company.com']);
+        $this->actingAs($user);
+
+        $workspace = Workspace::factory()->create();
+        $user->workspaces()->attach($workspace->id, ['role' => 'admin']);
+
+        $data = [
+            'name' => 'Test SSO',
+            'slug' => 'test-sso',
+            'domain' => 'other.com',
+            'issuer' => 'https://idp.other.com',
+            'client_id' => 'client-123',
+            'client_secret' => 'secret-456',
+        ];
+
+        $response = $this->postJson("/open/workspaces/{$workspace->id}/oidc-connections", $data);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['domain']);
+        expect($response->json('errors.domain.0'))->toContain('must match your email domain');
+    });
+
+    it('rejects blocked email providers', function () {
+        $user = User::factory()->create(['email' => 'user@company.com']);
+        $this->actingAs($user);
+
+        $workspace = Workspace::factory()->create();
+        $user->workspaces()->attach($workspace->id, ['role' => 'admin']);
+
+        $data = [
+            'name' => 'Test SSO',
+            'slug' => 'test-sso',
+            'domain' => 'gmail.com',
+            'issuer' => 'https://idp.gmail.com',
+            'client_id' => 'client-123',
+            'client_secret' => 'secret-456',
+        ];
+
+        $response = $this->postJson("/open/workspaces/{$workspace->id}/oidc-connections", $data);
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['domain']);
+        expect($response->json('errors.domain.0'))->toContain('Common email providers');
+    });
+
+    it('allows root domain match when user has subdomain email', function () {
+        $user = User::factory()->create(['email' => 'user@mail.company.com']);
+        $this->actingAs($user);
+
+        $workspace = Workspace::factory()->create();
+        $user->workspaces()->attach($workspace->id, ['role' => 'admin']);
+
+        $data = [
+            'name' => 'Company SSO',
+            'slug' => 'company-sso',
+            'domain' => 'company.com',
+            'issuer' => 'https://idp.company.com',
+            'client_id' => 'client-123',
+            'client_secret' => 'secret-456',
+        ];
+
+        $response = $this->postJson("/open/workspaces/{$workspace->id}/oidc-connections", $data);
+
+        $response->assertStatus(201);
+    });
+
+    it('allows subdomain match when user has root domain email', function () {
+        $user = User::factory()->create(['email' => 'user@company.com']);
+        $this->actingAs($user);
+
+        $workspace = Workspace::factory()->create();
+        $user->workspaces()->attach($workspace->id, ['role' => 'admin']);
+
+        $data = [
+            'name' => 'Company SSO',
+            'slug' => 'company-sso',
+            'domain' => 'mail.company.com',
+            'issuer' => 'https://idp.company.com',
+            'client_id' => 'client-123',
+            'client_secret' => 'secret-456',
+        ];
+
+        $response = $this->postJson("/open/workspaces/{$workspace->id}/oidc-connections", $data);
+
+        $response->assertStatus(201);
+    });
+
+    it('validates domain on update', function () {
+        $user = User::factory()->create(['email' => 'user@company.com']);
+        $this->actingAs($user);
+
+        $workspace = Workspace::factory()->create();
+        $user->workspaces()->attach($workspace->id, ['role' => 'admin']);
+
+        $connection = IdentityConnection::factory()->create([
+            'workspace_id' => $workspace->id,
+            'domain' => 'company.com',
+        ]);
+
+        // Try to update to a different domain
+        $response = $this->patchJson(
+            "/open/workspaces/{$workspace->id}/oidc-connections/{$connection->id}",
+            ['domain' => 'other.com']
+        );
+
+        $response->assertStatus(422);
+        $response->assertJsonValidationErrors(['domain']);
+    });
+
+    it('allows updating to matching domain', function () {
+        $user = User::factory()->create(['email' => 'user@company.com']);
+        $this->actingAs($user);
+
+        $workspace = Workspace::factory()->create();
+        $user->workspaces()->attach($workspace->id, ['role' => 'admin']);
+
+        $connection = IdentityConnection::factory()->create([
+            'workspace_id' => $workspace->id,
+            'domain' => 'company.com',
+        ]);
+
+        // Update to subdomain of same root domain
+        $response = $this->patchJson(
+            "/open/workspaces/{$workspace->id}/oidc-connections/{$connection->id}",
+            ['domain' => 'mail.company.com']
+        );
+
+        $response->assertSuccessful();
+        expect($connection->fresh()->domain)->toBe('mail.company.com');
+    });
 });
 
 describe('OidcConnectionController - Update Connection', function () {
+    beforeEach(function () {
+        // Set self-hosted mode to bypass Pro checks in tests
+        config(['app.self_hosted' => true]);
+    });
+
     it('updates workspace-scoped connection', function () {
-        $user = $this->actingAsUser();
+        $user = User::factory()->create(['email' => 'user@company.com']);
+        $this->actingAs($user);
+
         $workspace = Workspace::factory()->create();
         $user->workspaces()->attach($workspace->id, ['role' => 'admin']);
 
         $connection = IdentityConnection::factory()->create([
             'workspace_id' => $workspace->id,
             'name' => 'Old Name',
+            'domain' => 'company.com',
         ]);
 
         $response = $this->patchJson(
@@ -206,13 +379,16 @@ describe('OidcConnectionController - Update Connection', function () {
     });
 
     it('does not update client_secret if not provided', function () {
-        $user = $this->actingAsUser();
+        $user = User::factory()->create(['email' => 'user@company.com']);
+        $this->actingAs($user);
+
         $workspace = Workspace::factory()->create();
         $user->workspaces()->attach($workspace->id, ['role' => 'admin']);
 
         $connection = IdentityConnection::factory()->create([
             'workspace_id' => $workspace->id,
             'client_secret' => 'old-secret',
+            'domain' => 'company.com',
         ]);
 
         $response = $this->patchJson(
@@ -225,12 +401,15 @@ describe('OidcConnectionController - Update Connection', function () {
     });
 
     it('merges options instead of replacing', function () {
-        $user = $this->actingAsUser();
+        $user = User::factory()->create(['email' => 'user@company.com']);
+        $this->actingAs($user);
+
         $workspace = Workspace::factory()->create();
         $user->workspaces()->attach($workspace->id, ['role' => 'admin']);
 
         $connection = IdentityConnection::factory()->create([
             'workspace_id' => $workspace->id,
+            'domain' => 'company.com',
             'options' => [
                 'field_mappings' => ['email' => 'mail'],
                 'custom_field' => 'custom_value',
@@ -254,13 +433,21 @@ describe('OidcConnectionController - Update Connection', function () {
 });
 
 describe('OidcConnectionController - Delete Connection', function () {
+    beforeEach(function () {
+        // Set self-hosted mode to bypass Pro checks in tests
+        config(['app.self_hosted' => true]);
+    });
+
     it('deletes workspace-scoped connection', function () {
-        $user = $this->actingAsUser();
+        $user = User::factory()->create(['email' => 'user@company.com']);
+        $this->actingAs($user);
+
         $workspace = Workspace::factory()->create();
         $user->workspaces()->attach($workspace->id, ['role' => 'admin']);
 
         $connection = IdentityConnection::factory()->create([
             'workspace_id' => $workspace->id,
+            'domain' => 'company.com',
         ]);
 
         $response = $this->deleteJson("/open/workspaces/{$workspace->id}/oidc-connections/{$connection->id}");

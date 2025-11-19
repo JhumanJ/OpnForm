@@ -2,6 +2,7 @@
 
 namespace App\Enterprise\Oidc\Requests;
 
+use App\Enterprise\Oidc\Rules\ValidOidcDomain;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
@@ -31,7 +32,7 @@ class StoreOidcConnectionRequest extends FormRequest
                 'required',
                 'string',
                 'max:255',
-                'regex:/^[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(\.[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/',
+                new ValidOidcDomain(),
                 Rule::unique('identity_connections', 'domain')->where(function ($query) use ($workspaceId) {
                     // Domain must be unique per workspace (or globally if workspace_id is null)
                     if ($workspaceId) {

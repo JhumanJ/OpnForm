@@ -1,5 +1,15 @@
 <template>
   <div class="space-y-4">
+
+    <UAlert
+      :icon="alertConfig.icon"
+      :color="alertConfig.color"
+      variant="subtle"
+      :title="alertConfig.title"
+      :description="alertConfig.description"
+      :actions="alertConfig.actions"
+    />
+
     <div class="flex flex-col flex-wrap items-start justify-between gap-4 sm:flex-row sm:items-center">
       <div>
         <h3 class="text-lg font-medium text-neutral-900">SSO Settings</h3>
@@ -9,10 +19,16 @@
       </div>
 
       <UButton
-        v-if="canManageConnections"
+        v-if="canManageConnections && canAccessFeature"
         label="Add Connection"
         icon="i-heroicons-plus"
         @click="showCreateModal = true"
+      />
+      <UButton
+        v-else-if="canManageConnections && !canAccessFeature"
+        label="Add Connection"
+        icon="i-heroicons-plus"
+        @click="openUpgradeModal"
       />
     </div>
 
@@ -28,7 +44,7 @@
         v-for="connection in connectionsData"
         :key="connection.id"
           :connection="connection"
-          :can-edit="canManageConnections"
+          :can-edit="canManageConnections && canAccessFeature"
           @edit="editConnection"
           @delete="deleteConnection"
           />
@@ -48,10 +64,16 @@
         Configure your first OIDC connection to enable single sign-on for your workspace.
       </p>
       <UButton
-        v-if="canManageConnections"
+        v-if="canManageConnections && canAccessFeature"
         label="Add Your First Connection"
         icon="i-heroicons-plus"
         @click="showCreateModal = true"
+      />
+      <UButton
+        v-else-if="canManageConnections && !canAccessFeature"
+        label="Add Your First Connection"
+        icon="i-heroicons-plus"
+        @click="openUpgradeModal"
       />
     </div>
 
@@ -75,14 +97,73 @@ import OidcConnectionModal from './OidcConnectionModal.vue'
 
 const { current: workspace } = useCurrentWorkspace()
 const alert = useAlert()
+const { openSubscriptionModal } = useAppModals()
 
 const workspaceId = computed(() => workspace.value?.id)
 
+const canManageConnections = computed(() => !!workspace.value && workspace.value.is_admin)
+
+// Check if feature is accessible (Pro required for cloud, free for self-hosted)
+const isSelfHosted = computed(() => useFeatureFlag('self_hosted'))
+const billingEnabled = computed(() => useFeatureFlag('billing.enabled'))
+const canAccessFeature = computed(() => {
+  // Self-hosted: always accessible
+  if (isSelfHosted.value) {
+    return true
+  }
+  // Cloud: requires Pro subscription
+  return billingEnabled.value && workspace.value?.is_pro
+})
+
 const { connections, create, update, remove } = useOidcConnections(workspaceId)
 
+// Allow viewing connections even without Pro (Pro only required for create/update/delete)
 const { data: connectionsData, isLoading: isConnectionsLoading } = connections()
 
-const canManageConnections = computed(() => !!workspace.value && workspace.value.is_admin)
+const alertConfig = computed(() => {
+  // Cloud + Free: Beta alert with upgrade button
+  if (!isSelfHosted.value && !canAccessFeature.value) {
+    return {
+      icon: 'i-heroicons-information-circle',
+      color: 'info',
+      title: 'Beta Feature - Pro Plan Required',
+      description: 'OIDC SSO is currently in beta and requires a Pro plan. This feature will soon be part of our Enterprise plan. Upgrade now to start using it.',
+      actions: [
+        {
+          label: 'Upgrade to Pro',
+          onClick: openUpgradeModal
+        }
+      ]
+    }
+  }
+
+  // Cloud + Paid: Warning about upcoming Enterprise plan
+  if (!isSelfHosted.value && canAccessFeature.value) {
+    return {
+      icon: 'i-heroicons-exclamation-triangle',
+      color: 'warning',
+      title: 'Beta Feature - Pricing Change Coming',
+      description: 'OIDC SSO is currently in beta and available on Pro plans. In the coming weeks, when we release our new pricing, this feature will move to our Enterprise plan.',
+      actions: []
+    }
+  }
+
+  // Self-hosted: Warning about future enterprise license requirement
+  return {
+    icon: 'i-heroicons-exclamation-triangle',
+    color: 'warning',
+    title: 'Beta Feature - Future Changes',
+    description: 'OIDC SSO is currently in beta and free for self-hosted installations. Future updates of OpnForm will require an enterprise license to use this feature.',
+    actions: []
+  }
+})
+
+const openUpgradeModal = () => {
+  openSubscriptionModal({
+    modal_title: 'Upgrade to Pro to use OIDC SSO',
+    modal_description: 'OIDC SSO is a Pro feature. Upgrade your plan to configure single sign-on for your workspace.'
+  })
+}
 
 const showCreateModal = ref(false)
 const editingConnection = ref(null)

@@ -11,6 +11,8 @@ describe('IdentityConnectionPolicy', function () {
     beforeEach(function () {
         // Set up admin email config
         config(['opnform.admin_emails' => ['admin@test.com']]);
+        // Set self-hosted mode to bypass Pro checks in tests
+        config(['app.self_hosted' => true]);
     });
 
     it('allows workspace admin to view workspace connections', function () {

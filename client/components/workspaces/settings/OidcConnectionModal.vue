@@ -31,9 +31,30 @@
               :form="form"
               label="Email Domain"
               :required="true"
-              placeholder="example.com"
-              help="Users signing in from this domain are routed to this connection. Each connection must have a unique domain."
-            />
+              :placeholder="userEmailDomain || 'example.com'"
+            >
+              <template #help>
+                <div class="space-y-1">
+                  <p v-if="userEmailDomain" class="text-xs text-neutral-500">
+                    Must match your email domain ('{{ userEmailDomain }}' or another subdomain of it).
+                  </p>
+                  <p v-else class="text-xs text-neutral-500">
+                    Must match your email domain (e.g., if your email is user@company.com, use 'company.com' or another subdomain of it).
+                  </p>
+                  <p class="text-xs text-neutral-500">
+                    Common email providers are not allowed.
+                    <button
+                      type="button"
+                      class="text-blue-600 hover:text-blue-700 underline"
+                      @click="openSupportChat"
+                    >
+                      Contact support
+                    </button>
+                    if you need help.
+                  </p>
+                </div>
+              </template>
+            </TextInput>
           </div>
 
           <div class="space-y-4 rounded-xl border border-neutral-200 bg-neutral-50 p-4 text-sm text-neutral-600">
@@ -213,6 +234,27 @@ const isOpen = computed({
   get: () => props.modelValue,
   set: (value) => emit('update:modelValue', value),
 })
+
+// Get user email domain
+const { data: user } = useAuth().user()
+const userEmailDomain = computed(() => {
+  if (!user.value?.email) return null
+  const email = user.value.email
+  const parts = email.split('@')
+  return parts.length === 2 ? parts[1] : null
+})
+
+// Pre-fill domain field with user's email domain when creating new connection
+watch([isOpen, userEmailDomain], ([isOpenVal, domain]) => {
+  if (isOpenVal && !isEditing.value && domain && !props.form.domain) {
+    props.form.domain = domain
+  }
+})
+
+// Open Crisp chat for support
+const openSupportChat = () => {
+  useCrisp().openChat()
+}
 
 const roleOptions = [
   { value: 'member', name: 'Member' },
