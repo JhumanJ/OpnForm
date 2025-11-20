@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Enums\SettingsKey;
 use App\Models\Setting;
+use App\Service\Telemetry\TelemetryService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
@@ -27,7 +28,7 @@ class InitializeInstance extends Command
     /**
      * Execute the console command.
      */
-    public function handle(): int
+    public function handle(TelemetryService $telemetryService): int
     {
         // Check if instance_id already exists
         $instanceId = Setting::get(SettingsKey::INSTANCE_ID);
@@ -50,6 +51,13 @@ class InitializeInstance extends Command
         Cache::forget('telemetry.instance_id');
 
         $this->info('Instance initialized successfully. Instance ID: ' . $uuid);
+
+        // Identify instance in OpenPanel with version
+        if ($telemetryService->shouldSendTelemetry()) {
+            $client = $telemetryService->createClient();
+            $version = $telemetryService->getAppVersion();
+            $client->identifyInstance($uuid, $version);
+        }
 
         // Track instance creation
         telemetry(\App\Service\Telemetry\TelemetryEvent::INSTANCE_CREATED);

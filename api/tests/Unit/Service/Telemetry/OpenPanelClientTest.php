@@ -44,7 +44,7 @@ describe('OpenPanelClient', function () {
                 && $request['type'] === 'track'
                 && $request['payload']['name'] === 'test.event'
                 && $request['payload']['properties']['foo'] === 'bar'
-                && $request['payload']['properties']['instance_id'] === 'instance-id';
+                && $request['payload']['profileId'] === 'instance-id';
         });
     });
 
@@ -130,7 +130,7 @@ describe('OpenPanelClient', function () {
             ->once();
     });
 
-    it('includes instance id in event properties', function () {
+    it('includes profileId in event payload', function () {
         $client = new OpenPanelClient(
             'https://test-endpoint.com/track',
             'client-id',
@@ -148,13 +148,13 @@ describe('OpenPanelClient', function () {
         );
 
         Http::assertSent(function ($request) {
-            $properties = $request['payload']['properties'];
-            return $properties['instance_id'] === 'test-instance-id'
-                && $properties['custom'] === 'property';
+            $payload = $request['payload'];
+            return $payload['profileId'] === 'test-instance-id'
+                && $payload['properties']['custom'] === 'property';
         });
     });
 
-    it('returns false when instance id is missing', function () {
+    it('returns false when profileId is empty', function () {
         $client = new OpenPanelClient(
             'https://test-endpoint.com/track',
             'client-id',
@@ -163,10 +163,11 @@ describe('OpenPanelClient', function () {
 
         Http::fake();
 
+        // Empty string should trigger the validation
         $result = $client->sendEvent(
             'test.event',
             [],
-            null
+            ''
         );
 
         expect($result)->toBeFalse();

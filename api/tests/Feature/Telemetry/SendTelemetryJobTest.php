@@ -79,7 +79,7 @@ describe('SendTelemetryJob', function () {
         Http::assertNothingSent();
     });
 
-    it('includes instance id in event properties', function () {
+    it('includes profileId in event payload', function () {
         $instanceId = 'test-instance-id';
         Setting::set(SettingsKey::INSTANCE_ID, $instanceId);
 
@@ -97,9 +97,9 @@ describe('SendTelemetryJob', function () {
         );
 
         Http::assertSent(function ($request) use ($instanceId) {
-            $properties = $request['payload']['properties'];
-            return $properties['instance_id'] === $instanceId
-                && $properties['custom'] === 'property';
+            $payload = $request['payload'];
+            return $payload['profileId'] === $instanceId
+                && $payload['properties']['custom'] === 'property';
         });
     });
 

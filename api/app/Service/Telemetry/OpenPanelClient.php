@@ -15,25 +15,80 @@ class OpenPanelClient
     }
 
     /**
-     * Send an event to OpenPanel.
+     * Identify an instance as a user in OpenPanel.
      *
-     * @param string $eventName
-     * @param array $properties
-     * @param string|null $instanceId
+     * @param string $profileId The instance ID to use as profile ID
+     * @param string|null $version The OpnForm version
+     * @param array $properties Additional properties to identify
      * @return bool
      */
-    public function sendEvent(
-        string $eventName,
-        array $properties,
-        ?string $instanceId
+    public function identifyInstance(
+        string $profileId,
+        ?string $version = null,
+        array $properties = []
     ): bool {
         if (!$this->clientId || !$this->clientSecret) {
             Log::warning('Telemetry skipped: missing client credentials');
             return false;
         }
 
-        if (!$instanceId) {
-            Log::warning('Telemetry skipped: instance_id not found');
+        try {
+            $identifyProperties = $properties;
+            if ($version) {
+                $identifyProperties['opnform_version'] = $version;
+            }
+
+            $payload = [
+                'type' => 'identify',
+                'payload' => [
+                    'profileId' => $profileId,
+                    'properties' => $identifyProperties,
+                ],
+            ];
+
+            $response = $this->sendRequest($payload);
+
+            if (!$response->successful()) {
+                Log::warning('Telemetry identify failed to send', [
+                    'profileId' => $profileId,
+                    'status' => $response->status(),
+                    'response' => $response->body(),
+                ]);
+
+                return false;
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            Log::warning('Telemetry identify error', [
+                'profileId' => $profileId,
+                'error' => $e->getMessage(),
+            ]);
+
+            return false;
+        }
+    }
+
+    /**
+     * Send an event to OpenPanel.
+     *
+     * @param string $eventName
+     * @param array $properties
+     * @param string $profileId The instance ID to use as profileId to link event to identified user
+     * @return bool
+     */
+    public function sendEvent(
+        string $eventName,
+        array $properties,
+        string $profileId
+    ): bool {
+        if (!$this->clientId || !$this->clientSecret) {
+            Log::warning('Telemetry skipped: missing client credentials');
+            return false;
+        }
+
+        if (!$profileId) {
+            Log::warning('Telemetry skipped: profileId not found');
             return false;
         }
 
@@ -42,18 +97,12 @@ class OpenPanelClient
                 'type' => 'track',
                 'payload' => [
                     'name' => $eventName,
-                    'properties' => array_merge($properties, [
-                        'instance_id' => $instanceId,
-                    ]),
+                    'properties' => $properties,
+                    'profileId' => $profileId,
                 ],
             ];
 
-            $response = Http::timeout(5)
-                ->withHeaders([
-                    'openpanel-client-id' => $this->clientId,
-                    'openpanel-client-secret' => $this->clientSecret,
-                ])
-                ->post($this->endpoint, $payload);
+            $response = $this->sendRequest($payload);
 
             if (!$response->successful()) {
                 Log::warning('Telemetry event failed to send', [
@@ -74,5 +123,21 @@ class OpenPanelClient
 
             return false;
         }
+    }
+
+    /**
+     * Send a request to the OpenPanel API.
+     *
+     * @param array $payload
+     * @return \Illuminate\Http\Client\Response
+     */
+    private function sendRequest(array $payload)
+    {
+        return Http::timeout(5)
+            ->withHeaders([
+                'openpanel-client-id' => $this->clientId,
+                'openpanel-client-secret' => $this->clientSecret,
+            ])
+            ->post($this->endpoint, $payload);
     }
 }
