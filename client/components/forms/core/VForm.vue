@@ -1,5 +1,5 @@
 <template>
-  <form>
+  <form class="flex flex-col">
     <slot />
   </form>
 </template>

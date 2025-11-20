@@ -133,8 +133,11 @@ export function useFormInput(props, context, options = {}) {
         wrapperProps[key] = props[key]
       }
     })
-    // Add resolved theme to wrapper props
+    // Add resolved theme values to wrapper props
     wrapperProps.theme = resolvedTheme.value
+    wrapperProps.size = resolvedSize.value
+    wrapperProps.borderRadius = resolvedBorderRadius.value
+    wrapperProps.form = resolvedForm.value
     return wrapperProps
   })
 

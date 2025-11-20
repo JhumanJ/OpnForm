@@ -5,37 +5,37 @@
       @close="showForgotModal = false"
     />
 
-    <form
+    <v-form
       method="POST"
-      class="mt-4"
+      :form="form"
       @submit.prevent="login"
     >
       <!-- Email -->
       <text-input
         name="email"
-        :form="form"
         label="Email"
-        :required="true"
+        required
         placeholder="Your email address"
         @blur="checkOidcOptions"
       />
 
       <!-- Password - hidden if OIDC available and not forced to show -->
+      <VTransition name="fadeHeight">
       <text-input
         v-if="showPasswordField"
         ref="passwordInputRef"
         native-type="password"
         placeholder="Your password"
         name="password"
-        :form="form"
         label="Password"
-        :required="true"
+        required
+        @input-filled="login"
       />
+      </VTransition>  
 
       <!-- Remember Me & Forgot Password - only show when password field is visible -->
-      <div v-if="showPasswordField" class="relative flex items-center mt-3">
+      <div v-if="showPasswordField" class="relative flex items-center mt-1.5">
         <CheckboxInput
-          :form="form"
           class="w-full md:w-1/2"
           name="remember"
           size="small"
@@ -96,7 +96,7 @@
           Sign Up
         </NuxtLink>
       </p>
-    </form>
+    </v-form>
 
     <!-- Google One Tap -->
     <ClientOnly>
