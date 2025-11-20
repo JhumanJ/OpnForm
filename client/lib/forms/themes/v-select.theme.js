@@ -103,6 +103,12 @@ export const vSelectTheme = {
         chevronContainer: 'bg-transparent'
       }
     },
+    // Open state styling for when popover is open (even if not focused)
+    isOpen: {
+      true: {
+        anchor: 'ring-2 ring-form/100 outline-none'
+      }
+    },
     size: {
       xs: {
         button: 'px-2.5 py-1.5',
@@ -179,6 +185,19 @@ export const vSelectTheme = {
       }
     }
   },
+  // Ensure transparent theme uses bottom-only highlight when open
+  compoundVariants: [
+    {
+      theme: 'transparent',
+      isOpen: true,
+      class: { anchor: 'ring-0 shadow-[inset_0_-2px_0_0_var(--color-form)] outline-none' }
+    },
+    {
+      theme: 'transparent',
+      focused: true,
+      class: { anchor: 'focus-within:ring-0 focus-within:shadow-[inset_0_-2px_0_0_var(--color-form)] outline-none' }
+    }
+  ],
   defaultVariants: {
     theme: 'default',
     size: 'md',
