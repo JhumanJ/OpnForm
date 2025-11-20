@@ -69,6 +69,13 @@ export const richTextAreaInputTheme = {
       true: { container: 'focus-within:ring-2 focus-within:ring-form/100 focus-within:border-transparent' }
     }
   },
+  compoundVariants: [
+    {
+      theme: 'transparent',
+      focused: true,
+      class: { container: 'focus-within:ring-0 focus-within:shadow-[inset_0_-2px_0_0_var(--color-form)] outline-none' }
+    }
+  ],
   defaultVariants: {
     theme: 'default',
     size: 'md',
