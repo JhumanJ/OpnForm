@@ -89,6 +89,38 @@ These variables are essential for connecting the Laravel backend to your databas
 | `DB_USERNAME`   | The username for connecting to the database.  |
 | `DB_PASSWORD`   | The password for the database user.           |
 
+### Anonymous Telemetry
+
+OpnForm tracks usage of its products which helps the team to improve and deliver better software. You can opt-out of this telemetry at any time.
+
+**What data is collected?**
+
+None of your customer data is ever transmitted by OpnForm installation. The telemetry data collected are purely usage statistics of various software features:
+
+- Basic usage metrics (form creation, submissions, workspace creation, user additions)
+- Anonymous instance identifier (UUID)
+- Distribution of forms by type
+- No personally identifiable information (PII)
+- No form content, submission data, or user emails
+
+**How is the data used?**
+
+This data will only be used by OpnForm team for:
+
+- Directly improving the product and identifying the parts of product which are popular
+- Identifying areas with limited usage or where our users get stuck
+- Prioritizing the next set of features to be developed
+
+**When is telemetry active?**
+
+- Production environments (`APP_ENV=production`)
+- Self-hosted deployments (`SELF_HOSTED=true`)
+- Disabled in local/development environments
+
+**How to opt-out:**
+
+Set `OPNFORM_ANONYMOUS_TELEMETRY_DISABLED=true` in your environment variables to disable data collection.
+
 ## Front-end Environment Variables
 
 | Variable Name                     | Description                                                                                                                                                                                                                                                                                                                                      |

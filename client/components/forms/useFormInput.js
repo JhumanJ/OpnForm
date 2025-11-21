@@ -134,11 +134,15 @@ export function useFormInput(props, context, options = {}) {
   })
 
   // CENTRALIZED VARIANTS: Single computed property for all tailwind-variants
-  // Following Nuxt UI pattern - only computed when variants config is provided
+  // Following Nuxt UI pattern: tv handles all merging via slot class parameter
   const ui = computed(() => {
     if (!composableOptions.variants) return {}
     
-    return tv(composableOptions.variants, props.ui)({
+    // tv() slot functions handle ui merging via their class parameter
+    // Components pass props.ui?.slots?.slotName via class: [ui.slot({ class: props.ui?.slots?.slotName })]
+    return tv(composableOptions.variants, {
+      twMerge: true  // Enabled by default, ensures conflict resolution
+    })({
       theme: resolvedTheme.value,        // props.theme resolved with injection
       size: resolvedSize.value,
       borderRadius: resolvedBorderRadius.value,
