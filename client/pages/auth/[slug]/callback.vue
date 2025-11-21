@@ -1,12 +1,20 @@
 <template>
   <div class="flex flex-grow mt-6 mb-10">
+    <two-factor-verification-modal
+      v-if="pendingAuthToken"
+      :show="showTwoFactorModal"
+      :pending-auth-token="pendingAuthToken"
+      @verified="handleTwoFactorVerifiedAndRedirect"
+      @cancel="handleTwoFactorCancel"
+    />
+
     <div class="w-full md:w-2/3 md:mx-auto md:max-w-md px-4">
       <div
-        v-if="loading"
+        v-if="loading || showTwoFactorModal"
         class="m-10"
       >
         <h3 class="my-6 text-center">
-          Completing sign in...
+          {{ showTwoFactorModal ? 'Verifying your code...' : 'Completing sign in...' }}
         </h3>
         <Loader class="h-6 w-6 mx-auto m-10" />
       </div>
@@ -38,6 +46,7 @@ const route = useRoute()
 const loading = ref(true)
 const error = ref(null)
 const authFlow = useAuthFlow()
+const { showTwoFactorModal, pendingAuthToken, handleTwoFactorVerified, handleTwoFactorCancel: handleTwoFactorCancelFromFlow } = authFlow
 
 const handleCallback = async () => {
   const slug = route.params.slug
@@ -52,24 +61,42 @@ const handleCallback = async () => {
     })
     
     // Call the OIDC callback endpoint to process authorization code
-    const response = await oidcApi.callback(slug, queryParams)
-    
-    // Response should contain token and user
-    if (response.token && response.user) {
-      // Handle authentication success (response already has the right structure)
-      await authFlow.handleAuthSuccess(response, 'oidc', response.new_user)
-      
-      // Redirect based on user status (aligned with OAuth callback pattern)
-      if (response.new_user) {
-        router.push({ name: "forms-create" })
-        useAlert().success("Success! You're now registered with OIDC. Welcome to OpnForm.")
+    let response
+    try {
+      response = await oidcApi.callback(slug, queryParams)
+    } catch (error) {
+      // Handle 422 responses that indicate 2FA is required
+      if (error.response?.status === 422 && error.response?._data?.requires_2fa) {
+        response = error.response._data
       } else {
-        // For existing users, redirect to intended URL or home (aligned with OAuth)
-        router.push({ name: "home" })
-        useAlert().success("Successfully signed in!")
+        throw error
       }
-    } else {
+    }
+    
+    // Handle authentication success (handles both 2FA and non-2FA cases)
+    // handleAuthSuccess will check for requires_2fa and show modal if needed
+    await authFlow.handleAuthSuccess(response, 'oidc', response.new_user)
+    
+    // If 2FA modal is shown, don't redirect yet (handled in handleTwoFactorVerifiedAndRedirect)
+    if (showTwoFactorModal.value) {
+      loading.value = false
+      return
+    }
+    
+    // No 2FA required, proceed with redirect
+    // Response should contain token and user when 2FA is not required
+    if (!response.token || !response.user) {
       throw new Error("Unexpected response format from OIDC callback")
+    }
+    
+    // Redirect based on user status (aligned with OAuth callback pattern)
+    if (response.new_user) {
+      router.push({ name: "forms-create" })
+      useAlert().success("Success! You're now registered with OIDC. Welcome to OpnForm.")
+    } else {
+      // For existing users, redirect to intended URL or home (aligned with OAuth)
+      router.push({ name: "home" })
+      useAlert().success("Successfully signed in!")
     }
   } catch (err) {
     console.error("[OIDC Callback] Authentication error:", err)
@@ -85,6 +112,24 @@ const handleCallback = async () => {
     }
     
     loading.value = false
+  }
+}
+
+const handleTwoFactorCancel = () => {
+  handleTwoFactorCancelFromFlow()
+  router.push({ name: 'login' })
+}
+
+const handleTwoFactorVerifiedAndRedirect = async (tokenData) => {
+  await handleTwoFactorVerified(tokenData)
+  
+  // Redirect based on user status
+  if (tokenData.new_user) {
+    router.push({ name: "forms-create" })
+    useAlert().success("Success! You're now registered with OIDC. Welcome to OpnForm.")
+  } else {
+    router.push({ name: "home" })
+    useAlert().success("Successfully signed in!")
   }
 }
 

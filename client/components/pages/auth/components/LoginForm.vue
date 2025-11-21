@@ -5,6 +5,14 @@
       @close="showForgotModal = false"
     />
 
+    <two-factor-verification-modal
+      v-if="pendingAuthToken"
+      :show="showTwoFactorModal"
+      :pending-auth-token="pendingAuthToken"
+      @verified="handleTwoFactorVerifiedAndRedirect"
+      @cancel="handleTwoFactorCancel"
+    />
+
     <v-form
       method="POST"
       :form="form"
@@ -126,6 +134,8 @@ defineEmits(['openRegister'])
 const oAuth = useOAuth()
 const router = useRouter()
 const { login: loginMutationFactory } = useAuth()
+const authFlow = useAuthFlow()
+const { showTwoFactorModal, pendingAuthToken, handleTwoFactorVerified, handleTwoFactorCancel } = authFlow
 
 // Feature flags
 const oidcAvailable = computed(() => useFeatureFlag('oidc.available', false))
@@ -228,7 +238,10 @@ const login = () => {
   }
 
   form.mutate(loginMutation).then(() => {
-    redirect()
+    // If 2FA modal is shown, don't redirect yet (handled in handleTwoFactorVerified)
+    if (!showTwoFactorModal.value) {
+      redirect()
+    }
   }).catch((error) => {
     console.log(error)
     if (error.response?._data?.message == "You must change your credentials when in self host mode") {
@@ -269,5 +282,10 @@ const signInwithGoogle = () => {
   } catch (error) {
     showOAuthError(error)
   }
+}
+
+const handleTwoFactorVerifiedAndRedirect = async (tokenData) => {
+  await handleTwoFactorVerified(tokenData)
+  redirect()
 }
 </script>
