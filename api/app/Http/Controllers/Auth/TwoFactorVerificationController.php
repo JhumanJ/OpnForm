@@ -28,8 +28,8 @@ class TwoFactorVerificationController extends Controller
             'code' => 'required|string|min:6|max:8', // Supports both TOTP (6) and recovery codes (8)
         ]);
 
-        // Rate limiting
-        $key = '2fa_verify:' . $request->ip();
+        // Rate limiting - use pending_auth_token to limit per-session, with IP as fallback
+        $key = '2fa_verify:' . ($request->pending_auth_token ? sha1($request->pending_auth_token) : $request->ip());
         if (RateLimiter::tooManyAttempts($key, 5)) {
             $seconds = RateLimiter::availableIn($key);
             throw ValidationException::withMessages([

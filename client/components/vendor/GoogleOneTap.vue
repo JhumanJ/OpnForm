@@ -36,7 +36,7 @@ const widgetCallbackMutation = widgetCallback()
 const oneTapInitialized = ref(false)
 const googleClientId = computed(() => useFeatureFlag('services.google.client_id'))
 const authFlow = useAuthFlow()
-const { showTwoFactorModal, pendingAuthToken, handleTwoFactorVerified, handleTwoFactorCancel: handleTwoFactorCancelFromFlow } = authFlow
+const { showTwoFactorModal, pendingAuthToken, handleTwoFactorVerified, handleTwoFactorCancel: handleTwoFactorCancelFromFlow, handleTwoFactorError } = authFlow
 const router = useRouter()
 
 // Only show One Tap if Google auth is enabled and user is not authenticated
@@ -208,10 +208,10 @@ const handleCredentialResponse = (response) => {
       useAlert().error('Google One Tap authentication failed')
     }
   }).catch((error) => {
-    // Handle 422 responses that indicate 2FA is required
-    if (error.response?.status === 422 && error.response?._data?.requires_2fa) {
-      const response = error.response._data
-      handleAuthenticationResponse(response)
+    // Handle 422 responses that indicate 2FA is required (not validation errors)
+    const twoFactorResponse = handleTwoFactorError(error)
+    if (twoFactorResponse) {
+      handleAuthenticationResponse(twoFactorResponse)
     } else {
       console.error('Google One Tap authentication error:', error)
       useAlert().error(error.response?._data?.message || 'Google One Tap authentication failed')

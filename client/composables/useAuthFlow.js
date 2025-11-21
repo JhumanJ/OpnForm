@@ -101,6 +101,22 @@ export const useAuthFlow = () => {
   }
 
   /**
+   * Handle 2FA error responses consistently
+   * Checks if a 422 error is actually a 2FA requirement (not a validation error)
+   * @param {Error} error - The error object from the API call
+   * @returns {Object|null} - The response data if it's a 2FA requirement, null otherwise
+   */
+  const handleTwoFactorError = (error) => {
+    // Check if this is a 422 response with requires_2fa flag
+    if (error.response?.status === 422 && error.response?._data?.requires_2fa) {
+      // This is a 2FA requirement, not a validation error
+      return error.response._data
+    }
+    // This is a real error, return null to indicate it should be thrown
+    return null
+  }
+
+  /**
    * Handle 2FA verification cancellation
    */
   const handleTwoFactorCancel = () => {
@@ -210,5 +226,6 @@ export const useAuthFlow = () => {
     pendingAuthToken,
     handleTwoFactorVerified,
     handleTwoFactorCancel,
+    handleTwoFactorError,
   }
 } 

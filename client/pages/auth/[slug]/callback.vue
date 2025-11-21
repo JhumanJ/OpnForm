@@ -46,7 +46,7 @@ const route = useRoute()
 const loading = ref(true)
 const error = ref(null)
 const authFlow = useAuthFlow()
-const { showTwoFactorModal, pendingAuthToken, handleTwoFactorVerified, handleTwoFactorCancel: handleTwoFactorCancelFromFlow } = authFlow
+const { showTwoFactorModal, pendingAuthToken, handleTwoFactorVerified, handleTwoFactorCancel: handleTwoFactorCancelFromFlow, handleTwoFactorError } = authFlow
 
 const handleCallback = async () => {
   const slug = route.params.slug
@@ -65,9 +65,10 @@ const handleCallback = async () => {
     try {
       response = await oidcApi.callback(slug, queryParams)
     } catch (error) {
-      // Handle 422 responses that indicate 2FA is required
-      if (error.response?.status === 422 && error.response?._data?.requires_2fa) {
-        response = error.response._data
+      // Handle 422 responses that indicate 2FA is required (not validation errors)
+      const twoFactorResponse = handleTwoFactorError(error)
+      if (twoFactorResponse) {
+        response = twoFactorResponse
       } else {
         throw error
       }

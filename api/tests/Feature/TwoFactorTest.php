@@ -2,6 +2,7 @@
 
 use App\Models\User;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\RateLimiter;
 
 uses()->group('two-factor', 'feature');
 
@@ -584,6 +585,453 @@ describe('TwoFactorVerificationController - Verify', function () {
         $responseData = $response->json();
         expect($responseData)->toHaveKey('errors');
         expect($responseData['errors'])->toHaveKey('code');
+    });
+
+    it('rate limiting is per pending_auth_token not per IP', function () {
+        $user1 = User::factory()->create([
+            'password' => bcrypt('password123'),
+        ]);
+        $secret1 = $user1->createTwoFactorAuth();
+        $code1 = $secret1->makeCode();
+        $user1->confirmTwoFactorAuth($code1);
+
+        $user2 = User::factory()->create([
+            'password' => bcrypt('password123'),
+        ]);
+        $secret2 = $user2->createTwoFactorAuth();
+        $code2 = $secret2->makeCode();
+        $user2->confirmTwoFactorAuth($code2);
+
+        // Get pending tokens for both users
+        $loginResponse1 = $this->postJson(route('login'), [
+            'email' => $user1->email,
+            'password' => 'password123',
+        ]);
+        $token1 = $loginResponse1->json('pending_auth_token');
+
+        $loginResponse2 = $this->postJson(route('login'), [
+            'email' => $user2->email,
+            'password' => 'password123',
+        ]);
+        $token2 = $loginResponse2->json('pending_auth_token');
+
+        // Make 5 failed attempts with token1
+        for ($i = 0; $i < 5; $i++) {
+            $this->postJson(route('two-factor.verify'), [
+                'pending_auth_token' => $token1,
+                'code' => '000000',
+            ])->assertStatus(422);
+        }
+
+        // Token1 should now be rate limited
+        $response1 = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $token1,
+            'code' => '000000',
+        ]);
+        expect($response1->status())->toBe(422);
+        expect($response1->json('errors.code.0'))->toContain('Too many attempts');
+
+        // Token2 should still work (not rate limited)
+        $response2 = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $token2,
+            'code' => '000000',
+        ]);
+        // Should return 422 for invalid code, but NOT rate limited
+        expect($response2->status())->toBe(422);
+        expect($response2->json('errors.code.0'))->not->toContain('Too many attempts');
+    });
+
+    it('cannot verify with token that expired due to cache TTL', function () {
+        $user = User::factory()->create([
+            'password' => bcrypt('password123'),
+        ]);
+        $secret = $user->createTwoFactorAuth();
+        $code = $secret->makeCode();
+        $user->confirmTwoFactorAuth($code);
+
+        // Create a token and then manually expire it by deleting from cache
+        // This simulates what happens when a token expires after 10 minutes
+        $expiredToken = \Illuminate\Support\Str::random(64);
+
+        // Put token in cache with very short TTL (1 second)
+        Cache::put("2fa_pending:{$expiredToken}", [
+            'user_id' => $user->id,
+            'method' => 'password',
+            'remember' => false,
+            'created_at' => now()->subMinutes(15)->toIso8601String(),
+            'context' => [],
+        ], now()->addSeconds(1));
+
+        // Wait for cache to expire
+        sleep(2);
+
+        // Verify token is no longer in cache
+        expect(Cache::get("2fa_pending:{$expiredToken}"))->toBeNull();
+
+        $verifyCode = $secret->makeCode();
+        $response = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $expiredToken,
+            'code' => $verifyCode,
+        ]);
+
+        // Should return 422 with validation error for expired/invalid token
+        expect($response->status())->toBe(422);
+        expect($response->json('errors.pending_auth_token'))->toBeArray();
+        expect($response->json('errors.pending_auth_token.0'))->toContain('expired');
+    });
+
+    it('cannot verify with token that was manually cleared from cache', function () {
+        $user = User::factory()->create([
+            'password' => bcrypt('password123'),
+        ]);
+        $secret = $user->createTwoFactorAuth();
+        $code = $secret->makeCode();
+        $user->confirmTwoFactorAuth($code);
+
+        // Create a token normally
+        $token = \Illuminate\Support\Str::random(64);
+        Cache::put("2fa_pending:{$token}", [
+            'user_id' => $user->id,
+            'method' => 'password',
+            'remember' => false,
+            'created_at' => now()->toIso8601String(),
+            'context' => [],
+        ], now()->addMinutes(10));
+
+        // Manually clear it (simulating expiration or manual cleanup)
+        Cache::forget("2fa_pending:{$token}");
+
+        // Get recovery code for verification
+        auth('api')->login($user);
+        $recoveryCodes = $user->getRecoveryCodes();
+        auth('api')->logout();
+        $recoveryCode = $recoveryCodes->first(function ($code) {
+            $usedAt = is_array($code) ? ($code['used_at'] ?? null) : ($code->used_at ?? null);
+            return $usedAt === null;
+        });
+        $codeValue = is_string($recoveryCode) ? $recoveryCode : (is_array($recoveryCode) ? $recoveryCode['code'] : $recoveryCode->code ?? $recoveryCode);
+
+        $response = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $token,
+            'code' => $codeValue,
+        ]);
+
+        // Should return 422 with validation error for expired/invalid token
+        expect($response->status())->toBe(422);
+        expect($response->json('errors.pending_auth_token'))->toBeArray();
+        expect($response->json('errors.pending_auth_token.0'))->toContain('expired');
+    });
+
+    it('cannot verify with invalid code formats', function () {
+        $user = User::factory()->create([
+            'password' => bcrypt('password123'),
+        ]);
+        $secret = $user->createTwoFactorAuth();
+        $code = $secret->makeCode();
+        $user->confirmTwoFactorAuth($code);
+
+        // Simulate login attempt
+        $loginResponse = $this->postJson(route('login'), [
+            'email' => $user->email,
+            'password' => 'password123',
+        ]);
+
+        $pendingAuthToken = $loginResponse->json('pending_auth_token');
+
+        // Test various invalid code formats
+        $invalidCodes = [
+            '12345',      // Too short (5 digits)
+            '1234567',    // Too long for TOTP (7 digits)
+            '12345678',   // Valid length but invalid format
+            'abcdef',     // Non-numeric
+            '12345a',     // Mixed alphanumeric
+            '',           // Empty string
+        ];
+
+        foreach ($invalidCodes as $invalidCode) {
+            $response = $this->postJson(route('two-factor.verify'), [
+                'pending_auth_token' => $pendingAuthToken,
+                'code' => $invalidCode,
+            ]);
+
+            // Should return 422 with validation error
+            expect($response->status())->toBe(422);
+            expect($response->json('errors.code'))->toBeArray();
+        }
+    });
+
+    it('cannot verify with code that is too short or too long', function () {
+        $user = User::factory()->create([
+            'password' => bcrypt('password123'),
+        ]);
+        $secret = $user->createTwoFactorAuth();
+        $code = $secret->makeCode();
+        $user->confirmTwoFactorAuth($code);
+
+        // Simulate login attempt
+        $loginResponse = $this->postJson(route('login'), [
+            'email' => $user->email,
+            'password' => 'password123',
+        ]);
+
+        $pendingAuthToken = $loginResponse->json('pending_auth_token');
+
+        // Test code that is too short (less than 6)
+        $response = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $pendingAuthToken,
+            'code' => '12345', // 5 digits
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors(['code']);
+
+        // Test code that is too long (more than 8)
+        $response = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $pendingAuthToken,
+            'code' => '123456789', // 9 digits
+        ])->assertStatus(422)
+            ->assertJsonValidationErrors(['code']);
+    });
+
+    it('handles concurrent verification attempts with same token', function () {
+        $user = User::factory()->create([
+            'password' => bcrypt('password123'),
+        ]);
+        $secret = $user->createTwoFactorAuth();
+        $code = $secret->makeCode();
+        $user->confirmTwoFactorAuth($code);
+
+        // Simulate login attempt
+        $loginResponse = $this->postJson(route('login'), [
+            'email' => $user->email,
+            'password' => 'password123',
+        ]);
+
+        $pendingAuthToken = $loginResponse->json('pending_auth_token');
+
+        // Get recovery codes
+        auth('api')->login($user);
+        $recoveryCodes = $user->getRecoveryCodes();
+        auth('api')->logout();
+
+        // Get one unused recovery code
+        $unusedCode = $recoveryCodes->first(function ($code) {
+            $usedAt = is_array($code) ? ($code['used_at'] ?? null) : ($code->used_at ?? null);
+            return $usedAt === null;
+        });
+
+        expect($unusedCode)->not->toBeNull('Recovery code should be available');
+
+        $codeValue = is_string($unusedCode) ? $unusedCode : (is_array($unusedCode) ? $unusedCode['code'] : $unusedCode->code ?? $unusedCode);
+
+        // First request should succeed
+        $response1 = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $pendingAuthToken,
+            'code' => $codeValue,
+        ]);
+
+        expect($response1->status())->toBe(200, 'First request should succeed');
+
+        // Second request with same token should fail (token already cleared)
+        // Use an invalid code since the token is already cleared
+        $response2 = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $pendingAuthToken,
+            'code' => '000000',
+        ]);
+
+        // Should return 422 or 400 because token was already cleared/used
+        // 422 = ValidationException (token not found)
+        // 400 = Bad request (could be caught by middleware or other validation)
+        expect($response2->status())->toBeIn([400, 422], 'Second request should fail (token already used)');
+
+        // If it's 422, check for validation errors
+        if ($response2->status() === 422) {
+            expect($response2->json('errors.pending_auth_token'))->toBeArray();
+        }
+    });
+
+    it('handles concurrent verification attempts with different tokens', function () {
+        $user = User::factory()->create([
+            'password' => bcrypt('password123'),
+        ]);
+        $secret = $user->createTwoFactorAuth();
+        $code = $secret->makeCode();
+        $user->confirmTwoFactorAuth($code);
+
+        // Create two login attempts (simulating different sessions)
+        $loginResponse1 = $this->postJson(route('login'), [
+            'email' => $user->email,
+            'password' => 'password123',
+        ]);
+
+        expect($loginResponse1->status())->toBe(422, 'Login should require 2FA');
+        expect($loginResponse1->json('requires_2fa'))->toBeTrue();
+        $token1 = $loginResponse1->json('pending_auth_token');
+
+        $loginResponse2 = $this->postJson(route('login'), [
+            'email' => $user->email,
+            'password' => 'password123',
+        ]);
+
+        expect($loginResponse2->status())->toBe(422, 'Login should require 2FA');
+        expect($loginResponse2->json('requires_2fa'))->toBeTrue();
+        $token2 = $loginResponse2->json('pending_auth_token');
+
+        expect($token1)->not->toBe($token2, 'Tokens should be different');
+
+        // Get recovery codes before any verification
+        $user = $user->fresh();
+        auth('api')->login($user);
+        $recoveryCodes = $user->getRecoveryCodes();
+        auth('api')->logout();
+
+        $unusedCodes = $recoveryCodes->filter(function ($code) {
+            $usedAt = is_array($code) ? ($code['used_at'] ?? null) : ($code->used_at ?? null);
+            return $usedAt === null;
+        })->take(2);
+
+        expect($unusedCodes->count())->toBeGreaterThanOrEqual(2, 'Need at least 2 unused recovery codes');
+
+        $code1 = $unusedCodes->first();
+        $code2 = $unusedCodes->skip(1)->first();
+
+        $codeValue1 = is_string($code1) ? $code1 : (is_array($code1) ? $code1['code'] : $code1->code ?? $code1);
+        $codeValue2 = is_string($code2) ? $code2 : (is_array($code2) ? $code2['code'] : $code2->code ?? $code2);
+
+        // Verify both tokens can be verified independently
+        // First token verification
+        $response1 = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $token1,
+            'code' => $codeValue1,
+        ]);
+
+        expect($response1->status())->toBe(200, 'First token should verify successfully');
+        expect($response1->json('token'))->toBeString();
+
+        // Logout to allow second verification (TwoFactorVerificationController uses 'guest' middleware)
+        auth('api')->logout();
+
+        // Second token verification with different recovery code
+        // Note: Recovery codes are single-use per user, but since we're using different codes
+        // and different tokens (different sessions), this should work
+        $response2 = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $token2,
+            'code' => $codeValue2,
+        ]);
+
+        // Both should succeed (different tokens, different recovery codes)
+        expect($response2->status())->toBe(200, 'Second token should verify successfully with different recovery code');
+        expect($response2->json('token'))->toBeString();
+    });
+
+    it('cannot verify with missing pending_auth_token', function () {
+        $user = User::factory()->create();
+        $secret = $user->createTwoFactorAuth();
+        $code = $secret->makeCode();
+        $user->confirmTwoFactorAuth($code);
+
+        $verifyCode = $secret->makeCode();
+        $response = $this->postJson(route('two-factor.verify'), [
+            'code' => $verifyCode,
+        ]);
+
+        // Should return 422 with validation error for missing token
+        expect($response->status())->toBe(422);
+        expect($response->json('errors.pending_auth_token'))->toBeArray();
+    });
+
+    it('cannot verify with missing code', function () {
+        $user = User::factory()->create([
+            'password' => bcrypt('password123'),
+        ]);
+        $secret = $user->createTwoFactorAuth();
+        $code = $secret->makeCode();
+        $user->confirmTwoFactorAuth($code);
+
+        // Simulate login attempt
+        $loginResponse = $this->postJson(route('login'), [
+            'email' => $user->email,
+            'password' => 'password123',
+        ]);
+
+        $pendingAuthToken = $loginResponse->json('pending_auth_token');
+
+        $response = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $pendingAuthToken,
+        ]);
+
+        // Should return 422 with validation error for missing code
+        expect($response->status())->toBe(422);
+        expect($response->json('errors.code'))->toBeArray();
+    });
+
+    it('cannot verify with token for non-existent user', function () {
+        $nonExistentUserId = 99999;
+        $fakeToken = \Illuminate\Support\Str::random(64);
+
+        // Create a token with non-existent user ID
+        Cache::put("2fa_pending:{$fakeToken}", [
+            'user_id' => $nonExistentUserId,
+            'method' => 'password',
+            'remember' => false,
+            'created_at' => now()->toIso8601String(),
+            'context' => [],
+        ], now()->addMinutes(10));
+
+        $response = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $fakeToken,
+            'code' => '123456',
+        ]);
+
+        // Should return 422 with validation error for user not found
+        expect($response->status())->toBe(422);
+        expect($response->json('errors.pending_auth_token'))->toBeArray();
+        expect($response->json('errors.pending_auth_token.0'))->toContain('not found');
+    });
+
+    it('rate limiting resets after time window expires', function () {
+        $user = User::factory()->create([
+            'password' => bcrypt('password123'),
+        ]);
+        $secret = $user->createTwoFactorAuth();
+        $code = $secret->makeCode();
+        $user->confirmTwoFactorAuth($code);
+
+        // Simulate login attempt
+        $loginResponse = $this->postJson(route('login'), [
+            'email' => $user->email,
+            'password' => 'password123',
+        ]);
+
+        $pendingAuthToken = $loginResponse->json('pending_auth_token');
+
+        // Make 5 failed attempts to hit rate limit
+        for ($i = 0; $i < 5; $i++) {
+            $this->postJson(route('two-factor.verify'), [
+                'pending_auth_token' => $pendingAuthToken,
+                'code' => '000000',
+            ])->assertStatus(422);
+        }
+
+        // 6th attempt should be rate limited
+        $response = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $pendingAuthToken,
+            'code' => '000000',
+        ]);
+        expect($response->status())->toBe(422);
+        expect($response->json('errors.code.0'))->toContain('Too many attempts');
+
+        // Clear rate limiter manually (simulating time window expiration)
+        // Use the same key format as the controller: '2fa_verify:' . sha1($pendingAuthToken)
+        RateLimiter::clear('2fa_verify:' . sha1($pendingAuthToken));
+
+        // After clearing, should be able to make another attempt (will fail validation but not rate limit)
+        $response = $this->postJson(route('two-factor.verify'), [
+            'pending_auth_token' => $pendingAuthToken,
+            'code' => '000000',
+        ]);
+        expect($response->status())->toBe(422);
+        // Should NOT have rate limit message anymore
+        $errorMessage = $response->json('errors.code.0');
+        expect($errorMessage)->not->toContain('Too many attempts');
     });
 });
 
