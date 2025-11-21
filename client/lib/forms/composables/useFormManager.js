@@ -299,20 +299,28 @@ export function useFormManager(initialFormConfig, initialMode = FormMode.LIVE, o
       if (import.meta.client) {
         const isIframe = useIsIframe()
         const formConfig = toValue(config)
+        const redirectUrl = (formConfig.is_pro && submissionResult?.redirect && submissionResult?.redirect_url) 
+                          ? submissionResult.redirect_url 
+                          : null
+        
+        // Handle redirect for focused mode in iframe (iframe.js not loaded in focused mode)
+        if (formConfig?.presentation_style === 'focused' && isIframe && redirectUrl) {
+          window.top.location.href = redirectUrl
+          return submissionResult // Return early since we're redirecting
+        }
+        
         const payload = cloneDeep({
           type: 'form-submitted',
           form: {
             slug: formConfig.slug,
             id: formConfig.id,
-            redirect_target_url: (formConfig.is_pro && submissionResult?.redirect && submissionResult?.redirect_url) 
-                              ? submissionResult.redirect_url 
-                              : null
+            redirect_target_url: redirectUrl
           },
           submission_data: form.data(),
           completion_time: completionTime
         })
         
-        // Send message to parent if in iframe
+        // Send message to parent if in iframe (for classic mode, iframe.js will handle redirect)
         if (isIframe) {
           window.parent.postMessage(payload, '*')
         }
