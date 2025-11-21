@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Settings;
 
 use App\Http\Controllers\Controller;
+use App\Service\Telemetry\TelemetryEvent;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\ValidationException;
@@ -57,6 +58,8 @@ class TwoFactorController extends Controller
                 'code' => ['Invalid verification code. Please try again.'],
             ]);
         }
+
+        telemetry(TelemetryEvent::TWO_FACTOR_ENABLED);
 
         return response()->json([
             'message' => 'Two-factor authentication has been enabled successfully.',

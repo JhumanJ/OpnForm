@@ -7,6 +7,7 @@ use App\Enterprise\Oidc\Requests\StoreOidcConnectionRequest;
 use App\Enterprise\Oidc\Requests\UpdateOidcConnectionRequest;
 use App\Http\Controllers\Controller;
 use App\Models\Workspace;
+use App\Service\Telemetry\TelemetryEvent;
 
 class OidcConnectionController extends Controller
 {
@@ -58,6 +59,8 @@ class OidcConnectionController extends Controller
         }
 
         $connection = IdentityConnection::create($data);
+        
+        telemetry(TelemetryEvent::SSO_CREATED);
 
         return response()->json($this->formatConnection($connection), 201);
     }
