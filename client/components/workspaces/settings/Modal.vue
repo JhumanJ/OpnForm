@@ -46,7 +46,7 @@
       label="SSO"
       icon="i-heroicons-shield-check"
     >
-      <LazyWorkspacesSettingsOidc />
+      <LazyWorkspacesSettingsSso />
     </SettingsModalPage>
 
   </SettingsModal>
@@ -56,6 +56,7 @@
 import { computed } from 'vue'
 import SettingsModal from '~/components/pages/settings/SettingsModal.vue'
 import SettingsModalPage from '~/components/pages/settings/SettingsModalPage.vue'
+import LazyWorkspacesSettingsSso from './sso/index.vue'
 
 const emit = defineEmits(['update:activeTab'])
 
