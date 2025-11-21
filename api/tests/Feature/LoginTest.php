@@ -45,8 +45,8 @@ it('cannot login if user is blocked', function () {
         'email' => $user->email,
         'password' => 'Abcd@1234',
     ])
-        ->assertStatus(422)
-        ->assertJsonValidationErrors(['email' => 'Your account has been blocked. Please contact support.']);
+        ->assertStatus(403)
+        ->assertJson(['message' => 'Your account has been blocked. Please contact support.']);
 
     $this->assertGuest();
 });

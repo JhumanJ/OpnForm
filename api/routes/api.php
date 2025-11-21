@@ -68,6 +68,14 @@ Route::group(['middleware' => 'auth.multi'], function () {
         Route::prefix('/providers')->name('providers.')->group(function () {
             Route::delete('/{provider}', [OAuthProviderController::class, 'destroy'])->name('destroy');
         });
+
+        Route::prefix('/two-factor')->name('two-factor.')->group(function () {
+            Route::post('/enable', [\App\Http\Controllers\Settings\TwoFactorController::class, 'enable'])->name('enable');
+            Route::post('/confirm', [\App\Http\Controllers\Settings\TwoFactorController::class, 'confirm'])->name('confirm');
+            Route::post('/disable', [\App\Http\Controllers\Settings\TwoFactorController::class, 'disable'])->name('disable');
+            Route::post('/recovery-codes', [\App\Http\Controllers\Settings\TwoFactorController::class, 'recoveryCodes'])->name('recovery-codes');
+            Route::post('/recovery-codes/regenerate', [\App\Http\Controllers\Settings\TwoFactorController::class, 'regenerateRecoveryCodes'])->name('recovery-codes.regenerate');
+        });
     });
 
     Route::prefix('subscription')->name('subscription.')->group(function () {
@@ -300,6 +308,9 @@ Route::group(['middleware' => 'guest:api'], function () {
 
     // OIDC email lookup endpoint (for login flow)
     Route::post('auth/oidc/options', [\App\Http\Controllers\Auth\SsoController::class, 'getOptionsForEmail'])->name('sso.options');
+
+    // Two-factor authentication verification (public, but requires pending auth token)
+    Route::post('/auth/two-factor/verify', [\App\Http\Controllers\Auth\TwoFactorVerificationController::class, 'verify'])->name('two-factor.verify');
 });
 
 Route::group(['prefix' => 'appsumo'], function () {

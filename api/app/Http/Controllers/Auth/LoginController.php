@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Exceptions\VerifyEmailException;
+use App\Http\Controllers\Auth\Traits\ManagesJWT;
 use App\Http\Controllers\Controller;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -12,6 +13,9 @@ use Illuminate\Validation\ValidationException;
 class LoginController extends Controller
 {
     use AuthenticatesUsers;
+    use ManagesJWT {
+        ManagesJWT::sendLoginResponse as traitSendLoginResponse;
+    }
 
     /**
      * Create a new controller instance.
@@ -62,11 +66,7 @@ class LoginController extends Controller
             return false;
         }
 
-        if ($user->is_blocked) {
-            $this->guard()->logout();
-            return false;
-        }
-
+        // Blocked check is now handled in sendLoginResponseWithTwoFactorCheck
         $guard->setToken($token);
 
         return true;
@@ -87,6 +87,7 @@ class LoginController extends Controller
 
     /**
      * Send the response after the user was authenticated.
+     * Override to use centralized logic that handles 2FA and blocked user checks.
      *
      * @return \Illuminate\Http\JsonResponse
      */
@@ -94,13 +95,12 @@ class LoginController extends Controller
     {
         $this->clearLoginAttempts($request);
 
-        $token = (string) $this->guard()->getToken();
-        $expiration = $this->guard()->getPayload()->get('exp');
+        $user = $this->guard()->user();
 
-        return response()->json([
-            'token' => $token,
-            'token_type' => 'bearer',
-            'expires_in' => $expiration - time(),
+        // traitSendLoginResponse() automatically handles 2FA check and blocked user check
+        return $this->traitSendLoginResponse($user, [
+            'method' => 'password',
+            'remember' => $request->remember ?? false,
         ]);
     }
 

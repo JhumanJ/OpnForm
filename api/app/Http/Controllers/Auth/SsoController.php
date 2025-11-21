@@ -4,15 +4,16 @@ namespace App\Http\Controllers\Auth;
 
 use App\Enterprise\Oidc\ConnectionManager;
 use App\Enterprise\Oidc\IdTokenVerifier;
+use App\Http\Controllers\Auth\Traits\ManagesJWT;
 use App\Http\Controllers\Controller;
 use App\Enterprise\Oidc\ProvisioningService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
-use Tymon\JWTAuth\JWTGuard;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class SsoController extends Controller
 {
+    use ManagesJWT;
     public function __construct(
         private ConnectionManager $connectionManager,
         private ProvisioningService $provisioningService,
@@ -163,34 +164,22 @@ class SsoController extends Controller
             // Determine if this is a new user
             $isNewUser = !$existingUser || $existingUser->id !== $user->id;
 
-            // Check if user is blocked
-            if ($user->is_blocked) {
-                abort(403, 'Your account has been blocked. Please contact support.');
-            }
-
-            // Login user using JWT guard (same as LoginController)
-            /** @var JWTGuard $guard */
-            $guard = Auth::guard('api');
-            $token = (string) $guard->login($user);
-            $expiration = $guard->getPayload()->get('exp');
-
-            // Get intended URL or default to home
-            $intendedUrl = $request->cookie('intended_url') ?? '/home';
-
-            // Return JSON response for API (when Accept: application/json header is present)
-            if ($request->expectsJson() || $request->wantsJson() || $request->header('Accept') === 'application/json') {
-                return response()->json([
-                    'token' => $token,
-                    'token_type' => 'bearer',
-                    'expires_in' => $expiration - time(),
-                    'user' => $user,
-                    'new_user' => $isNewUser,
-                    'redirect_url' => $intendedUrl,
-                ]);
-            }
-
-            // For web requests, redirect with token in cookie or session
-            return redirect($intendedUrl)->with('auth_token', $token);
+            // sendLoginResponse() automatically handles 2FA check and blocked user check
+            // callback.vue always sends JSON, so we can directly return the response
+            // HttpException (like 403 for blocked users) will be handled by the exception handler
+            return $this->sendLoginResponse($user, [
+                'method' => 'oidc',
+                'slug' => $slug,
+            ], [
+                'user' => $user,
+                'new_user' => $isNewUser,
+                'redirect_url' => $request->cookie('intended_url') ?? '/home',
+            ]);
+        } catch (HttpException $e) {
+            // Handle HTTP exceptions (like 403 for blocked users) - preserve status code
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], $e->getStatusCode());
         } catch (\Exception $e) {
             Log::error('OIDC callback failed', [
                 'slug' => $slug,
@@ -198,23 +187,10 @@ class SsoController extends Controller
                 'trace' => $e->getTraceAsString(),
             ]);
 
-            $errorMessage = $e->getMessage();
-
-            // Preserve HTTP exception status codes (e.g., 403 for blocked users)
-            $statusCode = 400;
-            if ($e instanceof \Symfony\Component\HttpKernel\Exception\HttpException) {
-                $statusCode = $e->getStatusCode();
-            }
-
-            if ($request->expectsJson()) {
-                return response()->json([
-                    'message' => $errorMessage,
-                ], $statusCode);
-            }
-
-            // Redirect to login with error
-            return redirect()->route('login')
-                ->withErrors(['oidc' => $errorMessage]);
+            // callback.vue always sends JSON, so always return JSON response
+            return response()->json([
+                'message' => $e->getMessage(),
+            ], 400);
         }
     }
 
