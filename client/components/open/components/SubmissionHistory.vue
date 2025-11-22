@@ -1,6 +1,6 @@
 <template>
   <UTooltip 
-    text="Form History" 
+    text="Submission History" 
     :content="{ side: 'left' }" 
     arrow
   >
@@ -17,8 +17,8 @@
 
   <UModal
     v-model:open="isHistoryModalOpen"
-    title="Form History"
-    description="View the history of changes to your form"
+    title="Submission History"
+    description="View the history of changes to your submission"
     :ui="{ content: 'sm:max-w-3xl' }"
     @close="isHistoryModalOpen = false"
   >
@@ -83,25 +83,34 @@
 
 <script setup>
 import { versionsApi } from '~/api/versions'
-import { formsApi } from '~/api/forms'
 import { format } from 'date-fns'
+
+const props = defineProps({
+  submissionId: {
+    type: Number,
+    required: true,
+  }
+})
 
 const alert = useAlert()
 const { openSubscriptionModal } = useAppModals()
-const workingFormStore = useWorkingFormStore()
-
-const { content: form } = storeToRefs(workingFormStore)
+const { data: user } = useAuth().user()
 const isHistoryModalOpen = ref(false)
 const versions = ref([])
+const { invalidateSubmission } = useFormSubmissions()
 
 onMounted(() => {
-  if (form.value) {
+  if (props.submissionId) {
     fetchVersions()
   }
 })
 
+watch(() => props.submissionId, () => {
+  fetchVersions()
+})
+
 const fetchVersions = async () => {
-  const response = await versionsApi.list('form', form.value.id)
+  const response = await versionsApi.list('submission', props.submissionId)
   versions.value = response || []
 }
 
@@ -132,8 +141,8 @@ const humanizeKey = (key, change) => {
 }
 
 const onRestore = async (version) => {
-  if(!form.value.is_pro) {
-    openSubscriptionModal({ modal_title: 'Upgrade to restore form history' })
+  if(!user.value.is_pro) {
+    openSubscriptionModal({ modal_title: 'Upgrade to restore submission history' })
     return
   }
 
@@ -141,11 +150,11 @@ const onRestore = async (version) => {
 }
 
 const restoreVersion = async (version) => {
-  await formsApi.get(form.value.slug, { params: { version_id: version.id } }).then((response) => {
-    workingFormStore.reset()
-    workingFormStore.set(useForm(response))
-    useAlert().success('Version restored successfully on editor. Please publish form to save the changes.')
-    isHistoryModalOpen.value = false
+  await versionsApi.restore(version.id).then((_response) => {
+    invalidateSubmission(props.submissionId)
+    useAlert().success('Submission restored successfully')
+    fetchVersions()
+    isHistoryModalOpen.value = false  
   })
   .catch(() => {
     alert.error('Failed to restore version')

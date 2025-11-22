@@ -221,7 +221,11 @@ export function useFormSubmissions() {
   }
 
   const invalidateSubmissions = (formId) => {
-    queryClient.invalidateQueries(['forms', formId, 'submissions'])
+    queryClient.invalidateQueries({ queryKey: ['forms', formId, 'submissions'] })
+  }
+
+  const invalidateSubmission = (submissionId) => {
+    queryClient.invalidateQueries({ queryKey: ['submissions', submissionId] })
   }
 
   return {
@@ -234,5 +238,6 @@ export function useFormSubmissions() {
     deleteMultiSubmissions,
     exportSubmissions,
     invalidateSubmissions,
+    invalidateSubmission,
   }
 } 

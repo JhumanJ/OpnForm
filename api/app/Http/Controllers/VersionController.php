@@ -4,13 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Resources\VersionResource;
 use App\Models\Forms\Form;
+use App\Models\Forms\FormSubmission;
 use App\Models\Version;
 use Illuminate\Http\Request;
 
 class VersionController extends Controller
 {
     protected $modelAliases = [
-        'form' => Form::class
+        'form' => Form::class,
+        'submission' => FormSubmission::class,
     ];
 
     protected function getModelClass(string $alias): \Illuminate\Http\JsonResponse|string
@@ -59,6 +61,8 @@ class VersionController extends Controller
                 'message' => 'You need to be a Pro user to restore this version',
             ]);
         }
+
+        $this->authorize('update', $version->getModel());
 
         $version->revert();
 

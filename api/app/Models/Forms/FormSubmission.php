@@ -5,10 +5,21 @@ namespace App\Models\Forms;
 use App\Events\Models\FormSubmissionDeleting;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Version;
+use Mpociot\Versionable\VersionableTrait;
 
 class FormSubmission extends Model
 {
     use HasFactory;
+    use VersionableTrait;
+
+    // Configure versioning
+    protected $versionClass = Version::class;
+    protected $keepOldVersions = 5;
+    protected $dontVersionFields = [
+        'created_at',
+        'updated_at',
+    ];
 
     public const STATUS_PARTIAL = 'partial';
     public const STATUS_COMPLETED = 'completed';
