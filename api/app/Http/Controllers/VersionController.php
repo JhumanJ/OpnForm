@@ -13,7 +13,7 @@ class VersionController extends Controller
         'form' => Form::class
     ];
 
-    protected function getModelClass(string $alias): string
+    protected function getModelClass(string $alias): \Illuminate\Http\JsonResponse|string
     {
         if (!isset($this->modelAliases[$alias])) {
             return $this->error([
@@ -24,19 +24,33 @@ class VersionController extends Controller
         return $this->modelAliases[$alias];
     }
 
-    public function index(Request $request, $modelType, $id)
+    public function index(Request $request, string $modelType, int $id)
     {
-        $model = $this->getModelClass($modelType);
-        if ($model instanceof \Illuminate\Http\JsonResponse) {
-            return $model;
+        $modelClass = $this->getModelClass($modelType);
+        if ($modelClass instanceof \Illuminate\Http\JsonResponse) {
+            return $modelClass;
         }
-        $modelInstance = new $model();
-        $modelRecord = $modelInstance::findOrFail($id);
-        $versions = $modelRecord->versions()->with('user')->orderBy('created_at', 'desc')->get();
+
+        $model = $modelClass::findOrFail($id);
+
+        $this->authorize('view', $model);
+
+        abort_unless(method_exists($model, 'versions'), 400, 'Model is not versionable');
+
+        $versions = $model->versions()
+            ->with('user')
+            ->latest('created_at')
+            ->get()
+            ->filter(function ($version) {
+                $diff = $version->diff();
+                return !empty($diff) && count($diff) > 0;
+            })
+            ->values();
+
         return VersionResource::collection($versions);
     }
 
-    public function restore(Request $request, $versionId)
+    public function restore(Request $request, int $versionId)
     {
         $version = Version::findOrFail($versionId);
         $user = $version->user;
@@ -46,11 +60,10 @@ class VersionController extends Controller
             ]);
         }
 
-        // $version->revert();
+        $version->revert();
 
         return $this->success([
-            'model_data' => $version->model_data_array,
-            'message' => 'Version restored successfully on editor. Please publish form to save the changes.',
+            'message' => 'Version restored successfully.',
         ]);
     }
 }

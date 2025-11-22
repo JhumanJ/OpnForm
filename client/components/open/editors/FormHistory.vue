@@ -83,6 +83,7 @@
 
 <script setup>
 import { versionsApi } from '~/api/versions'
+import { formsApi } from '~/api/forms'
 import { format } from 'date-fns'
 
 const alert = useAlert()
@@ -140,15 +141,14 @@ const onRestore = async (version) => {
 }
 
 const restoreVersion = async (version) => {
-  await versionsApi.restore(version.id).then((response) => {
-    form.value = response.model_data
-    useAlert().success(response.message)
+  await formsApi.get(form.value.slug, { params: { version_id: version.id } }).then((response) => {
+    workingFormStore.reset()
+    workingFormStore.set(useForm(response))
+    useAlert().success('Version restored successfully on editor. Please publish form to save the changes.')
     isHistoryModalOpen.value = false
-    // fetchVersions()
   })
-  .catch((error) => {
-    console.error(error)
-    alert.error(error.data?.message || 'Failed to restore version')
+  .catch(() => {
+    alert.error('Failed to restore version')
   })
 }
 </script>
